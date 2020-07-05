@@ -644,22 +644,25 @@ class ANUVidLib {
 
 function newclip() {
     var table = document.getElementById(VIDSEGTABLENAME);
+    addclip(table, v.leftPanel.timestamp, v.rightPanel.timestamp, "");
+}
+
+function addclip(table, ts_start, ts_end, description, focus=true) {
     var row = table.insertRow(-1);
-    row.insertCell(0).innerHTML = v.leftPanel.timestamp;
-    row.insertCell(1).innerHTML = v.rightPanel.timestamp;
+    row.insertCell(0).innerHTML = ts_start;
+    row.insertCell(1).innerHTML = ts_end;
     var input = document.createElement("input");
-    input.type = "text"; input.classList.add("segdesc");
+    input.type = "text"; input.classList.add("segdesc"); input.value = description;
     parent = row.insertCell(2);
     parent.appendChild(input);
     var cell = row.insertCell(3);
     cell.innerHTML = "<button title='delete' onclick='delclip(this.parentElement.parentElement);'>&#x2718;</button>";
     cell.innerHTML += " <button title='move up' onclick='todo();'>&#x1F819;</button>";
     cell.innerHTML += " <button title='move down' onclick='todo();'>&#x1F81B;</button>";
-    cell.innerHTML += " <button title='goto' onclick='v.seekToTime(" +
-        v.leftPanel.timestamp + ", " + v.rightPanel.timestamp + ", true);'>&#x270E;</button>";
+    cell.innerHTML += " <button title='goto' onclick='v.seekToTime(" + ts_start + ", " + ts_end + ", true);'>&#x270E;</button>";
     cell.style.textAlign = "right";
     input.onkeypress = function(event) { defocusOnEnter(event, document.getElementById(LEFTSLIDERNAME)); }
-    input.focus();
+    if (focus) input.focus();
 }
 
 function delclip(row) {
@@ -671,5 +674,27 @@ function clearclips() {
     var table = document.getElementById(VIDSEGTABLENAME);
     for (var i = table.rows.length - 1; i > 0; i--) {
         table.deleteRow(i);
+    }
+}
+
+function sortclips(ascending = true) {
+    // extract start and end times from segement
+    var table = document.getElementById(VIDSEGTABLENAME);
+    var data = [];
+    for (var i = 1; i < table.rows.length; i++) {
+        data.push({s: table.rows[i].cells.item(0).innerHTML, t: table.rows[i].cells.item(1).innerHTML,
+            v: table.rows[i].cells.item(2).firstElementChild.value});
+    }
+
+    // sort
+    data.sort(function(a, b){if (a.s == b.s) return a.t - b.t; return a.s - b.s;});
+    if (!ascending) {
+        data.reverse();
+    }
+
+    // repopulate the table
+    clearclips();
+    for (var i = 0; i < data.length; i++) {
+        addclip(table, data[i].s, data[i].t, data[i].v, false);
     }
 }
