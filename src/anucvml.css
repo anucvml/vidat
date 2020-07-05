@@ -1,0 +1,116 @@
+body {
+  font-family: Arial;
+  text-align:left;
+}
+
+button {
+    vertical-align: top;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin: 0 0 0 0px;
+    min-height: 20pt;
+    min-width: 20pt;
+}
+
+address {
+  text-align:center;
+  font-size:small;
+}
+
+input[type=text] {
+    border: none;
+    width: 100%;
+}
+
+fieldset {
+    margin: 8px;
+    border: 1px solid silver;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+legend {
+    padding: 2px;
+    font-weight: bold;
+}
+
+.filmstrip {
+    width: 100%;
+    height: 20px;
+    background-image: url(filmstrip.png);
+    background-repeat: repeat-x;
+}
+
+.segdesc {
+    font-size:12pt;
+    border: none;
+    background-color: transparent;
+    height: 100%;
+}
+
+/*
+ * To disable/enable the container use:
+ * document.getElementById("container").classList.add("iodisabled");
+ * document.getElementById("container").classList.remove("iodisabled");
+*/
+
+.iodisabled {
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.4;
+}
+
+#banner {
+    position: relative;
+}
+
+#logo {
+    position: absolute;
+    top: 0px;
+    right: 12px;
+    height: 64px;
+}
+
+/*
+ * Overlay window (div) turn on and off with:
+ *   document.getElementById('overlay').style.display = 'block';
+ *   document.getElementById('overlay').style.display = 'none';
+*/
+
+.overlay {
+    position: fixed;  /* Sit on top of the page content */
+    display: none;    /* Hidden by default (set to block to show) */
+    width: 100%;      /* Full width (cover the whole page) */
+    height: 100%;     /* Full height (cover the whole page) */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+    z-index: 2;       /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer;  /* Add a pointer on hover */
+}
+
+.overlayclosebtn {
+    float:right;
+    display:inline-block;
+    padding:2px 5px;
+    font-size:24px;
+    background:#cccccc;
+}
+
+.overlayclosebtn:hover {
+    color:#ffffff;
+}
+
+.centered {
+  width: 50%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.textlink:hover {
+    cursor: pointer;
+}

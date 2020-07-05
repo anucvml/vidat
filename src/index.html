@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ANU CVML Video Annotation Tool</title>
+    <link rel="stylesheet" href="anucvml.css" type="text/css"/>
+    <script type="text/javascript" src="anno.js"></script>
+    <script type="text/javascript" src="anuvidlib.js"></script>
+    <script type="text/javascript">
+        function todo() { window.alert("Not implemented yet!"); }
+
+        function randbox() {
+            let frameIndex = v.time2indx(v.leftPanel.timestamp);
+            let x = 0.9 * Math.random();
+            let y = 0.9 * Math.random();
+            let w = (0.9 - x) * Math.random() + 0.1;
+            let h = (0.9 - y) * Math.random() + 0.1;
+            v.objectList[frameIndex].push(new ObjectBox(x, y, w, h, null, null, '#' + Math.random().toString(16).substr(2,6)));
+            v.redraw(ANUVidLib.BOTH);
+        }
+
+        function clearboxes() {
+            let frameIndex = v.time2indx(v.leftPanel.timestamp);
+            v.objectList[frameIndex] = [];
+            v.redraw(ANUVidLib.BOTH);
+        }
+    </script>
+    <script type="text/javascript">
+        // configuration
+        var config = {version: VERSION, tiedcb: false, greycb: false};
+        if (typeof(Storage) !== "undefined") {
+            if (localStorage.getItem("anucvml:config") != null) {
+                config = JSON.parse(localStorage.getItem("anucvml:config"));
+            }
+        }
+
+        var v = null;
+
+        function init() {
+            v = new ANUVidLib();
+
+            var loadVideoFile = function(event) {
+                var file = this.files[0];
+                var fileURL = URL.createObjectURL(file);
+                v.loadVideo(fileURL);
+            }
+
+            var input = document.querySelector('input');
+            input.addEventListener('change', loadVideoFile, false);
+            document.getElementById("version").innerHTML = VERSION;
+            if (config.tiedcb) document.getElementById("tiedcb").click();
+            if (config.greycb) document.getElementById("greycb").click();
+        }
+
+        function fini() {
+            config.tiedcb = document.getElementById("tiedcb").checked;
+            config.greycb = document.getElementById("greycb").checked;
+            try {
+                if (typeof(Storage) !== "undefined") {
+                    localStorage.setItem("anucvml:config", JSON.stringify(config));
+                }
+            } catch(err) {
+                // do nothing
+            }
+        }
+
+        function play() {
+            if (isNaN(v.video.duration)) {
+                return;
+            }
+            document.getElementById('playeroverlay').style.display = 'block';
+            var startTime = Math.min(v.leftPanel.timestamp, v.rightPanel.timestamp);
+            var endTime = Math.max(v.leftPanel.timestamp, v.rightPanel.timestamp);
+            document.getElementById('vidplayer').src = v.video.src + "#t=" + startTime + "," + endTime;
+        }
+
+        function showhelp() {
+            document.getElementById('helpoverlay').style.display = 'block';
+        }
+
+        document.addEventListener('keyup', (e) => { return onkeypress(e); })
+        function onkeypress(e) {
+            // don't process key if inside a textbox
+            if ((e.target.nodeName.toLowerCase() == 'input') && (e.target.type.toLowerCase() == 'text')) {
+                return false;
+            }
+            console.log("key " + e.code + " (0x" + e.keyCode.toString(16) + ")");
+            switch (e.keyCode) {
+            case 0x2E:  // delete
+                v.deleteActiveObject();
+                return true;
+
+            case 0x48:  // H
+                showhelp(); return true;
+
+            case 0x50:  // P
+                play(); return true;
+
+            case 0xBC:  // comma, <
+                v.prevKeyframe();
+                return true;
+
+            case 0xBE:  // period, >
+                v.nextKeyframe();
+                return true;
+
+            case 0xBB:  // plus, equals
+                newclip(); return true;
+
+            case 0xDB:  // [, {
+                document.getElementById('leftslider').focus();
+                return true;
+
+            case 0xDD:  // ], }
+                document.getElementById('rightslider').focus();
+                return true;
+
+            }
+
+            return false;
+        }
+    </script>
+</head>
+<body onload="init();" onunload="fini();">
+<div id="banner"><img src="logo.png" id="logo"></div>
+<center>
+    <h1>ANU CVML In-browser Video Annotation Tool</h1>
+</center>
+
+<!-- video and annotation input -->
+<input type="file" accept="video/*" />
+<p/>
+
+<!-- side-by-side video frame container -->
+<div id="container" style="width: 100%;">
+    <div id="leftpanel" style="width: 45%; float: left;">
+        <div class="filmstrip"></div>
+        <canvas id="leftframe" width="640px" height="480px" style="display: block;"></canvas>
+        <div class="filmstrip"></div>
+        <br>
+        <div style="width: 100%;">
+            <input type="range" min="0" max="100" value="0" style="width: 100%;" id="leftslider" oninput="v.seekToIndex(this.value, -1)";>
+            <br>
+            <span style="float: right;" id="leftstatus">none</span>
+        </div>
+    </div>
+    <div id="centerpanel" style="width: 10%; float: left; text-align: center; position: relative;">
+        <b>Annotations</b><br><p/>
+        <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, false);" title="copy right" type="button" style="width: 50%;">&rarr;</button><p/>
+        <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, true);" title="replace right" type="button" style="width: 50%;">&#8608;</button><p/>
+        <br><p/>
+        <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, false);" title="copy left" type="button" style="width: 50%;">&larr;</button><p/>
+        <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, true);" title="replace left" type="button" style="width: 50%;">&#8606;</button><p/>
+        <br><p/>
+        <b>Options</b><br><p/>
+        <input id="tiedcb" type="checkbox" onclick="v.tiedframes = this.checked; return true;">
+        <label for="tiedcb">tie sliders</label><br>
+        <input id="greycb" type="checkbox" onclick="v.greyframes = this.checked; return true;">
+        <label for="greycb">greyscale</label><br>
+        <br><p/>
+        <b>Frames</b><br><p/>
+        <button onclick="v.swap();" title="swap" type="button" style="width: 50%;">&#x21C4; swap</button><p/>
+        <button onclick="play();" title="play" type="button" style="width: 50%;">&#x25B6; play</button><p/>
+    </div>
+    <div id="rightpanel" style="width: 45%; float:left;">
+        <div class="filmstrip"></div>
+        <canvas id="rightframe" width="640px" height="480px" style="display: block;"></canvas>
+        <div class="filmstrip"></div>
+        <br>
+        <div style="width: 100%;">
+            <input type="range" min="0" max="100" value="0" style="width: 100%;" id="rightslider" oninput="v.seekToIndex(-1, this.value)";>
+            <br>
+            <span style="float: right;" id="rightstatus">none</span>
+        </div>
+    </div>
+    <!-- needed for proper alignment of previous divs -->
+    <div style="clear: both;"></div>
+</div>
+
+<!-- annotations container -->
+<div id="annotations" style="width: 100%;">
+    <div id="leftannopanel" style="width: 45%; float: left;">
+        <fieldset style="background: #f7f7f7;">
+            <legend>Objects</legend>
+            <button onclick="randbox();">TESTING: Random Box</button>
+            <button onclick="clearboxes();">TESTING: Clear</button>
+        </fieldset>
+    </div>
+    <div style="width: 10%; float: left; text-align: center; position: relative;">&nbsp;</div>
+    <div id="rightannopanel" style="width: 45%; float: left;">
+        <fieldset style="background: #f7f7f7;">
+            <legend>Objects</legend>
+            TODO: bounding boxes, segments/polygons, skeletons
+        </fieldset>
+    </div>
+    <div style="clear: both;"></div>
+
+    <fieldset style="background: #f7f7f7;">
+        <legend>Keyframes</legend>
+            <button title="generate" onclick="v.generateKeyframes();">&#x23F2; generate</button>
+            <span id="keyframeListId">(no keyframes)</span>
+            <font color="red">TODO: load, export, add/remove, visualize</font>
+        <div style="float: right;">
+            <button title="previous" onclick="v.prevKeyframe();">&lt;</button>
+            <button title="next" onclick="v.nextKeyframe();">&gt;</button>
+        </div>
+        <div style="clear: both;"></div>
+    </fieldset>
+
+    <fieldset style="background: #f7f7f7;">
+        <legend>Video segments</legend>
+        <div style="float: right;">
+            <button title="sort" onclick="todo();">&#x21A7; sort</button>
+            <button title="add segment" onclick="newclip();">&#x271A;</button>
+        </div>
+        <div style="clear: both;"></div>
+        <table id="vidsegtable" width="100%" style="table-layout: fixed;">
+            <tr><th width="60pt">start</th><th width="60pt">end</th><th width="100%">description</th><th width="160pt" align="right"></th></tr>
+        </table>
+    </fieldset>
+</div>
+
+<!-- overlay player window -->
+<div id="playeroverlay" class="overlay">
+    <span class="overlayclosebtn" onclick="this.parentElement.style.display = 'none';">x</span>
+    <div class="centered">
+        <div class="filmstrip"></div>
+        <video style="width: 100%; display: block;" autoplay id="vidplayer"></video>
+        <div class="filmstrip"></div>
+        <button onclick="document.getElementById('vidplayer').load();" type="button" style="width: 10%; float: left;">&#x25B6; replay</button>
+        <button onclick="document.getElementById('vidplayer').pause(); document.getElementById('playeroverlay').style.display = 'none';" type="button" style="width: 10%; float: right;">&#x25FC; stop</button>
+        <div style="clear: both;"></div>
+    </div>
+</div>
+
+<!-- overlay help window -->
+<div id="helpoverlay" class="overlay">
+    <div class="centered" style="background: white; padding: 10px;">
+        <span class="overlayclosebtn" onclick="this.parentElement.parentElement.style.display = 'none';">x</span>
+        <center><small>Version <span id="version">0.0</span></small></center>
+
+        <b>Keyboard Shortcuts</b><br>
+<pre>
+    h           :: help (this window)
+    p           :: play video segment
+    comma, <    :: advance to next keyframe
+    period, >   :: retreat to previous keyframe
+    [, {        :: select left slider
+    ], }        :: select right slider
+    left-arrow  :: previous frame (when slider is selected)
+    right-arrow :: next frame (when slider is selected)
+    page-up     :: jump to previous 10% of video (when slider is selected)
+    page-down   :: jump to next 10% of video (when slider is selected)
+    plus (+)    :: add a new segment
+    delete      :: delete currently active object
+    shift       :: duplicate currently active object when mouse down
+</pre>
+        <p/>
+
+        <b>Tutorial Videos</b><br>
+        <ol>
+            <li> coming soon...
+        </ol>
+    </div>
+</div>
+
+
+<p/>
+<address>
+    Copyright &copy; 2020, Stephen Gould. All rights reserved.<br>
+    <span onclick="todo();" class="textlink">about</span> |
+    <span onclick="showhelp();" class="textlink">help</span> |
+    <span onclick="todo();" class="textlink">contact</span>
+</address>
+
+</body>
+</html>
