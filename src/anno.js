@@ -126,3 +126,56 @@ class VidSegment {
         this.description = description;
     }
 }
+
+/* Annotation Container ------------------------------------------------------*/
+
+/*
+** Holds all annotations for a given video. And provides utility functions.
+*/
+
+class AnnotationContainer {
+    constructor(numFrames = 0) {
+        this.keyframes = [];        // array of keyframe timestamps (in seconds)
+        this.objectList = [[]];     // array of array of objects
+
+        if (numFrames > 0) {
+            this.objectList.length = numFrames;
+            for (var i = 0; i < this.objectList.length; i++) {
+                this.objectList[i] = [];
+            }
+        }
+    }
+
+    load(filename) {
+        // TODO: placeholder
+    }
+
+    save(filename) {
+        // TODO: placeholder
+    }
+
+    // Copy annotations from source frame to target frame.
+    copy(srcIndex, tgtIndex, overwrite) {
+        if (srcIndex == tgtIndex)
+            return false;
+
+        if (overwrite) {
+            this.objectList[tgtIndex] = [];
+        }
+
+        for (var i = 0; i < this.objectList[srcIndex].length; i++) {
+            this.objectList[tgtIndex].push(this.objectList[srcIndex][i].clone());
+        }
+
+        return true;
+    }
+
+    // Draw frame-based annotations onto the given context.
+    draw(ctx, frameIndex, activeObject = null) {
+
+        // draw bounding box objects
+        for (var i = 0; i < this.objectList[frameIndex].length; i++) {
+            this.objectList[frameIndex][i].draw(ctx, this.objectList[frameIndex][i] == activeObject);
+        }
+    }
+}

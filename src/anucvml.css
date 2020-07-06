@@ -71,10 +71,24 @@ legend {
     height: 64px;
 }
 
+/* Popup window show/hide with:
+ *  document.getElementById(<id>).style.display = 'block';
+ *  document.getElementById(<id>).style.display = 'none';
+*/
+.popup {
+    position: absolute;
+    padding: 4px 8px 4px 8px;
+    display: none;
+    background-color: #f7f7f7;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    z-index: 1;
+}
+
 /*
  * Overlay window (div) turn on and off with:
- *   document.getElementById('overlay').style.display = 'block';
- *   document.getElementById('overlay').style.display = 'none';
+ *   document.getElementById(<id>).style.display = 'block';
+ *   document.getElementById(<id>).style.display = 'none';
 */
 
 .overlay {

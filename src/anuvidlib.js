@@ -11,6 +11,8 @@
 const VERSION = "0.1(alpha)"    // library version (useful for loading old file formats)
 const FPS = 10;                 // temporal resolution (frames per second)
 
+const DEFAULTKEYFRAMES = 5;     // default number of seconds between keyframes
+
 // webpage control ids
 const LEFTCANVASNAME  = "leftframe";
 const LEFTSLIDERNAME  = "leftslider";
@@ -23,6 +25,7 @@ const RIGHTSTATUSNAME = "rightstatus";
 const RIGHTOBJLISTNAME = null; // TODO
 
 const VIDSEGTABLENAME = "vidsegtable";
+const OBJINFOPOPUP = "objectinfo";
 
 /*
 ** Control callback utilities.
@@ -103,6 +106,7 @@ class ANUVidLib {
         this._greyframes = false;
         this._tiedframes = false;
         this.video = document.createElement("video");
+        this.annotations = new AnnotationContainer();
 
         this.leftPanel = {
             side: ANUVidLib.LEFT,
@@ -132,9 +136,6 @@ class ANUVidLib {
         this.rightPanel.canvas.onmousedown = function(e) { self.mousedown(e, ANUVidLib.RIGHT); }
         this.rightPanel.canvas.onmouseup = function(e) { self.mouseup(e, ANUVidLib.RIGHT); }
 
-        this.keyframes = [];    // index of keyframe timestamps
-
-        this.objectList = [[]]; // array of array of objects
         this.activeObject = null;
         this.dragContext = new DragContext();
 
@@ -152,12 +153,8 @@ class ANUVidLib {
             self.rightPanel.slider.value = 0;
             self.rightPanel.timestamp = null;
 
-            self.keyframes = [];
-            self.generateKeyframes(5); // generate keyframes event five seconds
-            self.objectList.length = Math.floor(FPS * self.video.duration);
-            for (var i = 0; i < self.objectList.length; i++) {
-                self.objectList[i] = [];
-            }
+            self.annotations = new AnnotationContainer(Math.floor(FPS * self.video.duration));
+            self.generateKeyframes(DEFAULTKEYFRAMES); // generate default keyframes indexes
 
             self.frameCache.length = Math.floor(self.video.duration); // space for 1 frame per second
             self.frameCache.fill(null);
@@ -169,8 +166,7 @@ class ANUVidLib {
         this.video.addEventListener('error', function() {
             window.alert("ERROR: could not load video \"" + self.video.src + "\"");
             self.frameCache = [];
-            self.keyframes = [];
-            self.objectList = [[]];
+            self.annotations = new AnnotationContainer();
             self.leftPanel.frame = new Image();
             self.leftPanel.frame.onload = function() { self.redraw(ANUVidLib.LEFT); };
             self.rightPanel.frame = new Image();
@@ -387,12 +383,7 @@ class ANUVidLib {
         }
 
         // draw objects
-        if (this.objectList.length > 0) {
-            let frameIndex = this.time2indx(panel.timestamp);
-            for (var i = 0; i < this.objectList[frameIndex].length; i++) {
-                this.objectList[frameIndex][i].draw(context, this.objectList[frameIndex][i] == this.activeObject);
-            }
-        }
+        this.annotations.draw(context, this.time2indx(panel.timestamp), this.activeObject);
 
         // draw border
         context.lineWidth = 7; context.strokeStyle = "#ffffff";
@@ -421,21 +412,14 @@ class ANUVidLib {
         if (srcIndex == tgtIndex)
             return;
 
-        if (overwrite) {
-            this.objectList[tgtIndex] = [];
-        }
-
-        for (var i = 0; i < this.objectList[srcIndex].length; i++) {
-            this.objectList[tgtIndex].push(this.objectList[srcIndex][i].clone());
-        }
-
+        this.annotations.copy(srcIndex, tgtIndex, overwrite);
         this.paint(tgtPanel);
     }
 
     // Generate keyframes are regular interval. If delta is null then requests time interval from user.
     generateKeyframes(delta = null) {
         if (delta == null) {
-            var retVal = prompt("Generate keyframe every how many seconds?", "5");
+            var retVal = prompt("Generate keyframe every how many seconds?", DEFAULTKEYFRAMES);
             if (retVal == null) return false;
             delta = parseFloat(retVal);
         }
@@ -443,23 +427,23 @@ class ANUVidLib {
         if (delta <= 0)
             return false;
 
-        this.keyframes = [];
+        this.annotations.keyframes = [];
         var ts = 0.0;
         while (ts < this.video.duration) {
-            this.keyframes.push(ts);
+            this.annotations.keyframes.push(ts);
             ts += delta;
         }
 
         // TODO: better keyframe visualisation
         var el = document.getElementById("keyframeListId");
-        if (this.keyframes.length == 0) {
+        if (this.annotations.keyframes.length == 0) {
             el.innerHTML = "(no keyframes)";
             return;
         }
         el.innerHTML = "";
-        for (var i = 0; i < this.keyframes.length; i++) {
+        for (var i = 0; i < this.annotations.keyframes.length; i++) {
             if (i > 0) el.innerHTML += ", ";
-            el.innerHTML += this.keyframes[i];
+            el.innerHTML += this.annotations.keyframes[i];
         }
 
         return true;
@@ -468,12 +452,12 @@ class ANUVidLib {
     nextKeyframe() {
         // find next keyframe (based on right panel)
         var i = 1;
-        while ((i < this.keyframes.length) && (this.keyframes[i] <= this.rightPanel.timestamp)) {
+        while ((i < this.annotations.keyframes.length) && (this.annotations.keyframes[i] <= this.rightPanel.timestamp)) {
             i += 1;
         }
 
-        if (i < this.keyframes.length) {
-            this.seekToTime(this.keyframes[i - 1], this.keyframes[i]);
+        if (i < this.annotations.keyframes.length) {
+            this.seekToTime(this.annotations.keyframes[i - 1], this.annotations.keyframes[i]);
             return true;
         }
 
@@ -483,12 +467,12 @@ class ANUVidLib {
     prevKeyframe() {
         // find previous keyframe (based on left panel)
         var i = 0;
-        while ((i < this.keyframes.length) && (this.keyframes[i] < this.leftPanel.timestamp)) {
+        while ((i < this.annotations.keyframes.length) && (this.annotations.keyframes[i] < this.leftPanel.timestamp)) {
             i += 1;
         }
 
-        if (i < this.keyframes.length) {
-            this.seekToTime(i == 0 ? 0.0 : this.keyframes[i - 1], this.keyframes[i]);
+        if (i < this.annotations.keyframes.length) {
+            this.seekToTime(i == 0 ? 0.0 : this.annotations.keyframes[i - 1], this.annotations.keyframes[i]);
             return true;
         }
 
@@ -498,9 +482,9 @@ class ANUVidLib {
     // Get active object at position (x, y) on given panel.
     findActiveObject(x, y, panel) {
         const frameIndex = this.time2indx(panel.timestamp);
-        for (var i = this.objectList[frameIndex].length - 1; i >= 0; i--) {
-            if (this.objectList[frameIndex][i].nearBoundary(x, y, panel.canvas.width, panel.canvas.height)) {
-                return this.objectList[frameIndex][i];
+        for (var i = this.annotations.objectList[frameIndex].length - 1; i >= 0; i--) {
+            if (this.annotations.objectList[frameIndex][i].nearBoundary(x, y, panel.canvas.width, panel.canvas.height)) {
+                return this.annotations.objectList[frameIndex][i];
             }
         }
 
@@ -511,16 +495,16 @@ class ANUVidLib {
     deleteActiveObject() {
         if ((this.activeObject != null) && (this.dragContext.mode == DragContext.NONE)) {
             var frameIndex = this.time2indx(this.leftPanel.timestamp);
-            for (var i = 0; i < this.objectList[frameIndex].length; i++) {
-                if (this.objectList[frameIndex][i] === this.activeObject) {
-                    this.objectList[frameIndex].splice(i, 1);
+            for (var i = 0; i < this.annotations.objectList[frameIndex].length; i++) {
+                if (this.annotations.objectList[frameIndex][i] === this.activeObject) {
+                    this.annotations.objectList[frameIndex].splice(i, 1);
                     break;
                 }
             }
             frameIndex = this.time2indx(this.rightPanel.timestamp);
-            for (var i = 0; i < this.objectList[frameIndex].length; i++) {
-                if (this.objectList[frameIndex][i] === this.activeObject) {
-                    this.objectList[frameIndex].splice(i, 1);
+            for (var i = 0; i < this.annotations.objectList[frameIndex].length; i++) {
+                if (this.annotations.objectList[frameIndex][i] === this.activeObject) {
+                    this.annotations.objectList[frameIndex].splice(i, 1);
                     break;
                 }
             }
@@ -566,6 +550,17 @@ class ANUVidLib {
         const lastActiveObject = this.activeObject;
         this.activeObject = this.findActiveObject(event.offsetX, event.offsetY, panel);
 
+        // TODO: experimenting
+        if (this.activeObject) {
+            var el = document.getElementById(OBJINFOPOPUP);
+            el.style.display = 'block';
+            el.style.left = ((event.x - event.offsetX) + this.activeObject.x * panel.canvas.width) + "px";
+            el.style.top = ((event.y - event.offsetY) + (this.activeObject.y + this.activeObject.height) * panel.canvas.height + 8) + "px";
+        } else {
+            var el = document.getElementById(OBJINFOPOPUP);
+            el.style.display = 'none';
+        }
+
         // repaint if the active object changed
         if (this.activeObject != lastActiveObject) {
             this.paint(panel);
@@ -586,6 +581,10 @@ class ANUVidLib {
 
     // Process mouse button press inside panel.
     mousedown(event, side) {
+        // TODO: experimenting
+        var el = document.getElementById(OBJINFOPOPUP);
+        el.style.display = 'none';
+
         const panel = (side == ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel;
         if ((this.activeObject != null) && (!event.shiftKey)) {
             // resize active object
@@ -606,7 +605,7 @@ class ANUVidLib {
                 this.activeObject = new ObjectBox(event.offsetX / panel.canvas.width, event.offsetY / panel.canvas.height, 0, 0);
                 this.dragContext.mode = DragContext.SIZING;
             }
-            this.objectList[frameIndex].push(this.activeObject);
+            this.annotations.objectList[frameIndex].push(this.activeObject);
             this.dragContext.anchor = this.activeObject.oppositeAnchor(event.offsetX, event.offsetY, panel.canvas.width, panel.canvas.height);
             this.dragContext.newObject = true;
         }
@@ -625,7 +624,7 @@ class ANUVidLib {
                 if ((event.offsetX == this.dragContext.mouseDownX) && (event.offsetY == this.dragContext.mouseDownY)) {
                     console.log("removing new object");
                     const frameIndex = this.time2indx(side == ANUVidLib.LEFT ? this.leftPanel.timestamp : this.rightPanel.timestamp);
-                    this.objectList[frameIndex].pop();
+                    this.annotations.objectList[frameIndex].pop();
                 }
             }
 
