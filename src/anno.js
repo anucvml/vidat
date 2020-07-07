@@ -184,4 +184,17 @@ class AnnotationContainer {
             this.objectList[frameIndex][i].draw(ctx, this.objectList[frameIndex][i] == activeObject);
         }
     }
+
+    // Swap two objects (can be used to reorder objects in the same frame).
+    swapObjects(frmIndexA, objIndexA, frmIndexB, objIndexB) {
+        if ((objIndexA < 0) || (objIndexA >= this.objectList[frmIndexA].length) ||
+            (objIndexB < 0) || (objIndexB >= this.objectList[frmIndexB].length))
+            return false;
+
+        var obj = this.objectList[frmIndexA][objIndexA];
+        this.objectList[frmIndexA][objIndexA] = this.objectList[frmIndexB][objIndexB];
+        this.objectList[frmIndexB][objIndexB] = obj;
+
+        return true;
+    }
 }

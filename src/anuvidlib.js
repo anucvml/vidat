@@ -41,6 +41,27 @@ function defocusOnEnter(event, target = null) {
     }
 }
 
+// Move a table row up. Warning: does not modify the content so table content should not depend on order. Also does not
+// change underlying data from which the table was generated. Use inside a row's cell as, e.g.,
+//   <button title='move up' onclick='moveRowUp(this.parentElement.parentElement, 1);'>&#x1F819;</button>
+function moveRowUp(row, firstRow) {
+    let table = row.parentNode;
+    if (row.rowIndex <= firstRow)
+        return;
+
+    table.insertBefore(row, table.rows[row.rowIndex - 1]);
+}
+
+// Move a table row down. Warning: does not modify the content so table content should not depend on order.  Also does not
+// change underlying data from which the table was generated.
+function moveRowDown(row) {
+    let table = row.parentNode;
+    if (row.rowIndex >= table.rows.length - 1)
+        return;
+
+    table.insertBefore(table.rows[row.rowIndex + 1], row);
+}
+
 /*
 ** Drawing utilities.
 */
@@ -513,9 +534,12 @@ class ANUVidLib {
             row.insertCell(7).appendChild(input);
 
             var cell = row.insertCell(8);
-            cell.innerHTML = "<button title='delete' onclick='todo();'>&#x2718;</button>";
-            cell.innerHTML += " <button title='move up' onclick='todo();'>&#x1F819;</button>";
-            cell.innerHTML += " <button title='move down' onclick='todo();'>&#x1F81B;</button>";
+            cell.innerHTML = "<button title='delete' onclick='v.annotations.objectList[" + frameIndex +
+                "].splice(this.parentElement.parentElement.rowIndex - 1, 1); v.redraw();'>&#x2718;</button>";
+            cell.innerHTML += " <button title='move up' onclick='v.annotations.swapObjects(" + frameIndex + "," +
+                i + "," + frameIndex + "," + (i - 1) + "); v.redraw();'>&#x1F819;</button>";
+            cell.innerHTML += " <button title='move down' onclick='v.annotations.swapObjects(" + frameIndex + "," +
+                i + "," + frameIndex + "," + (i + 1) + "); v.redraw();'>&#x1F81B;</button>";
             cell.style.textAlign = "right";
         }
     }
@@ -771,8 +795,8 @@ function addclip(table, ts_start, ts_end, description, focus=true) {
     parent.appendChild(input);
     var cell = row.insertCell(3);
     cell.innerHTML = "<button title='delete' onclick='delclip(this.parentElement.parentElement);'>&#x2718;</button>";
-    cell.innerHTML += " <button title='move up' onclick='todo();'>&#x1F819;</button>";
-    cell.innerHTML += " <button title='move down' onclick='todo();'>&#x1F81B;</button>";
+    cell.innerHTML += " <button title='move up' onclick='moveRowUp(this.parentElement.parentElement, 1);'>&#x1F819;</button>";
+    cell.innerHTML += " <button title='move down' onclick='moveRowDown(this.parentElement.parentElement);'>&#x1F81B;</button>";
     cell.innerHTML += " <button title='goto' onclick='v.seekToTime(" + ts_start + ", " + ts_end + ", true);'>&#x270E;</button>";
     cell.style.textAlign = "right";
     input.onkeypress = function(event) { defocusOnEnter(event, document.getElementById(LEFTSLIDERNAME)); }
