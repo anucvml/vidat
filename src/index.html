@@ -18,12 +18,6 @@
             v.annotations.objectList[frameIndex].push(new ObjectBox(x, y, w, h, null, null, '#' + Math.random().toString(16).substr(2,6)));
             v.redraw(ANUVidLib.BOTH);
         }
-
-        function clearboxes() {
-            let frameIndex = v.time2indx(v.leftPanel.timestamp);
-            v.annotations.objectList[frameIndex] = [];
-            v.redraw(ANUVidLib.BOTH);
-        }
     </script>
     <script type="text/javascript">
         // configuration
@@ -131,7 +125,7 @@
 <b>Video:</b> <input type="file" accept="video/*" />
 <b>Annotations:</b>
 <button title="load annotations" onclick="var dlg = document.createElement('input'); dlg.type = 'file'; dlg.onchange = e => { todo(); }; dlg.click();">load...</button>
-<button title="save annotations" onclick="todo();">save...</button>
+<button title="save annotations" onclick="v.annotations.save('annotations.txt');">save...</button>
 <p/>
 
 <!-- side-by-side video frame container -->
@@ -182,24 +176,7 @@
 
 <!-- annotations container -->
 <div id="annotations" style="width: 100%;">
-    <div id="leftannopanel" style="width: 45%; float: left;">
-        <fieldset style="background: #f7f7f7;">
-            <legend>Objects</legend>
-            <button onclick="randbox();">TESTING: Random Box</button>
-            <button onclick="clearboxes();">TESTING: Clear</button>
-            <font color="red">TODO: list objects on this frame</font>
-        </fieldset>
-    </div>
-    <div style="width: 10%; float: left; text-align: center; position: relative;">&nbsp;</div>
-    <div id="rightannopanel" style="width: 45%; float: left;">
-        <fieldset style="background: #f7f7f7;">
-            <legend>Objects</legend>
-            <font color="red">TODO: bounding boxes, segments/polygons, skeletons</font>
-        </fieldset>
-    </div>
-    <div style="clear: both;"></div>
-
-    <fieldset style="background: #f7f7f7;">
+    <fieldset>
         <legend>Keyframes</legend>
             <button title="generate" onclick="v.generateKeyframes();">&#x23F2; generate</button>
             <span id="keyframeListId">(no keyframes)</span>
@@ -211,7 +188,32 @@
         <div style="clear: both;"></div>
     </fieldset>
 
-    <fieldset style="background: #f7f7f7;">
+    <div id="leftannopanel" style="width: 45%; float: left;">
+        <fieldset>
+            <legend>Objects</legend>
+            <button onclick="randbox();"><font color="red">TESTING:</font> Random Box</button>
+            <div style="float: right;"><button title="clear all" onclick="v.clearObjects(ANUVidLib.LEFT);">clear</button></div>
+            <div style="clear: both;"></div>
+            <table id="leftobjtable" width="100%" style="table-layout: fixed;">
+            <tr><th width="40pt">x</th><th width="40pt">y</th><th width="40pt">w</th><th width="40pt">h</th>
+                <th>label</th><th>instance</th><th>colour</th><th>score</th><th></th></tr>
+            </table>
+        </fieldset>
+    </div>
+    <div style="width: 10%; float: left; text-align: center; position: relative;">&nbsp;</div>
+    <div id="rightannopanel" style="width: 45%; float: left;">
+        <fieldset>
+            <legend>Objects</legend>
+            <div style="float: right;"><button title="clear all" onclick="v.clearObjects(ANUVidLib.RIGHT);">clear</button></div>
+            <table id="rightobjtable" width="100%" style="table-layout: fixed;">
+            <tr><th width="40pt">x</th><th width="40pt">y</th><th width="40pt">w</th><th width="40pt">h</th>
+                <th>label</th><th>instance</th><th>colour</th><th>score</th><th></th></tr>
+            </table>
+        </fieldset>
+    </div>
+    <div style="clear: both;"></div>
+
+    <fieldset>
         <legend>Video segments</legend>
         <div style="float: right;">
             <button title="sort" onclick="sortclips();">&#x21A7; sort</button>
@@ -266,6 +268,7 @@
     plus (+)    :: add a new segment
     delete      :: delete currently active object
     shift       :: duplicate currently active object when mouse down
+    tab         :: move to next field when editing objects
 </pre>
         <p/>
 

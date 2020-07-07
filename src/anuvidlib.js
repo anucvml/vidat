@@ -17,12 +17,12 @@ const DEFAULTKEYFRAMES = 5;     // default number of seconds between keyframes
 const LEFTCANVASNAME  = "leftframe";
 const LEFTSLIDERNAME  = "leftslider";
 const LEFTSTATUSNAME  = "leftstatus";
-const LEFTOBJLISTNAME  = null; // TODO
+const LEFTOBJTBLNAME  = "leftobjtable";
 
 const RIGHTCANVASNAME = "rightframe";
 const RIGHTSLIDERNAME = "rightslider";
 const RIGHTSTATUSNAME = "rightstatus";
-const RIGHTOBJLISTNAME = null; // TODO
+const RIGHTOBJTBLNAME = "rightobjtable";
 
 const VIDSEGTABLENAME = "vidsegtable";
 const OBJINFOPOPUP = "objectinfo";
@@ -135,6 +135,9 @@ class ANUVidLib {
         this.rightPanel.canvas.onmouseout = function(e) { self.mouseout(e, ANUVidLib.RIGHT); }
         this.rightPanel.canvas.onmousedown = function(e) { self.mousedown(e, ANUVidLib.RIGHT); }
         this.rightPanel.canvas.onmouseup = function(e) { self.mouseup(e, ANUVidLib.RIGHT); }
+
+        this.leftPanel.other = this.rightPanel;
+        this.rightPanel.other = this.leftPanel;
 
         this.activeObject = null;
         this.dragContext = new DragContext();
@@ -354,11 +357,13 @@ class ANUVidLib {
         // draw left frame
         if (side == ANUVidLib.LEFT) {
             this.paint(this.leftPanel);
+            this.refreshObjTable(this.leftPanel);
         }
 
         // draw right frame
         if (side == ANUVidLib.RIGHT) {
             this.paint(this.rightPanel);
+            this.refreshObjTable(this.rightPanel);
         }
     }
 
@@ -413,7 +418,93 @@ class ANUVidLib {
             return;
 
         this.annotations.copy(srcIndex, tgtIndex, overwrite);
-        this.paint(tgtPanel);
+        this.redraw(tgtSide);
+    }
+
+    // Refresh list of objects for the given panel.
+    refreshObjTable(panel) {
+        // get object list and table reference
+        const frameIndex = this.time2indx(panel.timestamp);
+        var table = document.getElementById(panel.side == ANUVidLib.LEFT ? LEFTOBJTBLNAME : RIGHTOBJTBLNAME);
+
+        // delete all rows (except header)
+        for (var i = table.rows.length - 1; i >= 1; i--) {
+            table.deleteRow(i);
+        }
+
+        // TODO: cleanup below; helper function for inputs
+
+        // add objects
+        const self = this;  // for callbacks
+        const width = self.video.videoWidth;
+        const height = self.video.videoHeight;
+
+        const objects = this.annotations.objectList[frameIndex];
+        for (var i = 0; i < objects.length; i++) {
+            let obj = objects[i];   // for callbacks
+
+            var row = table.insertRow(-1);
+
+            // x
+            var input = document.createElement("input"); input.type = "text";
+            input.value = Math.round(objects[i].x * width);
+            input.onkeypress = function(event) { defocusOnEnter(event); }
+            input.onblur = function(event) { obj.x = event.srcElement.value / width; self.paint(panel); self.paint(panel.other); };
+            row.insertCell(0).appendChild(input);
+
+            // y
+            input = document.createElement("input"); input.type = "text";
+            input.value = Math.round(objects[i].y * height);
+            input.onkeypress = function(event) { defocusOnEnter(event); }
+            input.onblur = function(event) { obj.y = event.srcElement.value / height; self.paint(panel); self.paint(panel.other); };
+            row.insertCell(1).appendChild(input);
+
+            // width
+            input = document.createElement("input"); input.type = "text";
+            input.value = Math.round(objects[i].width * width);
+            input.onkeypress = function(event) { defocusOnEnter(event); }
+            input.onblur = function(event) { obj.width = event.srcElement.value / width; self.paint(panel); self.paint(panel.other);};
+            row.insertCell(2).appendChild(input);
+
+            // height
+            input = document.createElement("input"); input.type = "text";
+            input.value = Math.round(objects[i].height * height);
+            input.onkeypress = function(event) { defocusOnEnter(event); }
+            input.onblur = function(event) { obj.height = event.srcElement.value / height; self.paint(panel); self.paint(panel.other); };
+            row.insertCell(3).appendChild(input);
+
+            // label
+            input = document.createElement("input"); input.type = "text";
+            input.value = objects[i].labelId;
+            input.onkeypress = function(event) { defocusOnEnter(event); }
+            input.onblur = function(event) { obj.labelId = event.srcElement.value; self.paint(panel); self.paint(panel.other); };
+            row.insertCell(4).appendChild(input);
+
+            // instance id
+            input = document.createElement("input"); input.type = "text";
+            input.value = objects[i].instanceId;
+            input.onkeypress = function(event) { defocusOnEnter(event); }
+            input.onblur = function(event) { obj.instanceId = event.srcElement.value; self.paint(panel); self.paint(panel.other); };
+            row.insertCell(5).appendChild(input);
+
+            // colour
+            input = document.createElement("input"); input.type = "text";
+            input.value = objects[i].colour;
+            input.onkeypress = function(event) { defocusOnEnter(event); }
+            input.onblur = function(event) { obj.colour = event.srcElement.value; self.paint(panel); self.paint(panel.other); };
+            row.insertCell(6).appendChild(input);
+
+            // score
+            input = document.createElement("input"); input.type = "text";
+            input.value = objects[i].score;
+            input.onkeypress = function(event) { defocusOnEnter(event); }
+            input.onblur = function(event) { obj.score = event.srcElement.value; self.paint(panel); self.paint(panel.other); };
+            row.insertCell(7).appendChild(input);
+
+            var cell = row.insertCell(8);
+            cell.innerHTML = "<button title='delete' onclick='todo();'>&#x2718;</button>";
+            cell.style.textAlign = "right";
+        }
     }
 
     // Generate keyframes are regular interval. If delta is null then requests time interval from user.
@@ -477,6 +568,13 @@ class ANUVidLib {
         }
 
         return false;
+    }
+
+    // Clear object annotations for the current frame.
+    clearObjects(side) {
+        let frameIndex = v.time2indx(side == ANUVidLib.LEFT ? this.leftPanel.timestamp : this.rightPanel.timestamp);
+        this.annotations.objectList[frameIndex] = [];
+        this.redraw(ANUVidLib.BOTH);
     }
 
     // Get active object at position (x, y) on given panel.
@@ -622,16 +720,20 @@ class ANUVidLib {
             if (this.dragContext.newObject) {
                 // delete mouse hasn't moved
                 if ((event.offsetX == this.dragContext.mouseDownX) && (event.offsetY == this.dragContext.mouseDownY)) {
-                    console.log("removing new object");
+                    //console.log("removing new object");
                     const frameIndex = this.time2indx(side == ANUVidLib.LEFT ? this.leftPanel.timestamp : this.rightPanel.timestamp);
                     this.annotations.objectList[frameIndex].pop();
+                    this.dragContext.newObject = false;
                 }
             }
 
             this.activeObject = null;
-            this.paint((side == ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel);
-            if (this.leftPanel.timestamp == this.rightPanel.timestamp) {
-                this.paint((side == ANUVidLib.RIGHT) ? this.leftPanel : this.rightPanel);
+            this.redraw(this.leftPanel.timestamp == this.rightPanel.timestamp ? ANUVidLib.BOTH : side);
+
+            // set focus of next component
+            if (this.dragContext.newObject) {
+                var tbl = document.getElementById(side == ANUVidLib.LEFT ? LEFTOBJTBLNAME : RIGHTOBJTBLNAME);
+                tbl.rows[tbl.rows.length - 1].cells[4].firstElementChild.focus();
             }
         }
     }

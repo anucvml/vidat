@@ -151,7 +151,12 @@ class AnnotationContainer {
     }
 
     save(filename) {
-        // TODO: placeholder
+       var a = document.createElement("a");
+        var file = new Blob([JSON.stringify(this)], {type: "text/plain"});
+        a.href = URL.createObjectURL(file);
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(a.href);
     }
 
     // Copy annotations from source frame to target frame.

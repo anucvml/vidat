@@ -18,7 +18,7 @@ address {
 }
 
 input[type=text] {
-    border: none;
+    border: 1px solid silver;
     width: 100%;
 }
 
@@ -27,6 +27,7 @@ fieldset {
     border: 1px solid silver;
     padding: 8px;
     border-radius: 4px;
+    background: #f7f7f7;
 }
 
 legend {
