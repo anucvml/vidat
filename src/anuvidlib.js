@@ -114,9 +114,10 @@ class ANUVidLib {
             slider: document.getElementById(LEFTSLIDERNAME),
             status: document.getElementById(LEFTSTATUSNAME),
             frame: new Image(),
+            cachedGreyData: null,
             timestamp: null
         };
-        this.leftPanel.frame.onload = function() { self.redraw(ANUVidLib.LEFT); };
+        this.leftPanel.frame.onload = function() { self.leftPanel.cachedGreyData = null; self.redraw(ANUVidLib.LEFT); };
         this.leftPanel.canvas.onmousemove = function(e) { self.mousemove(e, ANUVidLib.LEFT); }
         this.leftPanel.canvas.onmouseout = function(e) { self.mouseout(e, ANUVidLib.LEFT); }
         this.leftPanel.canvas.onmousedown = function(e) { self.mousedown(e, ANUVidLib.LEFT); }
@@ -128,9 +129,10 @@ class ANUVidLib {
             slider: document.getElementById(RIGHTSLIDERNAME),
             status: document.getElementById(RIGHTSTATUSNAME),
             frame: new Image(),
+            cachedGreyData: null,
             timestamp: null
         };
-        this.rightPanel.frame.onload = function() { self.redraw(ANUVidLib.RIGHT); };
+        this.rightPanel.frame.onload = function() { self.rightPanel.cachedGreyData = null; self.redraw(ANUVidLib.RIGHT); };
         this.rightPanel.canvas.onmousemove = function(e) { self.mousemove(e, ANUVidLib.RIGHT); }
         this.rightPanel.canvas.onmouseout = function(e) { self.mouseout(e, ANUVidLib.RIGHT); }
         this.rightPanel.canvas.onmousedown = function(e) { self.mousedown(e, ANUVidLib.RIGHT); }
@@ -171,9 +173,11 @@ class ANUVidLib {
             self.frameCache = [];
             self.annotations = new AnnotationContainer();
             self.leftPanel.frame = new Image();
-            self.leftPanel.frame.onload = function() { self.redraw(ANUVidLib.LEFT); };
+            self.leftPanel.frame.onload = function() { self.leftPanel.cachedGreyData = null; self.redraw(ANUVidLib.LEFT); };
+            self.leftPanel.cachedGreyData = null;
             self.rightPanel.frame = new Image();
-            self.rightPanel.frame.onload = function() { self.redraw(ANUVidLib.RIGHT); };
+            self.rightPanel.frame.onload = function() { self.rightPanel.cachedGreyData = null; self.redraw(ANUVidLib.RIGHT); };
+            self.rightPanel.cachedGreyData = null;
             self.redraw(ANUVidLib.BOTH);
             self.leftPanel.status.innerHTML = "none";
             self.rightPanel.status.innerHTML = "none";
@@ -341,6 +345,8 @@ class ANUVidLib {
         this.rightPanel.canvas.width = this.leftPanel.canvas.width;
         this.rightPanel.canvas.height = this.leftPanel.canvas.height;
 
+        this.leftPanel.cachedGreyData = null;
+        this.rightPanel.cachedGreyData = null;
         this.redraw();
     }
 
@@ -372,16 +378,21 @@ class ANUVidLib {
         // draw frame
         var context = panel.canvas.getContext('2d');
         if ((panel.frame != null) && (panel.frame.width > 0) && (panel.frame.height > 0)) {
-            context.drawImage(panel.frame, 0, 0, panel.canvas.width, panel.canvas.height);
 
-            if (this.greyframes) {
-                let imgData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
-                let pixels = imgData.data;
-                for (var i = 0; i < pixels.length; i += 4) {
-                    let intensity = parseInt(0.299 * pixels[i] + 0.587 * pixels[i + 1] + 0.114 * pixels[i + 2]);
-                    pixels[i] = intensity; pixels[i + 1] = intensity; pixels[i + 2] = intensity;
+            if (this.greyframes && (panel.cachedGreyData != null)) {
+                context.putImageData(panel.cachedGreyData, 0, 0);
+            } else {
+                context.drawImage(panel.frame, 0, 0, panel.canvas.width, panel.canvas.height);
+
+                if (this.greyframes) {
+                    panel.cachedGreyData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
+                    let pixels = panel.cachedGreyData.data;
+                    for (var i = 0; i < pixels.length; i += 4) {
+                        let intensity = parseInt(0.299 * pixels[i] + 0.587 * pixels[i + 1] + 0.114 * pixels[i + 2]);
+                        pixels[i] = intensity; pixels[i + 1] = intensity; pixels[i + 2] = intensity;
+                    }
+                    context.putImageData(panel.cachedGreyData, 0, 0);
                 }
-                context.putImageData(imgData, 0, 0);
             }
         } else {
             context.clearRect(0, 0, panel.canvas.width, panel.canvas.height);
@@ -503,6 +514,8 @@ class ANUVidLib {
 
             var cell = row.insertCell(8);
             cell.innerHTML = "<button title='delete' onclick='todo();'>&#x2718;</button>";
+            cell.innerHTML += " <button title='move up' onclick='todo();'>&#x1F819;</button>";
+            cell.innerHTML += " <button title='move down' onclick='todo();'>&#x1F81B;</button>";
             cell.style.textAlign = "right";
         }
     }

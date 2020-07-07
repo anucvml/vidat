@@ -143,11 +143,11 @@
     </div>
     <div id="centerpanel" style="width: 10%; float: left; text-align: center; position: relative;">
         <b>Copy</b><br><p/>
-        <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, false);" title="copy right" type="button" style="width: 50%;">&rarr;</button><p/>
-        <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, true);" title="replace right" type="button" style="width: 50%;">&#8608;</button><p/>
+        <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, false);" title="copy left" type="button" style="width: 30%;">&larr;</button>
+        <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, false);" title="copy right" type="button" style="width: 30%;">&rarr;</button>
         <br><p/>
-        <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, false);" title="copy left" type="button" style="width: 50%;">&larr;</button><p/>
-        <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, true);" title="replace left" type="button" style="width: 50%;">&#8606;</button><p/>
+        <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, true);" title="replace left" type="button" style="width: 30%;">&#8606;</button>
+        <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, true);" title="replace right" type="button" style="width: 30%;">&#8608;</button>
         <br><p/>
         <b>Options</b><br><p/>
         <input id="tiedcb" type="checkbox" onclick="v.tiedframes = this.checked; return true;">
@@ -196,7 +196,7 @@
             <div style="clear: both;"></div>
             <table id="leftobjtable" width="100%" style="table-layout: fixed;">
             <tr><th width="40pt">x</th><th width="40pt">y</th><th width="40pt">w</th><th width="40pt">h</th>
-                <th>label</th><th>instance</th><th>colour</th><th>score</th><th></th></tr>
+                <th>label</th><th>instance</th><th>colour</th><th>score</th><th width="110pt"></th></tr>
             </table>
         </fieldset>
     </div>

@@ -151,7 +151,8 @@ class AnnotationContainer {
     }
 
     save(filename) {
-       var a = document.createElement("a");
+        // TODO: different format and include timestamps
+        var a = document.createElement("a");
         var file = new Blob([JSON.stringify(this)], {type: "text/plain"});
         a.href = URL.createObjectURL(file);
         a.download = filename;
