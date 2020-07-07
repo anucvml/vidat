@@ -143,6 +143,7 @@ class ANUVidLib {
         this.leftPanel.canvas.onmouseout = function(e) { self.mouseout(e, ANUVidLib.LEFT); }
         this.leftPanel.canvas.onmousedown = function(e) { self.mousedown(e, ANUVidLib.LEFT); }
         this.leftPanel.canvas.onmouseup = function(e) { self.mouseup(e, ANUVidLib.LEFT); }
+        this.leftPanel.canvas.ondragstart = function(e) { return false; }
 
         this.rightPanel = {
             side: ANUVidLib.RIGHT,
@@ -158,6 +159,7 @@ class ANUVidLib {
         this.rightPanel.canvas.onmouseout = function(e) { self.mouseout(e, ANUVidLib.RIGHT); }
         this.rightPanel.canvas.onmousedown = function(e) { self.mousedown(e, ANUVidLib.RIGHT); }
         this.rightPanel.canvas.onmouseup = function(e) { self.mouseup(e, ANUVidLib.RIGHT); }
+        this.rightPanel.canvas.ondragstart = function(e) { return false; }
 
         this.leftPanel.other = this.rightPanel;
         this.rightPanel.other = this.leftPanel;
@@ -720,7 +722,10 @@ class ANUVidLib {
         var el = document.getElementById(OBJINFOPOPUP);
         el.style.display = 'none';
 
+        // search for an active object
         const panel = (side == ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel;
+        this.activeObject = this.findActiveObject(event.offsetX, event.offsetY, panel);
+
         if ((this.activeObject != null) && (!event.shiftKey)) {
             // resize active object
             this.dragContext.anchor = this.activeObject.oppositeAnchor(event.offsetX, event.offsetY, panel.canvas.width, panel.canvas.height);
@@ -764,7 +769,7 @@ class ANUVidLib {
                 }
             }
 
-            this.activeObject = null;
+            //this.activeObject = null;
             this.redraw(this.leftPanel.timestamp == this.rightPanel.timestamp ? ANUVidLib.BOTH : side);
 
             // set focus of next component
