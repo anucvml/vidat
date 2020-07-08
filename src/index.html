@@ -68,6 +68,21 @@
             document.getElementById('vidplayer').src = v.video.src + "#t=" + startTime + "," + endTime;
         }
 
+        // toggle zoom
+        function zoom() {
+            if (document.getElementById('rightpanel').style.display === 'none') {
+                document.getElementById('leftpanel').style.width = '45%';
+                document.getElementById('centerpanel').style.display = 'block';
+                document.getElementById('rightpanel').style.display = 'block';
+            } else {
+                document.getElementById('leftpanel').style.width = '100%';
+                document.getElementById('centerpanel').style.display = 'none';
+                document.getElementById('rightpanel').style.display = 'none';
+            }
+            v.resize();
+            v.resize();
+        }
+
         function showhelp() {
             document.getElementById('helpoverlay').style.display = 'block';
         }
@@ -130,8 +145,9 @@
 
 <!-- side-by-side video frame container -->
 <div id="container" style="width: 100%;">
-    <div id="leftpanel" style="width: 45%; float: left;">
+    <div id="leftpanel" style="width: 45%; float: left; position: relative;">
         <div class="filmstrip"></div>
+        <button title="toggle zoom" onclick="zoom();" style="position: absolute; top: 24px; right: 6px; z-index: 2;">&#x1F50D;</button>
         <canvas id="leftframe" width="640px" height="480px" style="display: block;"></canvas>
         <div class="filmstrip"></div>
         <br>
@@ -159,7 +175,7 @@
         <button onclick="v.swap();" title="swap" type="button" style="width: 50%;">&#x21C4; swap</button><p/>
         <button onclick="play();" title="play" type="button" style="width: 50%;">&#x25B6; play</button><p/>
     </div>
-    <div id="rightpanel" style="width: 45%; float:left;">
+    <div id="rightpanel" style="width: 45%; float:left; position: relative;">
         <div class="filmstrip"></div>
         <canvas id="rightframe" width="640px" height="480px" style="display: block;"></canvas>
         <div class="filmstrip"></div>
