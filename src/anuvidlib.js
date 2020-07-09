@@ -518,6 +518,7 @@ class ANUVidLib {
             }
             input.value = objects[i].labelId;
             input.onkeypress = function(event) { defocusOnEnter(event); }
+            input.onchange = function(event) { obj.labelId = event.srcElement.value; self.paint(panel); self.paint(panel.other); }
             input.onblur = function(event) { obj.labelId = event.srcElement.value; self.paint(panel); self.paint(panel.other); };
             row.insertCell(4).appendChild(input);
 

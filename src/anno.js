@@ -138,29 +138,70 @@ class VidSegment {
 /* Label Configuration -------------------------------------------------------*/
 
 class LabelConfig {
-    constructor() {
-        this.actionLabels = {
-            '<none>':   "#00ff00",
-            walk:       "#ff0000",
-            run:        "#ffff00",
-            swim:       "#0000ff",
-            fly:        "#00ffff"
-        };
+    constructor(json = null) {
+        this.actionLabels = ((json != null) && ("actionLabels" in json)) ? json.actionLabels : {};
+        this.objectLabels = ((json != null) && ("objectLabels" in json)) ? json.objectLabels : {};
 
-        this.objectLabels = {
-            '<none>':   "#00ff00",
-            person:     "#ff0000",
-            car:        "#0000ff",
-            bicycle:    "#ff00ff"
-        };
+        // TODO: defaults for testing
+        if (json == null) {
+            this.actionLabels = {
+                '<none>':   "#00ff00",
+                walk:       "#ff0000",
+                run:        "#ffff00",
+                swim:       "#0000ff",
+                fly:        "#00ffff"
+            };
+
+            this.objectLabels = {
+                '<none>':   "#00ff00",
+                person:     "#ff0000",
+                car:        "#0000ff",
+                bicycle:    "#ff00ff"
+            };
+        }
     }
 
-    load(filename) {
-        // TODO: placeholder
+    // Load from file. Prompts for filename. Invoke callback when done.
+    load(callback = null) {
+        var dlg = document.createElement('input');
+        dlg.type = 'file';
+        dlg.onchange = e => {
+            let file = e.target.files[0];
+            var reader = new FileReader();
+
+            reader.onload = readerEvent => {
+                var content = readerEvent.target.result;
+                var cfg = JSON.parse(content);
+                if ("actionLabels" in cfg) {
+                    this.actionLabels = cfg.actionLabels;
+                }
+                if ("objectLabels" in cfg) {
+                    this.objectLabels = cfg.objectLabels;
+                }
+
+                if (callback != null)
+                    callback();
+            }
+
+            reader.readAsText(file, 'UTF-8');
+        };
+
+        dlg.click();
     }
 
-    save(filename) {
-        // TODO: placeholder
+    // Save to file. Prompts for filename.
+    save() {
+        var filename = window.prompt("Enter configuration filename for saving:", "config.txt");
+        if ((filename == null) || (filename == ""))
+            return;
+
+        var a = document.createElement("a");
+        var file = new Blob([JSON.stringify(this)], {type: "text/plain"});
+        a.href = URL.createObjectURL(file);
+        a.download = filename;
+        //a.target = "_blank";
+        a.click();
+        URL.revokeObjectURL(a.href);
     }
 
     // Convert actionLabels or objectLabels to a string. Parameter 'dict' should be one of
@@ -208,16 +249,56 @@ class AnnotationContainer {
         }
     }
 
-    load(filename) {
-        // TODO: placeholder
+    // Loads from file. Prompts for filename. Invokes callback after loaded.
+    load(callback = null) {
+        var dlg = document.createElement('input');
+        dlg.type = 'file';
+        dlg.onchange = e => {
+            let file = e.target.files[0];
+            var reader = new FileReader();
+
+            reader.onload = readerEvent => {
+                var content = readerEvent.target.result;
+                var json = JSON.parse(content);
+
+                if ("lblConfig" in json)
+                    this.lblConfig = new LabelConfig(json.lblConfig);
+                if ("keyframes" in json)
+                    this.keyframes = json.keyframes;
+                if ("objectList" in json) {
+                    this.objectList.length = json.objectList.length;
+                    for (var i = 0; i < json.objectList.length; i++) {
+                        for (var j = 0; j < json.objectList[i].length; j++) {
+                            // TODO: this is pretty clunky
+                            this.objectList[i].push(new ObjectBox(json.objectList[i][j].x, json.objectList[i][j].y,
+                                json.objectList[i][j].width, json.objectList[i][j].height, json.objectList[i][j].labelId,
+                                json.objectList[i][j].instanceId, json.objectList[i][j].colour, json.objectList[i][j].score));
+                        }
+                    }
+                }
+
+                if (callback != null)
+                    callback();
+            }
+
+            reader.readAsText(file, 'UTF-8');
+        };
+
+        dlg.click();
     }
 
-    save(filename) {
+    // Save to file. Prompts for filename.
+    save() {
+        var filename = window.prompt("Enter configuration filename for saving:", "annotations.txt");
+        if ((filename == null) || (filename == ""))
+            return;
+
         // TODO: different format and include timestamps
         var a = document.createElement("a");
         var file = new Blob([JSON.stringify(this)], {type: "text/plain"});
         a.href = URL.createObjectURL(file);
         a.download = filename;
+        //a.target = "_blank";
         a.click();
         URL.revokeObjectURL(a.href);
     }

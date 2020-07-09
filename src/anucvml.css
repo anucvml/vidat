@@ -50,6 +50,11 @@ legend {
     height: 100%;
 }
 
+.hint {
+    font-size: 9pt;
+    color: #7f7f7f;
+}
+
 /*
  * To disable/enable the container use:
  * document.getElementById("container").classList.add("iodisabled");
@@ -138,6 +143,11 @@ legend {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+.textlink {
+    color: black;
+    text-decoration: none;
 }
 
 .textlink:hover {

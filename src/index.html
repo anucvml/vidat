@@ -40,7 +40,7 @@
                 hidemenu();
             }
 
-            var input = document.querySelector('input');
+            var input = document.querySelector('#videoinput');
             input.addEventListener('change', loadVideoFile, false);
             document.getElementById("version").innerHTML = VERSION;
             if (config.tiedcb) document.getElementById("tiedcb").click();
@@ -161,20 +161,22 @@
 <div id="menudiv" class="overlay">
     <div style="background: white; width: 200pt; height: 100%; padding: 10px; cursor: auto;">
         <div style="position: relative;">
-        <button title="hide menu" id="hidemenu" onclick="hidemenu();">&#x2630</button>
+        <button title="hide menu" id="hidemenu" onclick="hidemenu();">&lt;&lt;</button>
         </div>
 
         <h1>Menu</h1>
         <h2>Video</h2>
-        <input type="file" accept="video/*"/>
+        <input id="videoinput" type="file" accept="video/*"/>
         <p/>
 
         <h2>Annotations</h2>
-        <button title="load annotations" onclick="var dlg = document.createElement('input'); dlg.type = 'file'; dlg.onchange = e => { todo(); }; dlg.click();">load...</button>
-        <button title="save annotations" onclick="v.annotations.save('annotations.txt');">save...</button>
+        <!-- todo clean up file dialog -->
+        <button title="load annotations" onclick="v.annotations.load(() => { showmenu(); v.redraw(); });">load...</button>
+        <button title="save annotations" onclick="v.annotations.save();">save...</button>
         <p/>
 
         <h2>Configuration</h2>
+        <span class="hint">List of colon separated label-colour pairs.</span>
         <fieldset>
             <legend>Object Labels</legend>
             <textarea id="objectlabels" rows="8" style="width: 170pt; resize: vertical;"></textarea>
@@ -184,8 +186,9 @@
             <textarea id="actionlabels" rows="8" style="width: 170pt; resize: vertical;"></textarea>
         </fieldset>
         <p/>
-        <button title="load config" onclick="todo();">load...</button>
-        <button title="save config" onclick="todo();">save...</button>
+        <!-- todo clean up file dialog -->
+        <button title="load config" onclick="v.annotations.lblConfig.load(() => { showmenu(); });">load...</button>
+        <button title="save config" onclick="v.annotations.lblConfig.save();">save...</button>
     </div>
         </div>
 </div>
@@ -352,7 +355,7 @@
     Copyright &copy; 2020, Stephen Gould. All rights reserved.<br>
     <span onclick="todo();" class="textlink">about</span> |
     <span onclick="showhelp();" class="textlink">help</span> |
-    <span onclick="todo();" class="textlink">contact</span>
+    <a href='mailto:stephen.gould@anu.edu.au' class="textlink">contact</a>
 </address>
 
 </body>
