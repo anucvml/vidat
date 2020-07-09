@@ -48,7 +48,7 @@ class ObjectBox {
     }
 
     // Draw the object onto a canvas (context). Highlight to provide visual indication of selected.
-    draw(ctx, highlight = false) {
+    draw(ctx, colourTable = null, highlight = false) {
         const lineWidth = highlight ? 3 : 1;
 
         const u = this.x * ctx.canvas.width;
@@ -56,10 +56,17 @@ class ObjectBox {
         const w = this.width * ctx.canvas.width;
         const h = this.height * ctx.canvas.height;
 
+        var colour = "#00ff00";
+        if ((this.colour != null) && (this.colour != "")) {
+            colour = this.colour;
+        } else if (this.labelId in colourTable) {
+            colour = colourTable[this.labelId];
+        }
+
         ctx.lineWidth = lineWidth + 2; ctx.strokeStyle = "#000000";
         ctx.strokeRect(u, v, w, h);
         ctx.lineWidth = lineWidth;
-        ctx.strokeStyle = (this.colour != null) ? this.colour : "#00ff00";
+        ctx.strokeStyle = colour;
         ctx.strokeRect(u, v, w, h);
 
         const handle = 8;
@@ -71,7 +78,7 @@ class ObjectBox {
             ctx.moveTo(u + w, v + h - handle); ctx.lineTo(u + w, v + h); ctx.lineTo(u + w - handle, v + h);
             ctx.lineWidth = lineWidth + 4; ctx.strokeStyle = "#000000";
             ctx.stroke();
-            ctx.lineWidth = lineWidth + 2; ctx.strokeStyle = (this.colour != null) ? this.colour : "#00ff00";
+            ctx.lineWidth = lineWidth + 2; ctx.strokeStyle = colour;
             ctx.stroke();
         }
     }
@@ -120,10 +127,63 @@ class ObjectBox {
 /* Video Objects -------------------------------------------------------------*/
 
 class VidSegment {
-    constructor(start, end, description) {
+    constructor(start, end, actionId=null, description="") {
         this.start = start;
         this.end = end;
+        this.actionId = actionId;
         this.description = description;
+    }
+}
+
+/* Label Configuration -------------------------------------------------------*/
+
+class LabelConfig {
+    constructor() {
+        this.actionLabels = {
+            '<none>':   "#00ff00",
+            walk:       "#ff0000",
+            run:        "#ffff00",
+            swim:       "#0000ff",
+            fly:        "#00ffff"
+        };
+
+        this.objectLabels = {
+            '<none>':   "#00ff00",
+            person:     "#ff0000",
+            car:        "#0000ff",
+            bicycle:    "#ff00ff"
+        };
+    }
+
+    load(filename) {
+        // TODO: placeholder
+    }
+
+    save(filename) {
+        // TODO: placeholder
+    }
+
+    // Convert actionLabels or objectLabels to a string. Parameter 'dict' should be one of
+    // this.actionLabels or this.objectLabels.
+    toString(dict) {
+        var str = "";
+        for (var k in dict) {
+            str += String(k) + ": " + dict[k] + "\n";
+        }
+        return str;
+    }
+
+    // Creates a dictionary from a string of the form "<id>: <colour>\n ..."
+    fromString(str) {
+        var dict = {};
+        var lines = str.split("\n");
+        for (var i = 0; i < lines.length; i++) {
+            var pair = lines[i].split(":");
+            if (pair.length != 2) continue;
+            dict[pair[0].trim()] = pair[1].trim();
+        }
+
+        return dict;
     }
 }
 
@@ -135,6 +195,8 @@ class VidSegment {
 
 class AnnotationContainer {
     constructor(numFrames = 0) {
+        this.lblConfig = new LabelConfig();     // label configuration
+
         this.keyframes = [];        // array of keyframe timestamps (in seconds)
         this.objectList = [[]];     // array of array of objects
 
@@ -181,7 +243,7 @@ class AnnotationContainer {
 
         // draw bounding box objects
         for (var i = 0; i < this.objectList[frameIndex].length; i++) {
-            this.objectList[frameIndex][i].draw(ctx, this.objectList[frameIndex][i] == activeObject);
+            this.objectList[frameIndex][i].draw(ctx, this.lblConfig.objectLabels, this.objectList[frameIndex][i] == activeObject);
         }
     }
 

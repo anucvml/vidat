@@ -37,6 +37,7 @@
                 var file = this.files[0];
                 var fileURL = URL.createObjectURL(file);
                 v.loadVideo(fileURL);
+                hidemenu();
             }
 
             var input = document.querySelector('input');
@@ -81,6 +82,23 @@
             }
             v.resize();
             v.resize();
+        }
+
+        function showmenu() {
+            let cfg = v.annotations.lblConfig;
+            document.getElementById('objectlabels').value = cfg.toString(cfg.objectLabels);;
+            document.getElementById('actionlabels').value = cfg.toString(cfg.actionLabels);
+
+            document.getElementById('menudiv').style.display = 'block';
+        }
+
+        function hidemenu() {
+            let cfg = v.annotations.lblConfig;
+            cfg.objectLabels = cfg.fromString(document.getElementById('objectlabels').value);
+            cfg.actionLabels = cfg.fromString(document.getElementById('actionlabels').value);
+
+            document.getElementById('menudiv').style.display = 'none';
+            v.redraw();
         }
 
         function showhelp() {
@@ -131,23 +149,52 @@
     </script>
 </head>
 <body onload="init();" onunload="fini();">
-<div id="banner"><img src="logo.png" id="logo"></div>
+<div id="banner">
+    <button title="show menu" id="showmenu" onclick="showmenu();">&#x2630</button>
+    <img src="logo.png" id="logo">
+</div>
 <center>
     <h1>ANU CVML In-browser Video Annotation Tool</h1>
 </center>
 
-<!-- video and annotation input -->
-<b>Video:</b> <input type="file" accept="video/*" />
-<b>Annotations:</b>
-<button title="load annotations" onclick="var dlg = document.createElement('input'); dlg.type = 'file'; dlg.onchange = e => { todo(); }; dlg.click();">load...</button>
-<button title="save annotations" onclick="v.annotations.save('annotations.txt');">save...</button>
-<p/>
+<!-- video and annotation input, and configuration -->
+<div id="menudiv" class="overlay">
+    <div style="background: white; width: 200pt; height: 100%; padding: 10px; cursor: auto;">
+        <div style="position: relative;">
+        <button title="hide menu" id="hidemenu" onclick="hidemenu();">&#x2630</button>
+        </div>
+
+        <h1>Menu</h1>
+        <h2>Video</h2>
+        <input type="file" accept="video/*"/>
+        <p/>
+
+        <h2>Annotations</h2>
+        <button title="load annotations" onclick="var dlg = document.createElement('input'); dlg.type = 'file'; dlg.onchange = e => { todo(); }; dlg.click();">load...</button>
+        <button title="save annotations" onclick="v.annotations.save('annotations.txt');">save...</button>
+        <p/>
+
+        <h2>Configuration</h2>
+        <fieldset>
+            <legend>Object Labels</legend>
+            <textarea id="objectlabels" rows="8" style="width: 170pt; resize: vertical;"></textarea>
+        </fieldset>
+        <fieldset>
+            <legend>Action Labels</legend>
+            <textarea id="actionlabels" rows="8" style="width: 170pt; resize: vertical;"></textarea>
+        </fieldset>
+        <p/>
+        <button title="load config" onclick="todo();">load...</button>
+        <button title="save config" onclick="todo();">save...</button>
+    </div>
+        </div>
+</div>
 
 <!-- side-by-side video frame container -->
 <div id="container" style="width: 100%;">
     <div id="leftpanel" style="width: 45%; float: left; position: relative;">
         <div class="filmstrip"></div>
-        <button title="toggle zoom" onclick="zoom();" style="position: absolute; top: 24px; right: 6px; z-index: 2;">&#x1F50D;</button>
+        <button title="toggle zoom" onclick="zoom();" style="position: absolute; top: 24px; right: 6px; z-index: 1;">&#x1F50D;</button>
         <canvas id="leftframe" width="640px" height="480px" style="display: block;"></canvas>
         <div class="filmstrip"></div>
         <br>
@@ -237,7 +284,7 @@
         </div>
         <div style="clear: both;"></div>
         <table id="vidsegtable" width="100%" style="table-layout: fixed;">
-            <tr><th width="60pt">start</th><th width="60pt">end</th><th width="100%">description</th><th width="160pt" align="right"></th></tr>
+            <tr><th width="60pt">start</th><th width="60pt">end</th><th width="120pt">action</th><th width="100%">description</th><th width="160pt" align="right"></th></tr>
         </table>
     </fieldset>
 </div>
@@ -268,6 +315,10 @@
     <div class="centered" style="background: white; padding: 10px;">
         <span class="overlayclosebtn" onclick="this.parentElement.parentElement.style.display = 'none';">&times;</span>
         <center><small>Version <span id="version">0.0</span></small></center>
+
+        <b>Help</b><br>
+        Click the top-left menu button (&#x2630) to load and save data.
+        <p/>
 
         <b>Keyboard Shortcuts</b><br>
 <pre>

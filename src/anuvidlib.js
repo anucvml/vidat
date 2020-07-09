@@ -508,7 +508,14 @@ class ANUVidLib {
             row.insertCell(3).appendChild(input);
 
             // label
-            input = document.createElement("input"); input.type = "text";
+            input = document.createElement("select");
+            input.style.width = "100%";
+            for (var k in this.annotations.lblConfig.objectLabels) {
+                var opt = document.createElement("option");
+                opt.textContent = String(k);
+                opt.value = String(k);
+                input.appendChild(opt);
+            }
             input.value = objects[i].labelId;
             input.onkeypress = function(event) { defocusOnEnter(event); }
             input.onblur = function(event) { obj.labelId = event.srcElement.value; self.paint(panel); self.paint(panel.other); };
@@ -665,7 +672,7 @@ class ANUVidLib {
             this.activeObject.y += event.movementY / panel.canvas.height;
             this.paint(panel);
             if (this.leftPanel.timestamp == this.rightPanel.timestamp) {
-                this.paint((side == ANUVidLib.RIGHT) ? this.leftPanel : this.rightPanel);
+                this.paint(panel.other);
             }
             return;
         }
@@ -678,7 +685,7 @@ class ANUVidLib {
             this.activeObject.resize(x, y, w, h);
             this.paint(panel);
             if (this.leftPanel.timestamp == this.rightPanel.timestamp) {
-                this.paint((side == ANUVidLib.RIGHT) ? this.leftPanel : this.rightPanel);
+                this.paint(panel.other);
             }
             return;
         }
@@ -686,6 +693,9 @@ class ANUVidLib {
         // search for an active object
         const lastActiveObject = this.activeObject;
         this.activeObject = this.findActiveObject(event.offsetX, event.offsetY, panel);
+
+        // update cursor
+        panel.canvas.style.cursor = (this.activeObject) ? "pointer" : "auto";
 
         // TODO: experimenting
         if (this.activeObject) {
@@ -787,18 +797,30 @@ class ANUVidLib {
 
 function newclip() {
     var table = document.getElementById(VIDSEGTABLENAME);
-    addclip(table, v.leftPanel.timestamp, v.rightPanel.timestamp, "");
+    addclip(table, v.leftPanel.timestamp, v.rightPanel.timestamp);
 }
 
-function addclip(table, ts_start, ts_end, description, focus=true) {
+function addclip(table, ts_start, ts_end, actionId=null, description="", focus=true) {
     var row = table.insertRow(-1);
     row.insertCell(0).innerHTML = ts_start;
     row.insertCell(1).innerHTML = ts_end;
+
+    var select = document.createElement("select");
+    select.classList.add("segdesc"); select.style.width = "100%";
+    for (var k in v.annotations.lblConfig.actionLabels) {
+        var opt = document.createElement("option");
+        opt.textContent = String(k);
+        opt.value = String(k);
+        select.appendChild(opt);
+    }
+    select.value = actionId;
+    row.insertCell(2).appendChild(select);
+
     var input = document.createElement("input");
     input.type = "text"; input.classList.add("segdesc"); input.value = description;
-    parent = row.insertCell(2);
+    parent = row.insertCell(3);
     parent.appendChild(input);
-    var cell = row.insertCell(3);
+    var cell = row.insertCell(4);
     cell.innerHTML = "<button title='delete' onclick='delclip(this.parentElement.parentElement);'>&#x2718;</button>";
     cell.innerHTML += " <button title='move up' onclick='moveRowUp(this.parentElement.parentElement, 1);'>&#x1F819;</button>";
     cell.innerHTML += " <button title='move down' onclick='moveRowDown(this.parentElement.parentElement);'>&#x1F81B;</button>";

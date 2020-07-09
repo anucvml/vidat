@@ -1,6 +1,7 @@
 body {
   font-family: Arial;
   text-align:left;
+  padding: 0px;
 }
 
 button {
@@ -63,6 +64,7 @@ legend {
 
 #banner {
     position: relative;
+    height: 4px;
 }
 
 #logo {
@@ -70,6 +72,18 @@ legend {
     top: 0px;
     right: 12px;
     height: 64px;
+}
+
+#showmenu {
+    position: absolute;
+    top: 0px;
+    left: 12px;
+}
+
+#hidemenu {
+    position: absolute;
+    top: 0px;
+    right: 12px;
 }
 
 /* Popup window show/hide with:
