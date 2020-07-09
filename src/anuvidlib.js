@@ -98,6 +98,8 @@ class DragContext {
         this.mode = DragContext.NONE;
         this.mouseDownX = null;
         this.mouseDownY = null;
+        this.lastMouseX = null;
+        this.lastMouseY = null;
         this.anchor = null;
         this.newObject = false;
     }
@@ -667,10 +669,17 @@ class ANUVidLib {
         // get current panel
         const panel = (side == ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel;
 
+        // compute delta movement (can't use event.movement{X,Y} because it doesn't take account of browser zoom)
+        const deltaX = event.offsetX - this.dragContext.lastDownX;
+        const deltaY = event.offsetY - this.dragContext.lastDownY;
+        this.dragContext.lastDownX = event.offsetX;
+        this.dragContext.lastDownY = event.offsetY;
+
+
         // handle dragging
         if (this.dragContext.mode == DragContext.MOVING) {
-            this.activeObject.x += event.movementX / panel.canvas.width;
-            this.activeObject.y += event.movementY / panel.canvas.height;
+            this.activeObject.x += deltaX / panel.canvas.width;
+            this.activeObject.y += deltaY / panel.canvas.height;
             this.paint(panel);
             if (this.leftPanel.timestamp == this.rightPanel.timestamp) {
                 this.paint(panel.other);
@@ -681,8 +690,8 @@ class ANUVidLib {
         if (this.dragContext.mode == DragContext.SIZING) {
             const x = this.dragContext.anchor.u / panel.canvas.width;
             const y = this.dragContext.anchor.v / panel.canvas.height;
-            const w = event.movementX / panel.canvas.width + ((x > this.activeObject.x) ? -this.activeObject.width : this.activeObject.width);
-            const h = event.movementY / panel.canvas.height + ((y > this.activeObject.y) ? -this.activeObject.height : this.activeObject.height);
+            const w = deltaX / panel.canvas.width + ((x > this.activeObject.x) ? -this.activeObject.width : this.activeObject.width);
+            const h = deltaY / panel.canvas.height + ((y > this.activeObject.y) ? -this.activeObject.height : this.activeObject.height);
             this.activeObject.resize(x, y, w, h);
             this.paint(panel);
             if (this.leftPanel.timestamp == this.rightPanel.timestamp) {
@@ -763,6 +772,8 @@ class ANUVidLib {
 
         this.dragContext.mouseDownX = event.offsetX;
         this.dragContext.mouseDownY = event.offsetY;
+        this.dragContext.lastDownX = event.offsetX;
+        this.dragContext.lastDownY = event.offsetY;
     }
 
     // Process mouse button press inside panel.
