@@ -468,12 +468,19 @@ class ANUVidLib {
             table.deleteRow(i);
         }
 
-        // TODO: cleanup below; helper function for inputs
-
         // add objects
         const self = this;  // for callbacks
         const width = self.video.videoWidth;
         const height = self.video.videoHeight;
+
+        function insertInputHelper(row, value, update) {
+            var input = document.createElement("input"); input.type = "text";
+            input.value = value;
+            input.onkeypress = function(event) { defocusOnEnter(event); }
+            input.onblur = function(event) { update(event.srcElement.value); self.paint(panel); self.paint(panel.other); };;
+            row.insertCell(-1).appendChild(input);
+
+        }
 
         const objects = this.annotations.objectList[frameIndex];
         for (var i = 0; i < objects.length; i++) {
@@ -481,70 +488,33 @@ class ANUVidLib {
 
             var row = table.insertRow(-1);
 
-            // x
-            var input = document.createElement("input"); input.type = "text";
-            input.value = Math.round(objects[i].x * width);
-            input.onkeypress = function(event) { defocusOnEnter(event); }
-            input.onblur = function(event) { obj.x = event.srcElement.value / width; self.paint(panel); self.paint(panel.other); };
-            row.insertCell(0).appendChild(input);
-
-            // y
-            input = document.createElement("input"); input.type = "text";
-            input.value = Math.round(objects[i].y * height);
-            input.onkeypress = function(event) { defocusOnEnter(event); }
-            input.onblur = function(event) { obj.y = event.srcElement.value / height; self.paint(panel); self.paint(panel.other); };
-            row.insertCell(1).appendChild(input);
-
-            // width
-            input = document.createElement("input"); input.type = "text";
-            input.value = Math.round(objects[i].width * width);
-            input.onkeypress = function(event) { defocusOnEnter(event); }
-            input.onblur = function(event) { obj.width = event.srcElement.value / width; self.paint(panel); self.paint(panel.other);};
-            row.insertCell(2).appendChild(input);
-
-            // height
-            input = document.createElement("input"); input.type = "text";
-            input.value = Math.round(objects[i].height * height);
-            input.onkeypress = function(event) { defocusOnEnter(event); }
-            input.onblur = function(event) { obj.height = event.srcElement.value / height; self.paint(panel); self.paint(panel.other); };
-            row.insertCell(3).appendChild(input);
+            // x, y, width and height
+            insertInputHelper(row, Math.round(obj.x * width), (v) => {obj.x = v / width;})
+            insertInputHelper(row, Math.round(obj.y * height), (v) => {obj.y = v / height;})
+            insertInputHelper(row, Math.round(obj.width * width), (v) => {obj.width = v / width;})
+            insertInputHelper(row, Math.round(obj.height * height), (v) => {obj.height = v / height;})
 
             // label
-            input = document.createElement("select");
-            input.style.width = "100%";
+            var select = document.createElement("select");
+            select.style.width = "100%";
             for (var k in this.annotations.lblConfig.objectLabels) {
                 var opt = document.createElement("option");
                 opt.textContent = String(k);
                 opt.value = String(k);
-                input.appendChild(opt);
+                select.appendChild(opt);
             }
-            input.value = objects[i].labelId;
-            input.onkeypress = function(event) { defocusOnEnter(event); }
-            input.onchange = function(event) { obj.labelId = event.srcElement.value; self.paint(panel); self.paint(panel.other); }
-            input.onblur = function(event) { obj.labelId = event.srcElement.value; self.paint(panel); self.paint(panel.other); };
-            row.insertCell(4).appendChild(input);
+            select.value = objects[i].labelId;
+            select.onkeypress = function(event) { defocusOnEnter(event); }
+            select.onchange = function(event) { obj.labelId = event.srcElement.value; self.paint(panel); self.paint(panel.other); }
+            select.onblur = function(event) { obj.labelId = event.srcElement.value; self.paint(panel); self.paint(panel.other); };
+            row.insertCell(-1).appendChild(select);
 
-            // instance id
-            input = document.createElement("input"); input.type = "text";
-            input.value = objects[i].instanceId;
-            input.onkeypress = function(event) { defocusOnEnter(event); }
-            input.onblur = function(event) { obj.instanceId = event.srcElement.value; self.paint(panel); self.paint(panel.other); };
-            row.insertCell(5).appendChild(input);
+            // instance id, colour and score
+            insertInputHelper(row, obj.instanceId, (v) => {obj.instanceId = v;})
+            insertInputHelper(row, obj.colour, (v) => {obj.colour = v;})
+            insertInputHelper(row, obj.score, (v) => {obj.score = v;})
 
-            // colour
-            input = document.createElement("input"); input.type = "text";
-            input.value = objects[i].colour;
-            input.onkeypress = function(event) { defocusOnEnter(event); }
-            input.onblur = function(event) { obj.colour = event.srcElement.value; self.paint(panel); self.paint(panel.other); };
-            row.insertCell(6).appendChild(input);
-
-            // score
-            input = document.createElement("input"); input.type = "text";
-            input.value = objects[i].score;
-            input.onkeypress = function(event) { defocusOnEnter(event); }
-            input.onblur = function(event) { obj.score = event.srcElement.value; self.paint(panel); self.paint(panel.other); };
-            row.insertCell(7).appendChild(input);
-
+            // buttons
             var cell = row.insertCell(8);
             cell.innerHTML = "<button title='delete' onclick='v.annotations.objectList[" + frameIndex +
                 "].splice(this.parentElement.parentElement.rowIndex - 1, 1); v.redraw();'>&#x2718;</button>";
