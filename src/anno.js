@@ -10,21 +10,21 @@ const PROXIMITY = 5;    // proximity in pixels for active object/keypoint
 /* Frame Objects -------------------------------------------------------------*/
 
 // Object bounding box representation. Coordinates between 0 and 1, where 1
-// is the width or height of the image frame.
+// is the width or height of the image frame. Input argument must have fields
+// x, y, width and height. May also have labelId, instanceId, colour and score.
 class ObjectBox {
-    constructor(x, y, w, h, labelId = null, instanceId = null, colour = null, score = 1.0) {
-        this.resize(x, y, w, h);
+    constructor(json) {
+        this.resize(json.x, json.y, json.width, json.height);
 
-        this.labelId = labelId;
-        this.instanceId = instanceId;
-        this.colour = colour;
-        this.score = score;
+        this.labelId = ("labelId" in json) ? json.labelId : null;
+        this.instanceId = ("instanceId" in json) ? json.instanceId : null;
+        this.colour = ("colour" in json) ? json.colour : null;
+        this.score = ("score" in json) ? json.score : null;
     }
 
     // Create a clone of this object.
     clone() {
-        var obj = new ObjectBox(this.x, this.y, this.width, this.height,
-            this.labelId, this.instanceId, this.colour, this.score);
+        var obj = new ObjectBox(this);
         return obj;
     }
 
@@ -266,13 +266,11 @@ class AnnotationContainer {
                 if ("keyframes" in json)
                     this.keyframes = json.keyframes;
                 if ("objectList" in json) {
+                    this.objectList = [[]];
                     this.objectList.length = json.objectList.length;
                     for (var i = 0; i < json.objectList.length; i++) {
                         for (var j = 0; j < json.objectList[i].length; j++) {
-                            // TODO: this is pretty clunky
-                            this.objectList[i].push(new ObjectBox(json.objectList[i][j].x, json.objectList[i][j].y,
-                                json.objectList[i][j].width, json.objectList[i][j].height, json.objectList[i][j].labelId,
-                                json.objectList[i][j].instanceId, json.objectList[i][j].colour, json.objectList[i][j].score));
+                            this.objectList[i].push(new ObjectBox(json.objectList[i][j]));
                         }
                     }
                 }

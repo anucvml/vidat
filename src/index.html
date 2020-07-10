@@ -15,7 +15,7 @@
             let y = 0.9 * Math.random();
             let w = (0.9 - x) * Math.random() + 0.1;
             let h = (0.9 - y) * Math.random() + 0.1;
-            v.annotations.objectList[frameIndex].push(new ObjectBox(x, y, w, h, null, null, '#' + Math.random().toString(16).substr(2,6)));
+            v.annotations.objectList[frameIndex].push(new ObjectBox({x: x, y: y, width: w, height: h, colour: '#' + Math.random().toString(16).substr(2,6)}));
             v.redraw(ANUVidLib.BOTH);
         }
     </script>
@@ -107,10 +107,14 @@
 
         document.addEventListener('keyup', (e) => { return onkeypress(e); })
         function onkeypress(e) {
-            // don't process key if inside a textbox
+            // don't process key if inside a textbox or a drop-down list
             if ((e.target.nodeName.toLowerCase() == 'input') && (e.target.type.toLowerCase() == 'text')) {
                 return false;
             }
+            if (e.target.nodeName.toLowerCase() == 'select') {
+                return false;
+            }
+
             console.log("key " + e.code + " (0x" + e.keyCode.toString(16) + ")");
             switch (e.keyCode) {
             case 0x2E:  // delete

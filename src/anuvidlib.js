@@ -477,7 +477,7 @@ class ANUVidLib {
             var input = document.createElement("input"); input.type = "text";
             input.value = value;
             input.onkeypress = function(event) { defocusOnEnter(event); }
-            input.onblur = function(event) { update(event.srcElement.value); self.paint(panel); self.paint(panel.other); };;
+            input.onblur = function(event) { update(event.target.value); self.paint(panel); self.paint(panel.other); };;
             row.insertCell(-1).appendChild(input);
 
         }
@@ -505,8 +505,8 @@ class ANUVidLib {
             }
             select.value = objects[i].labelId;
             select.onkeypress = function(event) { defocusOnEnter(event); }
-            select.onchange = function(event) { obj.labelId = event.srcElement.value; self.paint(panel); self.paint(panel.other); }
-            select.onblur = function(event) { obj.labelId = event.srcElement.value; self.paint(panel); self.paint(panel.other); };
+            select.onchange = function(event) { obj.labelId = event.target.value; self.paint(panel); self.paint(panel.other); }
+            select.onblur = function(event) { obj.labelId = event.target.value; self.paint(panel); self.paint(panel.other); };
             row.insertCell(-1).appendChild(select);
 
             // instance id, colour and score
@@ -732,7 +732,7 @@ class ANUVidLib {
                 this.activeObject = this.activeObject.clone();
                 this.dragContext.mode = DragContext.MOVING;
             } else {
-                this.activeObject = new ObjectBox(event.offsetX / panel.canvas.width, event.offsetY / panel.canvas.height, 0, 0);
+                this.activeObject = new ObjectBox({x: event.offsetX / panel.canvas.width, y: event.offsetY / panel.canvas.height, width: 0, height: 0});
                 this.dragContext.mode = DragContext.SIZING;
             }
             this.annotations.objectList[frameIndex].push(this.activeObject);
