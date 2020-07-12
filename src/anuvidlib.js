@@ -106,6 +106,63 @@ class DragContext {
 }
 
 /*
+ * Preferences. Responsible for holding the user's editing and visualization preferences. Saves to browser local
+ * storage between sessions. Handles showing/hiding a visual element when a preference is changed through the update
+ * method. Does not handle redrawing.
+ */
+
+class ANUVidLibPreferences {
+    constructor() {
+        this.version = VERSION;         // keep a copy of the version when storing
+        this.reset();
+    }
+
+    // Reset defaults.
+    reset() {
+        this.greyframes = false;        // draw video frames in greyscale (to make annotations more visible)
+        this.tiedframes = false;        // lock the offset between left and right frames
+        this.showkeyframes = true;      // show keyframe annotations
+        this.showobjects = true;        // show object (bounding box) annotations
+        this.showregions = true;        // show region (polygon outlines) annotations
+        this.showvidsegs = true;        // show video segment (and activity) annotations
+    }
+
+    // Load from browser local storage.
+    load() {
+        if (typeof(Storage) !== "undefined") {
+            if (localStorage.getItem("anucvml:prefs") != null) {
+                var json = JSON.parse(localStorage.getItem("anucvml:prefs"));
+                for (var k in json) {
+                    if (k in this) this[k] = json[k];
+                }
+            }
+        }
+
+        // override to current version
+        this.version = VERSION;
+    }
+
+    // Save to browser local storage.
+    save() {
+        try {
+            if (typeof(Storage) !== "undefined") {
+                localStorage.setItem("anucvml:prefs", JSON.stringify(this));
+            }
+        } catch(err) {
+            // do nothing
+        }
+    }
+
+    // Update a preference and show/hide corresponding visual element (usually a div).
+    update(key, value, element_id=null) {
+        this[key] = value;
+        if (element_id != null) {
+            document.getElementById(element_id).style.display = value ? 'block' : 'none';
+        }
+    }
+}
+
+/*
 ** In-browser Video Labeler. Responsible for video rendering and user I/O.
 */
 class ANUVidLib {
@@ -116,18 +173,17 @@ class ANUVidLib {
     static get NONE() { return -2; }
 
     // Properties.
-    get greyframes() { return this._greyframes; }
-    set greyframes(value) { this._greyframes = value; this.redraw(); }
-    get tiedframes() { return this._tiedframes; }
-    set tiedframes(value) { this._tiedframes = value; }
+    get greyframes() { return this.prefs.greyframes; }
+    set greyframes(value) { this.prefs.greyframes = value; this.redraw(); }
 
     // Construct an ANUVidLib object with two canvases for displaying frames and text spans for showing status
     // information. Caches frames every second for faster feedback during scrubbing.
     constructor() {
         var self = this;
 
-        this._greyframes = false;
-        this._tiedframes = false;
+        this.prefs = new ANUVidLibPreferences();
+        this.prefs.load();
+
         this.video = document.createElement("video");
         this.annotations = new AnnotationContainer();
 
@@ -260,7 +316,7 @@ class ANUVidLib {
         }
 
         // deal with tied sliders
-        if (this._tiedframes) {
+        if (this.prefs.tiedframes) {
             if (leftIndex < 0) {
                 leftIndex = rightIndex - this.time2indx(this.rightPanel.timestamp) + this.time2indx(this.leftPanel.timestamp);
                 // check we haven't gone past video boundary
@@ -404,12 +460,12 @@ class ANUVidLib {
         var context = panel.canvas.getContext('2d');
         if ((panel.frame != null) && (panel.frame.width > 0) && (panel.frame.height > 0)) {
 
-            if (this.greyframes && (panel.cachedGreyData != null)) {
+            if (this.prefs.greyframes && (panel.cachedGreyData != null)) {
                 context.putImageData(panel.cachedGreyData, 0, 0);
             } else {
                 context.drawImage(panel.frame, 0, 0, panel.canvas.width, panel.canvas.height);
 
-                if (this.greyframes) {
+                if (this.prefs.greyframes) {
                     panel.cachedGreyData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
                     let pixels = panel.cachedGreyData.data;
                     for (var i = 0; i < pixels.length; i += 4) {
@@ -424,7 +480,9 @@ class ANUVidLib {
         }
 
         // draw objects
-        this.annotations.draw(context, this.time2indx(panel.timestamp), this.activeObject);
+        if (this.prefs.showobjects) {
+            this.annotations.draw(context, this.time2indx(panel.timestamp), this.activeObject);
+        }
 
         // draw border
         context.lineWidth = 7; context.strokeStyle = "#ffffff";
@@ -598,6 +656,9 @@ class ANUVidLib {
 
     // Get active object at position (x, y) on given panel.
     findActiveObject(x, y, panel) {
+        if (!this.prefs.showobjects)
+            return null;
+
         const frameIndex = this.time2indx(panel.timestamp);
         for (var i = this.annotations.objectList[frameIndex].length - 1; i >= 0; i--) {
             if (this.annotations.objectList[frameIndex][i].nearBoundary(x, y, panel.canvas.width, panel.canvas.height)) {

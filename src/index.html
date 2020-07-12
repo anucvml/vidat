@@ -20,14 +20,6 @@
         }
     </script>
     <script type="text/javascript">
-        // configuration
-        var config = {version: VERSION, tiedcb: false, greycb: false};
-        if (typeof(Storage) !== "undefined") {
-            if (localStorage.getItem("anucvml:config") != null) {
-                config = JSON.parse(localStorage.getItem("anucvml:config"));
-            }
-        }
-
         var v = null;
 
         function init() {
@@ -37,26 +29,35 @@
                 var file = this.files[0];
                 var fileURL = URL.createObjectURL(file);
                 v.loadVideo(fileURL);
-                hidemenu();
             }
 
             var input = document.querySelector('#videoinput');
             input.addEventListener('change', loadVideoFile, false);
             document.getElementById("version").innerHTML = VERSION;
-            if (config.tiedcb) document.getElementById("tiedcb").click();
-            if (config.greycb) document.getElementById("greycb").click();
+            updateGUI();
         }
 
         function fini() {
-            config.tiedcb = document.getElementById("tiedcb").checked;
-            config.greycb = document.getElementById("greycb").checked;
-            try {
-                if (typeof(Storage) !== "undefined") {
-                    localStorage.setItem("anucvml:config", JSON.stringify(config));
-                }
-            } catch(err) {
-                // do nothing
-            }
+            if (v != null) v.prefs.save();
+        }
+
+        // update visual state of GUI to reflect preferences
+        function updateGUI() {
+            // get checkboxes and visual elements into correct state
+            if (v.prefs.tiedframes != document.getElementById("tiedcb").checked)
+                document.getElementById("tiedcb").click();
+            if (v.prefs.greyframes != document.getElementById("greycb").checked)
+                document.getElementById("greycb").click();
+            if (v.prefs.showkeyframes != document.getElementById("showkfcb").checked)
+                document.getElementById("showkfcb").click();
+            if (v.prefs.showobjects != document.getElementById("showobjscb").checked)
+                document.getElementById("showobjscb").click();
+            if (v.prefs.showobjects != document.getElementById("showregscb").checked)
+                document.getElementById("showregscb").click();
+            if (v.prefs.showvidsegs != document.getElementById("showvidsegcb").checked)
+                document.getElementById("showvidsegcb").click();
+
+            v.redraw();
         }
 
         function play() {
@@ -89,7 +90,15 @@
             document.getElementById('objectlabels').value = cfg.toString(cfg.objectLabels);;
             document.getElementById('actionlabels').value = cfg.toString(cfg.actionLabels);
 
+            // animate menu open
+            document.getElementById('menuoverlaydiv').style.display = 'block';
             document.getElementById('menudiv').style.display = 'block';
+            if ('animateclose' in document.getElementById('menupanel').classList) {
+                document.getElementById('menupanel').classList.remove('animateclose');
+            }
+            if (!('animateopen' in document.getElementById('menupanel').classList)) {
+                document.getElementById('menupanel').classList.add('animateopen');
+            }
         }
 
         function hidemenu() {
@@ -97,7 +106,15 @@
             cfg.objectLabels = cfg.fromString(document.getElementById('objectlabels').value);
             cfg.actionLabels = cfg.fromString(document.getElementById('actionlabels').value);
 
-            document.getElementById('menudiv').style.display = 'none';
+            // animate menu closed
+            if ('animateopen' in document.getElementById('menupanel').classList) {
+                document.getElementById('menupanel').classList.remove('animateopen');
+            }
+            if (!('animateclose' in document.getElementById('menupanel').classList)) {
+                document.getElementById('menupanel').classList.add('animateclose');
+            }
+            document.getElementById('menuoverlaydiv').style.display = 'none';
+            setTimeout(function() { document.getElementById('menudiv').style.display = 'none'; document.getElementById('menupanel').classList.remove('animateclose'); }, 400);
             v.redraw();
         }
 
@@ -154,7 +171,7 @@
 </head>
 <body onload="init();" onunload="fini();">
 <div id="banner">
-    <button title="show menu" id="showmenu" onclick="showmenu();">&#x2630</button>
+    <button title="show menu" id="showmenubtn" onclick="showmenu();">&#x2630</button>
     <img src="logo.png" id="logo">
 </div>
 <center>
@@ -162,10 +179,11 @@
 </center>
 
 <!-- video and annotation input, and configuration -->
-<div id="menudiv" class="overlay">
-    <div style="background: white; width: 200pt; height: 100%; padding: 10px; cursor: auto;">
+<div id="menuoverlaydiv" class="overlay" onclick="hidemenu();"></div>
+<div id="menudiv">
+    <div id="menupanel" style="background: white; width: 100%; height: 100%; padding: 10px;">
         <div style="position: relative;">
-        <button title="hide menu" id="hidemenu" onclick="hidemenu();">&lt;&lt;</button>
+        <button title="hide menu" id="hidemenubtn" onclick="hidemenu();">&lt;&lt;</button>
         </div>
 
         <h1>Menu</h1>
@@ -174,13 +192,12 @@
         <p/>
 
         <h2>Annotations</h2>
-        <!-- todo clean up file dialog -->
         <button title="load annotations" onclick="v.annotations.load(() => { showmenu(); v.redraw(); });">load...</button>
         <button title="save annotations" onclick="v.annotations.save();">save...</button>
         <p/>
 
         <h2>Configuration</h2>
-        <span class="hint">List of colon separated label-colour pairs.</span>
+        <span class="hint">List of colon separated label-colour pairs, e.g.,<br>"car: #0000ff"</span>
         <fieldset>
             <legend>Object Labels</legend>
             <textarea id="objectlabels" rows="8" style="width: 170pt; resize: vertical;"></textarea>
@@ -190,11 +207,24 @@
             <textarea id="actionlabels" rows="8" style="width: 170pt; resize: vertical;"></textarea>
         </fieldset>
         <p/>
-        <!-- todo clean up file dialog -->
         <button title="load config" onclick="v.annotations.lblConfig.load(() => { showmenu(); });">load...</button>
         <button title="save config" onclick="v.annotations.lblConfig.save();">save...</button>
+
+        <h2>Preferences</h2>
+        <span class="hint">Saves in browser local storage.</span>
+        <fieldset>
+            <legend>Show/hide</legend>
+            <input id="showkfcb" checked=true type="checkbox" onclick="v.prefs.update('showkeyframes', this.checked, 'keyframesdiv');">
+            <label for="showkfcb">Keyframes</label><br>
+            <input id="showobjscb" checked=true type="checkbox" onclick="v.prefs.update('showobjects', this.checked, 'objectsdiv'); v.redraw();">
+            <label for="showobjscb">Objects (bounding boxes)</label><br>
+            <input id="showregscb" checked=true type="checkbox" disabled=true>
+            <label for="showregscb">Regions (polygon outlines)</label><br>
+            <input id="showvidsegcb" checked=true type="checkbox" onclick="v.prefs.update('showvidsegs', this.checked, 'vidsegdiv');">
+            <label for="showvidsegcb">Video segments</label><br>
+        </fieldset>
+        <button title="restore defaults" onclick="v.prefs.reset(); updateGUI();">defaults</button>
     </div>
-        </div>
 </div>
 
 <!-- side-by-side video frame container -->
@@ -220,9 +250,9 @@
         <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, true);" title="replace right" type="button" style="width: 30%;">&#8608;</button>
         <br><p/>
         <b>Options</b><br><p/>
-        <input id="tiedcb" type="checkbox" onclick="v.tiedframes = this.checked; return true;">
-        <label for="tiedcb">tie sliders</label><br>
-        <input id="greycb" type="checkbox" onclick="v.greyframes = this.checked; return true;">
+        <input id="tiedcb" type="checkbox" onclick="v.prefs.update('tiedframes', this.checked);">
+        <label for="tiedcb">lock sliders</label><br>
+        <input id="greycb" type="checkbox" onclick="v.greyframes = this.checked;">
         <label for="greycb">greyscale</label><br>
         <br><p/>
         <b>Frames</b><br><p/>
@@ -246,54 +276,60 @@
 
 <!-- annotations container -->
 <div id="annotations" style="width: 100%;">
-    <fieldset>
-        <legend>Keyframes</legend>
-            <button title="generate" onclick="v.generateKeyframes();">&#x23F2; generate</button>
-            <span id="keyframeListId">(no keyframes)</span>
-            <font color="red">TODO: load, export, add/remove, visualize</font>
-        <div style="float: right;">
-            <button title="previous" onclick="v.prevKeyframe();">&lt;</button>
-            <button title="next" onclick="v.nextKeyframe();">&gt;</button>
-        </div>
-        <div style="clear: both;"></div>
-    </fieldset>
-
-    <div id="leftannopanel" style="width: 45%; float: left;">
+    <div id="keyframesdiv">
         <fieldset>
-            <legend>Objects</legend>
-            <!-- <button onclick="randbox();"><font color="red">TESTING:</font> Random Box</button> -->
-            <div style="float: right;"><button title="clear all" onclick="v.clearObjects(ANUVidLib.LEFT);">clear</button></div>
+            <legend>Keyframes</legend>
+                <button title="generate" onclick="v.generateKeyframes();">&#x23F2; generate</button>
+                <span id="keyframeListId">(no keyframes)</span>
+                <font color="red">TODO: load, export, add/remove, visualize</font>
+            <div style="float: right;">
+                <button title="previous" onclick="v.prevKeyframe();">&lt;</button>
+                <button title="next" onclick="v.nextKeyframe();">&gt;</button>
+            </div>
             <div style="clear: both;"></div>
-            <table id="leftobjtable" width="100%" style="table-layout: fixed;">
-            <tr><th width="40pt">x</th><th width="40pt">y</th><th width="40pt">w</th><th width="40pt">h</th>
-                <th>label</th><th>instance</th><th>colour</th><th>score</th><th width="110pt"></th></tr>
-            </table>
         </fieldset>
     </div>
-    <div style="width: 10%; float: left; text-align: center; position: relative;">&nbsp;</div>
-    <div id="rightannopanel" style="width: 45%; float: left;">
-        <fieldset>
-            <legend>Objects</legend>
-            <div style="float: right;"><button title="clear all" onclick="v.clearObjects(ANUVidLib.RIGHT);">clear</button></div>
-            <table id="rightobjtable" width="100%" style="table-layout: fixed;">
-            <tr><th width="40pt">x</th><th width="40pt">y</th><th width="40pt">w</th><th width="40pt">h</th>
-                <th>label</th><th>instance</th><th>colour</th><th>score</th><th></th></tr>
-            </table>
-        </fieldset>
-    </div>
-    <div style="clear: both;"></div>
 
-    <fieldset>
-        <legend>Video segments</legend>
-        <div style="float: right;">
-            <button title="sort" onclick="sortclips();">&#x21A7; sort</button>
-            <button title="add segment" onclick="newclip();">&#x271A;</button>
+    <div id="objectsdiv">
+        <div style="width: 45%; float: left;">
+            <fieldset>
+                <legend>Objects</legend>
+                <!-- <button onclick="randbox();"><font color="red">TESTING:</font> Random Box</button> -->
+                <div style="float: right;"><button title="clear all" onclick="v.clearObjects(ANUVidLib.LEFT);">clear</button></div>
+                <div style="clear: both;"></div>
+                <table id="leftobjtable" width="100%" style="table-layout: fixed;">
+                <tr><th width="40pt">x</th><th width="40pt">y</th><th width="40pt">w</th><th width="40pt">h</th>
+                    <th>label</th><th>instance</th><th>colour</th><th>score</th><th width="110pt"></th></tr>
+                </table>
+            </fieldset>
+        </div>
+        <div style="width: 10%; float: left; text-align: center; position: relative;">&nbsp;</div>
+        <div style="width: 45%; float: left;">
+            <fieldset>
+                <legend>Objects</legend>
+                <div style="float: right;"><button title="clear all" onclick="v.clearObjects(ANUVidLib.RIGHT);">clear</button></div>
+                <table id="rightobjtable" width="100%" style="table-layout: fixed;">
+                <tr><th width="40pt">x</th><th width="40pt">y</th><th width="40pt">w</th><th width="40pt">h</th>
+                    <th>label</th><th>instance</th><th>colour</th><th>score</th><th></th></tr>
+                </table>
+            </fieldset>
         </div>
         <div style="clear: both;"></div>
-        <table id="vidsegtable" width="100%" style="table-layout: fixed;">
-            <tr><th width="60pt">start</th><th width="60pt">end</th><th width="120pt">action</th><th width="100%">description</th><th width="160pt" align="right"></th></tr>
-        </table>
-    </fieldset>
+    </div>
+
+    <div id="vidsegdiv">
+        <fieldset>
+            <legend>Video segments</legend>
+            <div style="float: right;">
+                <button title="sort" onclick="sortclips();">&#x21A7; sort</button>
+                <button title="add segment" onclick="newclip();">&#x271A;</button>
+            </div>
+            <div style="clear: both;"></div>
+            <table id="vidsegtable" width="100%" style="table-layout: fixed;">
+                <tr><th width="60pt">start</th><th width="60pt">end</th><th width="120pt">action</th><th width="100%">description</th><th width="160pt" align="right"></th></tr>
+            </table>
+        </fieldset>
+    </div>
 </div>
 
 <!-- object bounding box popup -->

@@ -4,6 +4,10 @@ body {
   padding: 0px;
 }
 
+h2 {
+    margin-bottom: 3pt;
+}
+
 button {
     vertical-align: top;
     padding-top: 0px;
@@ -56,6 +60,40 @@ legend {
 }
 
 /*
+ * animations
+ */
+
+.animateopen {
+    animation: slide-in 0.4s forwards;
+    -webkit-animation: slide-in 0.4s forwards;
+}
+
+.animateclose {
+    animation: slide-out 0.4s forwards;
+    -webkit-animation: slide-out 0.4s forwards;
+}
+
+@keyframes slide-in {
+   0% { -webkit-transform: translateX(-100%); }
+   100% { -webkit-transform: translateX(0%); }
+}
+
+@-webkit-keyframes slide-in {
+     0% {transform: translateX(-100%); }
+    100% { transform: translateX(0%); }
+}
+
+@keyframes slide-out {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+}
+
+@-webkit-keyframes slide-out {
+    0% { -webkit-transform: translateX(0%); }
+    100% { -webkit-transform: translateX(-100%); }
+}
+
+/*
  * To disable/enable the container use:
  * document.getElementById("container").classList.add("iodisabled");
  * document.getElementById("container").classList.remove("iodisabled");
@@ -79,16 +117,30 @@ legend {
     height: 64px;
 }
 
-#showmenu {
+#showmenubtn {
     position: absolute;
     top: 0px;
     left: 12px;
 }
 
-#hidemenu {
+#hidemenubtn {
     position: absolute;
     top: 0px;
     right: 12px;
+}
+
+#menudiv {
+    position: fixed;
+    display: none;
+    width: 200pt;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255,255,255,0);
+    z-index: 3;
+    cursor: auto;
 }
 
 /* Popup window show/hide with:
