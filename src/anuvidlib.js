@@ -11,8 +11,6 @@
 const VERSION = "0.1(alpha)"    // library version (useful for loading old file formats)
 const FPS = 10;                 // temporal resolution (frames per second)
 
-const DEFAULTKEYFRAMES = 5;     // default number of seconds between keyframes
-
 // webpage control ids
 const LEFTCANVASNAME  = "leftframe";
 const LEFTSLIDERNAME  = "leftslider";
@@ -125,6 +123,7 @@ class ANUVidLibPreferences {
         this.showobjects = true;        // show object (bounding box) annotations
         this.showregions = true;        // show region (polygon outlines) annotations
         this.showvidsegs = true;        // show video segment (and activity) annotations
+        this.keyframedelta = 5;         // default number of seconds between keyframes
     }
 
     // Load from browser local storage.
@@ -177,15 +176,17 @@ class ANUVidLib {
     set greyframes(value) { this.prefs.greyframes = value; this.redraw(); }
 
     // Construct an ANUVidLib object with two canvases for displaying frames and text spans for showing status
-    // information. Caches frames every second for faster feedback during scrubbing.
-    constructor() {
+    // information. Caches frames every second for faster feedback during scrubbing. Calls fcnUpdateGUI(this)
+    // when a new video is loaded.
+    constructor(fcnUpdateGUI = null) {
         var self = this;
 
+        //this.updateGUIFcn = fcnUpdateGUI;
         this.prefs = new ANUVidLibPreferences();
         this.prefs.load();
 
         this.video = document.createElement("video");
-        this.annotations = new AnnotationContainer();
+        this.annotations = new AnnotationContainer(this);
 
         this.leftPanel = {
             side: ANUVidLib.LEFT,
@@ -239,29 +240,37 @@ class ANUVidLib {
             self.rightPanel.slider.value = 0;
             self.rightPanel.timestamp = null;
 
-            self.annotations = new AnnotationContainer(Math.floor(FPS * self.video.duration));
-            self.generateKeyframes(DEFAULTKEYFRAMES); // generate default keyframes indexes
+            self.annotations = new AnnotationContainer(self, Math.floor(FPS * self.video.duration));
+            self.generateKeyframes(self.prefs.keyframedelta); // generate default keyframes indexes
 
             self.frameCache.length = Math.floor(self.video.duration); // space for 1 frame per second
             self.frameCache.fill(null);
             self.bFrameCacheComplete = false;
 
             self.seekToIndex(0, 0);
+            if (fcnUpdateGUI != null)
+                fcnUpdateGUI(self);
         }, false);
 
         this.video.addEventListener('error', function() {
             window.alert("ERROR: could not load video \"" + self.video.src + "\"");
             self.frameCache = [];
-            self.annotations = new AnnotationContainer();
+            self.annotations = new AnnotationContainer(self);
             self.leftPanel.frame = new Image();
             self.leftPanel.frame.onload = function() { self.leftPanel.cachedGreyData = null; self.redraw(ANUVidLib.LEFT); };
             self.leftPanel.cachedGreyData = null;
+            self.leftPanel.slider.value = 0;
+            self.leftPanel.timestamp = null;
             self.rightPanel.frame = new Image();
             self.rightPanel.frame.onload = function() { self.rightPanel.cachedGreyData = null; self.redraw(ANUVidLib.RIGHT); };
             self.rightPanel.cachedGreyData = null;
+            self.rightPanel.slider.value = 0;
+            self.rightPanel.timestamp = null;
             self.redraw(ANUVidLib.BOTH);
             self.leftPanel.status.innerHTML = "none";
             self.rightPanel.status.innerHTML = "none";
+            if (fcnUpdateGUI != null)
+                fcnUpdateGUI(self);
         }, false);
 
         this.video.addEventListener('seeked', function() {
@@ -587,13 +596,14 @@ class ANUVidLib {
     // Generate keyframes are regular interval. If delta is null then requests time interval from user.
     generateKeyframes(delta = null) {
         if (delta == null) {
-            var retVal = prompt("Generate keyframe every how many seconds?", DEFAULTKEYFRAMES);
+            var retVal = prompt("Generate keyframe every how many seconds?", this.prefs.keyframedelta);
             if (retVal == null) return false;
             delta = parseFloat(retVal);
         }
         delta = Math.round(FPS * delta) / FPS;
         if (delta <= 0)
             return false;
+        this.prefs.keyframedelta = delta; // remember this value as the new default
 
         this.annotations.keyframes = [];
         var ts = 0.0;

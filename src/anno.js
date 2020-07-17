@@ -234,8 +234,12 @@ class LabelConfig {
 ** Holds all annotations for a given video. And provides utility functions.
 */
 
+// TODO: load and save video clips (segments)
+// TODO: separate label configuration from annotations
+
 class AnnotationContainer {
-    constructor(numFrames = 0) {
+    constructor(owner, numFrames = 0) {
+        this.owner = owner;                     // ANUVidLib object containing these annotations
         this.lblConfig = new LabelConfig();     // label configuration
 
         this.keyframes = [];        // array of keyframe timestamps (in seconds)
@@ -243,10 +247,14 @@ class AnnotationContainer {
 
         if (numFrames > 0) {
             this.objectList.length = numFrames;
-            for (var i = 0; i < this.objectList.length; i++) {
-                this.objectList[i] = [];
-            }
+            this.clearObjects();
         }
+    }
+
+    // Clear all annotations.
+    clear() {
+        this.keyframes = [];
+        this.clearObjects();
     }
 
     // Loads from file. Prompts for filename. Invokes callback after loaded.
@@ -266,11 +274,13 @@ class AnnotationContainer {
                 if ("keyframes" in json)
                     this.keyframes = json.keyframes;
                 if ("objectList" in json) {
-                    this.objectList = [[]];
-                    this.objectList.length = json.objectList.length;
+                    this.clearObjects();
                     for (var i = 0; i < json.objectList.length; i++) {
-                        for (var j = 0; j < json.objectList[i].length; j++) {
-                            this.objectList[i].push(new ObjectBox(json.objectList[i][j]));
+                        const indx = this.owner.time2indx(json.objectList[i].ts);
+                        if ((indx >= 0) && (indx < this.objectList.length)) {
+                            for (var j = 0; j < json.objectList[i].objects.length; j++) {
+                                this.objectList[indx].push(new ObjectBox(json.objectList[i].objects[j]));
+                            }
                         }
                     }
                 }
@@ -291,9 +301,17 @@ class AnnotationContainer {
         if ((filename == null) || (filename == ""))
             return;
 
-        // TODO: different format and include timestamps
+        // create object for saving
+        var json = {version: this.owner.prefs.version, lblConfig: this.lblConfig, keyframes: this.keyframes, objectList: []};
+        for (var i = 0; i < this.objectList.length; i++) {
+            if (this.objectList[i].length > 0) {
+                const ts = this.owner.indx2time(i);
+                json.objectList.push({ts: this.owner.indx2time(i), objects: this.objectList[i]});
+            }
+        }
+
         var a = document.createElement("a");
-        var file = new Blob([JSON.stringify(this)], {type: "text/plain"});
+        var file = new Blob([JSON.stringify(json)], {type: "text/plain"});
         a.href = URL.createObjectURL(file);
         a.download = filename;
         //a.target = "_blank";
@@ -326,6 +344,13 @@ class AnnotationContainer {
         }
     }
 
+    // Clear objects.
+    clearObjects() {
+        for (var i = 0; i < this.objectList.length; i++) {
+            this.objectList[i] = [];
+        }
+    }
+
     // Swap two objects (can be used to reorder objects in the same frame).
     swapObjects(frmIndexA, objIndexA, frmIndexB, objIndexB) {
         if ((objIndexA < 0) || (objIndexA >= this.objectList[frmIndexA].length) ||
@@ -337,5 +362,30 @@ class AnnotationContainer {
         this.objectList[frmIndexB][objIndexB] = obj;
 
         return true;
+    }
+
+    // Get information as a string.
+    // TODO: video clip statistics
+    getInfoString() {
+        let nKeyframes = this.keyframes.length;
+        let nFrames = this.objectList.length;
+
+        var nObjects = 0;
+        var nFramesWithObjects = 0;
+        for (var i = 0; i < nFrames; i++) {
+            nObjects += this.objectList[i].length;
+            if (this.objectList[i].length > 0)
+                nFramesWithObjects += 1;
+        }
+
+        // Prints count and object description.
+        function toStringHelper(n, singular, plural=null) {
+            if (n == 0) return "No " + (plural == null ? singular + "s" : plural);
+            if (n == 1) return String(n) + " " + singular;
+            return String(n) + " " + (plural == null ? singular + "s" : plural);
+        }
+
+        return toStringHelper(nKeyframes, "keyframe") + "; " + toStringHelper(nObjects, "object") +
+            (nObjects > 0 ? " in " + toStringHelper(nFramesWithObjects, "frame") + "." : ".");
     }
 }

@@ -10,3 +10,8 @@ The aim of this project is to develop a high-quality video annotation tool for c
 6. Open-source.
 
 Video tutorials will be posted on YouTube.
+
+## Installation
+
+1. Copy all files from `src` into a single directory.
+2. Open `index.html` in your favourite browser.

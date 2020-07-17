@@ -17,13 +17,13 @@
 | score     | score or confidence associated with the bounding box |
 | comment   | free-text comment |
 
-**Operations:** add, delete, edit, move, resize, copy (to another frame), visualize
+**Operations:** add, delete, edit, move, resize, copy (to another frame), visualize, interpolate (between two frames, objects with same `trackId`)
 
 ### Polygon Regions
 
 TODO
 
-### Skeleton
+### Human and Hand Poses (Skeletons)
 
 TODO
 
@@ -54,10 +54,16 @@ TODO
 
 Any video that can be processed by the HTML5 `video` element.
 
-### Configuration
+### Configuration (Object and Action Labels)
 
-TODO
+Stored as colon-separated pairs of `labelId` and (default) `colour`, one per line.
+The `labelId` should be a string composed of letters, numbers and underscore.
+The `colour` is a `#` followed by hexadecimal byte codes for red, green and blue (e.g., `#ff0000` for red).
 
 ### Annotations
 
-TODO
+TODO --- indexed by time (not frame)
+
+### Preferences
+
+User preferences (such as GUI options) are saved in browers local storage between sessions.

@@ -23,7 +23,7 @@
         var v = null;
 
         function init() {
-            v = new ANUVidLib();
+            v = new ANUVidLib(updateGUI);
 
             var loadVideoFile = function(event) {
                 var file = this.files[0];
@@ -34,7 +34,7 @@
             var input = document.querySelector('#videoinput');
             input.addEventListener('change', loadVideoFile, false);
             document.getElementById("version").innerHTML = VERSION;
-            updateGUI();
+            updateGUI(v);
         }
 
         function fini() {
@@ -42,22 +42,43 @@
         }
 
         // update visual state of GUI to reflect preferences
-        function updateGUI() {
+        function updateGUI(vidLibObj) {
             // get checkboxes and visual elements into correct state
-            if (v.prefs.tiedframes != document.getElementById("tiedcb").checked)
+            if (vidLibObj.prefs.tiedframes != document.getElementById("tiedcb").checked)
                 document.getElementById("tiedcb").click();
-            if (v.prefs.greyframes != document.getElementById("greycb").checked)
+            if (vidLibObj.prefs.greyframes != document.getElementById("greycb").checked)
                 document.getElementById("greycb").click();
-            if (v.prefs.showkeyframes != document.getElementById("showkfcb").checked)
+            if (vidLibObj.prefs.showkeyframes != document.getElementById("showkfcb").checked)
                 document.getElementById("showkfcb").click();
-            if (v.prefs.showobjects != document.getElementById("showobjscb").checked)
+            if (vidLibObj.prefs.showobjects != document.getElementById("showobjscb").checked)
                 document.getElementById("showobjscb").click();
-            if (v.prefs.showobjects != document.getElementById("showregscb").checked)
+            if (vidLibObj.prefs.showobjects != document.getElementById("showregscb").checked)
                 document.getElementById("showregscb").click();
-            if (v.prefs.showvidsegs != document.getElementById("showvidsegcb").checked)
+            if (vidLibObj.prefs.showvidsegs != document.getElementById("showvidsegcb").checked)
                 document.getElementById("showvidsegcb").click();
 
-            v.redraw();
+            // show configuration (when menu is visible)
+            let cfg = vidLibObj.annotations.lblConfig;
+            document.getElementById('objectlabels').value = cfg.toString(cfg.objectLabels);;
+            document.getElementById('actionlabels').value = cfg.toString(cfg.actionLabels);
+            document.getElementById('annotationinfo').innerHTML = vidLibObj.annotations.getInfoString();
+
+            const isInvalidVideo = isNaN(vidLibObj.video.duration);
+            document.getElementById('loadannobtn').disabled = isInvalidVideo;
+            document.getElementById('saveannobtn').disabled = isInvalidVideo;
+            document.getElementById('clearannobtn').disabled = isInvalidVideo;
+
+            // redraw frames
+            vidLibObj.redraw();
+        }
+
+        function clearAllAnnotations() {
+            var result = confirm("Are you sure you want to clear all annotations?");
+            if (result) {
+                v.annotations.clear();
+                clearclips(); // TODO: move into v.annotations
+                updateGUI(v);
+            }
         }
 
         function play() {
@@ -86,9 +107,8 @@
         }
 
         function showmenu() {
-            let cfg = v.annotations.lblConfig;
-            document.getElementById('objectlabels').value = cfg.toString(cfg.objectLabels);;
-            document.getElementById('actionlabels').value = cfg.toString(cfg.actionLabels);
+            // update GUI with configuration
+            updateGUI(v);
 
             // animate menu open
             document.getElementById('menuoverlaydiv').style.display = 'block';
@@ -129,6 +149,10 @@
                 return false;
             }
             if (e.target.nodeName.toLowerCase() == 'select') {
+                return false;
+            }
+            // don't process key if menu is showing (TODO: can this be replaced by assigning an onkeypress event to the menu div?)
+            if (document.getElementById('menudiv').style.display == 'block') {
                 return false;
             }
 
@@ -192,22 +216,24 @@
         <p/>
 
         <h2>Annotations</h2>
-        <button title="load annotations" onclick="v.annotations.load(() => { showmenu(); v.redraw(); });">load...</button>
-        <button title="save annotations" onclick="v.annotations.save();">save...</button>
+        <span id="annotationinfo" class="hint">(no annotations)</span><p/>
+        <button id="loadannobtn" title="load annotations" onclick="v.annotations.load(() => { updateGUI(v); });">load...</button>
+        <button id="saveannobtn" title="save annotations" onclick="v.annotations.save();">save...</button>
+        <button id="clearannobtn" title="save annotations" onclick="clearAllAnnotations();">clear all</button>
         <p/>
 
         <h2>Configuration</h2>
         <span class="hint">List of colon separated label-colour pairs, e.g.,<br>"car: #0000ff"</span>
         <fieldset>
             <legend>Object Labels</legend>
-            <textarea id="objectlabels" rows="8" style="width: 170pt; resize: vertical;"></textarea>
+            <textarea id="objectlabels" rows="7" style="width: 170pt; resize: vertical;"></textarea>
         </fieldset>
         <fieldset>
             <legend>Action Labels</legend>
-            <textarea id="actionlabels" rows="8" style="width: 170pt; resize: vertical;"></textarea>
+            <textarea id="actionlabels" rows="7" style="width: 170pt; resize: vertical;"></textarea>
         </fieldset>
         <p/>
-        <button title="load config" onclick="v.annotations.lblConfig.load(() => { showmenu(); });">load...</button>
+        <button title="load config" onclick="v.annotations.lblConfig.load(() => { updateGUI(v); });">load...</button>
         <button title="save config" onclick="v.annotations.lblConfig.save();">save...</button>
 
         <h2>Preferences</h2>
@@ -223,7 +249,7 @@
             <input id="showvidsegcb" checked=true type="checkbox" onclick="v.prefs.update('showvidsegs', this.checked, 'vidsegdiv');">
             <label for="showvidsegcb">Video segments</label><br>
         </fieldset>
-        <button title="restore defaults" onclick="v.prefs.reset(); updateGUI();">defaults</button>
+        <button title="restore defaults" onclick="v.prefs.reset(); updateGUI(v);">defaults</button>
     </div>
 </div>
 
@@ -248,6 +274,8 @@
         <br><p/>
         <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, true);" title="replace left" type="button" style="width: 30%;">&#8606;</button>
         <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, true);" title="replace right" type="button" style="width: 30%;">&#8608;</button>
+        <br><p/>
+        <button onclick="todo();" title="interpolate" type="button" style="width: 60%;">&#8611; interpolate</button>
         <br><p/>
         <b>Options</b><br><p/>
         <input id="tiedcb" type="checkbox" onclick="v.prefs.update('tiedframes', this.checked);">
@@ -280,8 +308,10 @@
         <fieldset>
             <legend>Keyframes</legend>
                 <button title="generate" onclick="v.generateKeyframes();">&#x23F2; generate</button>
+                <button title="export" onclick="todo();">&#x1f4be; export</button>
+
                 <span id="keyframeListId">(no keyframes)</span>
-                <font color="red">TODO: load, export, add/remove, visualize</font>
+                <font color="red">TODO: export, add/remove, visualize</font>
             <div style="float: right;">
                 <button title="previous" onclick="v.prevKeyframe();">&lt;</button>
                 <button title="next" onclick="v.nextKeyframe();">&gt;</button>
@@ -360,7 +390,8 @@
         <center><small>Version <span id="version">0.0</span></small></center>
 
         <b>Help</b><br>
-        Click the top-left menu button (&#x2630) to load and save data.
+        Click the top-left menu button (&#x2630) to load and save data.<br>
+        Click and drag on frame to add a new bounding box.
         <p/>
 
         <b>Keyboard Shortcuts</b><br>
