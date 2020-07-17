@@ -612,19 +612,36 @@ class ANUVidLib {
             ts += delta;
         }
 
+        this.drawKeyframes();
+        return true;
+    }
+
+    // Set keyframes from a comma-separated list.
+    setKeyframes(str) {
+        this.annotations.keyframes = [];
+        var tokens = str.split(',');
+        for (var i = 0; i < tokens.length; i++) {
+            let ts = parseFloat(tokens[i]);
+            if (!isNaN(ts) && (ts >= 0.0) && (ts <= this.video.duration)) {
+                this.annotations.keyframes.push(ts);
+            }
+        }
+        this.annotations.keyframes.sort(function(a, b){return a - b;});
+        this.drawKeyframes();
+    }
+
+    drawKeyframes() {
         // TODO: better keyframe visualisation
         var el = document.getElementById("keyframeListId");
         if (this.annotations.keyframes.length == 0) {
-            el.innerHTML = "(no keyframes)";
+            el.value = "";
             return;
         }
-        el.innerHTML = "";
+        el.value = "";
         for (var i = 0; i < this.annotations.keyframes.length; i++) {
-            if (i > 0) el.innerHTML += ", ";
-            el.innerHTML += this.annotations.keyframes[i];
+            if (i > 0) el.value += ", ";
+            el.value += this.annotations.keyframes[i];
         }
-
-        return true;
     }
 
     nextKeyframe() {

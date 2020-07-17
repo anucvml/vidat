@@ -68,7 +68,8 @@
             document.getElementById('saveannobtn').disabled = isInvalidVideo;
             document.getElementById('clearannobtn').disabled = isInvalidVideo;
 
-            // redraw frames
+            // redraw annotation data
+            vidLibObj.drawKeyframes();
             vidLibObj.redraw();
         }
 
@@ -304,19 +305,34 @@
 
 <!-- annotations container -->
 <div id="annotations" style="width: 100%;">
-    <div id="keyframesdiv">
+    <td id="keyframesdiv">
         <fieldset>
             <legend>Keyframes</legend>
+            <!--
+            <div style="float: left;">
                 <button title="generate" onclick="v.generateKeyframes();">&#x23F2; generate</button>
                 <button title="export" onclick="todo();">&#x1f4be; export</button>
-
-                <span id="keyframeListId">(no keyframes)</span>
-                <font color="red">TODO: export, add/remove, visualize</font>
+            </div>
+            <div style="float: left; margin: 4px;">
+                <input id="keyframeListId" type="text" style="width: 100%;">
+            </div>
             <div style="float: right;">
                 <button title="previous" onclick="v.prevKeyframe();">&lt;</button>
                 <button title="next" onclick="v.nextKeyframe();">&gt;</button>
             </div>
             <div style="clear: both;"></div>
+            -->
+            <table>
+                <tr>
+                    <td><button title="generate" onclick="v.generateKeyframes();">&#x23F2;&nbsp;generate</button></td>
+                    <td><button title="export" onclick="todo();">&#x1f4be;&nbsp;export</button></td>
+                    <td style="width: 100%; padding-right: 8pt;">
+                        <input id="keyframeListId" type="text" style="width: 100%;" onblur="v.setKeyframes(this.value);" onkeypress="defocusOnEnter(event);">
+                    </td>
+                    <td><button title="previous" onclick="v.prevKeyframe();">&lt;</button></td>
+                    <td><button title="next" onclick="v.nextKeyframe();">&gt;</button></td>
+                </tr>
+            </table>
         </fieldset>
     </div>
 
