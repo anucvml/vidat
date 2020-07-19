@@ -165,8 +165,10 @@ class ANUVidLib {
         var self = this;
 
         //this.updateGUIFcn = fcnUpdateGUI;
-        this.prefs = new ANUVidLibPreferences();
+        this.prefs = new ANUVidLibPreferences();    // gui preferences
         this.prefs.load();
+
+        this.lblConfig = new LabelConfig();         // label configuration
 
         this.video = document.createElement("video");
         this.annotations = new AnnotationContainer(this);
@@ -546,7 +548,7 @@ class ANUVidLib {
             // label
             var select = document.createElement("select");
             select.style.width = "100%";
-            for (var k in this.annotations.lblConfig.objectLabels) {
+            for (var k in this.lblConfig.objectLabels) {
                 var opt = document.createElement("option");
                 opt.textContent = String(k);
                 opt.value = String(k);
@@ -594,7 +596,7 @@ class ANUVidLib {
 
             var select = document.createElement("select");
             select.classList.add("segdesc"); select.style.width = "100%";
-            for (var k in v.annotations.lblConfig.actionLabels) {
+            for (var k in v.lblConfig.actionLabels) {
                 var opt = document.createElement("option");
                 opt.textContent = String(k);
                 opt.value = String(k);

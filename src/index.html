@@ -48,7 +48,7 @@
                 document.getElementById("showvidsegcb").click();
 
             // show configuration (when menu is visible)
-            let cfg = vidLibObj.annotations.lblConfig;
+            let cfg = vidLibObj.lblConfig;
             document.getElementById('objectlabels').value = cfg.toString(cfg.objectLabels);;
             document.getElementById('actionlabels').value = cfg.toString(cfg.actionLabels);
             document.getElementById('annotationinfo').innerHTML = vidLibObj.annotations.getInfoString();
@@ -114,7 +114,7 @@
         }
 
         function hidemenu() {
-            let cfg = v.annotations.lblConfig;
+            let cfg = v.lblConfig;
             cfg.objectLabels = cfg.fromString(document.getElementById('objectlabels').value);
             cfg.actionLabels = cfg.fromString(document.getElementById('actionlabels').value);
 
@@ -223,15 +223,17 @@
         <span class="hint">List of colon separated label-colour pairs, e.g.,<br>"car: #0000ff"</span>
         <fieldset>
             <legend>Object Labels</legend>
-            <textarea id="objectlabels" rows="7" style="width: 170pt; resize: vertical;"></textarea>
+            <textarea id="objectlabels" rows="7" style="width: 170pt; resize: vertical;"
+                onblur="v.lblConfig.objectLabels = v.lblConfig.fromString(this.value);"></textarea>
         </fieldset>
         <fieldset>
             <legend>Action Labels</legend>
-            <textarea id="actionlabels" rows="7" style="width: 170pt; resize: vertical;"></textarea>
+            <textarea id="actionlabels" rows="7" style="width: 170pt; resize: vertical;"
+                onblur="v.lblConfig.actionLabels = v.lblConfig.fromString(this.value);"></textarea>
         </fieldset>
         <p/>
-        <button title="load config" onclick="v.annotations.lblConfig.load(() => { updateGUI(v); });">load...</button>
-        <button title="save config" onclick="v.annotations.lblConfig.save();">save...</button>
+        <button title="load config" onclick="v.lblConfig.load(() => { updateGUI(v); });">load...</button>
+        <button title="save config" onclick="v.lblConfig.save();">save...</button>
 
         <h2>Preferences</h2>
         <span class="hint">Saves in browser local storage.</span>

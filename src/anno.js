@@ -161,7 +161,8 @@ class LabelConfig {
         }
     }
 
-    // Load from file. Prompts for filename. Invoke callback when done.
+    // Load from file. Prompts for filename. Invoke callback when done. Accepts files saved by corresponding 'save'
+    // method or files saved by the AnnotationContainer where the configuration is under the `lblConfig` field.
     load(callback = null) {
         var dlg = document.createElement('input');
         dlg.type = 'file';
@@ -172,6 +173,13 @@ class LabelConfig {
             reader.onload = readerEvent => {
                 var content = readerEvent.target.result;
                 var cfg = JSON.parse(content);
+
+                // if annotation container file pull configuration from lblConfig
+                if ("lblConfig" in cfg) {
+                    cfg = cfg.lblConfig;
+                }
+
+                // extract action and object labels if available
                 if ("actionLabels" in cfg) {
                     this.actionLabels = cfg.actionLabels;
                 }
@@ -234,12 +242,9 @@ class LabelConfig {
 ** Holds all annotations for a given video. And provides utility functions.
 */
 
-// TODO: separate label configuration from annotations
-
 class AnnotationContainer {
     constructor(owner, numFrames = 0) {
         this.owner = owner;                     // ANUVidLib object containing these annotations
-        this.lblConfig = new LabelConfig();     // label configuration
 
         this.keyframes = [];        // array of keyframe timestamps (in seconds)
         this.objectList = [[]];     // array of array of objects
@@ -271,7 +276,7 @@ class AnnotationContainer {
                 var json = JSON.parse(content);
 
                 if ("lblConfig" in json)
-                    this.lblConfig = new LabelConfig(json.lblConfig);
+                    this.owner.lblConfig = new LabelConfig(json.lblConfig);
                 if ("keyframes" in json)
                     this.keyframes = json.keyframes;
                 if ("objectList" in json) {
@@ -313,7 +318,7 @@ class AnnotationContainer {
 
         // create object for saving
         var json = { version: this.owner.prefs.version,
-            lblConfig: this.lblConfig,
+            lblConfig: this.owner.lblConfig,
             keyframes: this.keyframes,
             objectList: [],
             vidSegList: this.vidSegList };
@@ -353,8 +358,9 @@ class AnnotationContainer {
     draw(ctx, frameIndex, activeObject = null) {
 
         // draw bounding box objects
+        const colourTable = this.owner.lblConfig.objectLabels;
         for (var i = 0; i < this.objectList[frameIndex].length; i++) {
-            this.objectList[frameIndex][i].draw(ctx, this.lblConfig.objectLabels, this.objectList[frameIndex][i] == activeObject);
+            this.objectList[frameIndex][i].draw(ctx, colourTable, this.objectList[frameIndex][i] == activeObject);
         }
     }
 
