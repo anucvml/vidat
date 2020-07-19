@@ -39,27 +39,6 @@ function defocusOnEnter(event, target = null) {
     }
 }
 
-// Move a table row up. Warning: does not modify the content so table content should not depend on order. Also does not
-// change underlying data from which the table was generated. Use inside a row's cell as, e.g.,
-//   <button title='move up' onclick='moveRowUp(this.parentElement.parentElement, 1);'>&#x1F819;</button>
-function moveRowUp(row, firstRow) {
-    let table = row.parentNode;
-    if (row.rowIndex <= firstRow)
-        return;
-
-    table.insertBefore(row, table.rows[row.rowIndex - 1]);
-}
-
-// Move a table row down. Warning: does not modify the content so table content should not depend on order.  Also does not
-// change underlying data from which the table was generated.
-function moveRowDown(row) {
-    let table = row.parentNode;
-    if (row.rowIndex >= table.rows.length - 1)
-        return;
-
-    table.insertBefore(table.rows[row.rowIndex + 1], row);
-}
-
 /*
 ** Drawing utilities.
 */
@@ -128,13 +107,17 @@ class ANUVidLibPreferences {
 
     // Load from browser local storage.
     load() {
-        if (typeof(Storage) !== "undefined") {
-            if (localStorage.getItem("anucvml:prefs") != null) {
-                var json = JSON.parse(localStorage.getItem("anucvml:prefs"));
-                for (var k in json) {
-                    if (k in this) this[k] = json[k];
+        try {
+            if (typeof(Storage) !== "undefined") {
+                if (localStorage.getItem("anucvml:prefs") != null) {
+                    var json = JSON.parse(localStorage.getItem("anucvml:prefs"));
+                    for (var k in json) {
+                        if (k in this) this[k] = json[k];
+                    }
                 }
             }
+        } catch (err) {
+            // do nothing
         }
 
         // override to current version
@@ -308,7 +291,6 @@ class ANUVidLib {
     // Load a new video file. Resets data once loaded.
     loadVideo(fileURL) {
         this.video.src = fileURL;
-        clearclips();
     }
 
     // Convert between indices and timestamps.
@@ -477,7 +459,8 @@ class ANUVidLib {
                 if (this.prefs.greyframes) {
                     panel.cachedGreyData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
                     let pixels = panel.cachedGreyData.data;
-                    for (var i = 0; i < pixels.length; i += 4) {
+                    const nPixels = pixels.length;
+                    for (var i = 0; i < nPixels; i += 4) {
                         let intensity = parseInt(0.299 * pixels[i] + 0.587 * pixels[i + 1] + 0.114 * pixels[i + 2]);
                         pixels[i] = intensity; pixels[i + 1] = intensity; pixels[i + 2] = intensity;
                     }
@@ -546,7 +529,6 @@ class ANUVidLib {
             input.onkeypress = function(event) { defocusOnEnter(event); }
             input.onblur = function(event) { update(event.target.value); self.paint(panel); self.paint(panel.other); };;
             row.insertCell(-1).appendChild(input);
-
         }
 
         const objects = this.annotations.objectList[frameIndex];
@@ -593,6 +575,57 @@ class ANUVidLib {
         }
     }
 
+    // Refresh the list of temporal segments.
+    refreshVidSegTable(activeSeg = -1) {
+        // delete all rows (except the header)
+        var table = document.getElementById(VIDSEGTABLENAME);
+        for (var i = table.rows.length - 1; i > 0; i--) {
+            table.deleteRow(i);
+        }
+
+        // now repopulate the table
+        const nVidSegs = this.annotations.vidSegList.length;
+        for (var i = 0; i < nVidSegs; i++) {
+            let seg = this.annotations.vidSegList[i];   // for callbacks
+
+            var row = table.insertRow(-1);
+            row.insertCell(0).innerHTML = seg.start;
+            row.insertCell(1).innerHTML = seg.end;
+
+            var select = document.createElement("select");
+            select.classList.add("segdesc"); select.style.width = "100%";
+            for (var k in v.annotations.lblConfig.actionLabels) {
+                var opt = document.createElement("option");
+                opt.textContent = String(k);
+                opt.value = String(k);
+                select.appendChild(opt);
+            }
+            select.value = this.annotations.vidSegList[i].actionId;
+            select.onkeypress = function(event) { defocusOnEnter(event); }
+            select.onchange = function(event) { seg.actionId = event.target.value; }
+            select.onblur = function(event) { seg.actionId = event.target.value; };
+            row.insertCell(2).appendChild(select);
+
+            var input = document.createElement("input");
+            input.type = "text"; input.classList.add("segdesc"); input.value = this.annotations.vidSegList[i].description;
+            parent = row.insertCell(3);
+            parent.appendChild(input);
+            var cell = row.insertCell(4);
+            cell.innerHTML = "<button title='delete' onclick='v.annotations.vidSegList.splice(this.parentElement.parentElement.rowIndex - 1, 1); v.refreshVidSegTable();'>&#x2718;</button>";
+            cell.innerHTML += " <button title='move up' onclick='v.annotations.swapVidSegs(" + i + ", " + (i - 1) + "); v.refreshVidSegTable();'>&#x1F819;</button>";
+            cell.innerHTML += " <button title='move down' onclick='v.annotations.swapVidSegs(" + i + "," + (i + 1) + "); v.refreshVidSegTable();'>&#x1F81B;</button>";
+            cell.innerHTML += " <button title='goto' onclick='v.seekToTime(" + seg.start + ", " + seg.end + ", true);'>&#x2692;</button>";
+            cell.style.textAlign = "right";
+            input.onkeypress = function(event) { defocusOnEnter(event, document.getElementById(LEFTSLIDERNAME)); }
+            input.onblur = function(event) { seg.description = event.target.value; };
+
+            // Set focus on active segment
+            if (i == activeSeg) {
+                if (focus) input.focus();
+            }
+        }
+    }
+
     // Generate keyframes are regular interval. If delta is null then requests time interval from user.
     generateKeyframes(delta = null) {
         if (delta == null) {
@@ -618,27 +651,29 @@ class ANUVidLib {
 
     // Set keyframes from a comma-separated list.
     setKeyframes(str) {
-        this.annotations.keyframes = [];
+        var timestamps = [];
         var tokens = str.split(',');
         for (var i = 0; i < tokens.length; i++) {
             let ts = parseFloat(tokens[i]);
             if (!isNaN(ts) && (ts >= 0.0) && (ts <= this.video.duration)) {
-                this.annotations.keyframes.push(ts);
+                timestamps.push(ts);
             }
         }
-        this.annotations.keyframes.sort(function(a, b){return a - b;});
+        timestamps.sort(function(a, b){return a - b;});
+        this.annotations.keyframes = timestamps.filter((e, i, a) => (i == 0) || (e !== a[i - 1]));
         this.drawKeyframes();
     }
 
     drawKeyframes() {
         // TODO: better keyframe visualisation
         var el = document.getElementById("keyframeListId");
-        if (this.annotations.keyframes.length == 0) {
+        const nKeyframes = this.annotations.keyframes.length;
+        if (nKeyframes == 0) {
             el.value = "";
             return;
         }
         el.value = "";
-        for (var i = 0; i < this.annotations.keyframes.length; i++) {
+        for (var i = 0; i < nKeyframes; i++) {
             if (i > 0) el.value += ", ";
             el.value += this.annotations.keyframes[i];
         }
@@ -646,12 +681,13 @@ class ANUVidLib {
 
     nextKeyframe() {
         // find next keyframe (based on right panel)
+        const nKeyframes = this.annotations.keyframes.length;
         var i = 1;
-        while ((i < this.annotations.keyframes.length) && (this.annotations.keyframes[i] <= this.rightPanel.timestamp)) {
+        while ((i < nKeyframes) && (this.annotations.keyframes[i] <= this.rightPanel.timestamp)) {
             i += 1;
         }
 
-        if (i < this.annotations.keyframes.length) {
+        if (i < nKeyframes) {
             this.seekToTime(this.annotations.keyframes[i - 1], this.annotations.keyframes[i]);
             return true;
         }
@@ -661,12 +697,13 @@ class ANUVidLib {
 
     prevKeyframe() {
         // find previous keyframe (based on left panel)
+        const nKeyframes = this.annotations.keyframes.length;
         var i = 0;
-        while ((i < this.annotations.keyframes.length) && (this.annotations.keyframes[i] < this.leftPanel.timestamp)) {
+        while ((i < nKeyframes) && (this.annotations.keyframes[i] < this.leftPanel.timestamp)) {
             i += 1;
         }
 
-        if (i < this.annotations.keyframes.length) {
+        if (i < nKeyframes) {
             this.seekToTime(i == 0 ? 0.0 : this.annotations.keyframes[i - 1], this.annotations.keyframes[i]);
             return true;
         }
@@ -717,6 +754,11 @@ class ANUVidLib {
             this.activeObject = null;
             this.redraw();
         }
+    }
+
+    newVidSeg() {
+        this.annotations.vidSegList.push(new VidSegment({start: this.leftPanel.timestamp, end: this.rightPanel.timestamp}));
+        this.refreshVidSegTable(v.annotations.vidSegList.length - 1);
     }
 
     // Process mouse movement over a panel.
@@ -858,78 +900,5 @@ class ANUVidLib {
                 tbl.rows[tbl.rows.length - 1].cells[4].firstElementChild.focus();
             }
         }
-    }
-}
-
-/*
-** Annotation Utility Functions
-*/
-
-function newclip() {
-    var table = document.getElementById(VIDSEGTABLENAME);
-    addclip(table, v.leftPanel.timestamp, v.rightPanel.timestamp);
-}
-
-function addclip(table, ts_start, ts_end, actionId=null, description="", focus=true) {
-    var row = table.insertRow(-1);
-    row.insertCell(0).innerHTML = ts_start;
-    row.insertCell(1).innerHTML = ts_end;
-
-    var select = document.createElement("select");
-    select.classList.add("segdesc"); select.style.width = "100%";
-    for (var k in v.annotations.lblConfig.actionLabels) {
-        var opt = document.createElement("option");
-        opt.textContent = String(k);
-        opt.value = String(k);
-        select.appendChild(opt);
-    }
-    select.value = actionId;
-    row.insertCell(2).appendChild(select);
-
-    var input = document.createElement("input");
-    input.type = "text"; input.classList.add("segdesc"); input.value = description;
-    parent = row.insertCell(3);
-    parent.appendChild(input);
-    var cell = row.insertCell(4);
-    cell.innerHTML = "<button title='delete' onclick='delclip(this.parentElement.parentElement);'>&#x2718;</button>";
-    cell.innerHTML += " <button title='move up' onclick='moveRowUp(this.parentElement.parentElement, 1);'>&#x1F819;</button>";
-    cell.innerHTML += " <button title='move down' onclick='moveRowDown(this.parentElement.parentElement);'>&#x1F81B;</button>";
-    cell.innerHTML += " <button title='goto' onclick='v.seekToTime(" + ts_start + ", " + ts_end + ", true);'>&#x270E;</button>";
-    cell.style.textAlign = "right";
-    input.onkeypress = function(event) { defocusOnEnter(event, document.getElementById(LEFTSLIDERNAME)); }
-    if (focus) input.focus();
-}
-
-function delclip(row) {
-    var table = document.getElementById(VIDSEGTABLENAME);
-    table.deleteRow(row.rowIndex);
-}
-
-function clearclips() {
-    var table = document.getElementById(VIDSEGTABLENAME);
-    for (var i = table.rows.length - 1; i > 0; i--) {
-        table.deleteRow(i);
-    }
-}
-
-function sortclips(ascending = true) {
-    // extract start and end times from segement
-    var table = document.getElementById(VIDSEGTABLENAME);
-    var data = [];
-    for (var i = 1; i < table.rows.length; i++) {
-        data.push({s: table.rows[i].cells.item(0).innerHTML, t: table.rows[i].cells.item(1).innerHTML,
-            v: table.rows[i].cells.item(2).firstElementChild.value});
-    }
-
-    // sort
-    data.sort(function(a, b){if (a.s == b.s) return a.t - b.t; return a.s - b.s;});
-    if (!ascending) {
-        data.reverse();
-    }
-
-    // repopulate the table
-    clearclips();
-    for (var i = 0; i < data.length; i++) {
-        addclip(table, data[i].s, data[i].t, data[i].v, false);
     }
 }

@@ -8,16 +8,6 @@
     <script type="text/javascript" src="anuvidlib.js"></script>
     <script type="text/javascript">
         function todo() { window.alert("Not implemented yet!"); }
-
-        function randbox() {
-            let frameIndex = v.time2indx(v.leftPanel.timestamp);
-            let x = 0.9 * Math.random();
-            let y = 0.9 * Math.random();
-            let w = (0.9 - x) * Math.random() + 0.1;
-            let h = (0.9 - y) * Math.random() + 0.1;
-            v.annotations.objectList[frameIndex].push(new ObjectBox({x: x, y: y, width: w, height: h, colour: '#' + Math.random().toString(16).substr(2,6)}));
-            v.redraw(ANUVidLib.BOTH);
-        }
     </script>
     <script type="text/javascript">
         var v = null;
@@ -70,14 +60,15 @@
 
             // redraw annotation data
             vidLibObj.drawKeyframes();
-            vidLibObj.redraw();
+            vidLibObj.refreshVidSegTable();
+            vidLibObj.resize();
+            //vidLibObj.redraw();
         }
 
         function clearAllAnnotations() {
             var result = confirm("Are you sure you want to clear all annotations?");
             if (result) {
                 v.annotations.clear();
-                clearclips(); // TODO: move into v.annotations
                 updateGUI(v);
             }
         }
@@ -143,6 +134,10 @@
             document.getElementById('helpoverlay').style.display = 'block';
         }
 
+        function showabout() {
+            document.getElementById('aboutoverlay').style.display = 'block';
+        }
+
         document.addEventListener('keyup', (e) => { return onkeypress(e); })
         function onkeypress(e) {
             // don't process key if inside a textbox or a drop-down list
@@ -178,7 +173,8 @@
                 return true;
 
             case 0xBB:  // plus, equals
-                newclip(); return true;
+                v.newVidSeg();
+                return true;
 
             case 0xDB:  // [, {
                 document.getElementById('leftslider').focus();
@@ -196,7 +192,7 @@
 </head>
 <body onload="init();" onunload="fini();">
 <div id="banner">
-    <button title="show menu" id="showmenubtn" onclick="showmenu();">&#x2630</button>
+    <button title="show menu" id="showmenubtn" onclick="showmenu();">&#x2630;</button>
     <img src="logo.png" id="logo">
 </div>
 <center>
@@ -268,7 +264,7 @@
             <span style="float: right;" id="leftstatus">none</span>
         </div>
     </div>
-    <div id="centerpanel" style="width: 10%; float: left; text-align: center; position: relative;">
+    <div id="centerpanel" style="width: 10%; min-width: 80pt; float: left; text-align: center; position: relative;">
         <b>Copy</b><br><p/>
         <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, false);" title="copy left" type="button" style="width: 30%;">&larr;</button>
         <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, false);" title="copy right" type="button" style="width: 30%;">&rarr;</button>
@@ -276,7 +272,14 @@
         <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, true);" title="replace left" type="button" style="width: 30%;">&#8606;</button>
         <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, true);" title="replace right" type="button" style="width: 30%;">&#8608;</button>
         <br><p/>
-        <button onclick="todo();" title="interpolate" type="button" style="width: 60%;">&#8611; interpolate</button>
+        <button onclick="todo();" title="interpolate" type="button" style="width: 60%;">&#8611; interp.</button>
+        <br><p/>
+        <b>Mode</b><br><p/>
+        <select id="mode" name="mode">
+            <option value="object" selected>Objects</option>
+            <option value="region" disabled>Regions</option>
+            <option value="skeleton" disabled>Skeletons</option>
+        </select>
         <br><p/>
         <b>Options</b><br><p/>
         <input id="tiedcb" type="checkbox" onclick="v.prefs.update('tiedframes', this.checked);">
@@ -308,20 +311,6 @@
     <td id="keyframesdiv">
         <fieldset>
             <legend>Keyframes</legend>
-            <!--
-            <div style="float: left;">
-                <button title="generate" onclick="v.generateKeyframes();">&#x23F2; generate</button>
-                <button title="export" onclick="todo();">&#x1f4be; export</button>
-            </div>
-            <div style="float: left; margin: 4px;">
-                <input id="keyframeListId" type="text" style="width: 100%;">
-            </div>
-            <div style="float: right;">
-                <button title="previous" onclick="v.prevKeyframe();">&lt;</button>
-                <button title="next" onclick="v.nextKeyframe();">&gt;</button>
-            </div>
-            <div style="clear: both;"></div>
-            -->
             <table>
                 <tr>
                     <td><button title="generate" onclick="v.generateKeyframes();">&#x23F2;&nbsp;generate</button></td>
@@ -340,7 +329,6 @@
         <div style="width: 45%; float: left;">
             <fieldset>
                 <legend>Objects</legend>
-                <!-- <button onclick="randbox();"><font color="red">TESTING:</font> Random Box</button> -->
                 <div style="float: right;"><button title="clear all" onclick="v.clearObjects(ANUVidLib.LEFT);">clear</button></div>
                 <div style="clear: both;"></div>
                 <table id="leftobjtable" width="100%" style="table-layout: fixed;">
@@ -367,8 +355,8 @@
         <fieldset>
             <legend>Video segments</legend>
             <div style="float: right;">
-                <button title="sort" onclick="sortclips();">&#x21A7; sort</button>
-                <button title="add segment" onclick="newclip();">&#x271A;</button>
+                <button title="sort" onclick="v.annotations.sortVidSegs(); v.refreshVidSegTable();">&#x21A7; sort</button>
+                <button title="add segment" onclick="v.newVidSeg();">&#x271A;</button>
             </div>
             <div style="clear: both;"></div>
             <table id="vidsegtable" width="100%" style="table-layout: fixed;">
@@ -403,7 +391,7 @@
 <div id="helpoverlay" class="overlay">
     <div class="centered" style="background: white; padding: 10px;">
         <span class="overlayclosebtn" onclick="this.parentElement.parentElement.style.display = 'none';">&times;</span>
-        <center><small>Version <span id="version">0.0</span></small></center>
+        <!-- <center><small>Version <span id="version">0.0</span></small></center> -->
 
         <b>Help</b><br>
         Click the top-left menu button (&#x2630) to load and save data.<br>
@@ -436,11 +424,30 @@
     </div>
 </div>
 
+<!-- overlay about window -->
+<div id="aboutoverlay" class="overlay">
+    <div class="centered" style="background: white; padding: 10px;">
+        <span class="overlayclosebtn" onclick="this.parentElement.parentElement.style.display = 'none';">&times;</span>
+        <center><small>Version <span id="version">0.0</span></small></center>
+        <b>About</b><br>
+        Developed by the Australian National University Machine Learning and Computer Vision group
+        as a high quality yet simple and efficient to use open-source video annotation tool.
+        <p/>
+
+        <b>Contributors</b><br>
+        <ul>
+            <li>Stephen Gould</li>
+            <li>TODO</li>
+        </ul>
+        <p/>
+    </div>
+</div>
+
 
 <p/>
 <address>
     Copyright &copy; 2020, Stephen Gould. All rights reserved.<br>
-    <span onclick="todo();" class="textlink">about</span> |
+    <span onclick="showabout();" class="textlink">about</span> |
     <span onclick="showhelp();" class="textlink">help</span> |
     <a href='mailto:stephen.gould@anu.edu.au' class="textlink">contact</a>
 </address>

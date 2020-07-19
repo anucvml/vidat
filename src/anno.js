@@ -127,11 +127,11 @@ class ObjectBox {
 /* Video Objects -------------------------------------------------------------*/
 
 class VidSegment {
-    constructor(start, end, actionId=null, description="") {
-        this.start = start;
-        this.end = end;
-        this.actionId = actionId;
-        this.description = description;
+    constructor(json) {
+        this.start = json.start;
+        this.end = json.end;
+        this.actionId = "actionId" in json ? json.actionId : null;
+        this.description = "description" in json ? json.description : "";
     }
 }
 
@@ -234,7 +234,6 @@ class LabelConfig {
 ** Holds all annotations for a given video. And provides utility functions.
 */
 
-// TODO: load and save video clips (segments)
 // TODO: separate label configuration from annotations
 
 class AnnotationContainer {
@@ -244,6 +243,7 @@ class AnnotationContainer {
 
         this.keyframes = [];        // array of keyframe timestamps (in seconds)
         this.objectList = [[]];     // array of array of objects
+        this.vidSegList = [];       // array of temporal segments (action clips)
 
         if (numFrames > 0) {
             this.objectList.length = numFrames;
@@ -255,6 +255,7 @@ class AnnotationContainer {
     clear() {
         this.keyframes = [];
         this.clearObjects();
+        this.clearVidSegs();
     }
 
     // Loads from file. Prompts for filename. Invokes callback after loaded.
@@ -284,6 +285,14 @@ class AnnotationContainer {
                         }
                     }
                 }
+                if ("vidSegList" in json) {
+                    this.clearVidSegs();
+                    for (var i = 0; i < json.vidSegList.length; i++) {
+                        if ((json.vidSegList[i].start >= 0) && (json.vidSegList[i].end <= this.owner.video.duration)) {
+                            this.vidSegList.push(new VidSegment(json.vidSegList[i]));
+                        }
+                    }
+                }
 
                 if (callback != null)
                     callback();
@@ -292,6 +301,7 @@ class AnnotationContainer {
             reader.readAsText(file, 'UTF-8');
         };
 
+        // invoke the save
         dlg.click();
     }
 
@@ -302,7 +312,11 @@ class AnnotationContainer {
             return;
 
         // create object for saving
-        var json = {version: this.owner.prefs.version, lblConfig: this.lblConfig, keyframes: this.keyframes, objectList: []};
+        var json = { version: this.owner.prefs.version,
+            lblConfig: this.lblConfig,
+            keyframes: this.keyframes,
+            objectList: [],
+            vidSegList: this.vidSegList };
         for (var i = 0; i < this.objectList.length; i++) {
             if (this.objectList[i].length > 0) {
                 const ts = this.owner.indx2time(i);
@@ -364,8 +378,33 @@ class AnnotationContainer {
         return true;
     }
 
+    // Clear video segments.
+    clearVidSegs() {
+        this.vidSegList = [];
+    }
+
+    // Swap video segments.
+    swapVidSegs(segIndexA, segIndexB) {
+        if ((segIndexA < 0) || (segIndexA >= this.vidSegList.length) ||
+            (segIndexB < 0) || (segIndexB >= this.vidSegList.length))
+            return false;
+
+        var seg = this.vidSegList[segIndexA];
+        this.vidSegList[segIndexA] = this.vidSegList[segIndexB];
+        this.vidSegList[segIndexB] = seg;
+
+        return true;
+    }
+
+    // Sort video clips.
+    sortVidSegs(ascending = true) {
+        this.vidSegList.sort(function(a, b){if (a.start == b.start) return a.end - b.end; return a.start - b.start;});
+        if (!ascending) {
+            data.reverse();
+        }
+    }
+
     // Get information as a string.
-    // TODO: video clip statistics
     getInfoString() {
         let nKeyframes = this.keyframes.length;
         let nFrames = this.objectList.length;
@@ -385,7 +424,9 @@ class AnnotationContainer {
             return String(n) + " " + (plural == null ? singular + "s" : plural);
         }
 
-        return toStringHelper(nKeyframes, "keyframe") + "; " + toStringHelper(nObjects, "object") +
-            (nObjects > 0 ? " in " + toStringHelper(nFramesWithObjects, "frame") + "." : ".");
+        var str = toStringHelper(nKeyframes, "keyframe") + "; ";
+        str += toStringHelper(nObjects, "object") + (nObjects > 0 ? " in " + toStringHelper(nFramesWithObjects, "frame") : "") + "; ";
+        str += toStringHelper(this.vidSegList.length, "segment") + ".";
+        return str;
     }
 }
