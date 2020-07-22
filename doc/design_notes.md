@@ -84,7 +84,7 @@ The tool is invoked by loading `index.html`. The URL query string may include pa
 
 ## Main Classes
 
-* **Annotation Types**: Various classes representing each annotation type. Responsible for holding attributes, overlaying (drawing) the annotation on a video frame, and basic operations for modifying the annotation.
+* `ObjectBox`, `PoylgonRegion`, `Skeleton`, `VidSegment`: Various classes representing each annotation type. Responsible for holding attributes, overlaying (drawing) the annotation on a video frame, and basic operations for interacting with and modifying the annotation.
 * `AnnotationContainer`: Holds all the annotations for a given video including frame-level and video-level annotations. 
 * `LabelConfig`: Stores configuration of labels (e.g., object names and colours).
 * `ANUVidLibPreferences`: Stores preferences for the annotation tool (e.g., state of GUI checkboxes).
