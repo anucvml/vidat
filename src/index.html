@@ -34,17 +34,17 @@
         // update visual state of GUI to reflect preferences
         function updateGUI (vidLibObj) {
             // get checkboxes and visual elements into correct state
-            if (vidLibObj.prefs.tiedframes != document.getElementById('tiedcb').checked)
+            if (vidLibObj.prefs.tiedframes !== document.getElementById('tiedcb').checked)
                 document.getElementById('tiedcb').click()
-            if (vidLibObj.prefs.greyframes != document.getElementById('greycb').checked)
+            if (vidLibObj.prefs.greyframes !== document.getElementById('greycb').checked)
                 document.getElementById('greycb').click()
-            if (vidLibObj.prefs.showkeyframes != document.getElementById('showkfcb').checked)
+            if (vidLibObj.prefs.showkeyframes !== document.getElementById('showkfcb').checked)
                 document.getElementById('showkfcb').click()
-            if (vidLibObj.prefs.showobjects != document.getElementById('showobjscb').checked)
+            if (vidLibObj.prefs.showobjects !== document.getElementById('showobjscb').checked)
                 document.getElementById('showobjscb').click()
-            if (vidLibObj.prefs.showobjects != document.getElementById('showregscb').checked)
+            if (vidLibObj.prefs.showobjects !== document.getElementById('showregscb').checked)
                 document.getElementById('showregscb').click()
-            if (vidLibObj.prefs.showvidsegs != document.getElementById('showvidsegcb').checked)
+            if (vidLibObj.prefs.showvidsegs !== document.getElementById('showvidsegcb').checked)
                 document.getElementById('showvidsegcb').click()
 
             // show configuration (when menu is visible)
@@ -146,14 +146,14 @@
 
         function onkeypress (e) {
             // don't process key if inside a textbox or a drop-down list
-            if ((e.target.nodeName.toLowerCase() == 'input') && (e.target.type.toLowerCase() == 'text')) {
+            if ((e.target.nodeName.toLowerCase() === 'input') && (e.target.type.toLowerCase() === 'text')) {
                 return false
             }
-            if (e.target.nodeName.toLowerCase() == 'select') {
+            if (e.target.nodeName.toLowerCase() === 'select') {
                 return false
             }
             // don't process key if menu is showing (TODO: can this be replaced by assigning an onkeypress event to the menu div?)
-            if (document.getElementById('menudiv').style.display == 'block') {
+            if (document.getElementById('menudiv').style.display === 'block') {
                 return false
             }
 

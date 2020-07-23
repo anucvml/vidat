@@ -31,7 +31,7 @@ const OBJINFOPOPUP = 'objectinfo'
 
 // defocus the current control element when enter is pressed and move focus to target element
 function defocusOnEnter (event, target = null) {
-    if (event.keyCode == 13 || event.which == 13) {
+    if (event.keyCode === 13 || event.which === 13) {
         event.currentTarget.blur()
         if (target != null) {
             target.focus()
@@ -288,14 +288,14 @@ class ANUVidLib {
 
             // update the correct panel
             console.assert(self.vidRequestQ.length > 0, 'something went wrong')
-            if (self.vidRequestQ[0].who == ANUVidLib.LEFT) {
+            if (self.vidRequestQ[0].who === ANUVidLib.LEFT) {
                 self.leftPanel.frame.src = canvas.toDataURL('image/jpeg')
-            } else if (self.vidRequestQ[0].who == ANUVidLib.RIGHT) {
+            } else if (self.vidRequestQ[0].who === ANUVidLib.RIGHT) {
                 self.rightPanel.frame.src = canvas.toDataURL('image/jpeg')
             }
 
             // cache frame if on one second boundary
-            if (self.video.currentTime == Math.floor(self.video.currentTime)) {
+            if (self.video.currentTime === Math.floor(self.video.currentTime)) {
                 //console.log("caching frame at " + self.video.currentTime + " seconds");
                 self.frameCache[self.video.currentTime] = canvas.toDataURL('image/jpeg')
             }
@@ -361,7 +361,7 @@ class ANUVidLib {
         if (leftIndex >= 0) {
             const index = Math.floor(Math.min(Math.max(0, leftIndex), FPS * this.video.duration), 0)
             const ts = this.indx2time(index)
-            if ((index % FPS == 0) && (this.frameCache[ts] != null)) {
+            if ((index % FPS === 0) && (this.frameCache[ts] != null)) {
                 this.leftPanel.frame.src = this.frameCache[ts]
             } else {
                 this.vidRequestQ.push({ timestamp: ts, who: ANUVidLib.LEFT })
@@ -375,7 +375,7 @@ class ANUVidLib {
         if (rightIndex >= 0) {
             const index = Math.floor(Math.min(Math.max(0, rightIndex), FPS * this.video.duration), 0)
             const ts = this.indx2time(index)
-            if ((index % FPS == 0) && (this.frameCache[ts] != null)) {
+            if ((index % FPS === 0) && (this.frameCache[ts] != null)) {
                 this.rightPanel.frame.src = this.frameCache[ts]
             } else {
                 this.vidRequestQ.push({ timestamp: ts, who: ANUVidLib.RIGHT })
@@ -453,22 +453,22 @@ class ANUVidLib {
 
     // Redraw frames and annotations. Parameter 'side' can be LEFT, RIGHT or BOTH.
     redraw (side = ANUVidLib.BOTH) {
-        if (side == ANUVidLib.BOTH) {
+        if (side === ANUVidLib.BOTH) {
             this.redraw(ANUVidLib.LEFT)
             this.redraw(ANUVidLib.RIGHT)
             return
         }
 
-        console.assert((side == ANUVidLib.LEFT) || (side == ANUVidLib.RIGHT), 'invalid side')
+        console.assert((side === ANUVidLib.LEFT) || (side === ANUVidLib.RIGHT), 'invalid side')
 
         // draw left frame
-        if (side == ANUVidLib.LEFT) {
+        if (side === ANUVidLib.LEFT) {
             this.paint(this.leftPanel)
             this.refreshObjTable(this.leftPanel)
         }
 
         // draw right frame
-        if (side == ANUVidLib.RIGHT) {
+        if (side === ANUVidLib.RIGHT) {
             this.paint(this.rightPanel)
             this.refreshObjTable(this.rightPanel)
         }
@@ -529,11 +529,11 @@ class ANUVidLib {
 
     // Copy objects from source frame to target frame.
     copy (srcSide, tgtSide, overwrite) {
-        const srcPanel = (srcSide == ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel
-        const tgtPanel = (tgtSide == ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel
+        const srcPanel = (srcSide === ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel
+        const tgtPanel = (tgtSide === ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel
         const srcIndex = this.time2indx(srcPanel.timestamp)
         const tgtIndex = this.time2indx(tgtPanel.timestamp)
-        if (srcIndex == tgtIndex)
+        if (srcIndex === tgtIndex)
             return
 
         this.annotations.copy(srcIndex, tgtIndex, overwrite)
@@ -544,7 +544,7 @@ class ANUVidLib {
     refreshObjTable (panel) {
 // get object list and table reference
         const frameIndex = this.time2indx(panel.timestamp)
-        const table = document.getElementById(panel.side == ANUVidLib.LEFT ? LEFTOBJTBLNAME : RIGHTOBJTBLNAME)
+        const table = document.getElementById(panel.side === ANUVidLib.LEFT ? LEFTOBJTBLNAME : RIGHTOBJTBLNAME)
 
         // delete all rows (except header)
         for (let i = table.rows.length - 1; i >= 1; i--) {
@@ -673,7 +673,7 @@ class ANUVidLib {
             input.onblur = function (event) { seg.description = event.target.value }
 
             // Set focus on active segment
-            if (i == activeSeg) {
+            if (i === activeSeg) {
                 if (focus) input.focus()
             }
         }
@@ -713,7 +713,7 @@ class ANUVidLib {
             }
         }
         timestamps.sort(function (a, b) {return a - b})
-        this.annotations.keyframes = timestamps.filter((e, i, a) => (i == 0) || (e !== a[i - 1]))
+        this.annotations.keyframes = timestamps.filter((e, i, a) => (i === 0) || (e !== a[i - 1]))
         this.drawKeyframes()
     }
 
@@ -721,7 +721,7 @@ class ANUVidLib {
         // TODO: better keyframe visualisation
         const el = document.getElementById('keyframeListId')
         const nKeyframes = this.annotations.keyframes.length
-        if (nKeyframes == 0) {
+        if (nKeyframes === 0) {
             el.value = ''
             return
         }
@@ -757,7 +757,7 @@ class ANUVidLib {
         }
 
         if (i < nKeyframes) {
-            this.seekToTime(i == 0 ? 0.0 : this.annotations.keyframes[i - 1], this.annotations.keyframes[i])
+            this.seekToTime(i === 0 ? 0.0 : this.annotations.keyframes[i - 1], this.annotations.keyframes[i])
             return true
         }
 
@@ -766,7 +766,7 @@ class ANUVidLib {
 
     // Clear object annotations for the current frame.
     clearObjects (side) {
-        let frameIndex = v.time2indx(side == ANUVidLib.LEFT ? this.leftPanel.timestamp : this.rightPanel.timestamp)
+        let frameIndex = v.time2indx(side === ANUVidLib.LEFT ? this.leftPanel.timestamp : this.rightPanel.timestamp)
         this.annotations.objectList[frameIndex] = []
         this.redraw(ANUVidLib.BOTH)
     }
@@ -789,7 +789,7 @@ class ANUVidLib {
 
     // Delete the active object (as long as it's not being modified).
     deleteActiveObject () {
-        if ((this.activeObject != null) && (this.dragContext.mode == DragContext.NONE)) {
+        if ((this.activeObject != null) && (this.dragContext.mode === DragContext.NONE)) {
             let frameIndex = this.time2indx(this.leftPanel.timestamp)
             for (let i = 0; i < this.annotations.objectList[frameIndex].length; i++) {
                 if (this.annotations.objectList[frameIndex][i] === this.activeObject) {
@@ -819,11 +819,11 @@ class ANUVidLib {
     // Process mouse movement over a panel.
     mousemove (event, side) {
         let el
-        console.assert((side == ANUVidLib.LEFT) || (side == ANUVidLib.RIGHT), 'invalid side')
+        console.assert((side === ANUVidLib.LEFT) || (side === ANUVidLib.RIGHT), 'invalid side')
         //console.log("mouse moving in " + ((side == ANUVidLib.LEFT) ? "left" : "right"));
 
         // get current panel
-        const panel = (side == ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel
+        const panel = (side === ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel
 
         // compute delta movement (can't use event.movement{X,Y} because it doesn't take account of browser zoom)
         const deltaX = event.offsetX - this.dragContext.lastDownX
@@ -832,17 +832,17 @@ class ANUVidLib {
         this.dragContext.lastDownY = event.offsetY
 
         // handle dragging
-        if (this.dragContext.mode == DragContext.MOVING) {
+        if (this.dragContext.mode === DragContext.MOVING) {
             this.activeObject.x += deltaX / panel.canvas.width
             this.activeObject.y += deltaY / panel.canvas.height
             this.paint(panel)
-            if (this.leftPanel.timestamp == this.rightPanel.timestamp) {
+            if (this.leftPanel.timestamp === this.rightPanel.timestamp) {
                 this.paint(panel.other)
             }
             return
         }
 
-        if (this.dragContext.mode == DragContext.SIZING) {
+        if (this.dragContext.mode === DragContext.SIZING) {
             const x = this.dragContext.anchor.u / panel.canvas.width
             const y = this.dragContext.anchor.v / panel.canvas.height
             const w = deltaX / panel.canvas.width +
@@ -851,7 +851,7 @@ class ANUVidLib {
                 ((y > this.activeObject.y) ? -this.activeObject.height : this.activeObject.height)
             this.activeObject.resize(x, y, w, h)
             this.paint(panel)
-            if (this.leftPanel.timestamp == this.rightPanel.timestamp) {
+            if (this.leftPanel.timestamp === this.rightPanel.timestamp) {
                 this.paint(panel.other)
             }
             return
@@ -877,7 +877,7 @@ class ANUVidLib {
         }
 
         // repaint if the active object changed
-        if (this.activeObject != lastActiveObject) {
+        if (this.activeObject !== lastActiveObject) {
             this.paint(panel)
         }
     }
@@ -887,9 +887,9 @@ class ANUVidLib {
         this.dragContext.mode = DragContext.NONE
         if (this.activeObject != null) {
             this.activeObject = null
-            this.paint((side == ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel)
-            if (this.leftPanel.timestamp == this.rightPanel.timestamp) {
-                this.paint((side == ANUVidLib.RIGHT) ? this.leftPanel : this.rightPanel)
+            this.paint((side === ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel)
+            if (this.leftPanel.timestamp === this.rightPanel.timestamp) {
+                this.paint((side === ANUVidLib.RIGHT) ? this.leftPanel : this.rightPanel)
             }
         }
     }
@@ -901,7 +901,7 @@ class ANUVidLib {
         el.style.display = 'none'
 
         // search for an active object
-        const panel = (side == ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel
+        const panel = (side === ANUVidLib.LEFT) ? this.leftPanel : this.rightPanel
         this.activeObject = this.findActiveObject(event.offsetX, event.offsetY, panel)
 
         if ((this.activeObject != null) && (!event.shiftKey)) {
@@ -948,21 +948,22 @@ class ANUVidLib {
         if (this.activeObject != null) {
             if (this.dragContext.newObject) {
                 // delete mouse hasn't moved
-                if ((event.offsetX == this.dragContext.mouseDownX) && (event.offsetY == this.dragContext.mouseDownY)) {
+                if ((event.offsetX === this.dragContext.mouseDownX) &&
+                    (event.offsetY === this.dragContext.mouseDownY)) {
                     //console.log("removing new object");
                     const frameIndex = this.time2indx(
-                        side == ANUVidLib.LEFT ? this.leftPanel.timestamp : this.rightPanel.timestamp)
+                        side === ANUVidLib.LEFT ? this.leftPanel.timestamp : this.rightPanel.timestamp)
                     this.annotations.objectList[frameIndex].pop()
                     this.dragContext.newObject = false
                 }
             }
 
             //this.activeObject = null;
-            this.redraw(this.leftPanel.timestamp == this.rightPanel.timestamp ? ANUVidLib.BOTH : side)
+            this.redraw(this.leftPanel.timestamp === this.rightPanel.timestamp ? ANUVidLib.BOTH : side)
 
             // set focus of next component
             if (this.dragContext.newObject) {
-                const tbl = document.getElementById(side == ANUVidLib.LEFT ? LEFTOBJTBLNAME : RIGHTOBJTBLNAME)
+                const tbl = document.getElementById(side === ANUVidLib.LEFT ? LEFTOBJTBLNAME : RIGHTOBJTBLNAME)
                 tbl.rows[tbl.rows.length - 1].cells[4].firstElementChild.focus()
             }
         }

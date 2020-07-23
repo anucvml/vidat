@@ -57,7 +57,7 @@ class ObjectBox {
         const h = this.height * ctx.canvas.height
 
         let colour = '#00ff00'
-        if ((this.colour != null) && (this.colour != '')) {
+        if ((this.colour != null) && (this.colour !== '')) {
             colour = this.colour
         } else if (this.labelId in colourTable) {
             colour = colourTable[this.labelId]
@@ -212,7 +212,7 @@ class LabelConfig {
     // Save to file. Prompts for filename.
     save () {
         const filename = window.prompt('Enter configuration filename for saving:', 'config.txt')
-        if ((filename == null) || (filename == ''))
+        if ((filename == null) || (filename === ''))
             return
 
         const a = document.createElement('a')
@@ -240,7 +240,7 @@ class LabelConfig {
         const lines = str.split('\n')
         for (let i = 0; i < lines.length; i++) {
             const pair = lines[i].split(':')
-            if (pair.length != 2) continue
+            if (pair.length !== 2) continue
             dict[pair[0].trim()] = pair[1].trim()
         }
 
@@ -325,7 +325,7 @@ class AnnotationContainer {
     // Save to file. Prompts for filename.
     save () {
         const filename = window.prompt('Enter configuration filename for saving:', 'annotations.txt')
-        if ((filename == null) || (filename == ''))
+        if ((filename == null) || (filename === ''))
             return
 
         // create object for saving
@@ -354,7 +354,7 @@ class AnnotationContainer {
 
     // Copy annotations from source frame to target frame.
     copy (srcIndex, tgtIndex, overwrite) {
-        if (srcIndex == tgtIndex)
+        if (srcIndex === tgtIndex)
             return false
 
         if (overwrite) {
@@ -374,7 +374,7 @@ class AnnotationContainer {
         // draw bounding box objects
         const colourTable = this.owner.lblConfig.objectLabels
         for (let i = 0; i < this.objectList[frameIndex].length; i++) {
-            this.objectList[frameIndex][i].draw(ctx, colourTable, this.objectList[frameIndex][i] == activeObject)
+            this.objectList[frameIndex][i].draw(ctx, colourTable, this.objectList[frameIndex][i] === activeObject)
         }
     }
 
@@ -419,7 +419,7 @@ class AnnotationContainer {
     // Sort video clips.
     sortVidSegs (ascending = true) {
         this.vidSegList.sort(function (a, b) {
-            if (a.start == b.start) return a.end - b.end
+            if (a.start === b.start) return a.end - b.end
             return a.start - b.start
         })
         if (!ascending) {
@@ -442,8 +442,8 @@ class AnnotationContainer {
 
         // Prints count and object description.
         function toStringHelper (n, singular, plural = null) {
-            if (n == 0) return 'No ' + (plural == null ? singular + 's' : plural)
-            if (n == 1) return String(n) + ' ' + singular
+            if (n === 0) return 'No ' + (plural == null ? singular + 's' : plural)
+            if (n === 1) return String(n) + ' ' + singular
             return String(n) + ' ' + (plural == null ? singular + 's' : plural)
         }
 
