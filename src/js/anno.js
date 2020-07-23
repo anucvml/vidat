@@ -24,7 +24,7 @@ class ObjectBox {
 
     // Create a clone of this object.
     clone () {
-        var obj = new ObjectBox(this)
+        const obj = new ObjectBox(this)
         return obj
     }
 
@@ -56,7 +56,7 @@ class ObjectBox {
         const w = this.width * ctx.canvas.width
         const h = this.height * ctx.canvas.height
 
-        var colour = '#00ff00'
+        let colour = '#00ff00'
         if ((this.colour != null) && (this.colour != '')) {
             colour = this.colour
         } else if (this.labelId in colourTable) {
@@ -176,15 +176,15 @@ class LabelConfig {
     // Load from file. Prompts for filename. Invoke callback when done. Accepts files saved by corresponding 'save'
     // method or files saved by the AnnotationContainer where the configuration is under the `lblConfig` field.
     load (callback = null) {
-        var dlg = document.createElement('input')
+        const dlg = document.createElement('input')
         dlg.type = 'file'
         dlg.onchange = e => {
             let file = e.target.files[0]
-            var reader = new FileReader()
+            const reader = new FileReader()
 
             reader.onload = readerEvent => {
-                var content = readerEvent.target.result
-                var cfg = JSON.parse(content)
+                const content = readerEvent.target.result
+                let cfg = JSON.parse(content)
 
                 // if annotation container file pull configuration from lblConfig
                 if ('lblConfig' in cfg) {
@@ -211,12 +211,12 @@ class LabelConfig {
 
     // Save to file. Prompts for filename.
     save () {
-        var filename = window.prompt('Enter configuration filename for saving:', 'config.txt')
+        const filename = window.prompt('Enter configuration filename for saving:', 'config.txt')
         if ((filename == null) || (filename == ''))
             return
 
-        var a = document.createElement('a')
-        var file = new Blob([JSON.stringify(this)], { type: 'text/plain' })
+        const a = document.createElement('a')
+        const file = new Blob([JSON.stringify(this)], { type: 'text/plain' })
         a.href = URL.createObjectURL(file)
         a.download = filename
         //a.target = "_blank";
@@ -227,8 +227,8 @@ class LabelConfig {
     // Convert actionLabels or objectLabels to a string. Parameter 'dict' should be one of
     // this.actionLabels or this.objectLabels.
     toString (dict) {
-        var str = ''
-        for (var k in dict) {
+        let str = ''
+        for (const k in dict) {
             str += String(k) + ': ' + dict[k] + '\n'
         }
         return str
@@ -236,10 +236,10 @@ class LabelConfig {
 
     // Creates a dictionary from a string of the form "<id>: <colour>\n ..."
     fromString (str) {
-        var dict = {}
-        var lines = str.split('\n')
-        for (var i = 0; i < lines.length; i++) {
-            var pair = lines[i].split(':')
+        const dict = {}
+        const lines = str.split('\n')
+        for (let i = 0; i < lines.length; i++) {
+            const pair = lines[i].split(':')
             if (pair.length != 2) continue
             dict[pair[0].trim()] = pair[1].trim()
         }
@@ -277,15 +277,15 @@ class AnnotationContainer {
 
     // Loads from file. Prompts for filename. Invokes callback after loaded.
     load (callback = null) {
-        var dlg = document.createElement('input')
+        const dlg = document.createElement('input')
         dlg.type = 'file'
         dlg.onchange = e => {
             let file = e.target.files[0]
-            var reader = new FileReader()
+            const reader = new FileReader()
 
             reader.onload = readerEvent => {
-                var content = readerEvent.target.result
-                var json = JSON.parse(content)
+                const content = readerEvent.target.result
+                const json = JSON.parse(content)
 
                 if ('lblConfig' in json)
                     this.owner.lblConfig = new LabelConfig(json.lblConfig)
@@ -293,10 +293,10 @@ class AnnotationContainer {
                     this.keyframes = json.keyframes
                 if ('objectList' in json) {
                     this.clearObjects()
-                    for (var i = 0; i < json.objectList.length; i++) {
+                    for (let i = 0; i < json.objectList.length; i++) {
                         const indx = this.owner.time2indx(json.objectList[i].ts)
                         if ((indx >= 0) && (indx < this.objectList.length)) {
-                            for (var j = 0; j < json.objectList[i].objects.length; j++) {
+                            for (let j = 0; j < json.objectList[i].objects.length; j++) {
                                 this.objectList[indx].push(new ObjectBox(json.objectList[i].objects[j]))
                             }
                         }
@@ -304,7 +304,7 @@ class AnnotationContainer {
                 }
                 if ('vidSegList' in json) {
                     this.clearVidSegs()
-                    for (var i = 0; i < json.vidSegList.length; i++) {
+                    for (let i = 0; i < json.vidSegList.length; i++) {
                         if ((json.vidSegList[i].start >= 0) && (json.vidSegList[i].end <= this.owner.video.duration)) {
                             this.vidSegList.push(new VidSegment(json.vidSegList[i]))
                         }
@@ -324,27 +324,27 @@ class AnnotationContainer {
 
     // Save to file. Prompts for filename.
     save () {
-        var filename = window.prompt('Enter configuration filename for saving:', 'annotations.txt')
+        const filename = window.prompt('Enter configuration filename for saving:', 'annotations.txt')
         if ((filename == null) || (filename == ''))
             return
 
         // create object for saving
-        var json = {
+        const json = {
             version: this.owner.prefs.version,
             lblConfig: this.owner.lblConfig,
             keyframes: this.keyframes,
             objectList: [],
             vidSegList: this.vidSegList,
         }
-        for (var i = 0; i < this.objectList.length; i++) {
+        for (let i = 0; i < this.objectList.length; i++) {
             if (this.objectList[i].length > 0) {
                 const ts = this.owner.indx2time(i)
                 json.objectList.push({ ts: this.owner.indx2time(i), objects: this.objectList[i] })
             }
         }
 
-        var a = document.createElement('a')
-        var file = new Blob([JSON.stringify(json)], { type: 'text/plain' })
+        const a = document.createElement('a')
+        const file = new Blob([JSON.stringify(json)], { type: 'text/plain' })
         a.href = URL.createObjectURL(file)
         a.download = filename
         //a.target = "_blank";
@@ -361,7 +361,7 @@ class AnnotationContainer {
             this.objectList[tgtIndex] = []
         }
 
-        for (var i = 0; i < this.objectList[srcIndex].length; i++) {
+        for (let i = 0; i < this.objectList[srcIndex].length; i++) {
             this.objectList[tgtIndex].push(this.objectList[srcIndex][i].clone())
         }
 
@@ -373,14 +373,14 @@ class AnnotationContainer {
 
         // draw bounding box objects
         const colourTable = this.owner.lblConfig.objectLabels
-        for (var i = 0; i < this.objectList[frameIndex].length; i++) {
+        for (let i = 0; i < this.objectList[frameIndex].length; i++) {
             this.objectList[frameIndex][i].draw(ctx, colourTable, this.objectList[frameIndex][i] == activeObject)
         }
     }
 
     // Clear objects.
     clearObjects () {
-        for (var i = 0; i < this.objectList.length; i++) {
+        for (let i = 0; i < this.objectList.length; i++) {
             this.objectList[i] = []
         }
     }
@@ -391,7 +391,7 @@ class AnnotationContainer {
             (objIndexB < 0) || (objIndexB >= this.objectList[frmIndexB].length))
             return false
 
-        var obj = this.objectList[frmIndexA][objIndexA]
+        const obj = this.objectList[frmIndexA][objIndexA]
         this.objectList[frmIndexA][objIndexA] = this.objectList[frmIndexB][objIndexB]
         this.objectList[frmIndexB][objIndexB] = obj
 
@@ -409,7 +409,7 @@ class AnnotationContainer {
             (segIndexB < 0) || (segIndexB >= this.vidSegList.length))
             return false
 
-        var seg = this.vidSegList[segIndexA]
+        const seg = this.vidSegList[segIndexA]
         this.vidSegList[segIndexA] = this.vidSegList[segIndexB]
         this.vidSegList[segIndexB] = seg
 
@@ -432,9 +432,9 @@ class AnnotationContainer {
         let nKeyframes = this.keyframes.length
         let nFrames = this.objectList.length
 
-        var nObjects = 0
-        var nFramesWithObjects = 0
-        for (var i = 0; i < nFrames; i++) {
+        let nObjects = 0
+        let nFramesWithObjects = 0
+        for (let i = 0; i < nFrames; i++) {
             nObjects += this.objectList[i].length
             if (this.objectList[i].length > 0)
                 nFramesWithObjects += 1
@@ -447,7 +447,7 @@ class AnnotationContainer {
             return String(n) + ' ' + (plural == null ? singular + 's' : plural)
         }
 
-        var str = toStringHelper(nKeyframes, 'keyframe') + '; '
+        let str = toStringHelper(nKeyframes, 'keyframe') + '; '
         str += toStringHelper(nObjects, 'object') +
             (nObjects > 0 ? ' in ' + toStringHelper(nFramesWithObjects, 'frame') : '') + '; '
         str += toStringHelper(this.vidSegList.length, 'segment') + '.'

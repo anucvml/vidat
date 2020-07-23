@@ -10,18 +10,18 @@
         function todo () { window.alert('Not implemented yet!') }
     </script>
     <script type="text/javascript">
-        var v = null
+        let v = null
 
         function init () {
             v = new ANUVidLib(updateGUI)
 
-            var loadVideoFile = function (event) {
-                var file = this.files[0]
-                var fileURL = URL.createObjectURL(file)
+            const loadVideoFile = function (event) {
+                const file = this.files[0]
+                const fileURL = URL.createObjectURL(file)
                 v.loadVideo(fileURL)
             }
 
-            var input = document.querySelector('#videoinput')
+            const input = document.querySelector('#videoinput')
             input.addEventListener('change', loadVideoFile, false)
             document.getElementById('version').innerHTML = VERSION
             updateGUI(v)
@@ -67,7 +67,7 @@
         }
 
         function clearAllAnnotations () {
-            var result = confirm('Are you sure you want to clear all annotations?')
+            const result = confirm('Are you sure you want to clear all annotations?')
             if (result) {
                 v.annotations.clear()
                 updateGUI(v)
@@ -79,8 +79,8 @@
                 return
             }
             document.getElementById('playeroverlay').style.display = 'block'
-            var startTime = Math.min(v.leftPanel.timestamp, v.rightPanel.timestamp)
-            var endTime = Math.max(v.leftPanel.timestamp, v.rightPanel.timestamp)
+            const startTime = Math.min(v.leftPanel.timestamp, v.rightPanel.timestamp)
+            const endTime = Math.max(v.leftPanel.timestamp, v.rightPanel.timestamp)
             document.getElementById('vidplayer').src = v.video.src + '#t=' + startTime + ',' + endTime
         }
 

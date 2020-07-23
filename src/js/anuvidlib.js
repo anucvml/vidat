@@ -112,8 +112,8 @@ class ANUVidLibPreferences {
         try {
             if (typeof (Storage) !== 'undefined') {
                 if (localStorage.getItem('anucvml:prefs') != null) {
-                    var json = JSON.parse(localStorage.getItem('anucvml:prefs'))
-                    for (var k in json) {
+                    const json = JSON.parse(localStorage.getItem('anucvml:prefs'))
+                    for (const k in json) {
                         if (k in this) this[k] = json[k]
                     }
                 }
@@ -171,7 +171,7 @@ class ANUVidLib {
     // information. Caches frames every second for faster feedback during scrubbing. Calls fcnUpdateGUI(this)
     // when a new video is loaded.
     constructor (fcnUpdateGUI = null) {
-        var self = this
+        const self = this
 
         //this.updateGUIFcn = fcnUpdateGUI;
         this.prefs = new ANUVidLibPreferences()    // gui preferences
@@ -389,7 +389,7 @@ class ANUVidLib {
         // add remaining frames at one-second boundaries for caching
         if (!this.bFrameCacheComplete) {
             this.bFrameCacheComplete = true
-            for (var i = 0; i < this.video.duration; i++) {
+            for (let i = 0; i < this.video.duration; i++) {
                 if (this.frameCache[i] == null) {
                     this.bFrameCacheComplete = false
                     this.vidRequestQ.push({ timestamp: i, who: ANUVidLib.NONE })
@@ -407,8 +407,8 @@ class ANUVidLib {
 
     // Seek to a specific timestamp in the video. A negative number means don't update unless tied.
     seekToTime (leftTime, rightTime, bUpdateSliders = true) {
-        var leftIndex = this.time2indx(leftTime)
-        var rightIndex = this.time2indx(rightTime)
+        const leftIndex = this.time2indx(leftTime)
+        const rightIndex = this.time2indx(rightTime)
         this.leftPanel.slider.value = leftIndex
         this.rightPanel.slider.value = rightIndex
         return this.seekToIndex(leftIndex, rightIndex)
@@ -420,7 +420,7 @@ class ANUVidLib {
         //this.seekToTime(this.rightPanel.timestamp, this.leftPanel.timestamp, true);
         //return;
 
-        var tmp = this.leftPanel.frame.src
+        let tmp = this.leftPanel.frame.src
         this.leftPanel.frame.src = this.rightPanel.frame.src
         this.rightPanel.frame.src = tmp
 
@@ -477,7 +477,7 @@ class ANUVidLib {
     // Draw a frame and it's annotations.
     paint (panel) {
         // draw frame
-        var context = panel.canvas.getContext('2d')
+        const context = panel.canvas.getContext('2d')
         if ((panel.frame != null) && (panel.frame.width > 0) && (panel.frame.height > 0)) {
 
             if (this.prefs.greyframes && (panel.cachedGreyData != null)) {
@@ -489,7 +489,7 @@ class ANUVidLib {
                     panel.cachedGreyData = context.getImageData(0, 0, context.canvas.width, context.canvas.height)
                     let pixels = panel.cachedGreyData.data
                     const nPixels = pixels.length
-                    for (var i = 0; i < nPixels; i += 4) {
+                    for (let i = 0; i < nPixels; i += 4) {
                         let intensity = parseInt(0.299 * pixels[i] + 0.587 * pixels[i + 1] + 0.114 * pixels[i + 2])
                         pixels[i] = intensity
                         pixels[i + 1] = intensity
@@ -542,12 +542,12 @@ class ANUVidLib {
 
     // Refresh list of objects for the given panel.
     refreshObjTable (panel) {
-        // get object list and table reference
+// get object list and table reference
         const frameIndex = this.time2indx(panel.timestamp)
-        var table = document.getElementById(panel.side == ANUVidLib.LEFT ? LEFTOBJTBLNAME : RIGHTOBJTBLNAME)
+        const table = document.getElementById(panel.side == ANUVidLib.LEFT ? LEFTOBJTBLNAME : RIGHTOBJTBLNAME)
 
         // delete all rows (except header)
-        for (var i = table.rows.length - 1; i >= 1; i--) {
+        for (let i = table.rows.length - 1; i >= 1; i--) {
             table.deleteRow(i)
         }
 
@@ -557,7 +557,7 @@ class ANUVidLib {
         const height = self.video.videoHeight
 
         function insertInputHelper (row, value, update) {
-            var input = document.createElement('input')
+            const input = document.createElement('input')
             input.type = 'text'
             input.value = value
             input.onkeypress = function (event) { defocusOnEnter(event) }
@@ -571,10 +571,10 @@ class ANUVidLib {
         }
 
         const objects = this.annotations.objectList[frameIndex]
-        for (var i = 0; i < objects.length; i++) {
+        for (let i = 0; i < objects.length; i++) {
             let obj = objects[i]   // for callbacks
 
-            var row = table.insertRow(-1)
+            const row = table.insertRow(-1)
 
             // x, y, width and height
             insertInputHelper(row, Math.round(obj.x * width), (v) => {obj.x = v / width})
@@ -583,10 +583,10 @@ class ANUVidLib {
             insertInputHelper(row, Math.round(obj.height * height), (v) => {obj.height = v / height})
 
             // label
-            var select = document.createElement('select')
+            const select = document.createElement('select')
             select.style.width = '100%'
-            for (var k in this.lblConfig.objectLabels) {
-                var opt = document.createElement('option')
+            for (const k in this.lblConfig.objectLabels) {
+                const opt = document.createElement('option')
                 opt.textContent = String(k)
                 opt.value = String(k)
                 select.appendChild(opt)
@@ -611,7 +611,7 @@ class ANUVidLib {
             insertInputHelper(row, obj.score, (v) => {obj.score = v})
 
             // buttons
-            var cell = row.insertCell(8)
+            const cell = row.insertCell(8)
             cell.innerHTML = '<button title=\'delete\' onclick=\'v.annotations.objectList[' + frameIndex +
                 '].splice(this.parentElement.parentElement.rowIndex - 1, 1); v.redraw();\'>&#x2718;</button>'
             cell.innerHTML += ' <button title=\'move up\' onclick=\'v.annotations.swapObjects(' + frameIndex + ',' +
@@ -624,26 +624,26 @@ class ANUVidLib {
 
     // Refresh the list of temporal segments.
     refreshVidSegTable (activeSeg = -1) {
-        // delete all rows (except the header)
-        var table = document.getElementById(VIDSEGTABLENAME)
-        for (var i = table.rows.length - 1; i > 0; i--) {
+// delete all rows (except the header)
+        const table = document.getElementById(VIDSEGTABLENAME)
+        for (let i = table.rows.length - 1; i > 0; i--) {
             table.deleteRow(i)
         }
 
         // now repopulate the table
         const nVidSegs = this.annotations.vidSegList.length
-        for (var i = 0; i < nVidSegs; i++) {
+        for (let i = 0; i < nVidSegs; i++) {
             let seg = this.annotations.vidSegList[i]   // for callbacks
 
-            var row = table.insertRow(-1)
+            const row = table.insertRow(-1)
             row.insertCell(0).innerHTML = seg.start
             row.insertCell(1).innerHTML = seg.end
 
-            var select = document.createElement('select')
+            const select = document.createElement('select')
             select.classList.add('segdesc')
             select.style.width = '100%'
-            for (var k in v.lblConfig.actionLabels) {
-                var opt = document.createElement('option')
+            for (const k in v.lblConfig.actionLabels) {
+                const opt = document.createElement('option')
                 opt.textContent = String(k)
                 opt.value = String(k)
                 select.appendChild(opt)
@@ -654,13 +654,13 @@ class ANUVidLib {
             select.onblur = function (event) { seg.actionId = event.target.value }
             row.insertCell(2).appendChild(select)
 
-            var input = document.createElement('input')
+            const input = document.createElement('input')
             input.type = 'text'
             input.classList.add('segdesc')
             input.value = this.annotations.vidSegList[i].description
             parent = row.insertCell(3)
             parent.appendChild(input)
-            var cell = row.insertCell(4)
+            const cell = row.insertCell(4)
             cell.innerHTML = '<button title=\'delete\' onclick=\'v.annotations.vidSegList.splice(this.parentElement.parentElement.rowIndex - 1, 1); v.refreshVidSegTable();\'>&#x2718;</button>'
             cell.innerHTML += ' <button title=\'move up\' onclick=\'v.annotations.swapVidSegs(' + i + ', ' + (i - 1) +
                 '); v.refreshVidSegTable();\'>&#x1F819;</button>'
@@ -682,7 +682,7 @@ class ANUVidLib {
     // Generate keyframes are regular interval. If delta is null then requests time interval from user.
     generateKeyframes (delta = null) {
         if (delta == null) {
-            var retVal = prompt('Generate keyframe every how many seconds?', this.prefs.keyframedelta)
+            const retVal = prompt('Generate keyframe every how many seconds?', this.prefs.keyframedelta)
             if (retVal == null) return false
             delta = parseFloat(retVal)
         }
@@ -692,7 +692,7 @@ class ANUVidLib {
         this.prefs.keyframedelta = delta // remember this value as the new default
 
         this.annotations.keyframes = []
-        var ts = 0.0
+        let ts = 0.0
         while (ts < this.video.duration) {
             this.annotations.keyframes.push(ts)
             ts += delta
@@ -704,9 +704,9 @@ class ANUVidLib {
 
     // Set keyframes from a comma-separated list.
     setKeyframes (str) {
-        var timestamps = []
-        var tokens = str.split(',')
-        for (var i = 0; i < tokens.length; i++) {
+        const timestamps = []
+        const tokens = str.split(',')
+        for (let i = 0; i < tokens.length; i++) {
             let ts = parseFloat(tokens[i])
             if (!isNaN(ts) && (ts >= 0.0) && (ts <= this.video.duration)) {
                 timestamps.push(ts)
@@ -719,14 +719,14 @@ class ANUVidLib {
 
     drawKeyframes () {
         // TODO: better keyframe visualisation
-        var el = document.getElementById('keyframeListId')
+        const el = document.getElementById('keyframeListId')
         const nKeyframes = this.annotations.keyframes.length
         if (nKeyframes == 0) {
             el.value = ''
             return
         }
         el.value = ''
-        for (var i = 0; i < nKeyframes; i++) {
+        for (let i = 0; i < nKeyframes; i++) {
             if (i > 0) el.value += ', '
             el.value += this.annotations.keyframes[i]
         }
@@ -735,7 +735,7 @@ class ANUVidLib {
     nextKeyframe () {
         // find next keyframe (based on right panel)
         const nKeyframes = this.annotations.keyframes.length
-        var i = 1
+        let i = 1
         while ((i < nKeyframes) && (this.annotations.keyframes[i] <= this.rightPanel.timestamp)) {
             i += 1
         }
@@ -751,7 +751,7 @@ class ANUVidLib {
     prevKeyframe () {
         // find previous keyframe (based on left panel)
         const nKeyframes = this.annotations.keyframes.length
-        var i = 0
+        let i = 0
         while ((i < nKeyframes) && (this.annotations.keyframes[i] < this.leftPanel.timestamp)) {
             i += 1
         }
@@ -777,7 +777,7 @@ class ANUVidLib {
             return null
 
         const frameIndex = this.time2indx(panel.timestamp)
-        for (var i = this.annotations.objectList[frameIndex].length - 1; i >= 0; i--) {
+        for (let i = this.annotations.objectList[frameIndex].length - 1; i >= 0; i--) {
             if (this.annotations.objectList[frameIndex][i].nearBoundary(x, y, panel.canvas.width,
                 panel.canvas.height)) {
                 return this.annotations.objectList[frameIndex][i]
@@ -790,15 +790,15 @@ class ANUVidLib {
     // Delete the active object (as long as it's not being modified).
     deleteActiveObject () {
         if ((this.activeObject != null) && (this.dragContext.mode == DragContext.NONE)) {
-            var frameIndex = this.time2indx(this.leftPanel.timestamp)
-            for (var i = 0; i < this.annotations.objectList[frameIndex].length; i++) {
+            let frameIndex = this.time2indx(this.leftPanel.timestamp)
+            for (let i = 0; i < this.annotations.objectList[frameIndex].length; i++) {
                 if (this.annotations.objectList[frameIndex][i] === this.activeObject) {
                     this.annotations.objectList[frameIndex].splice(i, 1)
                     break
                 }
             }
             frameIndex = this.time2indx(this.rightPanel.timestamp)
-            for (var i = 0; i < this.annotations.objectList[frameIndex].length; i++) {
+            for (let i = 0; i < this.annotations.objectList[frameIndex].length; i++) {
                 if (this.annotations.objectList[frameIndex][i] === this.activeObject) {
                     this.annotations.objectList[frameIndex].splice(i, 1)
                     break
@@ -818,6 +818,7 @@ class ANUVidLib {
 
     // Process mouse movement over a panel.
     mousemove (event, side) {
+        let el
         console.assert((side == ANUVidLib.LEFT) || (side == ANUVidLib.RIGHT), 'invalid side')
         //console.log("mouse moving in " + ((side == ANUVidLib.LEFT) ? "left" : "right"));
 
@@ -865,13 +866,13 @@ class ANUVidLib {
 
         // TODO: experimenting
         if (this.activeObject) {
-            var el = document.getElementById(OBJINFOPOPUP)
+            el = document.getElementById(OBJINFOPOPUP)
             el.style.display = 'block'
             el.style.left = ((event.x - event.offsetX) + this.activeObject.x * panel.canvas.width) + 'px'
             el.style.top = ((event.y - event.offsetY) + (this.activeObject.y + this.activeObject.height) *
                 panel.canvas.height + 8) + 'px'
         } else {
-            var el = document.getElementById(OBJINFOPOPUP)
+            el = document.getElementById(OBJINFOPOPUP)
             el.style.display = 'none'
         }
 
@@ -896,7 +897,7 @@ class ANUVidLib {
     // Process mouse button press inside panel.
     mousedown (event, side) {
         // TODO: experimenting
-        var el = document.getElementById(OBJINFOPOPUP)
+        const el = document.getElementById(OBJINFOPOPUP)
         el.style.display = 'none'
 
         // search for an active object
@@ -961,7 +962,7 @@ class ANUVidLib {
 
             // set focus of next component
             if (this.dragContext.newObject) {
-                var tbl = document.getElementById(side == ANUVidLib.LEFT ? LEFTOBJTBLNAME : RIGHTOBJTBLNAME)
+                const tbl = document.getElementById(side == ANUVidLib.LEFT ? LEFTOBJTBLNAME : RIGHTOBJTBLNAME)
                 tbl.rows[tbl.rows.length - 1].cells[4].firstElementChild.focus()
             }
         }
