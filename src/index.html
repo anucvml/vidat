@@ -7,186 +7,193 @@
     <script type="text/javascript" src="anno.js"></script>
     <script type="text/javascript" src="anuvidlib.js"></script>
     <script type="text/javascript">
-        function todo() { window.alert("Not implemented yet!"); }
+        function todo () { window.alert('Not implemented yet!') }
     </script>
     <script type="text/javascript">
-        var v = null;
+        var v = null
 
-        function init() {
-            v = new ANUVidLib(updateGUI);
+        function init () {
+            v = new ANUVidLib(updateGUI)
 
-            var loadVideoFile = function(event) {
-                var file = this.files[0];
-                var fileURL = URL.createObjectURL(file);
-                v.loadVideo(fileURL);
+            var loadVideoFile = function (event) {
+                var file = this.files[0]
+                var fileURL = URL.createObjectURL(file)
+                v.loadVideo(fileURL)
             }
 
-            var input = document.querySelector('#videoinput');
-            input.addEventListener('change', loadVideoFile, false);
-            document.getElementById("version").innerHTML = VERSION;
-            updateGUI(v);
+            var input = document.querySelector('#videoinput')
+            input.addEventListener('change', loadVideoFile, false)
+            document.getElementById('version').innerHTML = VERSION
+            updateGUI(v)
         }
 
-        function fini() {
-            if (v != null) v.prefs.save();
+        function fini () {
+            if (v != null) v.prefs.save()
         }
 
         // update visual state of GUI to reflect preferences
-        function updateGUI(vidLibObj) {
+        function updateGUI (vidLibObj) {
             // get checkboxes and visual elements into correct state
-            if (vidLibObj.prefs.tiedframes != document.getElementById("tiedcb").checked)
-                document.getElementById("tiedcb").click();
-            if (vidLibObj.prefs.greyframes != document.getElementById("greycb").checked)
-                document.getElementById("greycb").click();
-            if (vidLibObj.prefs.showkeyframes != document.getElementById("showkfcb").checked)
-                document.getElementById("showkfcb").click();
-            if (vidLibObj.prefs.showobjects != document.getElementById("showobjscb").checked)
-                document.getElementById("showobjscb").click();
-            if (vidLibObj.prefs.showobjects != document.getElementById("showregscb").checked)
-                document.getElementById("showregscb").click();
-            if (vidLibObj.prefs.showvidsegs != document.getElementById("showvidsegcb").checked)
-                document.getElementById("showvidsegcb").click();
+            if (vidLibObj.prefs.tiedframes != document.getElementById('tiedcb').checked)
+                document.getElementById('tiedcb').click()
+            if (vidLibObj.prefs.greyframes != document.getElementById('greycb').checked)
+                document.getElementById('greycb').click()
+            if (vidLibObj.prefs.showkeyframes != document.getElementById('showkfcb').checked)
+                document.getElementById('showkfcb').click()
+            if (vidLibObj.prefs.showobjects != document.getElementById('showobjscb').checked)
+                document.getElementById('showobjscb').click()
+            if (vidLibObj.prefs.showobjects != document.getElementById('showregscb').checked)
+                document.getElementById('showregscb').click()
+            if (vidLibObj.prefs.showvidsegs != document.getElementById('showvidsegcb').checked)
+                document.getElementById('showvidsegcb').click()
 
             // show configuration (when menu is visible)
-            let cfg = vidLibObj.lblConfig;
-            document.getElementById('objectlabels').value = cfg.toString(cfg.objectLabels);;
-            document.getElementById('actionlabels').value = cfg.toString(cfg.actionLabels);
-            document.getElementById('annotationinfo').innerHTML = vidLibObj.annotations.getInfoString();
+            let cfg = vidLibObj.lblConfig
+            document.getElementById('objectlabels').value = cfg.toString(cfg.objectLabels)
 
-            const isInvalidVideo = isNaN(vidLibObj.video.duration);
-            document.getElementById('loadannobtn').disabled = isInvalidVideo;
-            document.getElementById('saveannobtn').disabled = isInvalidVideo;
-            document.getElementById('clearannobtn').disabled = isInvalidVideo;
+            document.getElementById('actionlabels').value = cfg.toString(cfg.actionLabels)
+            document.getElementById('annotationinfo').innerHTML = vidLibObj.annotations.getInfoString()
+
+            const isInvalidVideo = isNaN(vidLibObj.video.duration)
+            document.getElementById('loadannobtn').disabled = isInvalidVideo
+            document.getElementById('saveannobtn').disabled = isInvalidVideo
+            document.getElementById('clearannobtn').disabled = isInvalidVideo
 
             // redraw annotation data
-            vidLibObj.drawKeyframes();
-            vidLibObj.refreshVidSegTable();
-            vidLibObj.resize();
+            vidLibObj.drawKeyframes()
+            vidLibObj.refreshVidSegTable()
+            vidLibObj.resize()
             //vidLibObj.redraw();
         }
 
-        function clearAllAnnotations() {
-            var result = confirm("Are you sure you want to clear all annotations?");
+        function clearAllAnnotations () {
+            var result = confirm('Are you sure you want to clear all annotations?')
             if (result) {
-                v.annotations.clear();
-                updateGUI(v);
+                v.annotations.clear()
+                updateGUI(v)
             }
         }
 
-        function play() {
+        function play () {
             if (isNaN(v.video.duration)) {
-                return;
+                return
             }
-            document.getElementById('playeroverlay').style.display = 'block';
-            var startTime = Math.min(v.leftPanel.timestamp, v.rightPanel.timestamp);
-            var endTime = Math.max(v.leftPanel.timestamp, v.rightPanel.timestamp);
-            document.getElementById('vidplayer').src = v.video.src + "#t=" + startTime + "," + endTime;
+            document.getElementById('playeroverlay').style.display = 'block'
+            var startTime = Math.min(v.leftPanel.timestamp, v.rightPanel.timestamp)
+            var endTime = Math.max(v.leftPanel.timestamp, v.rightPanel.timestamp)
+            document.getElementById('vidplayer').src = v.video.src + '#t=' + startTime + ',' + endTime
         }
 
         // toggle zoom
-        function zoom() {
+        function zoom () {
             if (document.getElementById('rightpanel').style.display === 'none') {
-                document.getElementById('leftpanel').style.width = '45%';
-                document.getElementById('centerpanel').style.display = 'block';
-                document.getElementById('rightpanel').style.display = 'block';
+                document.getElementById('leftpanel').style.width = '45%'
+                document.getElementById('centerpanel').style.display = 'block'
+                document.getElementById('rightpanel').style.display = 'block'
             } else {
-                document.getElementById('leftpanel').style.width = '100%';
-                document.getElementById('centerpanel').style.display = 'none';
-                document.getElementById('rightpanel').style.display = 'none';
+                document.getElementById('leftpanel').style.width = '100%'
+                document.getElementById('centerpanel').style.display = 'none'
+                document.getElementById('rightpanel').style.display = 'none'
             }
-            v.resize();
-            v.resize();
+            v.resize()
+            v.resize()
         }
 
-        function showmenu() {
+        function showmenu () {
             // update GUI with configuration
-            updateGUI(v);
+            updateGUI(v)
 
             // animate menu open
-            document.getElementById('menuoverlaydiv').style.display = 'block';
-            document.getElementById('menudiv').style.display = 'block';
+            document.getElementById('menuoverlaydiv').style.display = 'block'
+            document.getElementById('menudiv').style.display = 'block'
             if ('animateclose' in document.getElementById('menupanel').classList) {
-                document.getElementById('menupanel').classList.remove('animateclose');
+                document.getElementById('menupanel').classList.remove('animateclose')
             }
             if (!('animateopen' in document.getElementById('menupanel').classList)) {
-                document.getElementById('menupanel').classList.add('animateopen');
+                document.getElementById('menupanel').classList.add('animateopen')
             }
         }
 
-        function hidemenu() {
-            let cfg = v.lblConfig;
-            cfg.objectLabels = cfg.fromString(document.getElementById('objectlabels').value);
-            cfg.actionLabels = cfg.fromString(document.getElementById('actionlabels').value);
+        function hidemenu () {
+            let cfg = v.lblConfig
+            cfg.objectLabels = cfg.fromString(document.getElementById('objectlabels').value)
+            cfg.actionLabels = cfg.fromString(document.getElementById('actionlabels').value)
 
             // animate menu closed
             if ('animateopen' in document.getElementById('menupanel').classList) {
-                document.getElementById('menupanel').classList.remove('animateopen');
+                document.getElementById('menupanel').classList.remove('animateopen')
             }
             if (!('animateclose' in document.getElementById('menupanel').classList)) {
-                document.getElementById('menupanel').classList.add('animateclose');
+                document.getElementById('menupanel').classList.add('animateclose')
             }
-            document.getElementById('menuoverlaydiv').style.display = 'none';
-            setTimeout(function() { document.getElementById('menudiv').style.display = 'none'; document.getElementById('menupanel').classList.remove('animateclose'); }, 400);
-            v.redraw();
+            document.getElementById('menuoverlaydiv').style.display = 'none'
+            setTimeout(function () {
+                document.getElementById('menudiv').style.display = 'none'
+                document.getElementById('menupanel').classList.remove('animateclose')
+            }, 400)
+            v.redraw()
         }
 
-        function showhelp() {
-            document.getElementById('helpoverlay').style.display = 'block';
+        function showhelp () {
+            document.getElementById('helpoverlay').style.display = 'block'
         }
 
-        function showabout() {
-            document.getElementById('aboutoverlay').style.display = 'block';
+        function showabout () {
+            document.getElementById('aboutoverlay').style.display = 'block'
         }
 
-        document.addEventListener('keyup', (e) => { return onkeypress(e); })
-        function onkeypress(e) {
+        document.addEventListener('keyup', (e) => { return onkeypress(e) })
+
+        function onkeypress (e) {
             // don't process key if inside a textbox or a drop-down list
             if ((e.target.nodeName.toLowerCase() == 'input') && (e.target.type.toLowerCase() == 'text')) {
-                return false;
+                return false
             }
             if (e.target.nodeName.toLowerCase() == 'select') {
-                return false;
+                return false
             }
             // don't process key if menu is showing (TODO: can this be replaced by assigning an onkeypress event to the menu div?)
             if (document.getElementById('menudiv').style.display == 'block') {
-                return false;
+                return false
             }
 
-            console.log("key " + e.code + " (0x" + e.keyCode.toString(16) + ")");
+            console.log('key ' + e.code + ' (0x' + e.keyCode.toString(16) + ')')
             switch (e.keyCode) {
-            case 0x2E:  // delete
-                v.deleteActiveObject();
-                return true;
+                case 0x2E:  // delete
+                    v.deleteActiveObject()
+                    return true
 
-            case 0x48:  // H
-                showhelp(); return true;
+                case 0x48:  // H
+                    showhelp()
+                    return true
 
-            case 0x50:  // P
-                play(); return true;
+                case 0x50:  // P
+                    play()
+                    return true
 
-            case 0xBC:  // comma, <
-                v.prevKeyframe();
-                return true;
+                case 0xBC:  // comma, <
+                    v.prevKeyframe()
+                    return true
 
-            case 0xBE:  // period, >
-                v.nextKeyframe();
-                return true;
+                case 0xBE:  // period, >
+                    v.nextKeyframe()
+                    return true
 
-            case 0xBB:  // plus, equals
-                v.newVidSeg();
-                return true;
+                case 0xBB:  // plus, equals
+                    v.newVidSeg()
+                    return true
 
-            case 0xDB:  // [, {
-                document.getElementById('leftslider').focus();
-                return true;
+                case 0xDB:  // [, {
+                    document.getElementById('leftslider').focus()
+                    return true
 
-            case 0xDD:  // ], }
-                document.getElementById('rightslider').focus();
-                return true;
+                case 0xDD:  // ], }
+                    document.getElementById('rightslider').focus()
+                    return true
 
             }
 
-            return false;
+            return false
         }
     </script>
 </head>
@@ -204,7 +211,7 @@
 <div id="menudiv">
     <div id="menupanel" style="background: white; width: 100%; height: 100%; padding: 10px;">
         <div style="position: relative;">
-        <button title="hide menu" id="hidemenubtn" onclick="hidemenu();">&lt;&lt;</button>
+            <button title="hide menu" id="hidemenubtn" onclick="hidemenu();">&lt;&lt;</button>
         </div>
 
         <h1>Menu</h1>
@@ -213,8 +220,11 @@
         <p/>
 
         <h2>Annotations</h2>
-        <span id="annotationinfo" class="hint">(no annotations)</span><p/>
-        <button id="loadannobtn" title="load annotations" onclick="v.annotations.load(() => { updateGUI(v); });">load...</button>
+        <span id="annotationinfo" class="hint">(no annotations)</span>
+        <p/>
+        <button id="loadannobtn" title="load annotations" onclick="v.annotations.load(() => { updateGUI(v); });">
+            load...
+        </button>
         <button id="saveannobtn" title="save annotations" onclick="v.annotations.save();">save...</button>
         <button id="clearannobtn" title="save annotations" onclick="clearAllAnnotations();">clear all</button>
         <p/>
@@ -224,12 +234,12 @@
         <fieldset>
             <legend>Object Labels</legend>
             <textarea id="objectlabels" rows="7" style="width: 170pt; resize: vertical;"
-                onblur="v.lblConfig.objectLabels = v.lblConfig.fromString(this.value);"></textarea>
+                      onblur="v.lblConfig.objectLabels = v.lblConfig.fromString(this.value);"></textarea>
         </fieldset>
         <fieldset>
             <legend>Action Labels</legend>
             <textarea id="actionlabels" rows="7" style="width: 170pt; resize: vertical;"
-                onblur="v.lblConfig.actionLabels = v.lblConfig.fromString(this.value);"></textarea>
+                      onblur="v.lblConfig.actionLabels = v.lblConfig.fromString(this.value);"></textarea>
         </fieldset>
         <p/>
         <button title="load config" onclick="v.lblConfig.load(() => { updateGUI(v); });">load...</button>
@@ -239,13 +249,16 @@
         <span class="hint">Saves in browser local storage.</span>
         <fieldset>
             <legend>Show/hide</legend>
-            <input id="showkfcb" checked=true type="checkbox" onclick="v.prefs.update('showkeyframes', this.checked, 'keyframesdiv');">
+            <input id="showkfcb" checked=true type="checkbox"
+                   onclick="v.prefs.update('showkeyframes', this.checked, 'keyframesdiv');">
             <label for="showkfcb">Keyframes</label><br>
-            <input id="showobjscb" checked=true type="checkbox" onclick="v.prefs.update('showobjects', this.checked, 'objectsdiv'); v.redraw();">
+            <input id="showobjscb" checked=true type="checkbox"
+                   onclick="v.prefs.update('showobjects', this.checked, 'objectsdiv'); v.redraw();">
             <label for="showobjscb">Objects (bounding boxes)</label><br>
             <input id="showregscb" checked=true type="checkbox" disabled=true>
             <label for="showregscb">Regions (polygon outlines)</label><br>
-            <input id="showvidsegcb" checked=true type="checkbox" onclick="v.prefs.update('showvidsegs', this.checked, 'vidsegdiv');">
+            <input id="showvidsegcb" checked=true type="checkbox"
+                   onclick="v.prefs.update('showvidsegs', this.checked, 'vidsegdiv');">
             <label for="showvidsegcb">Video segments</label><br>
         </fieldset>
         <button title="restore defaults" onclick="v.prefs.reset(); updateGUI(v);">defaults</button>
@@ -256,42 +269,64 @@
 <div id="container" style="width: 100%;">
     <div id="leftpanel" style="width: 45%; float: left; position: relative;">
         <div class="filmstrip"></div>
-        <button title="toggle zoom" onclick="zoom();" style="position: absolute; top: 24px; right: 6px; z-index: 1;">&#x1F50D;</button>
+        <button title="toggle zoom" onclick="zoom();" style="position: absolute; top: 24px; right: 6px; z-index: 1;">
+            &#x1F50D;
+        </button>
         <canvas id="leftframe" width="640px" height="480px" style="display: block;"></canvas>
         <div class="filmstrip"></div>
         <br>
         <div style="width: 100%;">
-            <input type="range" min="0" max="100" value="0" style="width: 100%;" id="leftslider" oninput="v.seekToIndex(this.value, -1)";>
+            <input type="range" min="0" max="100" value="0" style="width: 100%;" id="leftslider"
+                   oninput="v.seekToIndex(this.value, -1)" ;>
             <br>
             <span style="float: right;" id="leftstatus">none</span>
         </div>
     </div>
     <div id="centerpanel" style="width: 10%; min-width: 80pt; float: left; text-align: center; position: relative;">
-        <b>Copy</b><br><p/>
-        <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, false);" title="copy left" type="button" style="width: 30%;">&larr;</button>
-        <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, false);" title="copy right" type="button" style="width: 30%;">&rarr;</button>
-        <br><p/>
-        <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, true);" title="replace left" type="button" style="width: 30%;">&#8606;</button>
-        <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, true);" title="replace right" type="button" style="width: 30%;">&#8608;</button>
-        <br><p/>
+        <b>Copy</b><br>
+        <p/>
+        <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, false);" title="copy left" type="button"
+                style="width: 30%;">&larr;
+        </button>
+        <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, false);" title="copy right" type="button"
+                style="width: 30%;">&rarr;
+        </button>
+        <br>
+        <p/>
+        <button onclick="v.copy(ANUVidLib.RIGHT, ANUVidLib.LEFT, true);" title="replace left" type="button"
+                style="width: 30%;">&#8606;
+        </button>
+        <button onclick="v.copy(ANUVidLib.LEFT, ANUVidLib.RIGHT, true);" title="replace right" type="button"
+                style="width: 30%;">&#8608;
+        </button>
+        <br>
+        <p/>
         <button onclick="todo();" title="interpolate" type="button" style="width: 60%;">&#8611; interp.</button>
-        <br><p/>
-        <b>Mode</b><br><p/>
+        <br>
+        <p/>
+        <b>Mode</b><br>
+        <p/>
         <select id="mode" name="mode">
             <option value="object" selected>Objects</option>
             <option value="region" disabled>Regions</option>
             <option value="skeleton" disabled>Skeletons</option>
         </select>
-        <br><p/>
-        <b>Options</b><br><p/>
+        <br>
+        <p/>
+        <b>Options</b><br>
+        <p/>
         <input id="tiedcb" type="checkbox" onclick="v.prefs.update('tiedframes', this.checked);">
         <label for="tiedcb">lock sliders</label><br>
         <input id="greycb" type="checkbox" onclick="v.greyframes = this.checked;">
         <label for="greycb">greyscale</label><br>
-        <br><p/>
-        <b>Frames</b><br><p/>
-        <button onclick="v.swap();" title="swap" type="button" style="width: 50%;">&#x21C4; swap</button><p/>
-        <button onclick="play();" title="play" type="button" style="width: 50%;">&#x25B6; play</button><p/>
+        <br>
+        <p/>
+        <b>Frames</b><br>
+        <p/>
+        <button onclick="v.swap();" title="swap" type="button" style="width: 50%;">&#x21C4; swap</button>
+        <p/>
+        <button onclick="play();" title="play" type="button" style="width: 50%;">&#x25B6; play</button>
+        <p/>
     </div>
     <div id="rightpanel" style="width: 45%; float:left; position: relative;">
         <div class="filmstrip"></div>
@@ -299,7 +334,8 @@
         <div class="filmstrip"></div>
         <br>
         <div style="width: 100%;">
-            <input type="range" min="0" max="100" value="0" style="width: 100%;" id="rightslider" oninput="v.seekToIndex(-1, this.value)";>
+            <input type="range" min="0" max="100" value="0" style="width: 100%;" id="rightslider"
+                   oninput="v.seekToIndex(-1, this.value)" ;>
             <br>
             <span style="float: right;" id="rightstatus">none</span>
         </div>
@@ -315,57 +351,94 @@
             <legend>Keyframes</legend>
             <table>
                 <tr>
-                    <td><button title="generate" onclick="v.generateKeyframes();">&#x23F2;&nbsp;generate</button></td>
-                    <td><button title="export" onclick="todo();">&#x1f4be;&nbsp;export</button></td>
-                    <td style="width: 100%; padding-right: 8pt;">
-                        <input id="keyframeListId" type="text" style="width: 100%;" onblur="v.setKeyframes(this.value);" onkeypress="defocusOnEnter(event);">
+                    <td>
+                        <button title="generate" onclick="v.generateKeyframes();">&#x23F2;&nbsp;generate</button>
                     </td>
-                    <td><button title="previous" onclick="v.prevKeyframe();">&lt;</button></td>
-                    <td><button title="next" onclick="v.nextKeyframe();">&gt;</button></td>
+                    <td>
+                        <button title="export" onclick="todo();">&#x1f4be;&nbsp;export</button>
+                    </td>
+                    <td style="width: 100%; padding-right: 8pt;">
+                        <input id="keyframeListId" type="text" style="width: 100%;" onblur="v.setKeyframes(this.value);"
+                               onkeypress="defocusOnEnter(event);">
+                    </td>
+                    <td>
+                        <button title="previous" onclick="v.prevKeyframe();">&lt;</button>
+                    </td>
+                    <td>
+                        <button title="next" onclick="v.nextKeyframe();">&gt;</button>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+</div>
+
+<div id="objectsdiv">
+    <div style="width: 45%; float: left;">
+        <fieldset>
+            <legend>Objects</legend>
+            <div style="float: right;">
+                <button title="clear all" onclick="v.clearObjects(ANUVidLib.LEFT);">clear</button>
+            </div>
+            <div style="clear: both;"></div>
+            <table id="leftobjtable" width="100%" style="table-layout: fixed;">
+                <tr>
+                    <th width="40pt">x</th>
+                    <th width="40pt">y</th>
+                    <th width="40pt">w</th>
+                    <th width="40pt">h</th>
+                    <th>label</th>
+                    <th>instance</th>
+                    <th>colour</th>
+                    <th>score</th>
+                    <th width="110pt"></th>
                 </tr>
             </table>
         </fieldset>
     </div>
-
-    <div id="objectsdiv">
-        <div style="width: 45%; float: left;">
-            <fieldset>
-                <legend>Objects</legend>
-                <div style="float: right;"><button title="clear all" onclick="v.clearObjects(ANUVidLib.LEFT);">clear</button></div>
-                <div style="clear: both;"></div>
-                <table id="leftobjtable" width="100%" style="table-layout: fixed;">
-                <tr><th width="40pt">x</th><th width="40pt">y</th><th width="40pt">w</th><th width="40pt">h</th>
-                    <th>label</th><th>instance</th><th>colour</th><th>score</th><th width="110pt"></th></tr>
-                </table>
-            </fieldset>
-        </div>
-        <div style="width: 10%; float: left; text-align: center; position: relative;">&nbsp;</div>
-        <div style="width: 45%; float: left;">
-            <fieldset>
-                <legend>Objects</legend>
-                <div style="float: right;"><button title="clear all" onclick="v.clearObjects(ANUVidLib.RIGHT);">clear</button></div>
-                <table id="rightobjtable" width="100%" style="table-layout: fixed;">
-                <tr><th width="40pt">x</th><th width="40pt">y</th><th width="40pt">w</th><th width="40pt">h</th>
-                    <th>label</th><th>instance</th><th>colour</th><th>score</th><th></th></tr>
-                </table>
-            </fieldset>
-        </div>
-        <div style="clear: both;"></div>
-    </div>
-
-    <div id="vidsegdiv">
+    <div style="width: 10%; float: left; text-align: center; position: relative;">&nbsp;</div>
+    <div style="width: 45%; float: left;">
         <fieldset>
-            <legend>Video segments</legend>
+            <legend>Objects</legend>
             <div style="float: right;">
-                <button title="sort" onclick="v.annotations.sortVidSegs(); v.refreshVidSegTable();">&#x21A7; sort</button>
-                <button title="add segment" onclick="v.newVidSeg();">&#x271A;</button>
+                <button title="clear all" onclick="v.clearObjects(ANUVidLib.RIGHT);">clear</button>
             </div>
-            <div style="clear: both;"></div>
-            <table id="vidsegtable" width="100%" style="table-layout: fixed;">
-                <tr><th width="60pt">start</th><th width="60pt">end</th><th width="120pt">action</th><th width="100%">description</th><th width="160pt" align="right"></th></tr>
+            <table id="rightobjtable" width="100%" style="table-layout: fixed;">
+                <tr>
+                    <th width="40pt">x</th>
+                    <th width="40pt">y</th>
+                    <th width="40pt">w</th>
+                    <th width="40pt">h</th>
+                    <th>label</th>
+                    <th>instance</th>
+                    <th>colour</th>
+                    <th>score</th>
+                    <th></th>
+                </tr>
             </table>
         </fieldset>
     </div>
+    <div style="clear: both;"></div>
+</div>
+
+<div id="vidsegdiv">
+    <fieldset>
+        <legend>Video segments</legend>
+        <div style="float: right;">
+            <button title="sort" onclick="v.annotations.sortVidSegs(); v.refreshVidSegTable();">&#x21A7; sort</button>
+            <button title="add segment" onclick="v.newVidSeg();">&#x271A;</button>
+        </div>
+        <div style="clear: both;"></div>
+        <table id="vidsegtable" width="100%" style="table-layout: fixed;">
+            <tr>
+                <th width="60pt">start</th>
+                <th width="60pt">end</th>
+                <th width="120pt">action</th>
+                <th width="100%">description</th>
+                <th width="160pt" align="right"></th>
+            </tr>
+        </table>
+    </fieldset>
+</div>
 </div>
 
 <!-- object bounding box popup -->
@@ -383,8 +456,13 @@
         <div class="filmstrip"></div>
         <video style="width: 100%; display: block;" autoplay id="vidplayer"></video>
         <div class="filmstrip"></div>
-        <button onclick="document.getElementById('vidplayer').load();" type="button" style="width: 10%; float: left;">&#x25B6; replay</button>
-        <button onclick="document.getElementById('vidplayer').pause(); document.getElementById('playeroverlay').style.display = 'none';" type="button" style="width: 10%; float: right;">&#x25FC; stop</button>
+        <button onclick="document.getElementById('vidplayer').load();" type="button" style="width: 10%; float: left;">
+            &#x25B6; replay
+        </button>
+        <button
+            onclick="document.getElementById('vidplayer').pause(); document.getElementById('playeroverlay').style.display = 'none';"
+            type="button" style="width: 10%; float: right;">&#x25FC; stop
+        </button>
         <div style="clear: both;"></div>
     </div>
 </div>
@@ -401,7 +479,7 @@
         <p/>
 
         <b>Keyboard Shortcuts</b><br>
-<pre>
+        <pre>
     h           :: help (this window)
     p           :: play video segment
     comma, <    :: advance to next keyframe

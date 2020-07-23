@@ -1,7 +1,7 @@
 body {
-  font-family: Arial;
-  text-align:left;
-  padding: 0px;
+    font-family: Arial;
+    text-align: left;
+    padding: 0px;
 }
 
 h2 {
@@ -18,8 +18,8 @@ button {
 }
 
 address {
-  text-align:center;
-  font-size:small;
+    text-align: center;
+    font-size: small;
 }
 
 input[type=text] {
@@ -48,7 +48,7 @@ legend {
 }
 
 .segdesc {
-    font-size:12pt;
+    font-size: 12pt;
     border: none;
     background-color: transparent;
     height: 100%;
@@ -74,23 +74,39 @@ legend {
 }
 
 @keyframes slide-in {
-   0% { -webkit-transform: translateX(-100%); }
-   100% { -webkit-transform: translateX(0%); }
+    0% {
+        -webkit-transform: translateX(-100%);
+    }
+    100% {
+        -webkit-transform: translateX(0%);
+    }
 }
 
 @-webkit-keyframes slide-in {
-     0% {transform: translateX(-100%); }
-    100% { transform: translateX(0%); }
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
 }
 
 @keyframes slide-out {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(-100%); }
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
 }
 
 @-webkit-keyframes slide-out {
-    0% { -webkit-transform: translateX(0%); }
-    100% { -webkit-transform: translateX(-100%); }
+    0% {
+        -webkit-transform: translateX(0%);
+    }
+    100% {
+        -webkit-transform: translateX(-100%);
+    }
 }
 
 /*
@@ -138,7 +154,7 @@ legend {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255,255,255,0);
+    background-color: rgba(255, 255, 255, 0);
     z-index: 3;
     cursor: auto;
 }
@@ -164,37 +180,37 @@ legend {
 */
 
 .overlay {
-    position: fixed;  /* Sit on top of the page content */
-    display: none;    /* Hidden by default (set to block to show) */
-    width: 100%;      /* Full width (cover the whole page) */
-    height: 100%;     /* Full height (cover the whole page) */
+    position: fixed; /* Sit on top of the page content */
+    display: none; /* Hidden by default (set to block to show) */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
-    z-index: 2;       /* Specify a stack order in case you're using a different order for other elements */
-    cursor: pointer;  /* Add a pointer on hover */
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
 }
 
 .overlayclosebtn {
-    float:right;
-    display:inline-block;
-    padding:2px 5px;
-    font-size:24px;
-    background:#cccccc;
+    float: right;
+    display: inline-block;
+    padding: 2px 5px;
+    font-size: 24px;
+    background: #cccccc;
 }
 
 .overlayclosebtn:hover {
-    color:#ffffff;
+    color: #ffffff;
 }
 
 .centered {
-  width: 50%;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+    width: 50%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .textlink {
