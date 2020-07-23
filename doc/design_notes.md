@@ -80,7 +80,7 @@ The tool is invoked by loading `index.html`. The URL query string may include pa
 
 ## Prototype
 
-![prototype](prototype.png)
+![prototype](img/prototype.png)
 
 ## Main Classes
 
