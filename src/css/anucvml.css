@@ -1,62 +1,62 @@
 body {
-    font-family: Arial, serif;
-    text-align: left;
-    padding: 0;
+  font-family: Arial, serif;
+  text-align: left;
+  padding: 0;
 }
 
 h2 {
-    margin-bottom: 3pt;
+  margin-bottom: 3pt;
 }
 
 button {
-    vertical-align: top;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin: 0 0 0 0;
-    min-height: 20pt;
-    min-width: 20pt;
+  vertical-align: top;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin: 0 0 0 0;
+  min-height: 20pt;
+  min-width: 20pt;
 }
 
 address {
-    text-align: center;
-    font-size: small;
+  text-align: center;
+  font-size: small;
 }
 
 input[type=text] {
-    border: 1px solid silver;
-    width: 100%;
+  border: 1px solid silver;
+  width: 100%;
 }
 
 fieldset {
-    margin: 8px;
-    border: 1px solid silver;
-    padding: 8px;
-    border-radius: 4px;
-    background: #f7f7f7;
+  margin: 8px;
+  border: 1px solid silver;
+  padding: 8px;
+  border-radius: 4px;
+  background: #f7f7f7;
 }
 
 legend {
-    padding: 2px;
-    font-weight: bold;
+  padding: 2px;
+  font-weight: bold;
 }
 
 .filmstrip {
-    width: 100%;
-    height: 20px;
-    background-image: url(../img/filmstrip.png);
-    background-repeat: repeat-x;
+  width: 100%;
+  height: 20px;
+  background-image: url(../img/filmstrip.png);
+  background-repeat: repeat-x;
 }
 
 .segdesc {
-    font-size: 12pt;
-    border: none;
-    background-color: transparent;
-    height: 100%;
+  font-size: 12pt;
+  border: none;
+  background-color: transparent;
+  height: 100%;
 }
 
 .hint {
-    font-size: 9pt;
-    color: #7f7f7f;
+  font-size: 9pt;
+  color: #7f7f7f;
 }
 
 /*
@@ -64,49 +64,49 @@ legend {
  */
 
 .animateopen {
-    animation: slide-in 0.4s forwards;
-    -webkit-animation: slide-in 0.4s forwards;
+  animation: slide-in 0.4s forwards;
+  -webkit-animation: slide-in 0.4s forwards;
 }
 
 .animateclose {
-    animation: slide-out 0.4s forwards;
-    -webkit-animation: slide-out 0.4s forwards;
+  animation: slide-out 0.4s forwards;
+  -webkit-animation: slide-out 0.4s forwards;
 }
 
 @keyframes slide-in {
-    0% {
-        -webkit-transform: translateX(-100%);
-    }
-    100% {
-        -webkit-transform: translateX(0%);
-    }
+  0% {
+    -webkit-transform: translateX(-100%);
+  }
+  100% {
+    -webkit-transform: translateX(0%);
+  }
 }
 
 @-webkit-keyframes slide-in {
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(0%);
-    }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
 }
 
 @keyframes slide-out {
-    0% {
-        transform: translateX(0%);
-    }
-    100% {
-        transform: translateX(-100%);
-    }
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 @-webkit-keyframes slide-out {
-    0% {
-        -webkit-transform: translateX(0%);
-    }
-    100% {
-        -webkit-transform: translateX(-100%);
-    }
+  0% {
+    -webkit-transform: translateX(0%);
+  }
+  100% {
+    -webkit-transform: translateX(-100%);
+  }
 }
 
 /*
@@ -116,47 +116,47 @@ legend {
 */
 
 .iodisabled {
-    pointer-events: none;
-    user-select: none;
-    opacity: 0.4;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.4;
 }
 
 #banner {
-    position: relative;
-    height: 4px;
+  position: relative;
+  height: 4px;
 }
 
 #logo {
-    position: absolute;
-    top: 0;
-    right: 12px;
-    height: 64px;
+  position: absolute;
+  top: 0;
+  right: 12px;
+  height: 64px;
 }
 
 #showmenubtn {
-    position: absolute;
-    top: 0;
-    left: 12px;
+  position: absolute;
+  top: 0;
+  left: 12px;
 }
 
 #hidemenubtn {
-    position: absolute;
-    top: 0;
-    right: 12px;
+  position: absolute;
+  top: 0;
+  right: 12px;
 }
 
 #menudiv {
-    position: fixed;
-    display: none;
-    width: 200pt;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0);
-    z-index: 3;
-    cursor: auto;
+  position: fixed;
+  display: none;
+  width: 200pt;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0);
+  z-index: 3;
+  cursor: auto;
 }
 
 /* Popup window show/hide with:
@@ -164,13 +164,13 @@ legend {
  *  document.getElementById(<id>).style.display = 'none';
 */
 .popup {
-    position: absolute;
-    padding: 4px 8px 4px 8px;
-    display: none;
-    background-color: #f7f7f7;
-    border: 1px solid #cccccc;
-    border-radius: 4px;
-    z-index: 1;
+  position: absolute;
+  padding: 4px 8px 4px 8px;
+  display: none;
+  background-color: #f7f7f7;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  z-index: 1;
 }
 
 /*
@@ -180,44 +180,44 @@ legend {
 */
 
 .overlay {
-    position: fixed; /* Sit on top of the page content */
-    display: none; /* Hidden by default (set to block to show) */
-    width: 100%; /* Full width (cover the whole page) */
-    height: 100%; /* Full height (cover the whole page) */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
-    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
-    cursor: pointer; /* Add a pointer on hover */
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default (set to block to show) */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
 }
 
 .overlayclosebtn {
-    float: right;
-    display: inline-block;
-    padding: 2px 5px;
-    font-size: 24px;
-    background: #cccccc;
+  float: right;
+  display: inline-block;
+  padding: 2px 5px;
+  font-size: 24px;
+  background: #cccccc;
 }
 
 .overlayclosebtn:hover {
-    color: #ffffff;
+  color: #ffffff;
 }
 
 .centered {
-    width: 50%;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+  width: 50%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .textlink {
-    color: black;
-    text-decoration: none;
+  color: black;
+  text-decoration: none;
 }
 
 .textlink:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
