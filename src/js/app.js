@@ -10,7 +10,7 @@ const APP_TEMPLATE = `
     </q-toolbar>
   </q-header>
 
-  <q-footer class="bg-white">
+  <q-footer class="bg-white" style="max-height: 40px">
     <q-toolbar>
       <q-toolbar-title class="text-black text-center text-weight-thin text-caption text-italic">
         Copyright © 2020, <a href='mailto:stephen.gould@anu.edu.au'>Stephen Gould</a>. All rights reserved.
@@ -46,9 +46,11 @@ const APP_TEMPLATE = `
 `
 
 import router from './router/router.js'
+import store from './store/store.js'
 
 const app = new Vue({
   router,
+  store,
   el: '#app',
   data: () => {
     return {
