@@ -37,7 +37,6 @@ const LABEL_TABLE_TEMPLATE = `
           title="Edit the label color"
           @save="saveTableData"
         >
-<!--          <q-input v-model="props.row.color" dense autofocus counter></q-input>-->
           <q-color v-model="props.row.color"></q-color>
         </q-popup-edit>
       </q-td>
@@ -89,18 +88,28 @@ export default {
       this.$store.commit(this.dataName, this.tableData)
     },
     handleDelete (id) {
+      let targetIndex
       for (let i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i].id === id) {
-          this.tableData.splice(i, 1)
-          this.saveTableData()
+          targetIndex = i
           break
         }
       }
+      this.$q.dialog({
+        title: 'Confirm',
+        message: 'Are you sure to delete label ' + this.tableData[targetIndex].name + ' ?',
+        cancel: true,
+        persistent: true,
+      }).onOk(() => {
+        this.tableData.splice(targetIndex, 1)
+        this.saveTableData()
+      })
+
     },
     handleAdd () {
       let lastId = this.tableData[this.tableData.length - 1].id
       this.tableData.push({
-        id: lastId,
+        id: lastId + 1,
         name: 'new',
         color: '#000000',
       })
