@@ -81,7 +81,7 @@ const app = new Vue({
   },
   mounted: function () {
     if (this.$route.name !== 'annotation') {
-      this.$router.push('/annotation')
+      this.$router.replace('/annotation')
     }
   },
   methods: {},
