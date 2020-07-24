@@ -72,6 +72,8 @@ const columnList = [
   { name: 'delete', align: 'center', label: 'Delete', field: 'delete' },
 ]
 
+import utils from '../libs/utils.js'
+
 export default {
   props: {
     'tableTitle': String,
@@ -95,12 +97,9 @@ export default {
           break
         }
       }
-      this.$q.dialog({
-        title: 'Confirm',
-        message: 'Are you sure to delete label ' + this.tableData[targetIndex].name + ' ?',
-        cancel: true,
-        persistent: true,
-      }).onOk(() => {
+      utils.confirm(
+        'Are you sure to delete label ' + this.tableData[targetIndex].name + ' ?',
+      ).onOk(() => {
         this.tableData.splice(targetIndex, 1)
         this.saveTableData()
       })

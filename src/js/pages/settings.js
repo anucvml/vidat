@@ -91,12 +91,9 @@ export default {
   },
   methods: {
     handleLoad () {
-      this.$q.dialog({
-        title: 'Confirm',
-        message: 'Are you sure to load? This would override the configuration!',
-        cancel: true,
-        persistent: true,
-      }).onOk(() => {
+      utils.confirm(
+        'Are you sure to load? This would override the configuration!',
+      ).onOk(() => {
         utils.importFile().then(file => {
           const fileData = JSON.parse(file)
           let objectLabelData = []
