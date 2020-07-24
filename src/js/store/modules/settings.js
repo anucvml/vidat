@@ -51,6 +51,13 @@ export default {
           color: '#00ffff',
         },
       ],
+    preferenceData: JSON.parse(localStorage.getItem('preferenceData')) ||
+      {
+        keyframes: true,
+        objects: true,
+        regions: true,
+        videoSegments: true,
+      },
   }),
   getters: {},
   mutations: {
@@ -61,6 +68,10 @@ export default {
     actionLabelData (state, value) {
       state.actionLabelData = value
       localStorage.setItem('actionLabelData', JSON.stringify(value))
+    },
+    preferenceData (state, value) {
+      state.preferenceData = value
+      localStorage.setItem('preferenceData', JSON.stringify(value))
     },
   },
   actions: {},
