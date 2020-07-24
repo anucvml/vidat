@@ -1,5 +1,5 @@
 const ABOUT_TEMPLATE = `
-<q-page padding style="max-width: 800px; margin: 0 auto">
+<q-page padding style="max-width: 800px; margin: 0 auto" class="q-gutter-md">
   <div class="text-h5">About</div>
   <div class="text-body1">Developed by the Australian National University Machine Learning and Computer Vision group as a high quality yet simple and efficient to use open-source video annotation tool.</div>
   <div class="text-h5">Contributors</div>
