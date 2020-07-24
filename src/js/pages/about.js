@@ -3,12 +3,11 @@ const ABOUT_TEMPLATE = `
   <div class="text-h5">About</div>
   <div class="text-body1">Developed by the Australian National University Machine Learning and Computer Vision group as a high quality yet simple and efficient to use open-source video annotation tool.</div>
   <div class="text-h5">Contributors</div>
-  <div class="row">
+  <div class="row q-gutter-md">
     <contributor-card
       v-for="contributor in contributorList"
       :key="contributor.name"
       :contributor="contributor"
-      class="q-ma-sm"
     >
   </div>
   </contributor-card>
