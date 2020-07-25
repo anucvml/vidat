@@ -80,8 +80,8 @@ const VIDEO_INFO_TEMPLATE = `
       </div>
       <q-space></q-space>
       <q-btn-group flat>
-        <q-btn @click="previousKeyframe" icon="keyboard_arrow_left"></q-btn>
-        <q-btn @click="nextKeyframe" icon="keyboard_arrow_right"></q-btn>
+        <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left"></q-btn>
+        <q-btn @click="handleNextKeyframe" icon="keyboard_arrow_right"></q-btn>
       </q-btn-group>
     </q-list>
   </div>
@@ -146,7 +146,7 @@ export default {
     handleExport () {
       utils.notify('Not implemented yet!')
     },
-    previousKeyframe () {
+    handlePreviousKeyframe () {
       const leftPanelCurrentKeyframe = this.leftPanel.currentKeyframe
       const rightPanelCurrentKeyframe = this.rightPanel.currentKeyframe
       if (leftPanelCurrentKeyframe - this.secondPerKeyframe < 0 ||
@@ -161,7 +161,7 @@ export default {
         this.setRightPanelCurrentKeyframe(leftPanelCurrentKeyframe)
       }
     },
-    nextKeyframe () {
+    handleNextKeyframe () {
       const leftPanelCurrentKeyframe = this.leftPanel.currentKeyframe
       const rightPanelCurrentKeyframe = this.rightPanel.currentKeyframe
       const lastKeyframe = this.keyframeList[this.keyframeList.length - 1]
