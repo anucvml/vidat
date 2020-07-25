@@ -27,7 +27,7 @@ const SETTINGS_TEMPLATE = `
           v-model="preference.keyframes"
           checked-icon="check"
           unchecked-icon="clear"
-          @input="savePreference"
+          @input="handleSavePreference"
         ></q-toggle>
       </q-item-section>
     </q-item>
@@ -41,7 +41,7 @@ const SETTINGS_TEMPLATE = `
           v-model="preference.objects"
           checked-icon="check"
           unchecked-icon="clear"
-          @input="savePreference"
+          @input="handleSavePreference"
         ></q-toggle>
       </q-item-section>
     </q-item>
@@ -55,7 +55,7 @@ const SETTINGS_TEMPLATE = `
           v-model="preference.regions"
           checked-icon="check"
           unchecked-icon="clear"
-          @input="savePreference"
+          @input="handleSavePreference"
         ></q-toggle>
       </q-item-section>
     </q-item>
@@ -69,7 +69,7 @@ const SETTINGS_TEMPLATE = `
           v-model="preference.videoSegments"
           checked-icon="check"
           unchecked-icon="clear"
-          @input="savePreference"
+          @input="handleSavePreference"
         ></q-toggle>
       </q-item-section>
     </q-item>
@@ -147,9 +147,9 @@ export default {
         regions: true,
         videoSegments: true,
       }
-      this.savePreference()
+      this.handleSavePreference()
     },
-    savePreference () {
+    handleSavePreference () {
       this.$store.commit('preferenceData', this.preference)
     },
   },
