@@ -120,16 +120,10 @@ export default {
       })
     },
     handleSave () {
-      this.$q.dialog({
-        title: 'Save',
-        message: 'Enter configuration filename for saving',
-        prompt: {
-          model: 'config.txt',
-          type: 'text',
-        },
-        cancel: true,
-        persistent: true,
-      }).onOk(filename => {
+      utils.prompt(
+        'Save',
+        'Enter configuration filename for saving',
+        'config.txt').onOk(filename => {
         let objectLabels = {}
         this.$store.state.settings.objectLabelData.forEach(element => {
           objectLabels[element.name] = element.color

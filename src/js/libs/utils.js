@@ -7,6 +7,25 @@ export default {
       persistent: true,
     })
   },
+  notify (message) {
+    return Quasar.Notify.create({
+      message: message,
+      color: 'primary',
+      position: 'bottom-right',
+    })
+  },
+  prompt (title, message, defaultValue) {
+    return Quasar.Dialog.create({
+      title: title,
+      message: message,
+      prompt: {
+        model: defaultValue,
+        type: 'text',
+      },
+      cancel: true,
+      persistent: true,
+    })
+  },
   importFile: () => {
     return new Promise(function (resolve, reject) {
       const dialog = document.createElement('input')
