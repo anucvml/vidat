@@ -8,23 +8,23 @@ const CONTROL_PANEL_TEMPLATE = `
   <q-item>
     <q-item-section>
       <q-btn-group spread>
-        <q-btn @click="copyLeft" icon="arrow_back"></q-btn>
-        <q-btn @click="copyRight" icon="arrow_forward"></q-btn>
+        <q-btn @click="handleCopyLeft" icon="arrow_back"></q-btn>
+        <q-btn @click="handleCopyRight" icon="arrow_forward"></q-btn>
       </q-btn-group>
     </q-item-section>
   </q-item>
   <q-item>
     <q-item-section>
       <q-btn-group spread>
-        <q-btn @click="replaceLeft" icon="first_page"></q-btn>
-        <q-btn @click="replaceRight" icon="last_page"></q-btn>
+        <q-btn @click="handleReplaceLeft" icon="first_page"></q-btn>
+        <q-btn @click="handleReplaceRight" icon="last_page"></q-btn>
       </q-btn-group>
     </q-item-section>
   </q-item>
   <q-item>
     <q-item-section>
       <q-btn-group spread>
-        <q-btn @click="interpolate" icon="double_arrow">interpolate</q-btn>
+        <q-btn @click="handleInterpolate" icon="double_arrow">interpolate</q-btn>
       </q-btn-group>
     </q-item-section>
   </q-item>
@@ -62,7 +62,7 @@ const CONTROL_PANEL_TEMPLATE = `
   </q-item>
   <q-item>
     <q-item-section>
-       <q-btn class="full-width" @click="swap" icon="swap_horiz">swap</q-btn>
+       <q-btn class="full-width" @click="handleSwap" icon="swap_horiz">swap</q-btn>
     </q-item-section>
   </q-item>
 </q-list>
@@ -78,12 +78,12 @@ export default {
       'setLockSliders',
       'setGrayscale',
     ]),
-    copyLeft () {},
-    copyRight () {},
-    replaceLeft () {},
-    replaceRight () {},
-    interpolate () {},
-    swap () {},
+    handleCopyLeft () {},
+    handleCopyRight () {},
+    handleReplaceLeft () {},
+    handleReplaceRight () {},
+    handleInterpolate () {},
+    handleSwap () {},
   },
   computed: {
     mode: {
