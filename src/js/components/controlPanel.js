@@ -41,7 +41,7 @@ const CONTROL_PANEL_TEMPLATE = `
         {label: 'Regions', value: 'regions'},
         {label: 'Skeletons', value: 'skeletons'}
       ]"
-    ></q-btn-toggle>
+    ></q-option-group>
     </q-item-section>
   </q-item>
   <q-item>
@@ -62,9 +62,7 @@ const CONTROL_PANEL_TEMPLATE = `
   </q-item>
   <q-item>
     <q-item-section>
-      <q-btn-group spread>
-        <q-btn @click="swap" icon="swap_horiz">swap</q-btn>
-      </q-btn-group>
+       <q-btn class="full-width" @click="swap" icon="swap_horiz">swap</q-btn>
     </q-item-section>
   </q-item>
 </q-list>
