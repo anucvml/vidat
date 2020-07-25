@@ -14,13 +14,13 @@ export default {
       position: 'bottom-right',
     })
   },
-  prompt (title, message, defaultValue) {
+  prompt (title, message, defaultValue, type = 'text') {
     return Quasar.Dialog.create({
       title: title,
       message: message,
       prompt: {
         model: defaultValue,
-        type: 'text',
+        type: type,
       },
       cancel: true,
       persistent: true,
