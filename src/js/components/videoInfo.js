@@ -82,7 +82,7 @@ const VIDEO_INFO_TEMPLATE = `
       <q-btn-group flat>
         <q-btn flat @click="previousKeyframe" icon="keyboard_arrow_left"></q-btn>
         <q-btn flat @click="nextKeyframe" icon="keyboard_arrow_right"></q-btn>
-    </q-btn-group>
+      </q-btn-group>
     </q-list>
   </div>
   <q-btn flat class="absolute-center full-width" size="40px" @click="handleOpen" icon="movie" v-if="!video.src">Open</q-btn>
