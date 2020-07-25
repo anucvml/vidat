@@ -80,8 +80,8 @@ const VIDEO_INFO_TEMPLATE = `
       </div>
       <q-space></q-space>
       <q-btn-group flat>
-        <q-btn flat @click="previousKeyframe" icon="keyboard_arrow_left"></q-btn>
-        <q-btn flat @click="nextKeyframe" icon="keyboard_arrow_right"></q-btn>
+        <q-btn @click="previousKeyframe" icon="keyboard_arrow_left"></q-btn>
+        <q-btn @click="nextKeyframe" icon="keyboard_arrow_right"></q-btn>
       </q-btn-group>
     </q-list>
   </div>
@@ -194,9 +194,6 @@ export default {
     rightPanel () {
       return this.$store.state.annotation.rightPanel
     },
-  },
-  mounted () {
-    this.setVideoSrc(null)
   },
   template: VIDEO_INFO_TEMPLATE,
 }

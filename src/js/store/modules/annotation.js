@@ -11,6 +11,9 @@ export default {
     rightPanel: {
       currentKeyframe: 5,
     },
+    mode: 'objects',
+    lockSliders: false,
+    grayscale: false,
   }),
   getters: {},
   mutations: {
@@ -23,6 +26,9 @@ export default {
         Vue.set(state, 'rightPanel', {
           currentKeyframe: 5,
         })
+        Vue.set(state, 'mode', 'objects')
+        Vue.set(state, 'lockSliders', false)
+        Vue.set(state, 'grayscale', false)
       }
       Vue.set(state.video, 'src', value)
     },
@@ -48,6 +54,15 @@ export default {
     },
     setRightPanelCurrentKeyframe (state, value) {
       Vue.set(state.rightPanel, 'currentKeyframe', value)
+    },
+    setMode (state, value) {
+      Vue.set(state, 'mode', value)
+    },
+    setLockSliders (state, value) {
+      Vue.set(state, 'lockSliders', value)
+    },
+    setGrayscale (state, value) {
+      Vue.set(state, 'grayscale', value)
     },
   },
   actions: {},
