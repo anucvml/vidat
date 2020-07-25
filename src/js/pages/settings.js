@@ -4,7 +4,7 @@ const SETTINGS_TEMPLATE = `
   <div class="row">
     <div class="text-h6">Configuration</div>
     <q-space></q-space>
-    <q-btn-group push>
+    <q-btn-group>
       <q-btn class="q-px-md" dense @click="handleLoad" icon="publish">Load</q-btn>
       <q-btn class="q-px-md" dense color="primary" icon="get_app" @click="handleSave">Save</q-btn>
     </q-btn-group>
