@@ -9,7 +9,7 @@ export default {
       currentKeyframe: 0,
     },
     rightPanel: {
-      currentKeyframe: 0,
+      currentKeyframe: 5,
     },
   }),
   getters: {},

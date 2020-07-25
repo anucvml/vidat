@@ -4,8 +4,7 @@ const VIDEO_INFO_TEMPLATE = `
     <q-card-section class="col-md-4 col-sm-8">
       <video
         controls
-        class="absolute-center"
-        style="width: 80%"
+        style="width: 100%"
         :src="video.src"
         @canplay="handleCanPlay"
       >
@@ -55,7 +54,7 @@ const VIDEO_INFO_TEMPLATE = `
         </q-item>
       </q-list>
     </q-card-section>
-    <q-list class="col-12 row q-pt-sm">
+    <q-list class="col-12 row">
       <q-item>
         <q-item-section class="text-center">Keyframes:</q-item-section>
       </q-item>
