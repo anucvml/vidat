@@ -33,3 +33,7 @@ a {
   direction: ltr;
   -webkit-font-smoothing: antialiased;
 }
+
+.q-skeleton {
+  cursor: auto;
+}
