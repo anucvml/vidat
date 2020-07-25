@@ -2,6 +2,7 @@ export default {
   state: () => ({
     video: {
       src: null,
+      fps: 10,
     },
     secondPerKeyframe: 5,
     keyframeList: [],
@@ -11,6 +12,7 @@ export default {
     rightPanel: {
       currentKeyframe: 5,
     },
+    cachedFrameList: [],
     mode: 'objects',
     lockSliders: false,
     grayscale: false,
@@ -19,6 +21,7 @@ export default {
   mutations: {
     setVideoSrc (state, value) {
       if (!value) {
+        Vue.set(state.video, 'fps', 5)
         Vue.set(state, 'keyframeList', [])
         Vue.set(state, 'leftPanel', {
           currentKeyframe: 0,
@@ -63,6 +66,9 @@ export default {
     },
     setGrayscale (state, value) {
       Vue.set(state, 'grayscale', value)
+    },
+    cacheFrame (state, frame) {
+      state.cachedFrameList.push(frame)
     },
   },
   actions: {},

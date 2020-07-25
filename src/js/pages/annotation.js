@@ -11,13 +11,15 @@ const ANNOTATION_TEMPLATE = `
     <control-panel class="col-md-1 col-sm-2"></control-panel>
     <video-panel class="col-md col-sm-10" position="right"></video-panel>
   </q-card>
+  <video-frame></video-frame>
 </q-page>
 `
 
 import videoInfo from '../components/videoInfo.js'
 import annotationSkeleton from '../components/annotationSkeleton.js'
-import videoPanel from '../components/videoPanel.js'
+import videoPanel from '../components/canvasPanel.js'
 import controlPanel from '../components/controlPanel.js'
+import videoFrame from '../components/videoFrame.js'
 
 export default {
   components: {
@@ -25,6 +27,7 @@ export default {
     annotationSkeleton,
     videoPanel,
     controlPanel,
+    videoFrame,
   },
   data: () => {
     return {}
