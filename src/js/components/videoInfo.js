@@ -72,7 +72,7 @@ const VIDEO_INFO_TEMPLATE = `
           v-for="keyframe in keyframeList"
           :key="keyframe">
           <q-chip class="q-ma-xs" color="primary" text-color="white">
-             {{ keyframe }}
+             {{ utils.index2time(keyframe) }}
              <q-badge
               color="orange"
               floating style="top: -5px; right: 19px"
@@ -101,7 +101,9 @@ import utils from '../libs/utils.js'
 
 export default {
   data: () => {
-    return {}
+    return {
+      utils,
+    }
   },
   methods: {
     ...Vuex.mapMutations([
@@ -170,32 +172,34 @@ export default {
     handlePreviousKeyframe () {
       const leftPanelCurrentKeyframe = this.leftPanel.currentKeyframe
       const rightPanelCurrentKeyframe = this.rightPanel.currentKeyframe
-      if (leftPanelCurrentKeyframe - this.secondPerKeyframe < 0 ||
-        rightPanelCurrentKeyframe - this.secondPerKeyframe < 0) {
+      const keyframeInterval = utils.time2index(this.secondPerKeyframe)
+      if (leftPanelCurrentKeyframe - keyframeInterval < 0 ||
+        rightPanelCurrentKeyframe - keyframeInterval < 0) {
         this.setLeftPanelCurrentKeyframe(0)
-        this.setRightPanelCurrentKeyframe(this.secondPerKeyframe)
-      } else if (rightPanelCurrentKeyframe - leftPanelCurrentKeyframe === this.secondPerKeyframe) {
-        this.setLeftPanelCurrentKeyframe(leftPanelCurrentKeyframe - this.secondPerKeyframe)
-        this.setRightPanelCurrentKeyframe(rightPanelCurrentKeyframe - this.secondPerKeyframe)
+        this.setRightPanelCurrentKeyframe(keyframeInterval)
+      } else if (rightPanelCurrentKeyframe - leftPanelCurrentKeyframe === keyframeInterval) {
+        this.setLeftPanelCurrentKeyframe(leftPanelCurrentKeyframe - keyframeInterval)
+        this.setRightPanelCurrentKeyframe(rightPanelCurrentKeyframe - keyframeInterval)
       } else {
-        this.setLeftPanelCurrentKeyframe(leftPanelCurrentKeyframe - this.secondPerKeyframe)
+        this.setLeftPanelCurrentKeyframe(leftPanelCurrentKeyframe - keyframeInterval)
         this.setRightPanelCurrentKeyframe(leftPanelCurrentKeyframe)
       }
     },
     handleNextKeyframe () {
       const leftPanelCurrentKeyframe = this.leftPanel.currentKeyframe
       const rightPanelCurrentKeyframe = this.rightPanel.currentKeyframe
+      const keyframeInterval = utils.time2index(this.secondPerKeyframe)
       const lastKeyframe = this.keyframeList[this.keyframeList.length - 1]
-      if (leftPanelCurrentKeyframe + this.secondPerKeyframe > lastKeyframe ||
-        rightPanelCurrentKeyframe + this.secondPerKeyframe > lastKeyframe) {
-        this.setLeftPanelCurrentKeyframe(lastKeyframe - this.secondPerKeyframe)
+      if (leftPanelCurrentKeyframe + keyframeInterval > lastKeyframe ||
+        rightPanelCurrentKeyframe + keyframeInterval > lastKeyframe) {
+        this.setLeftPanelCurrentKeyframe(lastKeyframe - keyframeInterval)
         this.setRightPanelCurrentKeyframe(lastKeyframe)
-      } else if (rightPanelCurrentKeyframe - leftPanelCurrentKeyframe === this.secondPerKeyframe) {
-        this.setLeftPanelCurrentKeyframe(leftPanelCurrentKeyframe + this.secondPerKeyframe)
-        this.setRightPanelCurrentKeyframe(rightPanelCurrentKeyframe + this.secondPerKeyframe)
+      } else if (rightPanelCurrentKeyframe - leftPanelCurrentKeyframe === keyframeInterval) {
+        this.setLeftPanelCurrentKeyframe(leftPanelCurrentKeyframe + keyframeInterval)
+        this.setRightPanelCurrentKeyframe(rightPanelCurrentKeyframe + keyframeInterval)
       } else {
         this.setLeftPanelCurrentKeyframe(leftPanelCurrentKeyframe)
-        this.setRightPanelCurrentKeyframe(leftPanelCurrentKeyframe + this.secondPerKeyframe)
+        this.setRightPanelCurrentKeyframe(leftPanelCurrentKeyframe + keyframeInterval)
       }
     },
   },

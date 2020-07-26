@@ -1,3 +1,5 @@
+import store from '../store/store.js'
+
 export default {
   confirm (message) {
     return Quasar.Dialog.create({
@@ -54,4 +56,8 @@ export default {
       dialog.click()
     })
   },
+  time2index (time) {
+    return Math.round(store.state.annotation.video.fps * time)
+  },
+  index2time (index) { return index / store.state.annotation.video.fps },
 }

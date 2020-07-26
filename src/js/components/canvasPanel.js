@@ -11,7 +11,7 @@ const VIDEO_PANEL_TEMPLATE = `
     <film-strip></film-strip>
     <img
       ref="img"
-      :src="cachedFrameList[panel.currentKeyframe]"
+      :src="cachedFrameList[currentKeyframe]"
       style="display: none"
       @load="handleLoad"
     >
@@ -30,10 +30,8 @@ export default {
   },
   methods: {
     handleLoad () {
+      console.log('here')
       this.ctx.drawImage(this.$refs.img, 0, 0, this.video.width, this.video.height)
-    },
-    draw () {
-
     },
   },
   created () {
@@ -41,22 +39,21 @@ export default {
       function () {
         return eval('this.$store.state.annotation.' + this.position + 'Panel')
       },
-      function (oldValue, newValue) {
-        this.draw()
-      },
+      function (oldValue, newValue) {},
       { deep: true },
     )
   },
   mounted () {
     this.ctx = this.$refs.canvas.getContext('2d')
-    this.draw()
   },
   computed: {
     video () {
       return this.$store.state.annotation.video
     },
-    panel () {
-      return eval('this.$store.state.annotation.' + this.position + 'Panel')
+    currentKeyframe () {
+      const ret = eval('this.$store.state.annotation.' + this.position + 'Panel.currentKeyframe')
+      console.log(ret)
+      return ret
     },
     cachedFrameList () {
       return this.$store.state.annotation.cachedFrameList

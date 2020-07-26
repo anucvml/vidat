@@ -12,6 +12,8 @@ const VIDEO_FRAME_TEMPLATE = `
 </div>
 `
 
+import utils from '../libs/utils.js'
+
 export default {
   data: () => {
     return {}
@@ -30,7 +32,10 @@ export default {
       canvas.width = this.video.width
       canvas.height = this.video.height
       canvas.getContext('2d').drawImage(this.$refs.video, 0, 0, canvas.width, canvas.height)
-      this.cacheFrame(canvas.toDataURL('image/jpeg'))
+      this.cacheFrame({
+        index: utils.time2index(this.$refs.video.currentTime),
+        frame: canvas.toDataURL('image/jpeg'),
+      })
       if (this.$refs.video.currentTime + interval < this.video.duration) {
         this.$refs.video.currentTime += interval
         console.log(this.$refs.video.currentTime)
