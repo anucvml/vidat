@@ -76,9 +76,17 @@ export default {
     rightCurrentFrame () {
       return this.$store.state.annotation.rightCurrentFrame
     },
+    keyframeList () {
+      return this.$store.state.annotation.keyframeList
+    },
   },
   mounted () {
-    this.priorityQueue.push(this.$store.state.annotation.rightCurrentFrame)
+    // add keyframe to priorityQueue
+    this.keyframeList.forEach(keyframe => {
+      if (keyframe !== 0) {
+        this.priorityQueue.push(keyframe)
+      }
+    })
     // add frame index into the backendQueue
     // 1. every one second
     for (let i = 1.0; i < this.video.duration; i++) {
