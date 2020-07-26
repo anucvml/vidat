@@ -18,6 +18,7 @@ export default {
     setVideoSrc (state, value) {
       if (!value) {
         Vue.set(state.video, 'fps', 10)
+        Vue.set(state.video, 'frames', null)
         Vue.set(state, 'secondPerKeyframe', 5)
         Vue.set(state, 'keyframeList', {})
         Vue.set(state, 'leftCurrentFrame', 0)
@@ -30,6 +31,7 @@ export default {
     },
     setVideoDuration (state, value) {
       Vue.set(state.video, 'duration', value)
+      Vue.set(state.video, 'frames', Math.floor(state.video.fps * value))
     },
     setVideoWidth (state, value) {
       Vue.set(state.video, 'width', value)

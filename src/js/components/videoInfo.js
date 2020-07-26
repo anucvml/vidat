@@ -26,7 +26,7 @@ const VIDEO_INFO_TEMPLATE = `
         </q-item>
         <q-item>
           <q-item-section># Frames:</q-item-section>
-          <q-item-section class="text-right">{{ Math.floor(video.duration * video.fps) }} f</q-item-section>
+          <q-item-section class="text-right">{{ video.frames }} f</q-item-section>
         </q-item>
         <q-item>
           <q-item-section>Width:</q-item-section>
@@ -156,7 +156,8 @@ export default {
     },
     handleClose () {
       utils.confirm('Are you sure to close? You will LOSE all data!').onOk(() => {
-        this.setVideoSrc(null)
+        // this.setVideoSrc(null)
+        window.location.reload()
       })
     },
     handleGenerate () {

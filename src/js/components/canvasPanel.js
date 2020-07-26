@@ -9,6 +9,18 @@ const VIDEO_PANEL_TEMPLATE = `
       :width="video.width"
     ></canvas>
     <film-strip></film-strip>
+    <div class="q-px-md">
+      <q-slider
+        v-model="currentFrame"
+        :min="0"
+        :max="260"
+        :step="1"
+        label
+      />
+      <q-badge class="float-right">
+        {{ utils.index2time(this.currentFrame) | toFixed2 }} / {{ video.duration | toFixed2 }} s
+      </q-badge>
+    </div>
     <img
       ref="img"
       :src="cachedFrameList[currentFrame]"
@@ -19,6 +31,7 @@ const VIDEO_PANEL_TEMPLATE = `
 `
 
 import filmStrip from './filmStrip.js'
+import utils from '../libs/utils.js'
 
 export default {
   props: ['position'],
@@ -26,6 +39,7 @@ export default {
   data: () => {
     return {
       ctx: null,
+      utils,
     }
   },
   methods: {
@@ -40,11 +54,26 @@ export default {
     video () {
       return this.$store.state.annotation.video
     },
-    currentFrame () {
-      return eval('this.$store.state.annotation.' + this.position + 'CurrentFrame')
+    currentFrame: {
+      get () {
+        return eval('this.$store.state.annotation.' + this.position + 'CurrentFrame')
+      },
+      set (value) {
+        this.$store.commit('set' + this.position.slice(0, 1).toUpperCase() + this.position.slice(1) + 'CurrentFrame',
+          value)
+      },
     },
     cachedFrameList () {
       return this.$store.state.annotation.cachedFrameList
+    },
+  },
+  filters: {
+    'toFixed2': function (value) {
+      if (value) {
+        return value.toFixed(2)
+      } else {
+        return '0.00'
+      }
     },
   },
   template: VIDEO_PANEL_TEMPLATE,
