@@ -16,7 +16,10 @@ import utils from '../libs/utils.js'
 
 export default {
   data: () => {
-    return {}
+    return {
+      backendQueue: [], // index of frame for backend processing
+      priorityQueue: [], // index of priority frame that needs to process now
+    }
   },
   methods: {
     ...Vuex.mapMutations([
@@ -40,6 +43,11 @@ export default {
         this.$refs.video.currentTime += interval
         console.log(this.$refs.video.currentTime)
       }
+    },
+  },
+  watch: {
+    'this.$store.state.annotation.leftPanel.currentFrame': function (oldValue, newValue) {
+      this.$refs.video.currentTime = newValue
     },
   },
   computed: {

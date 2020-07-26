@@ -414,10 +414,10 @@ class ANUVidLib {
     return this.seekToIndex(leftIndex, rightIndex)
   }
 
-  // Swap left and right panels. Same effect as seekToTime(this.rightPanel.timestamp, this.leftPanel.timestamp, true)
+  // Swap left and right panels. Same effect as seekToTime(this.rightCurrentFrame.timestamp, this.leftCurrentFrame.timestamp, true)
   // but faster since no video seek is required.
   swap () {
-    //this.seekToTime(this.rightPanel.timestamp, this.leftPanel.timestamp, true);
+    //this.seekToTime(this.rightCurrentFrame.timestamp, this.leftCurrentFrame.timestamp, true);
     //return;
 
     let tmp = this.leftPanel.frame.src

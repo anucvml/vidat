@@ -11,7 +11,7 @@ const VIDEO_PANEL_TEMPLATE = `
     <film-strip></film-strip>
     <img
       ref="img"
-      :src="cachedFrameList[currentKeyframe]"
+      :src="cachedFrameList[currentFrame]"
       style="display: none"
       @load="handleLoad"
     >
@@ -37,7 +37,7 @@ export default {
   created () {
     this.$watch(
       function () {
-        return eval('this.$store.state.annotation.' + this.position + 'Panel')
+        return eval('this.$store.state.annotation.' + this.position + 'CurrentFrame')
       },
       function (oldValue, newValue) {},
       { deep: true },
@@ -50,10 +50,8 @@ export default {
     video () {
       return this.$store.state.annotation.video
     },
-    currentKeyframe () {
-      const ret = eval('this.$store.state.annotation.' + this.position + 'Panel.currentKeyframe')
-      console.log(ret)
-      return ret
+    currentFrame () {
+      return eval('this.$store.state.annotation.' + this.position + 'CurrentFrame')
     },
     cachedFrameList () {
       return this.$store.state.annotation.cachedFrameList

@@ -6,12 +6,8 @@ export default {
     },
     secondPerKeyframe: 5,
     keyframeList: {},
-    leftPanel: {
-      currentKeyframe: 0,
-    },
-    rightPanel: {
-      currentKeyframe: 50,
-    },
+    leftCurrentFrame: 0,
+    rightCurrentFrame: 50,
     cachedFrameList: [],
     mode: 'objects',
     lockSliders: false,
@@ -24,12 +20,8 @@ export default {
         Vue.set(state.video, 'fps', 10)
         Vue.set(state, 'secondPerKeyframe', 5)
         Vue.set(state, 'keyframeList', {})
-        Vue.set(state, 'leftPanel', {
-          currentKeyframe: 0,
-        })
-        Vue.set(state, 'rightPanel', {
-          currentKeyframe: 50,
-        })
+        Vue.set(state, 'leftCurrentFrame', 0)
+        Vue.set(state, 'rightCurrentFrame', 50)
         Vue.set(state, 'mode', 'objects')
         Vue.set(state, 'lockSliders', false)
         Vue.set(state, 'grayscale', false)
@@ -47,9 +39,7 @@ export default {
     },
     setVideoFPS (state, value) {
       Vue.set(state.video, 'fps', value)
-      Vue.set(state, 'rightPanel', {
-        currentKeyframe: value * state.secondPerKeyframe,
-      })
+      Vue.set(state, 'rightCurrentFrame', value * state.secondPerKeyframe)
     },
     setSecondPerKeyframe (state, value) {
       Vue.set(state, 'secondPerKeyframe', value)
@@ -58,14 +48,14 @@ export default {
         keyframeList.push(keyframe * state.video.fps)
       }
       Vue.set(state, 'keyframeList', keyframeList)
-      Vue.set(state.leftPanel, 'currentKeyframe', 0)
-      Vue.set(state.rightPanel, 'currentKeyframe', value * state.video.fps)
+      Vue.set(state, 'leftCurrentFrame', 0)
+      Vue.set(state, 'rightCurrentFrame', value * state.video.fps)
     },
-    setLeftPanelCurrentKeyframe (state, value) {
-      Vue.set(state.leftPanel, 'currentKeyframe', value)
+    setLeftCurrentFrame (state, value) {
+      Vue.set(state, 'leftCurrentFrame', value)
     },
-    setRightPanelCurrentKeyframe (state, value) {
-      Vue.set(state.rightPanel, 'currentKeyframe', value)
+    setRightCurrentFrame (state, value) {
+      Vue.set(state, 'rightCurrentFrame', value)
     },
     setMode (state, value) {
       Vue.set(state, 'mode', value)

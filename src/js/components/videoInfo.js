@@ -76,12 +76,12 @@ const VIDEO_INFO_TEMPLATE = `
              <q-badge
               color="orange"
               floating style="top: -5px; right: 19px"
-              v-if="keyframe === leftPanel.currentKeyframe"
+              v-if="keyframe === leftCurrentFrame"
              >L</q-badge>
              <q-badge
               color="orange"
               floating style="top: -5px; right: -6px"
-              v-if="keyframe === rightPanel.currentKeyframe"
+              v-if="keyframe === rightCurrentFrame"
              >R</q-badge>
           </q-chip>
         </q-item>
@@ -112,8 +112,8 @@ export default {
       'setVideoWidth',
       'setVideoHeight',
       'setSecondPerKeyframe',
-      'setLeftPanelCurrentKeyframe',
-      'setRightPanelCurrentKeyframe',
+      'setLeftCurrentFrame',
+      'setRightCurrentFrame',
       'setVideoFPS',
     ]),
     handleOpenWithFPS () {
@@ -170,36 +170,36 @@ export default {
       utils.notify('Not implemented yet!')
     },
     handlePreviousKeyframe () {
-      const leftPanelCurrentKeyframe = this.leftPanel.currentKeyframe
-      const rightPanelCurrentKeyframe = this.rightPanel.currentKeyframe
+      const leftCurrentFrame = this.leftCurrentFrame
+      const rightCurrentFrame = this.rightCurrentFrame
       const keyframeInterval = utils.time2index(this.secondPerKeyframe)
-      if (leftPanelCurrentKeyframe - keyframeInterval < 0 ||
-        rightPanelCurrentKeyframe - keyframeInterval < 0) {
-        this.setLeftPanelCurrentKeyframe(0)
-        this.setRightPanelCurrentKeyframe(keyframeInterval)
-      } else if (rightPanelCurrentKeyframe - leftPanelCurrentKeyframe === keyframeInterval) {
-        this.setLeftPanelCurrentKeyframe(leftPanelCurrentKeyframe - keyframeInterval)
-        this.setRightPanelCurrentKeyframe(rightPanelCurrentKeyframe - keyframeInterval)
+      if (leftCurrentFrame - keyframeInterval < 0 ||
+        rightCurrentFrame - keyframeInterval < 0) {
+        this.setLeftCurrentFrame(0)
+        this.setRightCurrentFrame(keyframeInterval)
+      } else if (rightCurrentFrame - leftCurrentFrame === keyframeInterval) {
+        this.setLeftCurrentFrame(leftCurrentFrame - keyframeInterval)
+        this.setRightCurrentFrame(rightCurrentFrame - keyframeInterval)
       } else {
-        this.setLeftPanelCurrentKeyframe(leftPanelCurrentKeyframe - keyframeInterval)
-        this.setRightPanelCurrentKeyframe(leftPanelCurrentKeyframe)
+        this.setLeftCurrentFrame(leftCurrentFrame - keyframeInterval)
+        this.setRightCurrentFrame(leftCurrentFrame)
       }
     },
     handleNextKeyframe () {
-      const leftPanelCurrentKeyframe = this.leftPanel.currentKeyframe
-      const rightPanelCurrentKeyframe = this.rightPanel.currentKeyframe
+      const leftCurrentFrame = this.leftCurrentFrame
+      const rightCurrentFrame = this.rightCurrentFrame
       const keyframeInterval = utils.time2index(this.secondPerKeyframe)
       const lastKeyframe = this.keyframeList[this.keyframeList.length - 1]
-      if (leftPanelCurrentKeyframe + keyframeInterval > lastKeyframe ||
-        rightPanelCurrentKeyframe + keyframeInterval > lastKeyframe) {
-        this.setLeftPanelCurrentKeyframe(lastKeyframe - keyframeInterval)
-        this.setRightPanelCurrentKeyframe(lastKeyframe)
-      } else if (rightPanelCurrentKeyframe - leftPanelCurrentKeyframe === keyframeInterval) {
-        this.setLeftPanelCurrentKeyframe(leftPanelCurrentKeyframe + keyframeInterval)
-        this.setRightPanelCurrentKeyframe(rightPanelCurrentKeyframe + keyframeInterval)
+      if (leftCurrentFrame + keyframeInterval > lastKeyframe ||
+        rightCurrentFrame + keyframeInterval > lastKeyframe) {
+        this.setLeftCurrentFrame(lastKeyframe - keyframeInterval)
+        this.setRightCurrentFrame(lastKeyframe)
+      } else if (rightCurrentFrame - leftCurrentFrame === keyframeInterval) {
+        this.setLeftCurrentFrame(leftCurrentFrame + keyframeInterval)
+        this.setRightCurrentFrame(rightCurrentFrame + keyframeInterval)
       } else {
-        this.setLeftPanelCurrentKeyframe(leftPanelCurrentKeyframe)
-        this.setRightPanelCurrentKeyframe(leftPanelCurrentKeyframe + keyframeInterval)
+        this.setLeftCurrentFrame(leftCurrentFrame)
+        this.setRightCurrentFrame(leftCurrentFrame + keyframeInterval)
       }
     },
   },
@@ -213,11 +213,11 @@ export default {
     keyframeList () {
       return this.$store.state.annotation.keyframeList
     },
-    leftPanel () {
-      return this.$store.state.annotation.leftPanel
+    leftCurrentFrame () {
+      return this.$store.state.annotation.leftCurrentFrame
     },
-    rightPanel () {
-      return this.$store.state.annotation.rightPanel
+    rightCurrentFrame () {
+      return this.$store.state.annotation.rightCurrentFrame
     },
   },
   template: VIDEO_INFO_TEMPLATE,
