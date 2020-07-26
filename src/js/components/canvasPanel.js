@@ -1,26 +1,39 @@
 const VIDEO_PANEL_TEMPLATE = `
   <div>
-    <canvas ref="canvas" class="full-width">123</canvas>
-    <img ref="img" :src="cachedFrameList[panel.currentKeyframe]" style="display: none">
+    <film-strip></film-strip>
+    <canvas
+      ref="canvas"
+      class="full-width"
+      style="display: block"
+      :height="video.height"
+      :width="video.width"
+    ></canvas>
+    <film-strip></film-strip>
+    <img
+      ref="img"
+      :src="cachedFrameList[panel.currentKeyframe]"
+      style="display: none"
+      @load="handleLoad"
+    >
   </div>
 `
 
+import filmStrip from './filmStrip.js'
+
 export default {
   props: ['position'],
+  components: { filmStrip },
   data: () => {
     return {
       ctx: null,
     }
   },
   methods: {
-    drawFrame () {
-      const that = this
-      this.$refs.img.onload = function () {
-        that.ctx.drawImage(that.$refs.img, 0, 0, that.$refs.canvas.width, that.$refs.canvas.height)
-      }
+    handleLoad () {
+      this.ctx.drawImage(this.$refs.img, 0, 0, this.video.width, this.video.height)
     },
     draw () {
-      this.drawFrame()
+
     },
   },
   created () {
