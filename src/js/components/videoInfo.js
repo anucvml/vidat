@@ -21,6 +21,14 @@ const VIDEO_INFO_TEMPLATE = `
           <q-item-section class="text-right">{{ video.duration }} s</q-item-section>
         </q-item>
         <q-item>
+          <q-item-section>FPS:</q-item-section>
+          <q-item-section class="text-right">{{ video.fps }} fps</q-item-section>
+        </q-item>
+        <q-item>
+          <q-item-section># Frames:</q-item-section>
+          <q-item-section class="text-right">{{ Math.floor(video.duration * video.fps) }} f</q-item-section>
+        </q-item>
+        <q-item>
           <q-item-section>Width:</q-item-section>
           <q-item-section class="text-right">{{ video.width }} px</q-item-section>
         </q-item>
@@ -104,18 +112,31 @@ export default {
       'setSecondPerKeyframe',
       'setLeftPanelCurrentKeyframe',
       'setRightPanelCurrentKeyframe',
+      'setVideoFPS',
     ]),
-    handleOpen () {
-      if (this.video.src) {
-        utils.confirm('Are you sure to open a new video? You will LOSE all data!').onOk(() => {
+    handleOpenWithFPS () {
+      utils.prompt(
+        'FPS',
+        'Please enter the FPS you want. Integer between 1 and 60.',
+        10,
+        'number').onOk((fps) => {
+        if (fps >= 1 && fps <= 10 && fps % 1 === 0) {
+          this.setVideoFPS(parseInt(fps))
           utils.importVideo().then(videoSrc => {
             this.setVideoSrc(videoSrc)
           })
+        } else {
+          utils.notify('Please enter an integer between 1 and 60.')
+        }
+      })
+    },
+    handleOpen () {
+      if (this.video.src) {
+        utils.confirm('Are you sure to open a new video? You will LOSE all data!').onOk(() => {
+          this.handleOpenWithFPS()
         })
       } else {
-        utils.importVideo().then(videoSrc => {
-          this.setVideoSrc(videoSrc)
-        })
+        this.handleOpenWithFPS()
       }
     },
     handleCanPlay (event) {

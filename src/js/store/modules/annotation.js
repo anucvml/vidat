@@ -21,7 +21,7 @@ export default {
   mutations: {
     setVideoSrc (state, value) {
       if (!value) {
-        Vue.set(state.video, 'fps', 5)
+        Vue.set(state.video, 'fps', 10)
         Vue.set(state, 'keyframeList', [])
         Vue.set(state, 'leftPanel', {
           currentKeyframe: 0,
@@ -43,6 +43,9 @@ export default {
     },
     setVideoHeight (state, value) {
       Vue.set(state.video, 'height', value)
+    },
+    setVideoFPS (state, value) {
+      Vue.set(state.video, 'fps', value)
     },
     setSecondPerKeyframe (state, value) {
       state.secondPerKeyframe = value
