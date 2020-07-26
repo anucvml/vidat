@@ -33,15 +33,6 @@ export default {
       this.ctx.drawImage(this.$refs.img, 0, 0, this.video.width, this.video.height)
     },
   },
-  created () {
-    this.$watch(
-      function () {
-        return eval('this.$store.state.annotation.' + this.position + 'CurrentFrame')
-      },
-      function (oldValue, newValue) {},
-      { deep: true },
-    )
-  },
   mounted () {
     this.ctx = this.$refs.canvas.getContext('2d')
   },
