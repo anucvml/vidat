@@ -30,7 +30,6 @@ export default {
   },
   methods: {
     handleLoad () {
-      console.log('here')
       this.ctx.drawImage(this.$refs.img, 0, 0, this.video.width, this.video.height)
     },
   },

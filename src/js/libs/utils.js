@@ -59,5 +59,5 @@ export default {
   time2index (time) {
     return Math.round(store.state.annotation.video.fps * time)
   },
-  index2time (index) { return index / store.state.annotation.video.fps },
+  index2time (index) { return parseFloat((index / store.state.annotation.video.fps).toFixed(1)) },
 }

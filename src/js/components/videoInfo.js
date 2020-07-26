@@ -94,15 +94,21 @@ const VIDEO_INFO_TEMPLATE = `
     </q-list>
   </div>
   <q-btn flat class="absolute-center full-width" size="40px" @click="handleOpen" icon="movie" v-if="!video.src">Open</q-btn>
+  <video-frame v-if="showVideoFrame"></video-frame>
 </div>
 `
 
 import utils from '../libs/utils.js'
+import videoFrame from './videoFrame.js'
 
 export default {
+  components: {
+    videoFrame,
+  },
   data: () => {
     return {
       utils,
+      showVideoFrame: false,
     }
   },
   methods: {
@@ -146,6 +152,7 @@ export default {
       this.setVideoWidth(event.target.videoWidth)
       this.setVideoHeight(event.target.videoHeight)
       this.setSecondPerKeyframe(5)
+      this.showVideoFrame = true
     },
     handleClose () {
       utils.confirm('Are you sure to close? You will LOSE all data!').onOk(() => {
