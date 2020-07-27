@@ -68,9 +68,13 @@ const CONTROL_PANEL_TEMPLATE = `
 </q-list>
 `
 
+import utils from '../libs/utils.js'
+
 export default {
   data: () => {
-    return {}
+    return {
+      utils,
+    }
   },
   methods: {
     ...Vuex.mapMutations([
@@ -80,12 +84,64 @@ export default {
       'setLockSlidersDistance',
       'setLeftCurrentFrame',
       'setRightCurrentFrame',
+      'setAnnotationList',
     ]),
-    handleCopyLeft () {},
-    handleCopyRight () {},
-    handleReplaceLeft () {},
-    handleReplaceRight () {},
-    handleInterpolate () {},
+    clone (annotationList) {
+      let ret = []
+      for (let annotation of annotationList) {
+        ret.push(annotation.clone())
+      }
+      return ret
+    },
+    handleCopyLeft () {
+      if (this.leftCurrentFrame !== this.rightCurrentFrame) {
+        this.setAnnotationList({
+          index: this.leftCurrentFrame,
+          mode: this.mode,
+          annotationList: [
+            ...this.annotationListMap[this.leftCurrentFrame],
+            ...this.clone(this.annotationListMap[this.rightCurrentFrame]),
+          ],
+        })
+      }
+    },
+    handleCopyRight () {
+      if (this.leftCurrentFrame !== this.rightCurrentFrame) {
+        this.setAnnotationList({
+          index: this.rightCurrentFrame,
+          mode: this.mode,
+          annotationList: [
+            ...this.annotationListMap[this.rightCurrentFrame],
+            ...this.clone(this.annotationListMap[this.leftCurrentFrame]),
+          ],
+        })
+      }
+    },
+    handleReplaceLeft () {
+      if (this.leftCurrentFrame !== this.rightCurrentFrame) {
+        this.setAnnotationList({
+          index: this.leftCurrentFrame,
+          mode: this.mode,
+          annotationList: [
+            ...this.clone(this.annotationListMap[this.rightCurrentFrame]),
+          ],
+        })
+      }
+    },
+    handleReplaceRight () {
+      if (this.leftCurrentFrame !== this.rightCurrentFrame) {
+        this.setAnnotationList({
+          index: this.rightCurrentFrame,
+          mode: this.mode,
+          annotationList: [
+            ...this.clone(this.annotationListMap[this.leftCurrentFrame]),
+          ],
+        })
+      }
+    },
+    handleInterpolate () {
+      this.utils.notify('Not implemented!')
+    },
     handleSwap () {
       const leftCurrentFrame = this.leftCurrentFrame
       this.leftCurrentFrame = this.rightCurrentFrame
@@ -133,6 +189,9 @@ export default {
       set (value) {
         this.setRightCurrentFrame(value)
       },
+    },
+    annotationListMap () {
+      return eval('this.$store.state.annotation.' + this.mode + 'AnnotationListMap')
     },
   },
   template: CONTROL_PANEL_TEMPLATE,

@@ -6,6 +6,10 @@ class Annotation {
   draw () {
     throw 'Not implemented!'
   }
+
+  clone () {
+    throw 'Not implemented!'
+  }
 }
 
 class ObjectAnnotation extends Annotation {
@@ -16,24 +20,6 @@ class ObjectAnnotation extends Annotation {
     this.width = width
     this.height = height
     this.highlight = false
-  }
-
-  resize (x = this.x, y = this.y, width = this.width, height = this.height) {
-    if (width < 0) {
-      this.x = x + width
-      this.width = -width
-    } else {
-      this.x = x
-      this.width = width
-    }
-
-    if (height < 0) {
-      this.y = y + height
-      this.height = -height
-    } else {
-      this.y = y
-      this.height = height
-    }
   }
 
   draw (ctx) {
@@ -72,6 +58,28 @@ class ObjectAnnotation extends Annotation {
       ctx.lineWidth = lineWidth + 2
       ctx.strokeStyle = colour
       ctx.stroke()
+    }
+  }
+
+  clone () {
+    return new ObjectAnnotation(this.x, this.y, this.width, this.height)
+  }
+
+  resize (x = this.x, y = this.y, width = this.width, height = this.height) {
+    if (width < 0) {
+      this.x = x + width
+      this.width = -width
+    } else {
+      this.x = x
+      this.width = width
+    }
+
+    if (height < 0) {
+      this.y = y + height
+      this.height = -height
+    } else {
+      this.y = y
+      this.height = height
     }
   }
 
