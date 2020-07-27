@@ -37,3 +37,7 @@ a {
 .q-skeleton {
   cursor: auto;
 }
+
+.grayscale {
+  filter: grayscale(100%);
+}

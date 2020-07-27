@@ -77,13 +77,20 @@ export default {
       'setMode',
       'setLockSliders',
       'setGrayscale',
+      'setLockSlidersDistance',
+      'setLeftCurrentFrame',
+      'setRightCurrentFrame',
     ]),
     handleCopyLeft () {},
     handleCopyRight () {},
     handleReplaceLeft () {},
     handleReplaceRight () {},
     handleInterpolate () {},
-    handleSwap () {},
+    handleSwap () {
+      const leftCurrentFrame = this.leftCurrentFrame
+      this.leftCurrentFrame = this.rightCurrentFrame
+      this.rightCurrentFrame = leftCurrentFrame
+    },
   },
   computed: {
     mode: {
@@ -100,6 +107,7 @@ export default {
       },
       set (value) {
         this.setLockSliders(value)
+        this.setLockSlidersDistance(this.rightCurrentFrame - this.leftCurrentFrame)
       },
     },
     grayscale: {
@@ -108,6 +116,22 @@ export default {
       },
       set (value) {
         this.setGrayscale(value)
+      },
+    },
+    leftCurrentFrame: {
+      get () {
+        return this.$store.state.annotation.leftCurrentFrame
+      },
+      set (value) {
+        this.setLeftCurrentFrame(value)
+      },
+    },
+    rightCurrentFrame: {
+      get () {
+        return this.$store.state.annotation.rightCurrentFrame
+      },
+      set (value) {
+        this.setRightCurrentFrame(value)
       },
     },
   },

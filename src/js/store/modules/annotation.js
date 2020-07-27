@@ -11,6 +11,7 @@ export default {
     cachedFrameList: [],
     mode: 'objects',
     lockSliders: false,
+    lockSlidersDistance: 0,
     grayscale: false,
   }),
   getters: {},
@@ -64,6 +65,9 @@ export default {
     },
     setLockSliders (state, value) {
       Vue.set(state, 'lockSliders', value)
+    },
+    setLockSlidersDistance (state, value) {
+      Vue.set(state, 'lockSlidersDistance', value)
     },
     setGrayscale (state, value) {
       Vue.set(state, 'grayscale', value)
