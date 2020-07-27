@@ -8,7 +8,6 @@ export default {
     keyframeList: {},
     leftCurrentFrame: 0,
     rightCurrentFrame: 50,
-    cachedFrameList: [],
     mode: 'objects',
     lockSliders: false,
     lockSlidersDistance: 0,
@@ -71,9 +70,6 @@ export default {
     },
     setGrayscale (state, value) {
       Vue.set(state, 'grayscale', value)
-    },
-    cacheFrame (state, value) {
-      Vue.set(state.cachedFrameList, value['index'], value['frame'])
     },
   },
   actions: {},
