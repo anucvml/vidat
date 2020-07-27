@@ -12,6 +12,9 @@ export default {
     lockSliders: false,
     lockSlidersDistance: 0,
     grayscale: false,
+    objectAnnotationListMap: {},
+    regionAnnotationListMap: {},
+    skeletonAnnotationListMap: {},
   }),
   getters: {},
   mutations: {
@@ -70,6 +73,17 @@ export default {
     },
     setGrayscale (state, value) {
       Vue.set(state, 'grayscale', value)
+    },
+    setAnnotationList (state, value) {
+      if (value.mode === 'object') {
+        Vue.set(state.objectAnnotationListMap, value.index, value.annotationList)
+      } else if (value.mode === 'region') {
+        Vue.set(state.regionAnnotationListMap, value.index, value.annotationList)
+      } else if (value.mode === 'skeleton') {
+        Vue.set(state.skeletonAnnotationListMap, value.index, value.annotationList)
+      } else {
+        throw 'Unknown mode: ' + value.mode
+      }
     },
   },
   actions: {},
