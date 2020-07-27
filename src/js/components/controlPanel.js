@@ -37,9 +37,9 @@ const CONTROL_PANEL_TEMPLATE = `
       type="radio"
       v-model="mode"
       :options="[
-        {label: 'Objects', value: 'objects'},
-        {label: 'Regions', value: 'regions'},
-        {label: 'Skeletons', value: 'skeletons'}
+        {label: 'Object', value: 'object'},
+        {label: 'Region', value: 'region'},
+        {label: 'Skeleton', value: 'skeleton'}
       ]"
     ></q-option-group>
     </q-item-section>

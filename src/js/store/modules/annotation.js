@@ -8,7 +8,7 @@ export default {
     keyframeList: {},
     leftCurrentFrame: 0,
     rightCurrentFrame: 50,
-    mode: 'objects',
+    mode: 'object', // 'object', 'region', 'skeleton'
     lockSliders: false,
     lockSlidersDistance: 0,
     grayscale: false,
@@ -23,7 +23,7 @@ export default {
         Vue.set(state, 'keyframeList', {})
         Vue.set(state, 'leftCurrentFrame', 0)
         Vue.set(state, 'rightCurrentFrame', 50)
-        Vue.set(state, 'mode', 'objects')
+        Vue.set(state, 'mode', 'object')
         Vue.set(state, 'lockSliders', false)
         Vue.set(state, 'grayscale', false)
       }
