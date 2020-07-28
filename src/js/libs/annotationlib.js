@@ -15,14 +15,16 @@ class Annotation {
 }
 
 class ObjectAnnotation extends Annotation {
-  constructor (x, y, width, height) {
+  constructor (x, y, width, height, labelId = 0, instance = '', score = '') {
     super()
     this.x = x
     this.y = y
     this.width = width
     this.height = height
     this.highlight = false
-    this.labelId = 0
+    this.labelId = labelId
+    this.instance = instance
+    this.score = score
   }
 
   draw (ctx) {
@@ -32,13 +34,13 @@ class ObjectAnnotation extends Annotation {
     const h = this.height
 
     let lineWidth = this.highlight ? 4 : 2
-    let color = store.state.settings.objectLabelData[this.labelId].color
+    this.color = store.state.settings.objectLabelData[this.labelId].color
 
     ctx.lineWidth = lineWidth + 2
     ctx.strokeStyle = '#000000'
     ctx.strokeRect(u, v, w, h)
     ctx.lineWidth = lineWidth
-    ctx.strokeStyle = color
+    ctx.strokeStyle = this.color
     ctx.strokeRect(u, v, w, h)
     const handle = 8
     if ((w > handle) && (h > handle)) {
@@ -59,13 +61,13 @@ class ObjectAnnotation extends Annotation {
       ctx.strokeStyle = '#000000'
       ctx.stroke()
       ctx.lineWidth = lineWidth + 2
-      ctx.strokeStyle = color
+      ctx.strokeStyle = this.color
       ctx.stroke()
     }
   }
 
   clone () {
-    return new ObjectAnnotation(this.x, this.y, this.width, this.height)
+    return new ObjectAnnotation(this.x, this.y, this.width, this.height, this.labelId, this.instance, this.score)
   }
 
   resize (x = this.x, y = this.y, width = this.width, height = this.height) {

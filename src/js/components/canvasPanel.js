@@ -35,10 +35,12 @@ const VIDEO_PANEL_TEMPLATE = `
         {{ utils.index2time(this.currentFrame) | toFixed2 }} / {{ video.duration | toFixed2 }} s
       </q-badge>
     </div>
+    <object-table :position="position" v-if="mode === 'object'"></object-table>
   </div>
 `
 
 import filmStrip from './filmStrip.js'
+import objectTable from './objectTable.js'
 import utils from '../libs/utils.js'
 import {
   ObjectAnnotation,
@@ -48,7 +50,10 @@ import {
 
 export default {
   props: ['position'],
-  components: { filmStrip },
+  components: {
+    filmStrip,
+    objectTable,
+  },
   data: () => {
     return {
       ctx: null,
@@ -315,4 +320,3 @@ export default {
   },
   template: VIDEO_PANEL_TEMPLATE,
 }
-
