@@ -4,7 +4,7 @@ export default {
       [
         {
           id: 0,
-          name: '<none>',
+          name: 'default',
           color: '#00ff00',
         },
         {
@@ -27,7 +27,7 @@ export default {
       [
         {
           id: 0,
-          name: '<none>',
+          name: 'default',
           color: '#00ff00',
         },
         {
