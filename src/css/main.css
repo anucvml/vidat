@@ -41,3 +41,7 @@ a {
 .grayscale {
   filter: grayscale(100%);
 }
+
+.point-cursor {
+  cursor: pointer;
+}

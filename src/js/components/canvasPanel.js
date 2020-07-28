@@ -5,15 +5,15 @@ const VIDEO_PANEL_TEMPLATE = `
       <video
         preload="auto"
         ref="video"
-        :class="['full-width', { 'grayscale': grayscale }]"
         style="display: block;"
+        :class="['full-width', { 'grayscale': grayscale }]"
         :src="video.src"
         @loadeddata="handleLoadeddata"
       ></video>
       <canvas
         ref="canvas"
-        class="full-width"
         style="display: block; position: absolute; top: 0;"
+        :class="['full-width', {'point-cursor': activeContext}]"
         :height="video.height"
         :width="video.width"
         @mousemove="handleMousemove"
@@ -55,6 +55,7 @@ export default {
       utils,
       createContext: null,
       dragContext: null,
+      activeContext: null,
     }
   },
   methods: {
@@ -108,7 +109,8 @@ export default {
         }
         // highlight the object
         let found = false
-        for (let i = 0; i < this.annotationList.length; i++) {
+        let i
+        for (i = 0; i < this.annotationList.length; i++) {
           const objectAnnotation = this.annotationList[i]
           if (
             !found &&
@@ -122,7 +124,14 @@ export default {
             objectAnnotation.highlight = false
           }
         }
-
+        if (found) {
+          this.activeContext = {
+            index: i - 1,
+          }
+          console.log(i)
+        } else {
+          this.activeContext = null
+        }
       } else if (this.mode === 'region') {
       } else if (this.mode === 'skeleton') {
       } else {
