@@ -128,7 +128,6 @@ export default {
           this.activeContext = {
             index: i - 1,
           }
-          console.log(i)
         } else {
           this.activeContext = null
         }

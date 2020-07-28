@@ -1,3 +1,5 @@
+import store from '../store/store.js'
+
 const PROXIMITY = 5 // proximity in pixels for active object / key point
 
 class Annotation {
@@ -20,6 +22,7 @@ class ObjectAnnotation extends Annotation {
     this.width = width
     this.height = height
     this.highlight = false
+    this.labelId = 0
   }
 
   draw (ctx) {
@@ -29,13 +32,13 @@ class ObjectAnnotation extends Annotation {
     const h = this.height
 
     let lineWidth = this.highlight ? 4 : 2
-    let colour = '#00ff00'
+    let color = store.state.settings.objectLabelData[this.labelId].color
 
     ctx.lineWidth = lineWidth + 2
     ctx.strokeStyle = '#000000'
     ctx.strokeRect(u, v, w, h)
     ctx.lineWidth = lineWidth
-    ctx.strokeStyle = colour
+    ctx.strokeStyle = color
     ctx.strokeRect(u, v, w, h)
     const handle = 8
     if ((w > handle) && (h > handle)) {
@@ -56,7 +59,7 @@ class ObjectAnnotation extends Annotation {
       ctx.strokeStyle = '#000000'
       ctx.stroke()
       ctx.lineWidth = lineWidth + 2
-      ctx.strokeStyle = colour
+      ctx.strokeStyle = color
       ctx.stroke()
     }
   }
