@@ -122,7 +122,7 @@ export default {
         'Please enter the FPS you want. Integer between 1 and 60.',
         10,
         'number').onOk((fps) => {
-        if (fps >= 1 && fps <= 10 && fps % 1 === 0) {
+        if (fps >= 1 && fps <= 60 && fps % 1 === 0) {
           this.setVideoFPS(parseInt(fps))
           utils.importVideo().then(videoSrc => {
             this.setVideoSrc(videoSrc)
