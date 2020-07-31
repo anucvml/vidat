@@ -16,15 +16,24 @@
 | score     | score or confidence associated with the bounding box |
 | comment   | free-text comment |
 
-**Operations:** add, delete, edit, move, resize, copy (to another frame), visualize, interpolate (between two frames, objects with same `trackId`)
+**Operations:** add, delete, edit, move, resize, copy (to another frame), visualize, interpolate (between two frames, objects with same `instanceId`)
 
 ### Polygon Regions
 
-TODO
+| Attribute | Description |
+|-----------|-------------|
+| points    | list of (x,y)-coordinates for closed polygon; 3 minimum (**required**) |
+| labelId   | object type contained in the region |
+| instanceId | integer indicating the instance of this type (may also be used for defining tracklets) |
+| colour    | colour to render the region (overrides label colour) |
+| score     | score or confidence associated with the region |
+| comment   | free-text comment |
+
+**Operations:** add, delete, move/insert/delete points, move (entire region), copy (to another frame), visualize, interpolate (between two frames, regions with same `instanceId`)
 
 ### Human and Hand Poses (Skeletons)
 
-TODO
+TODO (landmarks, instanceId, colour, score, comment)
 
 ## Video-level Annotations
 
@@ -58,6 +67,10 @@ Any video that can be processed by the HTML5 `video` element.
 Stored as colon-separated pairs of `labelId` and (default) `colour`, one per line.
 The `labelId` should be a string composed of letters, numbers and underscore.
 The `colour` is a `#` followed by hexadecimal byte codes for red, green and blue (e.g., `#ff0000` for red).
+
+Object labels are used for both **bounding boxes** and **regions**; action labels used for temporal segments.
+
+TODO --- skeleton configuration
 
 ### Annotations
 
