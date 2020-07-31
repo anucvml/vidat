@@ -37,13 +37,15 @@ TODO (landmarks, instanceId, colour, score, comment)
 
 ## Video-level Annotations
 
-### Keypoints
+### Keyframes
 
 | Attribute | Description |
 |-----------|-------------|
 | timestamp | timestamp associated with the keyframe |
 
 **Operations:** generate (sequence), add, delete, jump to, jump to next, visualize, export frames
+
+**Note:** All frames can be annotated, not just keyframes. Keyframes allow for quick navigation and/or indicating which frames a worker should label (but they may choose to label more). They may also be used in a workflow to indicate which frames should be reworked due to labeling errors. 
 
 ### Video Segments (Clips)
 
