@@ -8,10 +8,13 @@ export default {
     keyframeList: {},
     leftCurrentFrame: 0,
     rightCurrentFrame: 50,
-    cachedFrameList: [],
-    mode: 'objects',
+    mode: 'object', // 'object', 'region', 'skeleton'
     lockSliders: false,
+    lockSlidersDistance: 0,
     grayscale: false,
+    objectAnnotationListMap: {},
+    regionAnnotationListMap: {},
+    skeletonAnnotationListMap: {},
   }),
   getters: {},
   mutations: {
@@ -23,7 +26,7 @@ export default {
         Vue.set(state, 'keyframeList', {})
         Vue.set(state, 'leftCurrentFrame', 0)
         Vue.set(state, 'rightCurrentFrame', 50)
-        Vue.set(state, 'mode', 'objects')
+        Vue.set(state, 'mode', 'object')
         Vue.set(state, 'lockSliders', false)
         Vue.set(state, 'grayscale', false)
       }
@@ -65,11 +68,22 @@ export default {
     setLockSliders (state, value) {
       Vue.set(state, 'lockSliders', value)
     },
+    setLockSlidersDistance (state, value) {
+      Vue.set(state, 'lockSlidersDistance', value)
+    },
     setGrayscale (state, value) {
       Vue.set(state, 'grayscale', value)
     },
-    cacheFrame (state, value) {
-      Vue.set(state.cachedFrameList, value['index'], value['frame'])
+    setAnnotationList (state, value) {
+      if (value.mode === 'object') {
+        Vue.set(state.objectAnnotationListMap, value.index, value.annotationList)
+      } else if (value.mode === 'region') {
+        Vue.set(state.regionAnnotationListMap, value.index, value.annotationList)
+      } else if (value.mode === 'skeleton') {
+        Vue.set(state.skeletonAnnotationListMap, value.index, value.annotationList)
+      } else {
+        throw 'Unknown mode: ' + value.mode
+      }
     },
   },
   actions: {},

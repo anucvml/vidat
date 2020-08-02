@@ -13,7 +13,7 @@ const LABEL_TABLE_TEMPLATE = `
         <q-popup-edit
           v-model="props.row.name"
           title="Edit the label name"
-          v-if="props.row.name !== '<none>'"
+          v-if="props.row.name !== 'default'"
           @save="saveTableData"
         >
           <q-input
@@ -47,7 +47,7 @@ const LABEL_TABLE_TEMPLATE = `
           flat
           dense
           style="width: 100%"
-          :disabled="props.row.name === '<none>'"
+          :disabled="props.row.name === 'default'"
           @click="handleDelete(props.key)"
         ></q-btn>
       </q-td>

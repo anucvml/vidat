@@ -9,6 +9,7 @@ const ABOUT_TEMPLATE = `
       :key="contributor.name"
       :contributor="contributor"
     >
+    </contributor-card>
   </div>
   </contributor-card>
 </q-page>

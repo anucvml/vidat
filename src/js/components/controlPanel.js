@@ -37,9 +37,9 @@ const CONTROL_PANEL_TEMPLATE = `
       type="radio"
       v-model="mode"
       :options="[
-        {label: 'Objects', value: 'objects'},
-        {label: 'Regions', value: 'regions'},
-        {label: 'Skeletons', value: 'skeletons'}
+        {label: 'Object', value: 'object'},
+        {label: 'Region', value: 'region'},
+        {label: 'Skeleton', value: 'skeleton'}
       ]"
     ></q-option-group>
     </q-item-section>
@@ -68,22 +68,85 @@ const CONTROL_PANEL_TEMPLATE = `
 </q-list>
 `
 
+import utils from '../libs/utils.js'
+
 export default {
   data: () => {
-    return {}
+    return {
+      utils,
+    }
   },
   methods: {
     ...Vuex.mapMutations([
       'setMode',
       'setLockSliders',
       'setGrayscale',
+      'setLockSlidersDistance',
+      'setLeftCurrentFrame',
+      'setRightCurrentFrame',
+      'setAnnotationList',
     ]),
-    handleCopyLeft () {},
-    handleCopyRight () {},
-    handleReplaceLeft () {},
-    handleReplaceRight () {},
-    handleInterpolate () {},
-    handleSwap () {},
+    clone (annotationList) {
+      let ret = []
+      for (let annotation of annotationList) {
+        ret.push(annotation.clone())
+      }
+      return ret
+    },
+    handleCopyLeft () {
+      if (this.leftCurrentFrame !== this.rightCurrentFrame) {
+        this.setAnnotationList({
+          index: this.leftCurrentFrame,
+          mode: this.mode,
+          annotationList: [
+            ...this.annotationListMap[this.leftCurrentFrame],
+            ...this.clone(this.annotationListMap[this.rightCurrentFrame]),
+          ],
+        })
+      }
+    },
+    handleCopyRight () {
+      if (this.leftCurrentFrame !== this.rightCurrentFrame) {
+        this.setAnnotationList({
+          index: this.rightCurrentFrame,
+          mode: this.mode,
+          annotationList: [
+            ...this.annotationListMap[this.rightCurrentFrame],
+            ...this.clone(this.annotationListMap[this.leftCurrentFrame]),
+          ],
+        })
+      }
+    },
+    handleReplaceLeft () {
+      if (this.leftCurrentFrame !== this.rightCurrentFrame) {
+        this.setAnnotationList({
+          index: this.leftCurrentFrame,
+          mode: this.mode,
+          annotationList: [
+            ...this.clone(this.annotationListMap[this.rightCurrentFrame]),
+          ],
+        })
+      }
+    },
+    handleReplaceRight () {
+      if (this.leftCurrentFrame !== this.rightCurrentFrame) {
+        this.setAnnotationList({
+          index: this.rightCurrentFrame,
+          mode: this.mode,
+          annotationList: [
+            ...this.clone(this.annotationListMap[this.leftCurrentFrame]),
+          ],
+        })
+      }
+    },
+    handleInterpolate () {
+      this.utils.notify('Not implemented!')
+    },
+    handleSwap () {
+      const leftCurrentFrame = this.leftCurrentFrame
+      this.leftCurrentFrame = this.rightCurrentFrame
+      this.rightCurrentFrame = leftCurrentFrame
+    },
   },
   computed: {
     mode: {
@@ -100,6 +163,7 @@ export default {
       },
       set (value) {
         this.setLockSliders(value)
+        this.setLockSlidersDistance(this.rightCurrentFrame - this.leftCurrentFrame)
       },
     },
     grayscale: {
@@ -109,6 +173,25 @@ export default {
       set (value) {
         this.setGrayscale(value)
       },
+    },
+    leftCurrentFrame: {
+      get () {
+        return this.$store.state.annotation.leftCurrentFrame
+      },
+      set (value) {
+        this.setLeftCurrentFrame(value)
+      },
+    },
+    rightCurrentFrame: {
+      get () {
+        return this.$store.state.annotation.rightCurrentFrame
+      },
+      set (value) {
+        this.setRightCurrentFrame(value)
+      },
+    },
+    annotationListMap () {
+      return eval('this.$store.state.annotation.' + this.mode + 'AnnotationListMap')
     },
   },
   template: CONTROL_PANEL_TEMPLATE,
