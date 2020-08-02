@@ -1,0 +1,124 @@
+const LABEL_TABLE_TEMPLATE = `
+<q-table
+  :data="tableData"
+  :columns="columnList"
+  :title="tableTitle"
+  row-key="id"
+  :pagination.sync="pagination"
+>
+  <template v-slot:body="props">
+    <q-tr :props="props">
+      <q-td key="name" :props="props" style="font-size: 14px">
+        {{ props.row.name }}
+        <q-popup-edit
+          v-model="props.row.name"
+          title="Edit the label name"
+          v-if="props.row.name !== 'default'"
+          @save="saveTableData"
+        >
+          <q-input
+            v-model="props.row.name"
+            dense
+            autofocus
+            counter
+            :rules="[ val => val.length != 0 || 'Please enter at least 1 character' ]"
+          ></q-input>
+        </q-popup-edit>
+      </q-td>
+      <q-td key="color" :props="props">
+        <q-chip
+          outline
+          :style="{ 'border-color': props.row.color, 'color': props.row.color }"
+        >
+          {{ props.row.color.toUpperCase() }}
+         </q-chip>
+        <q-popup-edit
+          v-model="props.row.color"
+          title="Edit the label color"
+          @save="saveTableData"
+        >
+          <q-color v-model="props.row.color"></q-color>
+        </q-popup-edit>
+      </q-td>
+      <q-td key="delete" :props="props">
+        <q-btn
+          icon="delete"
+          color="negative"
+          flat
+          dense
+          style="width: 100%"
+          :disabled="props.row.name === 'default'"
+          @click="handleDelete(props.key)"
+        ></q-btn>
+      </q-td>
+    </q-tr>
+  </template>
+  <template v-slot:bottom>
+    <q-btn
+      icon="add"
+      color="primary"
+      flat
+      dense
+      style="margin: 0 auto; width: 100%"
+      @click="handleAdd()"
+    ></q-btn>
+  </template>
+</q-table>
+`
+
+const columnList = [
+  { name: 'name', align: 'center', label: 'Label', field: 'name' },
+  { name: 'color', align: 'center', label: 'Color', field: 'color' },
+  { name: 'delete', align: 'center', label: 'Delete', field: 'delete' },
+]
+
+import utils from '../libs/utils.js'
+
+export default {
+  props: {
+    'tableTitle': String,
+    'dataName': String,
+  },
+  data: () => {
+    return {
+      columnList,
+      pagination: { rowsPerPage: 0 },
+    }
+  },
+  methods: {
+    saveTableData () {
+      this.$store.commit(this.dataName, this.tableData)
+    },
+    handleDelete (id) {
+      let targetIndex
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].id === id) {
+          targetIndex = i
+          break
+        }
+      }
+      utils.confirm(
+        'Are you sure to delete label ' + this.tableData[targetIndex].name + ' ?',
+      ).onOk(() => {
+        this.tableData.splice(targetIndex, 1)
+        this.saveTableData()
+      })
+
+    },
+    handleAdd () {
+      let lastId = this.tableData[this.tableData.length - 1].id
+      this.tableData.push({
+        id: lastId + 1,
+        name: 'new',
+        color: '#000000',
+      })
+      this.saveTableData()
+    },
+  },
+  computed: {
+    tableData () {
+      return eval('this.$store.state.settings.' + this.dataName)
+    },
+  },
+  template: LABEL_TABLE_TEMPLATE,
+}
