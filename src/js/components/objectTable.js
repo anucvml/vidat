@@ -1,6 +1,5 @@
 const OBJECT_TABLE_TEMPLATE = `
 <q-table
-  title="Objects"
   dense
   flat
   :data="objectAnnotationList"
@@ -8,6 +7,11 @@ const OBJECT_TABLE_TEMPLATE = `
   :columns="columnList"
   :pagination.sync="pagination"
 >
+  <template v-slot:top="props">
+    <div class="col-2 q-table__title">Objects</div>
+    <q-space></q-space>
+    <q-btn icon="clear_all" @click="handleClearAll">CLEAR ALL</q-btn>
+  </template>
   <template v-slot:body="props">
     <q-tr :props="props">
       <q-td key="x" :props="props">
@@ -112,6 +116,9 @@ export default {
     }
   },
   methods: {
+    ...Vuex.mapMutations([
+      'setAnnotationList',
+    ]),
     handleUp (row) {
       for (let i = 0; i < this.objectAnnotationList.length; i++) {
         if (this.objectAnnotationList[i] === row) {
@@ -140,6 +147,19 @@ export default {
           }
         }
       })
+    },
+    handleClearAll () {
+      if (this.objectAnnotationList.length > 0) {
+        utils.confirm('Are you sure to delete ALL object?').onOk(() => {
+          this.setAnnotationList({
+            mode: 'object',
+            index: this.currentFrame,
+            annotationList: [],
+          })
+        })
+      } else {
+        utils.notify('There are no objects!')
+      }
     },
   },
   computed: {
