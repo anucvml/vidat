@@ -19,17 +19,6 @@ export default {
   getters: {},
   mutations: {
     setVideoSrc (state, value) {
-      if (!value) {
-        Vue.set(state.video, 'fps', 10)
-        Vue.set(state.video, 'frames', null)
-        Vue.set(state, 'secondPerKeyframe', 5)
-        Vue.set(state, 'keyframeList', {})
-        Vue.set(state, 'leftCurrentFrame', 0)
-        Vue.set(state, 'rightCurrentFrame', 50)
-        Vue.set(state, 'mode', 'object')
-        Vue.set(state, 'lockSliders', false)
-        Vue.set(state, 'grayscale', false)
-      }
       Vue.set(state.video, 'src', value)
     },
     setVideoDuration (state, value) {
@@ -44,7 +33,20 @@ export default {
     },
     setVideoFPS (state, value) {
       Vue.set(state.video, 'fps', value)
+      console.log('here')
       Vue.set(state, 'rightCurrentFrame', value * state.secondPerKeyframe)
+    },
+    closeVideo (state) {
+      Vue.set(state.video, 'src', null)
+      Vue.set(state.video, 'fps', 10)
+      Vue.set(state.video, 'frames', null)
+      Vue.set(state, 'secondPerKeyframe', 5)
+      Vue.set(state, 'keyframeList', {})
+      Vue.set(state, 'leftCurrentFrame', 0)
+      Vue.set(state, 'rightCurrentFrame', 50)
+      Vue.set(state, 'mode', 'object')
+      Vue.set(state, 'lockSliders', false)
+      Vue.set(state, 'grayscale', false)
     },
     setSecondPerKeyframe (state, value) {
       Vue.set(state, 'secondPerKeyframe', value)
