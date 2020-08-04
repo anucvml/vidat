@@ -1,5 +1,5 @@
 const CONTROL_PANEL_TEMPLATE = `
-<q-list style="max-width: 160px;">
+<q-list v-show="!zoom" style="max-width: 160px;">
   <q-item dense>
     <q-item-section class="text-center">
       Copy
@@ -149,6 +149,9 @@ export default {
     },
   },
   computed: {
+    zoom () {
+      return this.$store.state.annotation.zoom
+    },
     mode: {
       get () {
         return this.$store.state.annotation.mode

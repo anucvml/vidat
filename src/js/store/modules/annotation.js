@@ -15,6 +15,7 @@ export default {
     objectAnnotationListMap: {},
     regionAnnotationListMap: {},
     skeletonAnnotationListMap: {},
+    zoom: false,
   }),
   getters: {},
   mutations: {
@@ -85,6 +86,9 @@ export default {
       } else {
         throw 'Unknown mode: ' + value.mode
       }
+    },
+    toggleZoom (state) {
+      Vue.set(state, 'zoom', !state.zoom)
     },
   },
   actions: {},

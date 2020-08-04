@@ -1,5 +1,5 @@
 const VIDEO_PANEL_TEMPLATE = `
-  <div>
+  <div v-show="position === 'left' || (position === 'right' && !zoom)">
     <film-strip></film-strip>
     <div style="position: relative;">
       <video
@@ -21,6 +21,14 @@ const VIDEO_PANEL_TEMPLATE = `
         @mousedown="handleMousedown"
         @mouseup="handleMouseupAndMouseout"
       ></canvas>
+      <q-btn
+        v-if="position === 'left'"
+        class="bg-white"
+        style="position: absolute; top: 5px; right: 5px;"
+        round
+        @click="$store.commit('toggleZoom')"
+        :icon="zoom ? 'zoom_out' : 'zoom_in'"
+      ></q-btn>
     </div>
     <film-strip></film-strip>
     <q-toolbar class="q-pa-none">
@@ -73,6 +81,7 @@ export default {
   methods: {
     ...Vuex.mapMutations([
       'setAnnotationList',
+      'toggleZoom',
     ]),
     handlePlay () {
       utils.notify('Not implemented!')
@@ -249,6 +258,9 @@ export default {
     )
   },
   computed: {
+    zoom () {
+      return this.$store.state.annotation.zoom
+    },
     video () {
       return this.$store.state.annotation.video
     },
