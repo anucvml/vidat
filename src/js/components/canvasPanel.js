@@ -23,18 +23,25 @@ const VIDEO_PANEL_TEMPLATE = `
       ></canvas>
     </div>
     <film-strip></film-strip>
-    <div class="q-px-md">
+    <q-toolbar class="q-pa-none">
+      <q-btn-group flat>
+        <q-btn dense @click="handlePlay" icon="play_arrow"></q-btn>
+        <q-btn dense @click="handlePause" icon="pause"></q-btn>
+        <q-btn dense @click="handleStop" icon="stop"></q-btn>
+      </q-btn-group>
       <q-slider
+        class="q-mx-sm"
         v-model="currentFrame"
         :min="0"
         :max="video.frames"
         :step="1"
         label
-      />
-      <q-badge class="float-right">
+      ></q-slider>
+      <q-space></q-space>
+      <q-badge class="q-mr-xs">
         {{ utils.index2time(this.currentFrame) | toFixed2 }} / {{ video.duration | toFixed2 }} s
       </q-badge>
-    </div>
+    </q-toolbar>
     <object-table :position="position" v-if="mode === 'object'"></object-table>
   </div>
 `
@@ -67,6 +74,15 @@ export default {
     ...Vuex.mapMutations([
       'setAnnotationList',
     ]),
+    handlePlay () {
+      utils.notify('Not implemented!')
+    },
+    handlePause () {
+      utils.notify('Not implemented!')
+    },
+    handleStop () {
+      utils.notify('Not implemented!')
+    },
     getMouseLocation (event) {
       const mouseX = event.offsetX / this.$refs.canvas.clientWidth * this.video.width
       const mouseY = event.offsetY / this.$refs.canvas.clientHeight * this.video.height

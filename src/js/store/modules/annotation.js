@@ -33,7 +33,6 @@ export default {
     },
     setVideoFPS (state, value) {
       Vue.set(state.video, 'fps', value)
-      console.log('here')
       Vue.set(state, 'rightCurrentFrame', value * state.secondPerKeyframe)
     },
     closeVideo (state) {

@@ -1,6 +1,6 @@
 const CONTROL_PANEL_TEMPLATE = `
-<q-list>
-  <q-item>
+<q-list style="max-width: 160px;">
+  <q-item dense>
     <q-item-section class="text-center">
       Copy
     </q-item-section>
@@ -28,7 +28,7 @@ const CONTROL_PANEL_TEMPLATE = `
       </q-btn-group>
     </q-item-section>
   </q-item>
-  <q-item>
+  <q-item dense>
     <q-item-section class="text-center">Mode</q-item-section>
   </q-item>
   <q-item>
@@ -44,7 +44,7 @@ const CONTROL_PANEL_TEMPLATE = `
     ></q-option-group>
     </q-item-section>
   </q-item>
-  <q-item>
+  <q-item dense>
     <q-item-section class="text-center">Options</q-item-section>
   </q-item>
   <q-item>
@@ -57,7 +57,7 @@ const CONTROL_PANEL_TEMPLATE = `
       <q-toggle v-model="grayscale" label="Grayscale"></q-toggle>
     </q-item-section>
   </q-item>
-  <q-item>
+  <q-item dense>
     <q-item-section class="text-center">Frames</q-item-section>
   </q-item>
   <q-item>
