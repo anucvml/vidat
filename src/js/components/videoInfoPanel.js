@@ -63,34 +63,29 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
       </q-list>
     </q-card-section>
     <q-list class="col-12 row">
-      <q-item>
+      <q-item class="q-pa-sm">
         <q-item-section class="text-center">Keyframes:</q-item-section>
       </q-item>
-      <div class="col row">
-        <q-item
-          class="rounded-borders q-px-none"
-          v-for="keyframe in keyframeList"
-          :key="keyframe">
-          <q-chip class="q-ma-xs" color="primary" text-color="white">
-             {{ utils.index2time(keyframe) }}
-             <q-badge
-              color="orange"
-              floating style="top: -5px; right: 19px"
-              v-if="keyframe === leftCurrentFrame"
-             >L</q-badge>
-             <q-badge
-              color="orange"
-              floating style="top: -5px; right: -6px"
-              v-if="keyframe === rightCurrentFrame"
-             >R</q-badge>
-          </q-chip>
-        </q-item>
-      </div>
+      <q-item class="col q-pa-none">
+        <q-range
+          style="transform: translateY(10px)"
+          v-model="CurrentFrameRange"
+          :min="0"
+          :max="video.frames"
+          :step="1"
+          :left-label-value="'L:' + CurrentFrameRange.min"
+          :right-label-value="'R:' + CurrentFrameRange.max"
+          label-always
+          readonly
+        ></q-range>
+      </q-item>
       <q-space></q-space>
-      <q-btn-group flat>
-        <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left"></q-btn>
-        <q-btn @click="handleNextKeyframe" icon="keyboard_arrow_right"></q-btn>
-      </q-btn-group>
+      <q-item class="q-pa-sm">
+        <q-btn-group flat>
+          <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left"></q-btn>
+          <q-btn @click="handleNextKeyframe" icon="keyboard_arrow_right"></q-btn>
+        </q-btn-group>
+      </q-item>
     </q-list>
   </div>
   <q-btn flat class="absolute-center full-width" size="40px" @click="handleOpen" icon="movie" v-if="!video.src">Open</q-btn>
@@ -219,6 +214,12 @@ export default {
     },
     rightCurrentFrame () {
       return this.$store.state.annotation.rightCurrentFrame
+    },
+    CurrentFrameRange () {
+      return {
+        min: this.leftCurrentFrame,
+        max: this.rightCurrentFrame,
+      }
     },
   },
   mounted () {
