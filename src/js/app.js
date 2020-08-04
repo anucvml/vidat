@@ -28,14 +28,23 @@ const APP_TEMPLATE = `
     content-class="bg-grey-3"
   >
     <q-scroll-area class="fit">
-      <q-list v-for="(item, index) in menuList" :key="index">
-        <q-item clickable @click="drawer = false" :to="item.path" :active="item.label.toLowerCase() === $route.name.toLowerCase()" v-ripple>
+      <q-list class="full-height">
+        <q-item
+          clickable
+          v-ripple
+          v-for="(item, index) in menuList"
+          :key="index"
+          :to="item.path"
+          :active="item.label.toLowerCase() === $route.name.toLowerCase()"
+          @click="drawer = false"
+        >
           <q-item-section avatar>
-            <q-icon :name="item.icon" />
+            <q-icon :name="item.icon"></q-icon>
           </q-item-section>
-          <q-item-section>
-            {{ item.label }}
-          </q-item-section>
+          <q-item-section>{{ item.label }}</q-item-section>
+        </q-item>
+        <q-item class="fixed-bottom">
+          <q-item-section class="text-center">v1.0.0 Beta</q-item-section>
         </q-item>
       </q-list>
     </q-scroll-area>
