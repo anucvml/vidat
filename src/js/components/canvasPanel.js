@@ -50,7 +50,10 @@ const VIDEO_PANEL_TEMPLATE = `
         {{ utils.index2time(this.currentFrame) | toFixed2 }} / {{ video.duration | toFixed2 }} s
       </q-badge>
     </q-toolbar>
-    <object-table :position="position" v-if="mode === 'object'"></object-table>
+    <object-table
+      :position="position"
+      v-if="mode === 'object' && preference.objects"
+    ></object-table>
   </div>
 `
 
@@ -324,6 +327,9 @@ export default {
           annotationList: value,
         })
       },
+    },
+    preference () {
+      return this.$store.state.settings.preferenceData
     },
   },
   filters: {

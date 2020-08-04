@@ -37,9 +37,9 @@ const CONTROL_PANEL_TEMPLATE = `
       type="radio"
       v-model="mode"
       :options="[
-        {label: 'Object', value: 'object'},
-        {label: 'Region', value: 'region'},
-        {label: 'Skeleton', value: 'skeleton'}
+        {label: 'Object', value: 'object', disable: !preference.objects},
+        {label: 'Region', value: 'region', disable: !preference.regions},
+        {label: 'Skeleton', value: 'skeleton', disable: !preference.skeletons}
       ]"
     ></q-option-group>
     </q-item-section>
@@ -195,6 +195,9 @@ export default {
     },
     annotationListMap () {
       return eval('this.$store.state.annotation.' + this.mode + 'AnnotationListMap')
+    },
+    preference () {
+      return this.$store.state.settings.preferenceData
     },
   },
   template: CONTROL_PANEL_TEMPLATE,

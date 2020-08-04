@@ -53,9 +53,9 @@ export default {
       ],
     preferenceData: JSON.parse(localStorage.getItem('preferenceData')) ||
       {
-        keyframes: true,
         objects: true,
         regions: true,
+        skeletons: true,
         videoSegments: true,
       },
   }),

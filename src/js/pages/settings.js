@@ -19,21 +19,7 @@ const SETTINGS_TEMPLATE = `
   <q-list>
     <q-item tag="label" v-ripple>
       <q-item-section>
-        <q-item-label>Keyframes</q-item-label>
-      </q-item-section>
-      <q-item-section avatar>
-        <q-toggle
-          color="green"
-          v-model="preference.keyframes"
-          checked-icon="check"
-          unchecked-icon="clear"
-          @input="handleSavePreference"
-        ></q-toggle>
-      </q-item-section>
-    </q-item>
-    <q-item tag="label" v-ripple>
-      <q-item-section>
-        <q-item-label>Objects (bounding boxes)</q-item-label>
+        <q-item-label>Objects</q-item-label>
       </q-item-section>
       <q-item-section avatar>
         <q-toggle
@@ -47,12 +33,26 @@ const SETTINGS_TEMPLATE = `
     </q-item>
     <q-item tag="label" v-ripple>
       <q-item-section>
-        <q-item-label>Regions (polygon outlines)</q-item-label>
+        <q-item-label>Regions</q-item-label>
       </q-item-section>
       <q-item-section avatar>
         <q-toggle
           color="green"
           v-model="preference.regions"
+          checked-icon="check"
+          unchecked-icon="clear"
+          @input="handleSavePreference"
+        ></q-toggle>
+      </q-item-section>
+    </q-item>
+    <q-item tag="label" v-ripple>
+      <q-item-section>
+        <q-item-label>Skeletons</q-item-label>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-toggle
+          color="green"
+          v-model="preference.skeletons"
           checked-icon="check"
           unchecked-icon="clear"
           @input="handleSavePreference"
@@ -142,9 +142,9 @@ export default {
     },
     handleRestore () {
       this.preference = {
-        keyframes: true,
         objects: true,
         regions: true,
+        skeletons: true,
         videoSegments: true,
       }
       this.handleSavePreference()
