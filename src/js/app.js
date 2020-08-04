@@ -4,9 +4,11 @@ const APP_TEMPLATE = `
     <q-toolbar>
       <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
       <q-toolbar-title class="text-center">ANU CVML In-browser Video Annotation Tool</q-toolbar-title>
-      <q-avatar square>
-        <img src="img/logo.png" alt="logo">
-      </q-avatar>
+      <a href="https://www.anu.edu.au/" target="_blank">
+        <q-avatar square>
+          <img src="img/logo.png" alt="logo">
+        </q-avatar>
+      </a>
     </q-toolbar>
   </q-header>
 
