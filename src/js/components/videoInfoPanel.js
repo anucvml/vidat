@@ -63,7 +63,7 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
       </q-list>
     </q-card-section>
     <q-list class="col-12 row">
-      <q-item class="q-pa-sm">
+      <q-item class="q-px-md">
         <q-item-section class="text-center">Keyframes:</q-item-section>
       </q-item>
       <q-item class="col q-pa-none">
