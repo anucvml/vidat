@@ -1,5 +1,5 @@
 const SETTINGS_TEMPLATE = `
-<q-page padding style="max-width: 800px; margin: 0 auto" class="q-gutter-md">
+<div style="max-width: 800px; margin: 0 auto" class="q-gutter-md">
   <div class="text-h5">Settings</div>
   <div class="row">
     <div class="text-h6">Configuration</div>
@@ -74,7 +74,7 @@ const SETTINGS_TEMPLATE = `
       </q-item-section>
     </q-item>
   </q-list>
-</q-page>
+</div>
 `
 
 import labelTable from '../components/labelTable.js'

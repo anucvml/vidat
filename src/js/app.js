@@ -12,14 +12,6 @@ const APP_TEMPLATE = `
     </q-toolbar>
   </q-header>
 
-  <q-footer class="bg-white" style="max-height: 40px">
-    <q-toolbar>
-      <q-toolbar-title class="text-black text-center text-weight-thin text-caption text-italic">
-        Copyright © 2020, <a href='mailto:stephen.gould@anu.edu.au'>Stephen Gould</a>. All rights reserved.
-      </q-toolbar-title>
-    </q-toolbar>
-  </q-footer>
-
   <q-drawer
     v-model="drawer"
     :width="300"
@@ -51,7 +43,12 @@ const APP_TEMPLATE = `
   </q-drawer>
 
   <q-page-container>
-    <router-view></router-view>
+    <q-page padding>
+      <router-view></router-view>
+    <div class="text-black text-center text-weight-thin text-caption text-italic q-ma-sm absolute-bottom">
+        Copyright © 2020, <a href='mailto:stephen.gould@anu.edu.au'>Stephen Gould</a>. All rights reserved.
+    </div>
+    </q-page>
   </q-page-container>
 </q-layout>
 `

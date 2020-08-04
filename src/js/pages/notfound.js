@@ -1,10 +1,10 @@
 const NOTFOUND_TEMPLATE = `
-<q-page padding>
+<div>
   <router-link to="/annotation">
     <q-img src="img/404.svg" style="max-width: 40%" alt="404" class="absolute-center">
     </q-img>
   </router-link>
-</q-page>
+</div>
 `
 
 export default {

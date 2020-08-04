@@ -1,5 +1,5 @@
 const ANNOTATION_TEMPLATE = `
-<q-page padding>
+<div>
   <q-card class="q-mb-md no-border-radius" style="min-height: 100px">
     <video-info></video-info>
   </q-card>
@@ -11,7 +11,7 @@ const ANNOTATION_TEMPLATE = `
     <control-panel class="col-md-1 col-sm-2"></control-panel>
     <canvas-panel class="col-md col-sm-10" position="right"></canvas-panel>
   </q-card>
-</q-page>
+</div>
 `
 
 import videoInfo from '../components/videoInfo.js'

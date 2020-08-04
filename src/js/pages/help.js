@@ -1,5 +1,5 @@
 const HELP_TEMPLATE = `
-<q-page padding style="max-width: 800px; margin: 0 auto" class="q-gutter-md">
+<div style="max-width: 800px; margin: 0 auto" class="q-gutter-md">
   <div class="text-h5">Help (TODO)</div>
   <div class="text-body1">Click the top-left menu button (☰) to load and save data.</div>
   <div class="text-body1">Click and drag on frame to add a new bounding box.</div>
@@ -19,7 +19,7 @@ const HELP_TEMPLATE = `
     shift       :: duplicate currently active object when mouse down
     tab         :: move to next field when editing objects</pre>
   <div class="text-h5">Tutorial Videos (TODO)</div>
-</q-page>
+</div>
 `
 
 export default {
