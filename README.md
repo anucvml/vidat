@@ -1,4 +1,13 @@
-# ANU CVML Video Annotation Tool
+<div align="center">
+<!--   <a href="https://www.anu.edu.au/" target="_blank">
+    <img src="src/img/logo.png" alt="ANU logo">
+  </a> -->
+
+  # ANU CVML Video Annotation Tool
+
+  _A video annotation tool developed by the ANU._
+
+</div>
 
 The aim of this project is to develop a high-quality video annotation tool for computer vision and machine learning applications with the following desiradata:
 
@@ -14,4 +23,17 @@ Video tutorials will be posted on YouTube.
 ## Installation
 
 1. Copy all files from `src` into a single directory.
-2. Open `index.html` in your favourite browser.
+2. Put all files behind a web server ([Nginx](http://nginx.org/), [Apache](http://httpd.apache.org/), etc.).
+3. Open in your favourite browser.
+
+## Development
+
+### Requirements
+
+1. [Vue.js](https://vuejs.org/)
+2. [Quasar](https://quasar.dev/)
+
+### Optional
+
+1. [WebStorm](https://www.jetbrains.com/webstorm/)
+2. [Gitmoji](https://github.com/carloscuesta/gitmoji)
