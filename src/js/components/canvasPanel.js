@@ -17,9 +17,9 @@ const VIDEO_PANEL_TEMPLATE = `
         :height="video.height"
         :width="video.width"
         @mousemove="handleMousemove"
-        @mouseout="handleMouseout"
+        @mouseout="handleMouseupAndMouseout"
         @mousedown="handleMousedown"
-        @mouseup="handleMouseup"
+        @mouseup="handleMouseupAndMouseout"
       ></canvas>
     </div>
     <film-strip></film-strip>
@@ -142,22 +142,6 @@ export default {
         throw 'Unknown mode: ' + this.mode
       }
     },
-    handleMouseout (event) {
-      const [mouseX, mouseY] = this.getMouseLocation(event)
-      if (this.mode === 'object') {
-        // creating an object
-        if (this.createContext) {
-          this.createContext = null
-        }
-        if (this.dragContext) {
-          this.dragContext = null
-        }
-      } else if (this.mode === 'region') {
-      } else if (this.mode === 'skeleton') {
-      } else {
-        throw 'Unknown mode: ' + this.mode
-      }
-    },
     handleMousedown (event) {
       const [mouseX, mouseY] = this.getMouseLocation(event)
       if (this.mode === 'object') {
@@ -198,11 +182,16 @@ export default {
         throw 'Unknown mode: ' + this.mode
       }
     },
-    handleMouseup (event) {
+    handleMouseupAndMouseout (event) {
       const [mouseX, mouseY] = this.getMouseLocation(event)
       if (this.mode === 'object') {
         // creating an object
         if (this.createContext) {
+          const activeAnnotation = this.annotationList[this.createContext.index]
+          if (activeAnnotation.width < 8 || activeAnnotation.height < 8) {
+            utils.notify('The object is too small. At least 8x8.')
+            this.annotationList.splice(this.createContext.index, 1)
+          }
           this.createContext = null
         }
         if (this.dragContext) {

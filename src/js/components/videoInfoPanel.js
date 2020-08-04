@@ -1,4 +1,4 @@
-const VIDEO_INFO_TEMPLATE = `
+const VIDEO_INFO_PANEL_TEMPLATE = `
 <div>
   <div v-if="video.src" class="row q-mb-sm" style="min-height: 100px">
     <q-card-section class="col-md-4 col-sm-8">
@@ -225,5 +225,5 @@ export default {
     this.setVideoFPS(10)
     this.setVideoSrc('video/Ikea_dataset_teaser_vid.webm')
   },
-  template: VIDEO_INFO_TEMPLATE,
+  template: VIDEO_INFO_PANEL_TEMPLATE,
 }
