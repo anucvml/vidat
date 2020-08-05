@@ -35,16 +35,22 @@ const OBJECT_TABLE_TEMPLATE = `
           borderless
           emit-value
           map-options
+          @input="handleLabelInput(props.row)"
         ></q-select>
       </q-td>
       <q-td key="color" :props="props">
         <q-chip
           outline
-          v-if="labelOption[props.row.labelId].color"
-          :style="{ 'border-color': labelOption[props.row.labelId].color, 'color': labelOption[props.row.labelId].color }"
+          :style="{ 'border-color': props.row.color, 'color': props.row.color }"
         >
-          {{ labelOption[props.row.labelId].color.toUpperCase() }}
+          {{ props.row.color.toUpperCase() }}
          </q-chip>
+        <q-popup-edit
+          v-model="props.row.color"
+          title="Edit the label color"
+        >
+          <q-color v-model="props.row.color"></q-color>
+        </q-popup-edit>
       </q-td>
       <q-td key="instance" :props="props">
         <q-input
@@ -119,6 +125,9 @@ export default {
     ...Vuex.mapMutations([
       'setAnnotationList',
     ]),
+    handleLabelInput (row) {
+      row.color = this.labelOption[row.labelId].color
+    },
     handleUp (row) {
       for (let i = 0; i < this.objectAnnotationList.length; i++) {
         if (this.objectAnnotationList[i] === row) {

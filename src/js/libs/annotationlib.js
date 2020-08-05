@@ -15,7 +15,7 @@ class Annotation {
 }
 
 class ObjectAnnotation extends Annotation {
-  constructor (x, y, width, height, labelId = 0, instance = '', score = '') {
+  constructor (x, y, width, height, labelId = 0, color = '', instance = '', score = '') {
     super()
     this.x = x
     this.y = y
@@ -23,6 +23,11 @@ class ObjectAnnotation extends Annotation {
     this.height = height
     this.highlight = false
     this.labelId = labelId
+    if (color === '') {
+      this.color = store.state.settings.objectLabelData[this.labelId].color
+    } else {
+      this.color = color
+    }
     this.instance = instance
     this.score = score
   }
@@ -34,7 +39,6 @@ class ObjectAnnotation extends Annotation {
     const h = this.height
 
     let lineWidth = this.highlight ? 4 : 2
-    this.color = store.state.settings.objectLabelData[this.labelId].color
 
     ctx.lineWidth = lineWidth + 2
     ctx.strokeStyle = '#000000'
@@ -67,7 +71,16 @@ class ObjectAnnotation extends Annotation {
   }
 
   clone () {
-    return new ObjectAnnotation(this.x, this.y, this.width, this.height, this.labelId, this.instance, this.score)
+    return new ObjectAnnotation(
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+      this.labelId,
+      this.color,
+      this.instance,
+      this.score,
+    )
   }
 
   resize (x = this.x, y = this.y, width = this.width, height = this.height) {
