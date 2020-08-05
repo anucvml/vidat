@@ -1,3 +1,5 @@
+import utils from '../../libs/utils.js'
+
 export default {
   state: () => ({
     video: {
@@ -8,6 +10,7 @@ export default {
     keyframeList: {},
     leftCurrentFrame: 0,
     rightCurrentFrame: 50,
+    cachedFrameList: [],
     mode: 'object', // 'object', 'region', 'skeleton'
     lockSliders: false,
     lockSlidersDistance: 0,
@@ -60,9 +63,18 @@ export default {
     },
     setLeftCurrentFrame (state, value) {
       Vue.set(state, 'leftCurrentFrame', value)
+      if (!state.cachedFrameList[value]) {
+        document.getElementById('video').currentTime = utils.index2time(value)
+      }
     },
     setRightCurrentFrame (state, value) {
       Vue.set(state, 'rightCurrentFrame', value)
+      if (!state.cachedFrameList[value]) {
+        document.getElementById('video').currentTime = utils.index2time(value)
+      }
+    },
+    cacheFrame (state, value) {
+      Vue.set(state.cachedFrameList, value['index'], value['frame'])
     },
     setMode (state, value) {
       Vue.set(state, 'mode', value)

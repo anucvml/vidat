@@ -2,17 +2,16 @@ const VIDEO_PANEL_TEMPLATE = `
   <div v-show="position === 'left' || (position === 'right' && !zoom)">
     <film-strip></film-strip>
     <div style="position: relative;">
-      <video
-        preload="auto"
-        ref="video"
-        style="display: block;"
-        :class="['full-width', { 'grayscale': grayscale }]"
-        :src="video.src"
-        @loadeddata="handleLoadeddata"
-      ></video>
+      <canvas
+        ref="background"
+        style="display: block; position: absolute;"
+        :class="['full-width', {'grayscale': grayscale}]"
+        :height="video.height"
+        :width="video.width"
+      ></canvas>
       <canvas
         ref="canvas"
-        style="display: block; position: absolute; top: 0;"
+        style="display: block; position: relative; top: 0;"
         :class="['full-width', {'point-cursor': activeContext}]"
         :height="video.height"
         :width="video.width"
@@ -21,6 +20,12 @@ const VIDEO_PANEL_TEMPLATE = `
         @mousedown="handleMousedown"
         @mouseup="handleMouseupAndMouseout"
       ></canvas>
+      <img
+        ref="img"
+        :src="cachedFrameList[currentFrame]"
+        style="display: none"
+        @load="handleLoad"
+      >
       <q-btn
         v-if="position === 'left'"
         class="bg-white"
@@ -60,11 +65,7 @@ const VIDEO_PANEL_TEMPLATE = `
 import filmStrip from './filmStrip.js'
 import objectTable from './objectTable.js'
 import utils from '../libs/utils.js'
-import {
-  ObjectAnnotation,
-  RegionAnnotation,
-  SkeletonAnnotation,
-} from '../libs/annotationlib.js'
+import { ObjectAnnotation } from '../libs/annotationlib.js'
 
 export default {
   props: ['position'],
@@ -75,6 +76,7 @@ export default {
   data: () => {
     return {
       ctx: null,
+      backgroundCtx: null,
       utils,
       createContext: null,
       dragContext: null,
@@ -86,6 +88,9 @@ export default {
       'setAnnotationList',
       'toggleZoom',
     ]),
+    handleLoad () {
+      this.backgroundCtx.drawImage(this.$refs.img, 0, 0, this.video.width, this.video.height)
+    },
     handlePlay () {
       utils.notify('Not implemented!')
     },
@@ -99,9 +104,6 @@ export default {
       const mouseX = event.offsetX / this.$refs.canvas.clientWidth * this.video.width
       const mouseY = event.offsetY / this.$refs.canvas.clientHeight * this.video.height
       return [mouseX, mouseY]
-    },
-    handleLoadeddata () {
-      this.$refs.video.currentTime = this.utils.index2time(this.currentFrame)
     },
     handleMousemove (event) {
       const [mouseX, mouseY] = this.getMouseLocation(event)
@@ -246,6 +248,7 @@ export default {
   },
   mounted () {
     this.ctx = this.$refs.canvas.getContext('2d')
+    this.backgroundCtx = this.$refs.background.getContext('2d')
     this.$watch(
       function () {
         return eval('this.$store.state.annotation.' + this.mode + 'AnnotationListMap[this.currentFrame]')
@@ -269,12 +272,7 @@ export default {
     },
     currentFrame: {
       get () {
-        const videoElement = this.$refs.video
-        const currentFrame = eval('this.$store.state.annotation.' + this.position + 'CurrentFrame')
-        if (videoElement && videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-          this.$refs.video.currentTime = this.utils.index2time(currentFrame)
-        }
-        return currentFrame
+        return eval('this.$store.state.annotation.' + this.position + 'CurrentFrame')
       },
       set (value) {
         if (this.lockSliders) {
@@ -299,10 +297,12 @@ export default {
               'set' + otherPosition + 'CurrentFrame', otherNextFrame)
           }
         }
-        this.$refs.video.currentTime = this.utils.index2time(value)
         this.$store.commit('set' + this.position.slice(0, 1).toUpperCase() + this.position.slice(1) + 'CurrentFrame',
           value)
       },
+    },
+    cachedFrameList () {
+      return this.$store.state.annotation.cachedFrameList
     },
     lockSliders () {
       return this.$store.state.annotation.lockSliders
