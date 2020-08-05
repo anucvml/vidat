@@ -15,16 +15,36 @@ const OBJECT_TABLE_TEMPLATE = `
   <template v-slot:body="props">
     <q-tr :props="props">
       <q-td key="x" :props="props">
-        {{ props.row.x | toFixed2 }}
+        <q-input
+          v-model.number="props.row.x"
+          dense
+          borderless
+          type="number"
+        ></q-input>
       </q-td>
       <q-td key="y" :props="props">
-        {{ props.row.y | toFixed2 }}
+        <q-input
+          v-model.number="props.row.y"
+          dense
+          borderless
+          type="number"
+        ></q-input>
       </q-td>
       <q-td key="width" :props="props">
-        {{ props.row.width | toFixed2 }}
+        <q-input
+          v-model.number="props.row.width"
+          dense
+          borderless
+          type="number"
+        ></q-input>
       </q-td>
       <q-td key="height" :props="props">
-        {{ props.row.height | toFixed2 }}
+        <q-input
+          v-model.number="props.row.height"
+          dense
+          borderless
+          type="number"
+        ></q-input>
       </q-td>
       <q-td key="label" :props="props">
         <q-select
@@ -54,16 +74,18 @@ const OBJECT_TABLE_TEMPLATE = `
       </q-td>
       <q-td key="instance" :props="props">
         <q-input
-          v-model="props.row.instance"
+          v-model.number="props.row.instance"
           dense
           borderless
+          type="number"
         ></q-input>
       </q-td>
       <q-td key="score" :props="props">
         <q-input
-          v-model="props.row.score"
+          v-model.number="props.row.score"
           dense
           borderless
+          type="number"
         ></q-input>
       </q-td>
       <q-td key="operation" :props="props">

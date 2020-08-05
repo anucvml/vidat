@@ -15,7 +15,7 @@ class Annotation {
 }
 
 class ObjectAnnotation extends Annotation {
-  constructor (x, y, width, height, labelId = 0, color = '', instance = '', score = '') {
+  constructor (x, y, width, height, labelId = 0, color = null, instance = null, score = null) {
     super()
     this.x = x
     this.y = y
@@ -23,7 +23,7 @@ class ObjectAnnotation extends Annotation {
     this.height = height
     this.highlight = false
     this.labelId = labelId
-    if (color === '') {
+    if (!color) {
       this.color = store.state.settings.objectLabelData[this.labelId].color
     } else {
       this.color = color
