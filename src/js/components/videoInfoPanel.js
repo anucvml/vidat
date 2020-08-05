@@ -95,6 +95,11 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
 `
 
 import utils from '../libs/utils.js'
+import {
+  ObjectAnnotation,
+  RegionAnnotation,
+  SkeletonAnnotation,
+} from '../libs/annotationlib.js'
 
 export default {
   data: () => {
@@ -116,6 +121,9 @@ export default {
       'cacheFrame',
       'setVideoFPS',
       'closeVideo',
+      'setObjectAnnotationListMap',
+      'setRegionAnnotationListMap',
+      'setSkeletonAnnotationListMap',
     ]),
     handleOpenWithFPS () {
       utils.prompt(
@@ -259,10 +267,77 @@ export default {
       }
     },
     handleLoad () {
-      utils.notify('Not implemented!')
+      utils.confirm(
+        'Are you sure to load? This would override current data!',
+      ).onOk(() => {
+        utils.importFile().then(file => {
+            const fileData = JSON.parse(file)
+            const {
+              version,
+              fps,
+              frames,
+              secondPerKeyframe,
+              keyframes,
+              objectAnnotationListMap,
+              regionAnnotationListMap,
+              skeletonAnnotationListMap,
+            } = fileData
+            // Check the json file
+            let isOk = true
+            if (version !== VERSION) {
+              utils.notify('Version mismatch, weird things likely to happen! ' + version + '!=' + VERSION)
+            }
+            if (fps !== this.video.fps) {
+              isOk = false
+              utils.notify('FPS mismatch, unable to load annotations! ' + fps + '!=' + this.video.fps)
+            }
+            if (frames !== this.video.frames) {
+              isOk = false
+              utils.notify('#frames mismatch, unable to load annotations! ' + frames + '!=' + this.video.frames)
+            }
+            if (isOk) {
+              this.setSecondPerKeyframe(secondPerKeyframe)
+              // objectAnnotationListMap
+              for (let frame in objectAnnotationListMap) {
+                const objectAnnotationList = objectAnnotationListMap[frame]
+                for (let i in objectAnnotationList) {
+                  let objectAnnotation = objectAnnotationList[i]
+                  objectAnnotationList[i] = new ObjectAnnotation(
+                    objectAnnotation.x,
+                    objectAnnotation.y,
+                    objectAnnotation.width,
+                    objectAnnotation.height,
+                    objectAnnotation.labelId,
+                    objectAnnotation.color,
+                    objectAnnotation.instance,
+                    objectAnnotation.score)
+                }
+              }
+              this.setObjectAnnotationListMap(objectAnnotationListMap)
+              // objectAnnotationListMap
+              // regionAnnotationListMap
+              // skeletonAnnotationListMap
+            }
+          },
+        )
+      })
     },
     handleSave () {
-      utils.notify('Not implemented!')
+      const data = {
+        version: VERSION,
+        fps: this.video.fps,
+        frames: this.video.frames,
+        secondPerKeyframe: this.secondPerKeyframe,
+        keyframes: this.keyframeList,
+        objectAnnotationListMap: this.objectAnnotationListMap,
+        regionAnnotationListMap: this.regionAnnotationListMap,
+        skeletonAnnotationListMap: this.skeletonAnnotationListMap,
+      }
+      Quasar.utils.exportFile(
+        'annotations.json',
+        new Blob([JSON.stringify(data)]),
+        { type: 'text/plain' },
+      )
     },
     handlePreviousKeyframe () {
       const leftCurrentFrame = this.leftCurrentFrame
@@ -324,6 +399,15 @@ export default {
         min: this.leftCurrentFrame,
         max: this.rightCurrentFrame,
       }
+    },
+    objectAnnotationListMap () {
+      return this.$store.state.annotation.objectAnnotationListMap
+    },
+    regionAnnotationListMap () {
+      return this.$store.state.annotation.regionAnnotationListMap
+    },
+    skeletonAnnotationListMap () {
+      return this.$store.state.annotation.skeletonAnnotationListMap
     },
   },
   mounted () {

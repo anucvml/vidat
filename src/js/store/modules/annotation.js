@@ -88,6 +88,15 @@ export default {
     setGrayscale (state, value) {
       Vue.set(state, 'grayscale', value)
     },
+    setObjectAnnotationListMap (state, value) {
+      Vue.set(state, 'objectAnnotationListMap', value)
+    },
+    setRegionAnnotationListMap (state, value) {
+      Vue.set(state, 'regionAnnotationListMap', value)
+    },
+    setSkeletonAnnotationListMap (state, value) {
+      Vue.set(state, 'skeletonAnnotationListMap', value)
+    },
     setAnnotationList (state, value) {
       if (value.mode === 'object') {
         Vue.set(state.objectAnnotationListMap, value.index, value.annotationList)

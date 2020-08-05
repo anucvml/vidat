@@ -123,7 +123,7 @@ export default {
       utils.prompt(
         'Save',
         'Enter configuration filename for saving',
-        'config.txt').onOk(filename => {
+        'config.json').onOk(filename => {
         let objectLabels = {}
         this.$store.state.settings.objectLabelData.forEach(element => {
           objectLabels[element.name] = element.color
