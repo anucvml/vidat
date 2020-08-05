@@ -99,9 +99,8 @@ export default {
   data: () => {
     return {
       utils,
-      backendQueue: [], // index of frame for backend processing
       priorityQueue: [], // index of priority frame that needs to process now
-      processedFrameList: [], // index of frames that are already processed
+      backendQueue: [], // index of frame for backend processing
     }
   },
   methods: {
@@ -161,19 +160,19 @@ export default {
       })
       // add frame index into the backendQueue
       // 1. every one second
-      for (let i = 1.0; i < this.video.duration; i++) {
-        const index = utils.time2index(i)
-        if (this.keyframeList.indexOf(index) === -1) {
-          this.backendQueue.push(index)
-        }
-      }
+      // for (let i = 1.0; i < this.video.duration; i++) {
+      //   const index = utils.time2index(i)
+      //   if (this.keyframeList.indexOf(index) === -1) {
+      //     this.backendQueue.push(index)
+      //   }
+      // }
       // 2. every 1 / fps second
-      const interval = parseFloat((1 / this.video.fps).toFixed(3))
-      for (let i = interval; i < this.video.duration; i += interval) {
-        if (i.toFixed(1) % 1 !== 0) {
-          this.backendQueue.push(utils.time2index(i))
-        }
-      }
+      // const interval = parseFloat((1 / this.video.fps).toFixed(3))
+      // for (let i = interval; i < this.video.duration; i += interval) {
+      //   if (i.toFixed(1) % 1 !== 0) {
+      //     this.backendQueue.push(utils.time2index(i))
+      //   }
+      // }
       // trigger
       event.target.currentTime = 0.0
     },
@@ -182,8 +181,8 @@ export default {
         const videoElement = event.target
         const currentTime = videoElement.currentTime
         const currentIndex = utils.time2index(currentTime)
-        console.log('currentIndex: ', currentIndex, 'currentTime: ' + currentTime)
-        if (this.processedFrameList.indexOf(currentIndex) === -1) {
+        if (!this.cachedFrameList[currentIndex]) {
+          console.log('currentIndex: ', currentIndex, 'currentTime: ' + currentTime)
           // get the image
           const canvas = document.createElement('canvas')
           canvas.width = this.video.width
@@ -201,7 +200,6 @@ export default {
         } else if (this.backendQueue.length !== 0) {
           videoElement.currentTime = utils.index2time(this.backendQueue.shift())
         }
-        this.processedFrameList.push(currentIndex)
       }
     },
     handleClose () {
@@ -284,6 +282,9 @@ export default {
     },
     rightCurrentFrame () {
       return this.$store.state.annotation.rightCurrentFrame
+    },
+    cachedFrameList () {
+      return this.$store.state.annotation.cachedFrameList
     },
     CurrentFrameRange () {
       return {
