@@ -36,7 +36,7 @@ const APP_TEMPLATE = `
           <q-item-section>{{ item.label }}</q-item-section>
         </q-item>
         <q-item class="fixed-bottom">
-          <q-item-section class="text-center">v1.0.0 Beta</q-item-section>
+          <q-item-section class="text-center">{{ version }}</q-item-section>
         </q-item>
       </q-list>
     </q-scroll-area>
@@ -62,6 +62,7 @@ const app = new Vue({
   el: '#app',
   data: () => {
     return {
+      version: VERSION,
       drawer: false,
       menuList: [
         {
