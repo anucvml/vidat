@@ -146,9 +146,7 @@ export default {
       if (!this.video.height) {
         this.setVideoHeight(event.target.videoHeight)
       }
-      if (!this.video.fps) {
-        this.setSecondPerKeyframe(5)
-      }
+      this.setSecondPerKeyframe(5)
     },
     handleClose () {
       utils.confirm('Are you sure to close? You will LOSE all data!').onOk(() => {
@@ -183,15 +181,16 @@ export default {
       const leftCurrentFrame = this.leftCurrentFrame
       const rightCurrentFrame = this.rightCurrentFrame
       const keyframeInterval = utils.time2index(this.secondPerKeyframe)
-      if (leftCurrentFrame - keyframeInterval < 0 ||
-        rightCurrentFrame - keyframeInterval < 0) {
+      const leftNextFrame = this.leftCurrentFrame - keyframeInterval
+      const rightNextFrame = this.rightCurrentFrame - keyframeInterval
+      if (leftNextFrame < 0 || rightNextFrame < 0) {
         this.setLeftCurrentFrame(0)
         this.setRightCurrentFrame(keyframeInterval)
       } else if (rightCurrentFrame - leftCurrentFrame === keyframeInterval) {
-        this.setLeftCurrentFrame(leftCurrentFrame - keyframeInterval)
-        this.setRightCurrentFrame(rightCurrentFrame - keyframeInterval)
+        this.setLeftCurrentFrame(leftNextFrame)
+        this.setRightCurrentFrame(rightNextFrame)
       } else {
-        this.setLeftCurrentFrame(leftCurrentFrame - keyframeInterval)
+        this.setLeftCurrentFrame(leftNextFrame)
         this.setRightCurrentFrame(leftCurrentFrame)
       }
     },
@@ -199,17 +198,19 @@ export default {
       const leftCurrentFrame = this.leftCurrentFrame
       const rightCurrentFrame = this.rightCurrentFrame
       const keyframeInterval = utils.time2index(this.secondPerKeyframe)
+      const leftNextFrame = leftCurrentFrame + keyframeInterval
+      const rightNextFrame = rightCurrentFrame + keyframeInterval
       const lastKeyframe = this.keyframeList[this.keyframeList.length - 1]
-      if (leftCurrentFrame + keyframeInterval > lastKeyframe ||
-        rightCurrentFrame + keyframeInterval > lastKeyframe) {
+      console.log(this.keyframeList)
+      if (leftNextFrame > lastKeyframe || rightNextFrame > lastKeyframe) {
         this.setLeftCurrentFrame(lastKeyframe - keyframeInterval)
         this.setRightCurrentFrame(lastKeyframe)
       } else if (rightCurrentFrame - leftCurrentFrame === keyframeInterval) {
-        this.setLeftCurrentFrame(leftCurrentFrame + keyframeInterval)
-        this.setRightCurrentFrame(rightCurrentFrame + keyframeInterval)
+        this.setLeftCurrentFrame(leftNextFrame)
+        this.setRightCurrentFrame(rightNextFrame)
       } else {
         this.setLeftCurrentFrame(leftCurrentFrame)
-        this.setRightCurrentFrame(leftCurrentFrame + keyframeInterval)
+        this.setRightCurrentFrame(leftNextFrame)
       }
     },
   },
