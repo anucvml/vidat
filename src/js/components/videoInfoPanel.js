@@ -82,6 +82,7 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
   <q-btn flat class="absolute-center full-width" size="40px" @click="handleOpen" icon="movie" v-if="!video.src">Open</q-btn>
   <video
     id="video"
+    ref="video"
     controls
     style="display: none"
     :src="video.src"
@@ -217,6 +218,14 @@ export default {
       ).onOk((secondPerKeyframe) => {
         if (secondPerKeyframe >= 1 && secondPerKeyframe % 1 === 0) {
           this.setSecondPerKeyframe(parseInt(secondPerKeyframe))
+          // re-cache keyframes
+          this.keyframeList.forEach(keyframe => {
+            if (keyframe !== 0) {
+              this.priorityQueue.push(keyframe)
+            }
+          })
+          // trigger again
+          this.$refs.video.currentTime = 0.0
         } else {
           utils.notify('Please enter an integer bigger than 1.')
         }
