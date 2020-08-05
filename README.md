@@ -32,6 +32,7 @@ Video tutorials will be posted on YouTube.
 
 1. [Vue.js](https://vuejs.org/)
 2. [Quasar](https://quasar.dev/)
+3. [JSZip](https://stuk.github.io/jszip/)
 
 ### Optional
 

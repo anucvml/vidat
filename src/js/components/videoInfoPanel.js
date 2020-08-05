@@ -232,7 +232,31 @@ export default {
       })
     },
     handleExport () {
-      utils.notify('Not implemented!')
+      // ensure that we have all the keyframes
+      let isOk = true
+      for (let i = 0; i < this.keyframeList.length; i++) {
+        if (!this.cachedFrameList[this.keyframeList[i]]) {
+          isOk = false
+          break
+        }
+      }
+      // export all keyframes as a zip file
+      if (isOk) {
+        const zip = new JSZip()
+        for (let i = 0; i < this.keyframeList.length; i++) {
+          const imgDataURL = this.cachedFrameList[this.keyframeList[i]]
+          zip.file(
+            utils.index2time(this.keyframeList[i]) + '.jpg',
+            imgDataURL.slice(imgDataURL.indexOf(',') + 1),
+            { base64: true },
+          )
+        }
+        zip.generateAsync({ type: 'blob' }).then(content => {
+          saveAs(content, 'keyframes.zip')
+        })
+      } else {
+        utils.notify('Please wait for caching!')
+      }
     },
     handleLoad () {
       utils.notify('Not implemented!')
