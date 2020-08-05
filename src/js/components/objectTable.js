@@ -213,14 +213,5 @@ export default {
       return labelOption
     },
   },
-  filters: {
-    'toFixed2': function (value) {
-      if (value) {
-        return value.toFixed(2)
-      } else {
-        return '0.00'
-      }
-    },
-  },
   template: OBJECT_TABLE_TEMPLATE,
 }
