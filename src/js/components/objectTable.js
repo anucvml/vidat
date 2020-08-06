@@ -181,7 +181,7 @@ export default {
     },
     handleClearAll () {
       if (this.objectAnnotationList.length > 0) {
-        utils.confirm('Are you sure to delete ALL object?').onOk(() => {
+        utils.confirm('Are you sure to delete ALL objects?').onOk(() => {
           this.setAnnotationList({
             mode: 'object',
             index: this.currentFrame,
