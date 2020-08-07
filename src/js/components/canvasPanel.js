@@ -1,5 +1,5 @@
 const VIDEO_PANEL_TEMPLATE = `
-  <div v-show="position === 'left' || (position === 'right' && !zoom)">
+  <div>
     <film-strip></film-strip>
     <div style="position: relative;">
       <canvas
