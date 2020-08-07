@@ -19,6 +19,7 @@ const VIDEO_PANEL_TEMPLATE = `
         @mouseout="handleMouseupAndMouseout"
         @mousedown="handleMousedown"
         @mouseup="handleMouseupAndMouseout"
+        @keyup="handleKeyup"
       ></canvas>
       <img
         ref="img"
@@ -43,6 +44,7 @@ const VIDEO_PANEL_TEMPLATE = `
         <q-btn dense @click="handleStop" icon="stop"></q-btn>
       </q-btn-group>
       <q-slider
+        ref="slider"
         class="q-mx-sm"
         v-model="currentFrame"
         :min="0"
@@ -233,6 +235,9 @@ export default {
         throw 'Unknown mode: ' + this.mode
       }
     },
+    handleKeyup (event) {
+      console.log(event)
+    },
     draw (annotationList) {
       if (!annotationList) {
         this.annotationList = []
@@ -262,6 +267,21 @@ export default {
         deep: true,
       },
     )
+    document.addEventListener('keyup', event => {
+      if (event.keyCode === 0x2E) { // delete
+        if (this.activeContext) {
+          this.annotationList.splice(this.activeContext.index, 1)
+        }
+      } else if (event.keyCode === 0xDB) { // [, {
+        if (this.position === 'left') {
+          this.$refs.slider.__focus()
+        }
+      } else if (event.keyCode === 0xDD) { // ], }
+        if (this.position === 'right') {
+          this.$refs.slider.__focus()
+        }
+      }
+    })
   },
   computed: {
     zoom () {

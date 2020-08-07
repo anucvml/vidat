@@ -83,7 +83,7 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
   <video
     id="video"
     ref="video"
-    controls
+    preload="auto"
     style="display: none"
     :src="video.src"
     @loadeddata="handleLoadeddata"
@@ -339,9 +339,21 @@ export default {
         { type: 'text/plain' },
       )
     },
+    nearestKeyframe (currentFrame) {
+      let min = this.video.frames
+      let nearestKeyframe = currentFrame
+      for (let i = 0; i < this.keyframeList.length; i++) {
+        let distance = Math.abs(currentFrame - this.keyframeList[i])
+        if (distance < min) {
+          min = distance
+          nearestKeyframe = this.keyframeList[i]
+        }
+      }
+      return nearestKeyframe
+    },
     handlePreviousKeyframe () {
-      const leftCurrentFrame = this.leftCurrentFrame
-      const rightCurrentFrame = this.rightCurrentFrame
+      const leftCurrentFrame = this.nearestKeyframe(this.leftCurrentFrame)
+      const rightCurrentFrame = this.nearestKeyframe(this.rightCurrentFrame)
       const keyframeInterval = utils.time2index(this.secondPerKeyframe)
       const leftNextFrame = this.leftCurrentFrame - keyframeInterval
       const rightNextFrame = this.rightCurrentFrame - keyframeInterval
@@ -357,8 +369,8 @@ export default {
       }
     },
     handleNextKeyframe () {
-      const leftCurrentFrame = this.leftCurrentFrame
-      const rightCurrentFrame = this.rightCurrentFrame
+      const leftCurrentFrame = this.nearestKeyframe(this.leftCurrentFrame)
+      const rightCurrentFrame = this.nearestKeyframe(this.rightCurrentFrame)
       const keyframeInterval = utils.time2index(this.secondPerKeyframe)
       const leftNextFrame = leftCurrentFrame + keyframeInterval
       const rightNextFrame = rightCurrentFrame + keyframeInterval
@@ -411,6 +423,13 @@ export default {
     },
   },
   mounted () {
+    document.addEventListener('keyup', event => {
+      if (event.keyCode === 0xBC) { // comma, <
+        this.handlePreviousKeyframe()
+      } else if (event.keyCode === 0xBE) { // period, >
+        this.handleNextKeyframe()
+      }
+    })
     // debug
     this.setVideoFPS(10)
     this.setVideoSrc('video/Ikea_dataset_teaser_vid.webm')
