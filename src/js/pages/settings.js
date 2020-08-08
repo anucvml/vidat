@@ -141,13 +141,12 @@ export default {
       })
     },
     handleRestore () {
-      this.preference = {
+      this.$store.commit('preferenceData', {
         objects: true,
         regions: true,
         skeletons: true,
         videoSegments: true,
-      }
-      this.handleSavePreference()
+      })
     },
     handleSavePreference () {
       this.$store.commit('preferenceData', this.preference)
