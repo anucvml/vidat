@@ -226,5 +226,12 @@ export default {
       return ret
     },
   },
+  mounted () {
+    document.addEventListener('keyup', event => {
+      if (event.keyCode === 0xBB) { // delete
+        this.handleAdd()
+      }
+    })
+  },
   template: ACTION_TABLE_TEMPLATE,
 }
