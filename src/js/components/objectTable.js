@@ -67,7 +67,7 @@ const OBJECT_TABLE_TEMPLATE = `
          </q-chip>
         <q-popup-edit
           v-model="props.row.color"
-          title="Edit the label color"
+          title="Edit the object color"
         >
           <q-color v-model="props.row.color"></q-color>
         </q-popup-edit>

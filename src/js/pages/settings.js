@@ -9,8 +9,8 @@ const SETTINGS_TEMPLATE = `
       <q-btn class="q-px-md" dense color="primary" icon="get_app" @click="handleSave">Save</q-btn>
     </q-btn-group>
   </div>
-  <label-table tableTitle="Object Labels" dataName="objectLabelData"></label-table>
-  <label-table tableTitle="Action Labels" dataName="actionLabelData"></label-table>
+  <object-label-table></object-label-table>
+  <action-label-table></action-label-table>
   <div class="row">
     <div class="text-h6">Preferences (Show/Hide)</div>
     <q-space></q-space>
@@ -77,19 +77,22 @@ const SETTINGS_TEMPLATE = `
 </div>
 `
 
-import labelTable from '../components/labelTable.js'
+import objectLabelTable from '../components/objectLabelTable.js'
+import actionLabelTable from '../components/actionLabelTable.js'
 import utils from '../libs/utils.js'
 
 export default {
   components: {
-    labelTable,
+    objectLabelTable,
+    actionLabelTable,
   },
   data: () => {
-    return {
-      labelTable,
-    }
+    return {}
   },
   methods: {
+    ...Vuex.mapMutations([
+      'setPreferenceData',
+    ]),
     handleLoad () {
       utils.confirm(
         'Are you sure to load? This would override the configuration!',
@@ -141,7 +144,7 @@ export default {
       })
     },
     handleRestore () {
-      this.$store.commit('preferenceData', {
+      this.setPreferenceData({
         objects: true,
         regions: true,
         skeletons: true,
@@ -149,7 +152,7 @@ export default {
       })
     },
     handleSavePreference () {
-      this.$store.commit('preferenceData', this.preference)
+      this.setPreferenceData(this.preference)
     },
   },
   computed: {

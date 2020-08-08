@@ -1,8 +1,8 @@
-const LABEL_TABLE_TEMPLATE = `
+const OBJECT_LABEL_TABLE_TEMPLATE = `
 <q-table
   :data="tableData"
   :columns="columnList"
-  :title="tableTitle"
+  title="Object Labels"
   row-key="id"
   :pagination.sync="pagination"
 >
@@ -67,18 +67,14 @@ const LABEL_TABLE_TEMPLATE = `
 `
 
 const columnList = [
-  { name: 'name', align: 'center', label: 'Label', field: 'name' },
-  { name: 'color', align: 'center', label: 'Color', field: 'color' },
-  { name: 'delete', align: 'center', label: 'Delete', field: 'delete' },
+  { name: 'name', align: 'center', label: 'name', field: 'name' },
+  { name: 'color', align: 'center', label: 'color', field: 'color' },
+  { name: 'delete', align: 'center', label: 'delete', field: 'delete' },
 ]
 
 import utils from '../libs/utils.js'
 
 export default {
-  props: {
-    'tableTitle': String,
-    'dataName': String,
-  },
   data: () => {
     return {
       columnList,
@@ -87,7 +83,7 @@ export default {
   },
   methods: {
     saveTableData () {
-      this.$store.commit(this.dataName, this.tableData)
+      this.$store.commit('setObjectLabelData', this.tableData)
     },
     handleDelete (id) {
       let targetIndex
@@ -117,8 +113,8 @@ export default {
   },
   computed: {
     tableData () {
-      return eval('this.$store.state.settings.' + this.dataName)
+      return this.$store.state.settings.objectLabelData
     },
   },
-  template: LABEL_TABLE_TEMPLATE,
+  template: OBJECT_LABEL_TABLE_TEMPLATE,
 }

@@ -6,10 +6,13 @@ const ANNOTATION_TEMPLATE = `
   <q-card class="q-mb-md no-border-radius" v-if="!video.src">
     <annotation-skeleton></annotation-skeleton>
   </q-card>
-  <q-card class="row q-mb-md no-border-radius" v-if="video.src" >
-    <canvas-panel :class="[{'col-lg': !zoom}, {'col-md-10': !zoom}, {'col-sm-10': !zoom}, {'col': zoom}]" position="left"></canvas-panel>
-    <control-panel class="col" v-show="!zoom"></control-panel>
-    <canvas-panel class="col-lg col-md-10 col-sm-10" v-show="!zoom" position="right"></canvas-panel>
+  <q-card class="q-mb-md no-border-radius" v-if="video.src">
+    <div class="row">
+      <canvas-panel :class="[{'col-lg': !zoom}, {'col-md-10': !zoom}, {'col-sm-10': !zoom}, {'col': zoom}]" position="left"></canvas-panel>
+      <control-panel class="col" v-show="!zoom"></control-panel>
+      <canvas-panel class="col-lg col-md-10 col-sm-10" v-show="!zoom" position="right"></canvas-panel>
+    </div>
+    <action-table></action-table>
   </q-card>
 </div>
 `
@@ -18,6 +21,7 @@ import videoInfoPanel from '../components/videoInfoPanel.js'
 import annotationSkeleton from '../components/annotationSkeleton.js'
 import canvasPanel from '../components/canvasPanel.js'
 import controlPanel from '../components/controlPanel.js'
+import actionTable from '../components/actionTable.js'
 
 export default {
   components: {
@@ -25,6 +29,7 @@ export default {
     annotationSkeleton,
     canvasPanel,
     controlPanel,
+    actionTable,
   },
   data: () => {
     return {}
