@@ -89,8 +89,8 @@ const app = new Vue({
     }
   },
   mounted: function () {
-    if (this.$route.name !== 'settings') {
-      this.$router.replace('/settings')
+    if (this.$route.name !== 'annotation') {
+      this.$router.replace('/annotation')
     }
   },
   methods: {},

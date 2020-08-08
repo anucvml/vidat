@@ -45,7 +45,7 @@ const ACTION_TABLE_TEMPLATE = `
       <q-td key="object" :props="props">
         <q-select
           v-model="props.row.object"
-          :options="objectOption"
+          :options="objectOptionMap[props.row.action]"
           dense
           options-dense
           borderless
@@ -134,14 +134,20 @@ export default {
       this.actionAnnotationList.push({
         start: last && last.end ? last.end : utils.index2time(this.leftCurrentFrame),
         end: null,
-        action: 0,
-        object: 0,
-        color: this.actionOptionList[0].color,
+        action: this.actionOptionList[0] ? this.actionOptionList[0].value : null,
+        object: this.actionOptionList[0] &&
+        (this.actionOptionList[0].objects[0] || this.actionOptionList[0].objects[0] === 0)
+          ? this.actionOptionList[0].objects[0]
+          : null,
+        color: this.actionOptionList[0] ? this.actionOptionList[0].color : null,
         description: '',
       })
     },
     handleActionInput (row) {
       row.color = this.actionOptionList[row.action].color
+      row.object = this.actionOptionList[row.action].objects[0] || this.actionOptionList[row.action].objects[0] === 0
+        ? this.actionOptionList[row.action].objects[0]
+        : null
     },
     handleUp (row) {
       for (let i = 0; i < this.actionAnnotationList.length; i++) {
@@ -185,17 +191,39 @@ export default {
     leftCurrentFrame () {
       return this.$store.state.annotation.leftCurrentFrame
     },
+    actionLabelData () {
+      return this.$store.state.settings.actionLabelData
+    },
+    objectLabelData () {
+      return this.$store.state.settings.objectLabelData
+    },
     actionOptionList () {
-      const actionLabelData = this.$store.state.settings.actionLabelData
+      const actionLabelData = this.actionLabelData
       let actionOptionList = []
       for (let actionLabel of actionLabelData) {
         actionOptionList.push({
           label: actionLabel.name,
           value: actionLabel.id,
           color: actionLabel.color,
+          objects: actionLabel.objects,
         })
       }
       return actionOptionList
+    },
+    objectOptionMap () {
+      const ret = {}
+      for (let action of this.actionLabelData) {
+        ret[action.id] = []
+        for (let object of this.objectLabelData) {
+          if (action.objects.indexOf(object.id) !== -1) {
+            ret[action.id].push({
+              label: object.name,
+              value: object.id,
+            })
+          }
+        }
+      }
+      return ret
     },
   },
   template: ACTION_TABLE_TEMPLATE,
