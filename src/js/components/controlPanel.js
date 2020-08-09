@@ -69,6 +69,7 @@ const CONTROL_PANEL_TEMPLATE = `
 `
 
 import utils from '../libs/utils.js'
+import { ObjectAnnotation } from '../libs/annotationlib.js'
 
 export default {
   data: () => {
@@ -140,7 +141,46 @@ export default {
       }
     },
     handleInterpolate () {
-      this.utils.notify('Not implemented!')
+      if (this.mode === 'object') {
+        const leftObjectAnnotationList = this.annotationListMap[this.leftCurrentFrame]
+        const rightObjectAnnotationList = this.annotationListMap[this.rightCurrentFrame]
+        for (let leftObjectAnnotation of leftObjectAnnotationList) {
+          let rightObjectAnnotation = rightObjectAnnotationList.find(
+            rightObjectAnnotation => rightObjectAnnotation.instance &&
+              leftObjectAnnotation.instance &&
+              rightObjectAnnotation.instance === leftObjectAnnotation.instance,
+          )
+          // interpolate from left to right
+          let i = 1
+          const nFrames = this.rightCurrentFrame - this.leftCurrentFrame - 1
+          for (let frame = this.leftCurrentFrame + 1; frame < this.rightCurrentFrame; frame++) {
+            const ratio = i / nFrames
+            i += 1
+            const originalAnnotationList = this.annotationListMap[frame] || []
+            originalAnnotationList.push(new ObjectAnnotation(
+              leftObjectAnnotation.x * (1 - ratio) + rightObjectAnnotation.x * ratio,
+              leftObjectAnnotation.y * (1 - ratio) + rightObjectAnnotation.y * ratio,
+              leftObjectAnnotation.width * (1 - ratio) + rightObjectAnnotation.width * ratio,
+              leftObjectAnnotation.height * (1 - ratio) + rightObjectAnnotation.height * ratio,
+              leftObjectAnnotation.labelId,
+              leftObjectAnnotation.color,
+              leftObjectAnnotation.instance,
+              leftObjectAnnotation.score,
+            ))
+            this.setAnnotationList({
+              mode: this.mode,
+              index: frame,
+              annotationList: originalAnnotationList,
+            })
+          }
+        }
+      } else if (this.mode === 'region') {
+
+      } else if (this.mode === 'skeleton') {
+
+      } else {
+        utils.notify(this.mode + ' not support!')
+      }
     },
     handleSwap () {
       const leftCurrentFrame = this.leftCurrentFrame
