@@ -10,7 +10,10 @@ const ACTION_TABLE_TEMPLATE = `
   <template v-slot:top="props">
     <div class="col-2 q-table__title">Actions</div>
     <q-space></q-space>
-    <q-btn icon="add" @click="handleAdd">ADD</q-btn>
+    <q-btn-group>
+      <q-btn icon="add" @click="handleAdd">ADD</q-btn>
+      <q-btn icon="clear_all" @click="handleClearAll">CLEAR</q-btn>
+    </q-btn-group>
   </template>
   <template v-slot:body="props">
     <q-tr :props="props">
@@ -142,6 +145,15 @@ export default {
         color: this.actionOptionList[0] ? this.actionOptionList[0].color : null,
         description: '',
       })
+    },
+    handleClearAll () {
+      if (this.actionAnnotationList.length !== 0) {
+        utils.confirm('Are you sure to delete ALL actions?').onOk(() => {
+          this.actionAnnotationList = []
+        })
+      } else {
+        utils.notify('There are no actions!')
+      }
     },
     handleActionInput (row) {
       row.color = this.actionOptionList[row.action].color
