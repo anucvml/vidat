@@ -157,6 +157,12 @@ export default {
             const ratio = i / nFrames
             i += 1
             const originalAnnotationList = this.annotationListMap[frame] || []
+            // remove old interpolations
+            for (let k = 0; k < originalAnnotationList.length; k++) {
+              if (originalAnnotationList[k].instance === leftObjectAnnotation.instance) {
+                originalAnnotationList.splice(k, 1)
+              }
+            }
             originalAnnotationList.push(new ObjectAnnotation(
               leftObjectAnnotation.x * (1 - ratio) + rightObjectAnnotation.x * ratio,
               leftObjectAnnotation.y * (1 - ratio) + rightObjectAnnotation.y * ratio,
