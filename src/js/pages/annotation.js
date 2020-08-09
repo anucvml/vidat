@@ -12,7 +12,7 @@ const ANNOTATION_TEMPLATE = `
       <control-panel class="col" v-show="!zoom"></control-panel>
       <canvas-panel class="col-lg col-md-10 col-sm-10" v-show="!zoom" position="right"></canvas-panel>
     </div>
-    <action-table></action-table>
+    <action-table v-if="preference.videoSegments"></action-table>
   </q-card>
 </div>
 `
@@ -41,6 +41,9 @@ export default {
     },
     zoom () {
       return this.$store.state.annotation.zoom
+    },
+    preference () {
+      return this.$store.state.settings.preferenceData
     },
   },
   template: ANNOTATION_TEMPLATE,
