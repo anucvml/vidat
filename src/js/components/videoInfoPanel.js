@@ -297,6 +297,7 @@ export default {
             }
             if (isOk) {
               this.setSecondPerKeyframe(secondPerKeyframe)
+              // TODO: configuration
               // objectAnnotationListMap
               for (let frame in objectAnnotationListMap) {
                 const objectAnnotationList = objectAnnotationListMap[frame]
@@ -314,9 +315,10 @@ export default {
                 }
               }
               this.setObjectAnnotationListMap(objectAnnotationListMap)
-              // objectAnnotationListMap
-              // regionAnnotationListMap
-              // skeletonAnnotationListMap
+              // TODO: objectAnnotationListMap
+              // TODO: regionAnnotationListMap
+              // TODO: skeletonAnnotationListMap
+              // TODO: actionAnnotationList
             }
           },
         )
@@ -329,9 +331,17 @@ export default {
         frames: this.video.frames,
         secondPerKeyframe: this.secondPerKeyframe,
         keyframes: this.keyframeList,
-        objectAnnotationListMap: this.objectAnnotationListMap,
-        regionAnnotationListMap: this.regionAnnotationListMap,
-        skeletonAnnotationListMap: this.skeletonAnnotationListMap,
+        configuration: {
+          objectLabelData: this.objectLabelData,
+          actionLabelData: this.actionLabelData,
+          preferenceData: this.preferenceData,
+        },
+        annotation: {
+          objectAnnotationListMap: this.objectAnnotationListMap,
+          regionAnnotationListMap: this.regionAnnotationListMap,
+          skeletonAnnotationListMap: this.skeletonAnnotationListMap,
+          actionAnnotationList: this.actionAnnotationList,
+        },
       }
       Quasar.utils.exportFile(
         'annotations.json',
@@ -426,6 +436,15 @@ export default {
         max: this.rightCurrentFrame,
       }
     },
+    objectLabelData () {
+      return this.$store.state.settings.objectLabelData
+    },
+    actionLabelData () {
+      return this.$store.state.settings.actionLabelData
+    },
+    preferenceData () {
+      return this.$store.state.settings.preferenceData
+    },
     objectAnnotationListMap () {
       return this.$store.state.annotation.objectAnnotationListMap
     },
@@ -434,6 +453,9 @@ export default {
     },
     skeletonAnnotationListMap () {
       return this.$store.state.annotation.skeletonAnnotationListMap
+    },
+    actionAnnotationList () {
+      return this.$store.state.annotation.actionAnnotationList
     },
   },
   mounted () {
