@@ -160,7 +160,7 @@ export default {
       this.tableData.push({
         id: lastId + 1,
         name: 'new',
-        color: '#000000',
+        color: utils.randomColor(),
         objects: [0],
       })
       this.saveTableData()
