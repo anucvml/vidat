@@ -351,39 +351,53 @@ export default {
       }
       return nearestKeyframe
     },
-    handlePreviousKeyframe () {
-      const leftCurrentFrame = this.nearestKeyframe(this.leftCurrentFrame)
-      const rightCurrentFrame = this.nearestKeyframe(this.rightCurrentFrame)
-      const keyframeInterval = utils.time2index(this.secondPerKeyframe)
-      const leftNextFrame = this.leftCurrentFrame - keyframeInterval
-      const rightNextFrame = this.rightCurrentFrame - keyframeInterval
-      if (leftNextFrame < 0 || rightNextFrame < 0) {
+    handlePreviousKeyframe () { // base on right most one
+      const leftCurrentKeyFrame = this.nearestKeyframe(this.leftCurrentFrame)
+      const rightCurrentKeyFrame = this.nearestKeyframe(this.rightCurrentFrame)
+      const leftCurrentKeyFrameIndex = this.keyframeList.indexOf(leftCurrentKeyFrame)
+      const rightCurrentKeyFrameIndex = this.keyframeList.indexOf(rightCurrentKeyFrame)
+      if (leftCurrentKeyFrameIndex <= 0 || rightCurrentKeyFrameIndex <= 0) {
         this.setLeftCurrentFrame(0)
-        this.setRightCurrentFrame(keyframeInterval)
-      } else if (rightCurrentFrame - leftCurrentFrame === keyframeInterval) {
-        this.setLeftCurrentFrame(leftNextFrame)
-        this.setRightCurrentFrame(rightNextFrame)
+        this.setRightCurrentFrame(this.keyframeList[1] || 0)
+      } else if (leftCurrentKeyFrameIndex === rightCurrentKeyFrameIndex) {
+        this.setLeftCurrentFrame(this.keyframeList[rightCurrentKeyFrameIndex - 1])
+        this.setRightCurrentFrame(rightCurrentKeyFrame)
+      } else if (leftCurrentKeyFrameIndex < rightCurrentKeyFrameIndex) {
+        if (rightCurrentKeyFrameIndex - 2 < 0) {
+          this.setLeftCurrentFrame(0)
+          this.setRightCurrentFrame(this.keyframeList[1] || 0)
+        } else {
+          this.setLeftCurrentFrame(this.keyframeList[rightCurrentKeyFrameIndex - 2])
+          this.setRightCurrentFrame(this.keyframeList[rightCurrentKeyFrameIndex - 1])
+        }
       } else {
-        this.setLeftCurrentFrame(leftNextFrame)
-        this.setRightCurrentFrame(leftCurrentFrame)
+        this.setLeftCurrentFrame(rightCurrentKeyFrame)
+        this.setRightCurrentFrame(leftCurrentKeyFrame)
       }
     },
-    handleNextKeyframe () {
-      const leftCurrentFrame = this.nearestKeyframe(this.leftCurrentFrame)
-      const rightCurrentFrame = this.nearestKeyframe(this.rightCurrentFrame)
-      const keyframeInterval = utils.time2index(this.secondPerKeyframe)
-      const leftNextFrame = leftCurrentFrame + keyframeInterval
-      const rightNextFrame = rightCurrentFrame + keyframeInterval
-      const lastKeyframe = this.keyframeList[this.keyframeList.length - 1]
-      if (leftNextFrame > lastKeyframe || rightNextFrame > lastKeyframe) {
-        this.setLeftCurrentFrame(lastKeyframe - keyframeInterval)
-        this.setRightCurrentFrame(lastKeyframe)
-      } else if (rightCurrentFrame - leftCurrentFrame === keyframeInterval) {
-        this.setLeftCurrentFrame(leftNextFrame)
-        this.setRightCurrentFrame(rightNextFrame)
+    handleNextKeyframe () { // base on left most one
+      const leftCurrentKeyFrame = this.nearestKeyframe(this.leftCurrentFrame)
+      const rightCurrentKeyFrame = this.nearestKeyframe(this.rightCurrentFrame)
+      const leftCurrentKeyFrameIndex = this.keyframeList.indexOf(leftCurrentKeyFrame)
+      const rightCurrentKeyFrameIndex = this.keyframeList.indexOf(rightCurrentKeyFrame)
+      const lastIndex = this.keyframeList.length - 1
+      if (leftCurrentKeyFrameIndex >= lastIndex || rightCurrentKeyFrameIndex >= lastIndex) {
+        this.setLeftCurrentFrame(this.keyframeList[lastIndex - 1] || this.keyframeList[lastIndex])
+        this.setRightCurrentFrame(this.keyframeList[lastIndex])
+      } else if (leftCurrentKeyFrameIndex === rightCurrentKeyFrameIndex) {
+        this.setLeftCurrentFrame(leftCurrentKeyFrame)
+        this.setRightCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 1])
+      } else if (leftCurrentKeyFrameIndex < rightCurrentKeyFrameIndex) {
+        if (leftCurrentKeyFrameIndex + 2 > lastIndex) {
+          this.setLeftCurrentFrame(this.keyframeList[lastIndex - 1] || this.keyframeList[lastIndex])
+          this.setRightCurrentFrame(this.keyframeList[lastIndex])
+        } else {
+          this.setLeftCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 1])
+          this.setRightCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 2])
+        }
       } else {
-        this.setLeftCurrentFrame(leftCurrentFrame)
-        this.setRightCurrentFrame(leftNextFrame)
+        this.setLeftCurrentFrame(leftCurrentKeyFrame)
+        this.setRightCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 1])
       }
     },
   },
@@ -423,7 +437,7 @@ export default {
     },
   },
   mounted () {
-    document.addEventListener('keyup', event => {
+    document.addEventListener('keydown', event => {
       if (event.keyCode === 0xBC) { // comma, <
         this.handlePreviousKeyframe()
       } else if (event.keyCode === 0xBE) { // period, >
