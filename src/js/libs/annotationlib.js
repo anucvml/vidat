@@ -173,9 +173,22 @@ class SkeletonAnnotation extends Annotation {
 
 }
 
+class ActionAnnotation extends Annotation {
+  constructor (start, end = null, action = null, object = null, color = null, description = null) {
+    super()
+    this.start = start
+    this.end = end
+    this.action = action
+    this.object = object
+    this.color = color
+    this.description = description
+  }
+}
+
 export {
   Annotation,
   ObjectAnnotation,
   RegionAnnotation,
   SkeletonAnnotation,
+  ActionAnnotation,
 }

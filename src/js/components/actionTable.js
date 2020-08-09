@@ -120,6 +120,7 @@ const columnList = [
 ]
 
 import utils from '../libs/utils.js'
+import { ActionAnnotation } from '../libs/annotationlib.js'
 
 export default {
   data: () => {
@@ -134,17 +135,18 @@ export default {
     ]),
     handleAdd () {
       const last = this.actionAnnotationList[this.actionAnnotationList.length - 1]
-      this.actionAnnotationList.push({
-        start: last && last.end ? last.end : utils.index2time(this.leftCurrentFrame),
-        end: null,
-        action: this.actionOptionList[0] ? this.actionOptionList[0].value : null,
-        object: this.actionOptionList[0] &&
+      const actionAnnotation = new ActionAnnotation(
+        last && last.end ? last.end : utils.index2time(this.leftCurrentFrame),
+        null,
+        this.actionOptionList[0] ? this.actionOptionList[0].value : null,
+        this.actionOptionList[0] &&
         (this.actionOptionList[0].objects[0] || this.actionOptionList[0].objects[0] === 0)
           ? this.actionOptionList[0].objects[0]
           : null,
-        color: this.actionOptionList[0] ? this.actionOptionList[0].color : null,
-        description: '',
-      })
+        this.actionOptionList[0] ? this.actionOptionList[0].color : null,
+        '',
+      )
+      this.actionAnnotationList.push(actionAnnotation)
     },
     handleClearAll () {
       if (this.actionAnnotationList.length !== 0) {
