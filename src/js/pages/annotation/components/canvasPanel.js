@@ -100,9 +100,17 @@ export default {
     },
     handlePlayPause () {
       if (!this.playTimeInterval) {
+        if (this.currentFrame === this.video.frames) {
+          this.currentFrame = 0
+        }
         this.playTimeInterval = setInterval(
           () => {
-            this.currentFrame = this.currentFrame + 1
+            if (this.currentFrame === this.video.frames) {
+              clearInterval(this.playTimeInterval)
+              this.playTimeInterval = null
+            } else {
+              this.currentFrame = this.currentFrame + 1
+            }
           },
           1000 / this.video.fps,
         )
