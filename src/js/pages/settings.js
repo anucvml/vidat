@@ -66,7 +66,7 @@ const SETTINGS_TEMPLATE = `
       <q-item-section avatar>
         <q-toggle
           color="green"
-          v-model="preference.videoSegments"
+          v-model="preference.actions"
           checked-icon="check"
           unchecked-icon="clear"
           @input="handleSavePreference"
@@ -148,7 +148,7 @@ export default {
         objects: true,
         regions: true,
         skeletons: true,
-        videoSegments: true,
+        actions: true,
       })
     },
     handleSavePreference () {

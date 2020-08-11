@@ -88,11 +88,61 @@ const app = new Vue({
       ],
     }
   },
+  methods: {
+    ...Vuex.mapMutations([
+      'setMode',
+      'setShowObjects',
+      'setShowRegions',
+      'setShowSkeletons',
+      'setShowActions',
+    ]),
+  },
   mounted: function () {
-    if (this.$route.name !== 'annotation') {
-      this.$router.replace('/annotation')
+    // get parameters from url
+    const URLParameter = {}
+    for (const pair of window.location.search.replace('?', '').split('&')) {
+      const [key, value] = pair.split('=')
+      URLParameter[key] = value
+    }
+    // set options in silence
+    const showObjects = URLParameter['showObjects']
+    if (showObjects) {
+      if (showObjects.toLowerCase() === 'true') {
+        this.setShowObjects(true)
+      } else if (showObjects.toLowerCase() === 'false') {
+        this.setShowObjects(false)
+      }
+    }
+    const showRegions = URLParameter['showRegions']
+    if (showRegions) {
+      if (showRegions.toLowerCase() === 'true') {
+        this.setShowRegions(true)
+      } else if (showRegions.toLowerCase() === 'false') {
+        this.setShowRegions(false)
+      }
+    }
+    const showSkeletons = URLParameter['showSkeletons']
+    if (showSkeletons) {
+      if (showSkeletons.toLowerCase() === 'true') {
+        this.setShowSkeletons(true)
+      } else if (showSkeletons.toLowerCase() === 'false') {
+        this.setShowSkeletons(false)
+      }
+    }
+    const showActions = URLParameter['showActions']
+    if (showActions) {
+      if (showActions.toLowerCase() === 'true') {
+        this.setShowActions(true)
+      } else if (showActions.toLowerCase() === 'false') {
+        this.setShowActions(false)
+      }
+    }
+    const mode = URLParameter['mode']
+    if (mode) {
+      if (mode === 'object' || mode === 'region' || mode === 'skeleton') {
+        this.setMode(mode)
+      }
     }
   },
-  methods: {},
   template: APP_TEMPLATE,
 })

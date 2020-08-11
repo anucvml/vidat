@@ -168,7 +168,7 @@ export default {
         objects: true,
         regions: true,
         skeletons: true,
-        videoSegments: true,
+        actions: true,
       },
   }),
   getters: {},
@@ -184,6 +184,18 @@ export default {
     setPreferenceData (state, value) {
       state.preferenceData = value
       localStorage.setItem('preferenceData', JSON.stringify(value))
+    },
+    setShowObjects (state, value) {
+      Vue.set(state.preferenceData, 'objects', value)
+    },
+    setShowRegions (state, value) {
+      Vue.set(state.preferenceData, 'regions', value)
+    },
+    setShowSkeletons (state, value) {
+      Vue.set(state.preferenceData, 'skeletons', value)
+    },
+    setShowActions (state, value) {
+      Vue.set(state.preferenceData, 'actions', value)
     },
   },
   actions: {},

@@ -13,7 +13,7 @@ const ANNOTATION_TEMPLATE = `
       <canvas-panel class="col-lg col-md-10 col-sm-10" v-show="!zoom" position="right"></canvas-panel>
       <div class="col lg-hide xl-hide"></div>
     </div>
-    <action-table v-if="preference.videoSegments"></action-table>
+    <action-table v-if="preference.actions"></action-table>
   </q-card>
 </div>
 `

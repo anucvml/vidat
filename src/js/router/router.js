@@ -6,6 +6,7 @@ import notfound from '../pages/notfound.js'
 
 export default new VueRouter({
   routes: [
+    { name: 'index', path: '/', redirect: '/annotation' },
     { name: 'annotation', path: '/annotation', component: annotation },
     { name: 'settings', path: '/settings', component: settings },
     { name: 'help', path: '/help', component: help },
