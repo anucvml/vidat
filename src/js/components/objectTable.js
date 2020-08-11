@@ -89,30 +89,14 @@ const OBJECT_TABLE_TEMPLATE = `
         ></q-input>
       </q-td>
       <q-td key="operation" :props="props">
-        <q-btn-group spread flat>
-          <q-btn
-            flat
-            dense
-            icon="keyboard_arrow_up"
-            style="width: 100%"
-            @click="handleUp(props.row)"
-          ></q-btn>
-          <q-btn
-            flat
-            dense
-            icon="keyboard_arrow_down"
-            style="width: 100%"
-            @click="handleDown(props.row)"
-          ></q-btn>
-          <q-btn
-            flat
-            dense
-            icon="delete"
-            color="negative"
-            style="width: 100%"
-            @click="handleDelete(props.row)"
-          ></q-btn>
-        </q-btn-group>
+        <q-btn
+          flat
+          dense
+          icon="delete"
+          color="negative"
+          style="width: 100%"
+          @click="handleDelete(props.row)"
+        ></q-btn>
       </q-td>
     </q-tr>
   </template>
@@ -149,26 +133,6 @@ export default {
     ]),
     handleLabelInput (row) {
       row.color = this.labelOption[row.labelId].color
-    },
-    handleUp (row) {
-      for (let i = 0; i < this.objectAnnotationList.length; i++) {
-        if (this.objectAnnotationList[i] === row) {
-          if (i - 1 >= 0) {
-            this.objectAnnotationList[i] = this.objectAnnotationList.splice(i - 1, 1, this.objectAnnotationList[i])[0]
-          }
-          break
-        }
-      }
-    },
-    handleDown (row) {
-      for (let i = 0; i < this.objectAnnotationList.length; i++) {
-        if (this.objectAnnotationList[i] === row) {
-          if (i + 2 <= this.objectAnnotationList.length) {
-            this.objectAnnotationList[i] = this.objectAnnotationList.splice(i + 1, 1, this.objectAnnotationList[i])[0]
-          }
-          break
-        }
-      }
     },
     handleDelete (row) {
       utils.confirm('Are you sure to delete this object?').onOk(() => {
