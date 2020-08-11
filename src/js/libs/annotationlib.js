@@ -3,7 +3,11 @@ import store from '../store/store.js'
 const PROXIMITY = 5 // proximity in pixels for active object / key point
 
 class Annotation {
-  constructor () {}
+  constructor (instance = null, score = null) {
+    this.highlight = false
+    this.instance = instance
+    this.score = score
+  }
 
   draw () {
     throw 'Not implemented!'
@@ -16,20 +20,17 @@ class Annotation {
 
 class ObjectAnnotation extends Annotation {
   constructor (x, y, width, height, labelId = 0, color = null, instance = null, score = null) {
-    super()
+    super(instance, score)
     this.x = x
     this.y = y
     this.width = width
     this.height = height
-    this.highlight = false
     this.labelId = labelId
     if (!color) {
       this.color = store.state.settings.objectLabelData[this.labelId].color
     } else {
       this.color = color
     }
-    this.instance = instance
-    this.score = score
   }
 
   draw (ctx) {
@@ -166,7 +167,46 @@ class ObjectAnnotation extends Annotation {
 }
 
 class RegionAnnotation extends Annotation {
+  constructor (pointList = [], labelId = 0, color = null, instance = null, score = null) {
+    super(instance, score)
+    this.pointList = pointList
+    this.labelId = labelId
+    if (!color) {
+      this.color = store.state.settings.objectLabelData[this.labelId].color
+    } else {
+      this.color = color
+    }
+  }
 
+  draw (ctx) {
+    if (this.pointList && this.pointList.length) {
+      // draw the border
+      let lineWidth = this.highlight ? 4 : 2
+      ctx.lineWidth = lineWidth + 2
+      ctx.strokeStyle = '#000000'
+      ctx.beginPath()
+      const firstPoint = this.pointList[0]
+      ctx.moveTo(firstPoint.x, firstPoint.y)
+      for (let i = 1; i < this.pointList.length; i++) {
+        const point = this.pointList[i]
+        ctx.lineTo(point.x, point.y)
+      }
+      ctx.lineTo(firstPoint.x, firstPoint.y)
+      ctx.stroke()
+      ctx.lineWidth = lineWidth
+      ctx.strokeStyle = this.color
+      ctx.stroke()
+      // draw the handles
+      for (const point of this.pointList) {
+        const x = point.x
+        const y = point.y
+        ctx.fillStyle = '#000000'
+        ctx.fillRect(x - 4, y - 4, 8, 8)
+        ctx.fillStyle = this.color
+        ctx.fillRect(x - 3, y - 3, 6, 6)
+      }
+    }
+  }
 }
 
 class SkeletonAnnotation extends Annotation {

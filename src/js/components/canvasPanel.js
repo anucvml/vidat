@@ -39,8 +39,7 @@ const VIDEO_PANEL_TEMPLATE = `
     <film-strip></film-strip>
     <q-toolbar class="q-pa-none">
       <q-btn-group flat>
-        <q-btn dense @click="handlePlay" icon="play_arrow"></q-btn>
-        <q-btn dense @click="handlePause" icon="pause"></q-btn>
+        <q-btn dense @click="handlePlayPause" :icon="playTimeInterval ? 'pause' : 'play_arrow'"></q-btn>
         <q-btn dense @click="handleStop" icon="stop"></q-btn>
       </q-btn-group>
       <q-slider
@@ -83,6 +82,7 @@ export default {
       createContext: null,
       dragContext: null,
       activeContext: null,
+      playTimeInterval: null,
     }
   },
   methods: {
@@ -92,14 +92,25 @@ export default {
     handleLoad () {
       this.backgroundCtx.drawImage(this.$refs.img, 0, 0, this.video.width, this.video.height)
     },
-    handlePlay () {
-      utils.notify('Not implemented!')
-    },
-    handlePause () {
-      utils.notify('Not implemented!')
+    handlePlayPause () {
+      if (!this.playTimeInterval) {
+        this.playTimeInterval = setInterval(
+          () => {
+            this.currentFrame = this.currentFrame + 1
+          },
+          1000 / this.video.fps,
+        )
+      } else {
+        clearInterval(this.playTimeInterval)
+        this.playTimeInterval = null
+      }
     },
     handleStop () {
-      utils.notify('Not implemented!')
+      if (this.playTimeInterval) {
+        clearInterval(this.playTimeInterval)
+        this.playTimeInterval = null
+      }
+      this.currentFrame = 0
     },
     getMouseLocation (event) {
       const mouseX = event.offsetX / this.$refs.canvas.clientWidth * this.video.width
