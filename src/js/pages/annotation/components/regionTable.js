@@ -60,14 +60,30 @@ const REGION_TABLE_TEMPLATE = `
         ></q-input>
       </q-td>
       <q-td key="operation" :props="props">
-        <q-btn
-          flat
-          dense
-          icon="delete"
-          color="negative"
-          style="width: 100%"
-          @click="handleDelete(props.row)"
-        ></q-btn>
+        <q-btn-group spread flat>
+          <q-btn
+            flat
+            dense
+            icon="keyboard_arrow_up"
+            style="width: 100%"
+            @click="handleUp(props.row)"
+          ></q-btn>
+          <q-btn
+            flat
+            dense
+            icon="keyboard_arrow_down"
+            style="width: 100%"
+            @click="handleDown(props.row)"
+          ></q-btn>
+          <q-btn
+            flat
+            dense
+            icon="delete"
+            color="negative"
+            style="width: 100%"
+            @click="handleDelete(props.row)"
+          ></q-btn>
+        </q-btn-group>
       </q-td>
     </q-tr>
   </template>
@@ -101,6 +117,26 @@ export default {
     ]),
     handleLabelInput (row) {
       row.color = this.labelOption[row.labelId].color
+    },
+    handleUp (row) {
+      for (let i = 0; i < this.regionAnnotationList.length; i++) {
+        if (this.regionAnnotationList[i] === row) {
+          if (i - 1 >= 0) {
+            this.regionAnnotationList[i] = this.regionAnnotationList.splice(i - 1, 1, this.regionAnnotationList[i])[0]
+          }
+          break
+        }
+      }
+    },
+    handleDown (row) {
+      for (let i = 0; i < this.regionAnnotationList.length; i++) {
+        if (this.regionAnnotationList[i] === row) {
+          if (i + 2 <= this.regionAnnotationList.length) {
+            this.regionAnnotationList[i] = this.regionAnnotationList.splice(i + 1, 1, this.regionAnnotationList[i])[0]
+          }
+          break
+        }
+      }
     },
     handleDelete (row) {
       utils.confirm('Are you sure to delete this object?').onOk(() => {
