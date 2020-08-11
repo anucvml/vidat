@@ -143,12 +143,19 @@ export default {
       if (this.mode === 'object') {
         const leftObjectAnnotationList = this.annotationListMap[this.leftCurrentFrame]
         const rightObjectAnnotationList = this.annotationListMap[this.rightCurrentFrame]
+        let found = false
         for (let leftObjectAnnotation of leftObjectAnnotationList) {
           let rightObjectAnnotation = rightObjectAnnotationList.find(
             rightObjectAnnotation => rightObjectAnnotation.instance &&
               leftObjectAnnotation.instance &&
               rightObjectAnnotation.instance === leftObjectAnnotation.instance,
           )
+          // decide whether to interpolate
+          if (!rightObjectAnnotation) {
+            break
+          } else {
+            found = true
+          }
           // interpolate from left to right
           let i = 1
           const nFrames = this.rightCurrentFrame - this.leftCurrentFrame - 1
@@ -178,6 +185,11 @@ export default {
               annotationList: originalAnnotationList,
             })
           }
+        }
+        if (found) {
+          utils.notify('Interpolated successfully.')
+        } else {
+          utils.notify('There is nothing to interpolate.')
         }
       } else if (this.mode === 'region') {
 
