@@ -49,10 +49,6 @@ const CONTROL_PANEL_TEMPLATE = `
   <q-item>
     <q-item-section>
       <q-toggle v-model="lockSliders" label="Lock sliders"></q-toggle>
-    </q-item-section>
-  </q-item>
-  <q-item>
-    <q-item-section>
       <q-toggle v-model="grayscale" label="Grayscale"></q-toggle>
     </q-item-section>
   </q-item>
