@@ -8,7 +8,7 @@ const ACTION_TABLE_TEMPLATE = `
   :pagination.sync="pagination"
 >
   <template v-slot:top="props">
-    <div class="col-2 q-table__title">Actions</div>
+    <div class="col-4 q-table__title">Actions / Video Segments</div>
     <q-space></q-space>
     <q-btn-group>
       <q-btn icon="add" @click="handleAdd">ADD</q-btn>
@@ -97,6 +97,13 @@ const ACTION_TABLE_TEMPLATE = `
           <q-btn
             flat
             dense
+            icon="gps_fixed"
+            style="width: 100%"
+            @click="handleGoto(props.row)"
+          ></q-btn>
+          <q-btn
+            flat
+            dense
             icon="delete"
             color="negative"
             style="width: 100%"
@@ -110,13 +117,21 @@ const ACTION_TABLE_TEMPLATE = `
 `
 
 const columnList = [
-  { name: 'start', align: 'center', label: 'start', field: 'start' },
-  { name: 'end', align: 'center', label: 'end', field: 'end' },
-  { name: 'action', align: 'center', label: 'action', field: 'action' },
-  { name: 'object', align: 'center', label: 'object', field: 'object' },
-  { name: 'color', align: 'center', label: 'color', field: 'color' },
+  {
+    name: 'start',
+    align: 'center',
+    label: 'start',
+    field: 'start',
+    sortable: true,
+    sort: (a, b, rowA, rowB) => a !== b ? a - b : (rowA.end - rowA.start) - (rowB.end - rowB.start),
+    style: 'width: 100px',
+  },
+  { name: 'end', align: 'center', label: 'end', field: 'end', sortable: true, style: 'width: 100px' },
+  { name: 'action', align: 'center', label: 'action', field: 'action', style: 'width: 250px' },
+  { name: 'object', align: 'center', label: 'object', field: 'object', style: 'width: 250px' },
+  { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 100px' },
   { name: 'description', align: 'center', label: 'description', field: 'description' },
-  { name: 'operation', align: 'center', label: 'operation', field: 'operation' },
+  { name: 'operation', align: 'center', label: 'operation', field: 'operation', style: 'width: 200px' },
 ]
 
 import utils from '../libs/utils.js'
@@ -132,12 +147,16 @@ export default {
   methods: {
     ...Vuex.mapMutations([
       'setActionAnnotationList',
+      'setLeftCurrentFrame',
+      'setRightCurrentFrame',
     ]),
     handleAdd () {
       const last = this.actionAnnotationList[this.actionAnnotationList.length - 1]
+      const start = last && last.end ? last.end : utils.index2time(this.leftCurrentFrame)
+      const end = this.leftCurrentFrame <= this.rightCurrentFrame ? utils.index2time(this.rightCurrentFrame) : null
       const actionAnnotation = new ActionAnnotation(
-        last && last.end ? last.end : utils.index2time(this.leftCurrentFrame),
-        null,
+        start,
+        end,
         this.actionOptionList[0] ? this.actionOptionList[0].value : null,
         this.actionOptionList[0] &&
         (this.actionOptionList[0].objects[0] || this.actionOptionList[0].objects[0] === 0)
@@ -183,6 +202,14 @@ export default {
         }
       }
     },
+    handleGoto (row) {
+      if (typeof (row.start) === 'number') {
+        this.setLeftCurrentFrame(utils.time2index(row.start))
+      }
+      if (typeof (row.end) === 'number') {
+        this.setRightCurrentFrame(utils.time2index(row.end))
+      }
+    },
     handleDelete (row) {
       utils.confirm('Are you sure to delete this action?').onOk(() => {
         for (let i in this.actionAnnotationList) {
@@ -194,6 +221,9 @@ export default {
     },
   },
   computed: {
+    video () {
+      return this.$store.state.video
+    },
     actionAnnotationList: {
       get () {
         return this.$store.state.annotation.actionAnnotationList
@@ -204,6 +234,9 @@ export default {
     },
     leftCurrentFrame () {
       return this.$store.state.annotation.leftCurrentFrame
+    },
+    rightCurrentFrame () {
+      return this.$store.state.annotation.rightCurrentFrame
     },
     actionLabelData () {
       return this.$store.state.settings.actionLabelData
@@ -242,7 +275,7 @@ export default {
   },
   mounted () {
     document.addEventListener('keyup', event => {
-      if (event.keyCode === 0xBB) { // delete
+      if (event.keyCode === 0xBB) { // +
         this.handleAdd()
       }
     })

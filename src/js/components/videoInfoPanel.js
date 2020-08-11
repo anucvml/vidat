@@ -1,16 +1,16 @@
 const VIDEO_INFO_PANEL_TEMPLATE = `
 <div>
-  <div v-if="video.src" class="row q-mb-sm" style="min-height: 100px">
+  <div v-if="video.src" class="row items-center q-mb-sm" style="min-height: 100px">
     <q-list class="col-3" dense>
       <q-btn-group spread dense flat>
-        <q-btn class="no-pointer-events">Video Info</q-btn>
-        <q-btn class="no-pointer-events">{{ video.duration }}s @ {{ video.fps }}fps</q-btn>
-        <q-btn class="no-pointer-events">{{ video.width }} &times; {{ video.height }}px &times; {{ video.frames }}</q-btn>
+        <q-btn class="no-pointer-events" no-caps>Video Info</q-btn>
+        <q-btn class="no-pointer-events" no-caps>{{ video.duration }}s @ {{ video.fps }}fps</q-btn>
+        <q-btn class="no-pointer-events" no-caps>{{ video.width }} &times; {{ video.height }}px &times; {{ video.frames }}</q-btn>
       </q-btn-group>
     </q-list>
     <q-list class="col-3" dense>
       <q-btn-group spread dense flat>
-        <q-btn class="no-pointer-events">
+        <q-btn class="no-pointer-events" no-caps>
           Video
         </q-btn>
         <q-btn
@@ -27,7 +27,7 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
     </q-list>
     <q-list class="col-3" dense>
       <q-btn-group spread dense flat>
-        <q-btn class="no-pointer-events">
+        <q-btn class="no-pointer-events" no-caps>
           KeyFrames
         </q-btn>
         <q-btn
@@ -44,7 +44,7 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
     </q-list>
     <q-list class="col-3" dense>
       <q-btn-group spread dense flat>
-        <q-btn class="no-pointer-events">
+        <q-btn class="no-pointer-events" no-caps>
           Annotations
         </q-btn>
         <q-btn
@@ -467,6 +467,9 @@ export default {
   },
   mounted () {
     document.addEventListener('keydown', event => {
+      if (event.target.nodeName.toLowerCase() === 'input') {
+        return false
+      }
       if (event.keyCode === 0xBC) { // comma, <
         this.handlePreviousKeyframe()
       } else if (event.keyCode === 0xBE) { // period, >
