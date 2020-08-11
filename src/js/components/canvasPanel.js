@@ -32,7 +32,7 @@ const VIDEO_PANEL_TEMPLATE = `
         class="bg-white"
         style="position: absolute; top: 5px; right: 5px;"
         round
-        @click="$store.commit('toggleZoom')"
+        @click="$store.commit('setZoom', !zoom)"
         :icon="zoom ? 'zoom_out' : 'zoom_in'"
       ></q-btn>
     </div>
@@ -88,7 +88,6 @@ export default {
   methods: {
     ...Vuex.mapMutations([
       'setAnnotationList',
-      'toggleZoom',
     ]),
     handleLoad () {
       this.backgroundCtx.drawImage(this.$refs.img, 0, 0, this.video.width, this.video.height)

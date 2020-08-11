@@ -95,6 +95,7 @@ const app = new Vue({
       'setShowRegions',
       'setShowSkeletons',
       'setShowActions',
+      'setZoom',
     ]),
   },
   mounted: function () {
@@ -135,6 +136,14 @@ const app = new Vue({
         this.setShowActions(true)
       } else if (showActions.toLowerCase() === 'false') {
         this.setShowActions(false)
+      }
+    }
+    const zoom = URLParameter['zoom']
+    if (zoom) {
+      if (zoom.toLowerCase() === 'true') {
+        this.setZoom(true)
+      } else if (zoom.toLowerCase() === 'false') {
+        this.setZoom(false)
       }
     }
     const mode = URLParameter['mode']

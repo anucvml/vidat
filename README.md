@@ -31,6 +31,7 @@ Video tutorials will be posted on YouTube.
 |       key       |              value              |          description           |
 | :-------------: | :-----------------------------: | :----------------------------: |
 |     `mode`      | `objects`, `region`, `skeleton` |        set current mode        |
+|     `zoom`      |         `true`/`false`          |          zoom or not           |
 |  `showObjects`  |         `true`/`false`          |      show objects or not       |
 |  `showRegions`  |         `true`/`false`          |      show regions or not       |
 | `showSkeletons` |         `true`/`false`          |     show skeletons or not      |

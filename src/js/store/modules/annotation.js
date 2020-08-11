@@ -116,8 +116,8 @@ export default {
     setActionAnnotationList (state, value) {
       Vue.set(state, 'actionAnnotationList', value)
     },
-    toggleZoom (state) {
-      Vue.set(state, 'zoom', !state.zoom)
+    setZoom (state, value) {
+      Vue.set(state, 'zoom', value)
     },
   },
   actions: {},
