@@ -15,7 +15,7 @@ const ABOUT_TEMPLATE = `
 </div>
 `
 
-import contributorCard from '../components/contributorCard.js'
+import contributorCard from './components/contributorCard.js'
 
 export default {
   components: {

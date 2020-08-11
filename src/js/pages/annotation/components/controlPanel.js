@@ -63,8 +63,8 @@ const CONTROL_PANEL_TEMPLATE = `
 </q-list>
 `
 
-import utils from '../libs/utils.js'
-import { ObjectAnnotation } from '../libs/annotationlib.js'
+import utils from '../../../libs/utils.js'
+import { ObjectAnnotation } from '../../../libs/annotationlib.js'
 
 export default {
   data: () => {

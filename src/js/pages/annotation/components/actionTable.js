@@ -134,8 +134,8 @@ const columnList = [
   { name: 'operation', align: 'center', label: 'operation', field: 'operation', style: 'width: 200px' },
 ]
 
-import utils from '../libs/utils.js'
-import { ActionAnnotation } from '../libs/annotationlib.js'
+import utils from '../../../libs/utils.js'
+import { ActionAnnotation } from '../../../libs/annotationlib.js'
 
 export default {
   data: () => {

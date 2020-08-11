@@ -1,8 +1,8 @@
-import annotation from '../pages/annotation.js'
-import settings from '../pages/settings.js'
-import help from '../pages/help.js'
-import about from '../pages/about.js'
-import notfound from '../pages/notfound.js'
+import annotation from '../pages/annotation/annotation.js'
+import settings from '../pages/settings/settings.js'
+import help from '../pages/help/help.js'
+import about from '../pages/about/about.js'
+import notfound from '../pages/notfound/notfound.js'
 
 export default new VueRouter({
   routes: [

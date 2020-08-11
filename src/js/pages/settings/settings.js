@@ -77,9 +77,9 @@ const SETTINGS_TEMPLATE = `
 </div>
 `
 
-import objectLabelTable from '../components/objectLabelTable.js'
-import actionLabelTable from '../components/actionLabelTable.js'
-import utils from '../libs/utils.js'
+import objectLabelTable from './components/objectLabelTable.js'
+import actionLabelTable from './components/actionLabelTable.js'
+import utils from '../../libs/utils.js'
 
 export default {
   components: {

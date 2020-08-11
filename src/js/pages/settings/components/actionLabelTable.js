@@ -120,7 +120,7 @@ const columnList = [
   { name: 'delete', align: 'center', label: 'delete', field: 'delete' },
 ]
 
-import utils from '../libs/utils.js'
+import utils from '../../../libs/utils.js'
 
 export default {
   data: () => {

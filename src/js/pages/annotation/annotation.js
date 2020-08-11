@@ -18,11 +18,11 @@ const ANNOTATION_TEMPLATE = `
 </div>
 `
 
-import videoInfoPanel from '../components/videoInfoPanel.js'
-import annotationSkeleton from '../components/annotationSkeleton.js'
-import canvasPanel from '../components/canvasPanel.js'
-import controlPanel from '../components/controlPanel.js'
-import actionTable from '../components/actionTable.js'
+import videoInfoPanel from './components/videoInfoPanel.js'
+import annotationSkeleton from './components/annotationSkeleton.js'
+import canvasPanel from './components/canvasPanel.js'
+import controlPanel from './components/controlPanel.js'
+import actionTable from './components/actionTable.js'
 
 export default {
   components: {

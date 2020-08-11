@@ -1,50 +1,21 @@
-const OBJECT_TABLE_TEMPLATE = `
+const REGION_TABLE_TEMPLATE = `
 <q-table
   dense
   flat
-  :data="objectAnnotationList"
-  row-key="x"
+  :data="regionAnnotationList"
+  row-key=""
   :columns="columnList"
   :pagination.sync="pagination"
 >
   <template v-slot:top="props">
-    <div class="col-2 q-table__title">Objects</div>
+    <div class="col-2 q-table__title">Regions</div>
     <q-space></q-space>
     <q-btn icon="clear_all" @click="handleClearAll">CLEAR</q-btn>
   </template>
   <template v-slot:body="props">
     <q-tr :props="props">
-      <q-td key="x" :props="props">
-        <q-input
-          v-model.number="props.row.x"
-          dense
-          borderless
-          type="number"
-        ></q-input>
-      </q-td>
-      <q-td key="y" :props="props">
-        <q-input
-          v-model.number="props.row.y"
-          dense
-          borderless
-          type="number"
-        ></q-input>
-      </q-td>
-      <q-td key="width" :props="props">
-        <q-input
-          v-model.number="props.row.width"
-          dense
-          borderless
-          type="number"
-        ></q-input>
-      </q-td>
-      <q-td key="height" :props="props">
-        <q-input
-          v-model.number="props.row.height"
-          dense
-          borderless
-          type="number"
-        ></q-input>
+      <q-td key="pointList" :props="props">
+        {{ props.row.pointList }}
       </q-td>
       <q-td key="label" :props="props">
         <q-select
@@ -103,13 +74,10 @@ const OBJECT_TABLE_TEMPLATE = `
 </q-table>
 `
 
-import utils from '../libs/utils.js'
+import utils from '../../../libs/utils.js'
 
 const columnList = [
-  { name: 'x', align: 'center', label: 'x', field: 'x' },
-  { name: 'y', align: 'center', label: 'y', field: 'y' },
-  { name: 'width', align: 'center', label: 'width', field: 'width' },
-  { name: 'height', align: 'center', label: 'height', field: 'height' },
+  { name: 'pointList', align: 'center', label: 'points', field: 'pointList' },
   { name: 'label', align: 'center', label: 'label', field: 'labelId' },
   { name: 'color', align: 'center', label: 'color', field: 'color' },
   { name: 'instance', align: 'center', label: 'instance', field: 'instance' },
@@ -136,24 +104,24 @@ export default {
     },
     handleDelete (row) {
       utils.confirm('Are you sure to delete this object?').onOk(() => {
-        for (let i in this.objectAnnotationList) {
-          if (this.objectAnnotationList[i] === row) {
-            this.objectAnnotationList.splice(i, 1)
+        for (let i in this.regionAnnotationList) {
+          if (this.regionAnnotationList[i] === row) {
+            this.regionAnnotationList.splice(i, 1)
           }
         }
       })
     },
     handleClearAll () {
-      if (this.objectAnnotationList.length > 0) {
-        utils.confirm('Are you sure to delete ALL objects?').onOk(() => {
+      if (this.regionAnnotationList.length > 0) {
+        utils.confirm('Are you sure to delete ALL regions?').onOk(() => {
           this.setAnnotationList({
-            mode: 'object',
+            mode: 'region',
             index: this.currentFrame,
             annotationList: [],
           })
         })
       } else {
-        utils.notify('There are no objects!')
+        utils.notify('There are no regions!')
       }
     },
   },
@@ -161,8 +129,8 @@ export default {
     currentFrame () {
       return eval('this.$store.state.annotation.' + this.position + 'CurrentFrame')
     },
-    objectAnnotationList () {
-      return this.$store.state.annotation.objectAnnotationListMap[this.currentFrame]
+    regionAnnotationList () {
+      return this.$store.state.annotation.regionAnnotationListMap[this.currentFrame]
     },
     labelOption () {
       const objectLabelData = this.$store.state.settings.objectLabelData
@@ -177,5 +145,5 @@ export default {
       return labelOption
     },
   },
-  template: OBJECT_TABLE_TEMPLATE,
+  template: REGION_TABLE_TEMPLATE,
 }

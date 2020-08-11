@@ -100,12 +100,12 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
 </div>
 `
 
-import utils from '../libs/utils.js'
+import utils from '../../../libs/utils.js'
 import {
   ObjectAnnotation,
   RegionAnnotation,
   SkeletonAnnotation,
-} from '../libs/annotationlib.js'
+} from '../../../libs/annotationlib.js'
 
 export default {
   data: () => {

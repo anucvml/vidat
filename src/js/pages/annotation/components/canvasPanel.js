@@ -60,19 +60,25 @@ const VIDEO_PANEL_TEMPLATE = `
       :position="position"
       v-if="mode === 'object' && preference.objects"
     ></object-table>
+    <region-table
+      :position="position"
+      v-if="mode === 'region' && preference.regions"
+    ></region-table>
   </div>
 `
 
 import filmStrip from './filmStrip.js'
 import objectTable from './objectTable.js'
-import utils from '../libs/utils.js'
-import { ObjectAnnotation } from '../libs/annotationlib.js'
+import regionTable from './regionTable.js'
+import utils from '../../../libs/utils.js'
+import { ObjectAnnotation, RegionAnnotation } from '../../../libs/annotationlib.js'
 
 export default {
   props: ['position'],
   components: {
     filmStrip,
     objectTable,
+    regionTable,
   },
   data: () => {
     return {
@@ -219,6 +225,14 @@ export default {
           this.annotationList.push(objectAnnotation)
         }
       } else if (this.mode === 'region') {
+        // creating a region
+        if (!this.createContext) {
+          const regionAnnotation = new RegionAnnotation({ x: mouseX, y: mouseY })
+          this.createContext = {
+            regionAnnotation: regionAnnotation,
+          }
+          this.annotationList.push(regionAnnotation)
+        }
       } else if (this.mode === 'skeleton') {
       } else {
         throw 'Unknown mode: ' + this.mode
