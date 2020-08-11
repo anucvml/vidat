@@ -143,6 +143,16 @@ const app = new Vue({
         this.setMode(mode)
       }
     }
+    const debug = URLParameter['debug']
+    if (debug) {
+      if (debug.toLowerCase() === 'true') {
+        this.$store.commit('setDebug', true)
+        this.$store.commit('setVideoFPS', 10)
+        this.$store.commit('setVideoSrc', 'video/Ikea_dataset_teaser_vid.webm')
+      } else if (debug.toLowerCase() === 'false') {
+        this.$store.commit('setDebug', false)
+      }
+    }
   },
   template: APP_TEMPLATE,
 })

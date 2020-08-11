@@ -174,21 +174,23 @@ export default {
           this.priorityQueue.push(keyframe)
         }
       })
-      // add frame index into the backendQueue
-      // 1. every one second
-      // for (let i = 1.0; i < this.video.duration; i++) {
-      //   const index = utils.time2index(i)
-      //   if (this.keyframeList.indexOf(index) === -1) {
-      //     this.backendQueue.push(index)
-      //   }
-      // }
-      // 2. every 1 / fps second
-      // const interval = parseFloat((1 / this.video.fps).toFixed(3))
-      // for (let i = interval; i < this.video.duration; i += interval) {
-      //   if (i.toFixed(1) % 1 !== 0) {
-      //     this.backendQueue.push(utils.time2index(i))
-      //   }
-      // }
+      if (this.$store.state.debug === false) {
+        // add frame index into the backendQueue
+        // 1. every one second
+        for (let i = 1.0; i < this.video.duration; i++) {
+          const index = utils.time2index(i)
+          if (this.keyframeList.indexOf(index) === -1) {
+            this.backendQueue.push(index)
+          }
+        }
+        // 2. every 1 / fps second
+        const interval = parseFloat((1 / this.video.fps).toFixed(3))
+        for (let i = interval; i < this.video.duration; i += interval) {
+          if (i.toFixed(1) % 1 !== 0) {
+            this.backendQueue.push(utils.time2index(i))
+          }
+        }
+      }
       // trigger
       event.target.currentTime = 0.0
     },
@@ -476,9 +478,6 @@ export default {
         this.handleNextKeyframe()
       }
     })
-    // debug
-    this.setVideoFPS(10)
-    this.setVideoSrc('video/Ikea_dataset_teaser_vid.webm')
   },
   template: VIDEO_INFO_PANEL_TEMPLATE,
 }

@@ -26,6 +26,17 @@ Video tutorials will be posted on YouTube.
 2. Put all files behind a web server ([Nginx](http://nginx.org/), [Apache](http://httpd.apache.org/), etc.).
 3. Open in your favourite browser.
 
+## URL Parameters
+
+|       key       |              value              |          description           |
+| :-------------: | :-----------------------------: | :----------------------------: |
+|     `mode`      | `objects`, `region`, `skeleton` |        set current mode        |
+|  `showObjects`  |         `true`/`false`          |      show objects or not       |
+|  `showRegions`  |         `true`/`false`          |      show regions or not       |
+| `showSkeletons` |         `true`/`false`          |     show skeletons or not      |
+|  `showActions`  |         `true`/`false`          |      show actions or not       |
+|     `debug`     |         `true`/`false`          | auto load a video and no cache |
+
 ## Development
 
 ### Requirements

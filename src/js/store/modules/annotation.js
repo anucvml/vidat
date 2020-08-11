@@ -2,6 +2,7 @@ import utils from '../../libs/utils.js'
 
 export default {
   state: () => ({
+    debug: false,
     video: {
       src: null,
       fps: 10,
@@ -23,6 +24,9 @@ export default {
   }),
   getters: {},
   mutations: {
+    setDebug (state, value) {
+      Vue.set(state, 'debug', value)
+    },
     setVideoSrc (state, value) {
       Vue.set(state.video, 'src', value)
     },
