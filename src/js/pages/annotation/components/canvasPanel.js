@@ -193,6 +193,13 @@ export default {
           this.activeContext = null
         }
       } else if (this.mode === 'region') {
+        if (this.createContext) {
+          const activeAnnotation = this.createContext.regionAnnotation
+          const lastPoint = activeAnnotation.pointList[activeAnnotation.pointList.length - 1]
+          console.log(lastPoint)
+          lastPoint.x = mouseX
+          lastPoint.y = mouseY
+        }
       } else if (this.mode === 'skeleton') {
       } else {
         throw 'Unknown mode: ' + this.mode
@@ -235,7 +242,7 @@ export default {
       } else if (this.mode === 'region') {
         // creating a region
         if (!this.createContext) {
-          const regionAnnotation = new RegionAnnotation({ x: mouseX, y: mouseY })
+          const regionAnnotation = new RegionAnnotation([{ x: mouseX, y: mouseY }])
           this.createContext = {
             regionAnnotation: regionAnnotation,
           }
@@ -262,6 +269,13 @@ export default {
           this.dragContext = null
         }
       } else if (this.mode === 'region') {
+        if (this.createContext) {
+          const activeAnnotation = this.createContext.regionAnnotation
+          activeAnnotation.pointList.push({
+            x: mouseX,
+            y: mouseY,
+          })
+        }
       } else if (this.mode === 'skeleton') {
       } else {
         throw 'Unknown mode: ' + this.mode
