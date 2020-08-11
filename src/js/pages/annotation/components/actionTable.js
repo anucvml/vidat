@@ -129,7 +129,7 @@ const columnList = [
   { name: 'end', align: 'center', label: 'end', field: 'end', sortable: true, style: 'width: 100px' },
   { name: 'action', align: 'center', label: 'action', field: 'action', style: 'width: 250px' },
   { name: 'object', align: 'center', label: 'object', field: 'object', style: 'width: 250px' },
-  { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 150px' },
+  { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 250px' },
   { name: 'description', align: 'center', label: 'description', field: 'description' },
   { name: 'operation', align: 'center', label: 'operation', field: 'operation', style: 'width: 200px' },
 ]
