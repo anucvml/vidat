@@ -95,7 +95,7 @@ import utils from '../../../libs/utils.js'
 const columnList = [
   { name: 'pointList', align: 'center', label: 'points', field: 'pointList' },
   { name: 'label', align: 'center', label: 'label', field: 'labelId' },
-  { name: 'color', align: 'center', label: 'color', field: 'color' },
+  { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 120px' },
   { name: 'instance', align: 'center', label: 'instance', field: 'instance' },
   { name: 'score', align: 'center', label: 'score', field: 'score' },
   { name: 'operation', align: 'center', label: 'operation', field: 'operation' },

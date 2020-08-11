@@ -8,7 +8,7 @@ const ACTION_LABEL_TABLE_TEMPLATE = `
 >
   <template v-slot:header="props">
     <q-tr :props="props">
-      <q-th auto-width />
+      <q-th auto-width></q-th>
       <q-th
         v-for="col in props.cols"
         :key="col.name"
@@ -116,7 +116,7 @@ const ACTION_LABEL_TABLE_TEMPLATE = `
 const columnList = [
   { name: 'name', align: 'center', label: 'name', field: 'name' },
   { name: 'nObjects', align: 'center', label: '#objects', field: 'nObjects' },
-  { name: 'color', align: 'center', label: 'color', field: 'color' },
+  { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 120px' },
   { name: 'delete', align: 'center', label: 'delete', field: 'delete' },
 ]
 

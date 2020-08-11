@@ -127,7 +127,7 @@ const columnList = [
   { name: 'width', align: 'center', label: 'width', field: 'width' },
   { name: 'height', align: 'center', label: 'height', field: 'height' },
   { name: 'label', align: 'center', label: 'label', field: 'labelId' },
-  { name: 'color', align: 'center', label: 'color', field: 'color' },
+  { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 120px' },
   { name: 'instance', align: 'center', label: 'instance', field: 'instance' },
   { name: 'score', align: 'center', label: 'score', field: 'score' },
   { name: 'operation', align: 'center', label: 'operation', field: 'operation' },
