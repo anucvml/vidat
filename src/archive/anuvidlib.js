@@ -8,7 +8,7 @@
 ** Configuration.
 */
 
-const VERSION = '0.1(alpha)'    // library version (useful for loading old file formats)
+const VERSION = '0.1(alpha)'    // library version (useful for loading archive file formats)
 const FPS = 10                 // temporal resolution (frames per second)
 
 // webpage control ids

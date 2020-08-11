@@ -159,7 +159,7 @@ export default {
             const ratio = i / nFrames
             i += 1
             const originalAnnotationList = this.annotationListMap[frame] || []
-            // remove old interpolations
+            // remove archive interpolations
             for (let k = 0; k < originalAnnotationList.length; k++) {
               if (originalAnnotationList[k].instance === leftObjectAnnotation.instance) {
                 originalAnnotationList.splice(k, 1)
