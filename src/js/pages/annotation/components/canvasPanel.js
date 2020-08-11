@@ -11,8 +11,8 @@ const VIDEO_PANEL_TEMPLATE = `
       ></canvas>
       <canvas
         ref="canvas"
-        style="display: block; position: relative; top: 0;"
-        :class="['full-width', {'point-cursor': activeContext}]"
+        :style="{display: 'block', position: 'relative', top: 0, cursor: getCursor()}"
+        class="full-width"
         :height="video.height"
         :width="video.width"
         @mousemove="handleMousemove"
@@ -353,6 +353,19 @@ export default {
     },
     handleKeyup (event) {
       console.log(event)
+    },
+    getCursor () {
+      if (this.dragContext) {
+        if (this.dragContext.type === 'moving') {
+          return 'move'
+        } else if (this.dragContext.type === 'sizing') {
+          return 'move'
+        }
+      } else if (this.activeContext) {
+        return 'pointer'
+      } else {
+        return 'crosshair'
+      }
     },
     draw (annotationList) {
       if (!annotationList) {
