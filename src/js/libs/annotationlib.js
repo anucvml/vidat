@@ -201,10 +201,66 @@ class RegionAnnotation extends Annotation {
         const x = point.x
         const y = point.y
         ctx.fillStyle = '#000000'
-        ctx.fillRect(x - 4, y - 4, 8, 8)
+        const size = this.highlight ? 6 : 5
+        ctx.fillRect(x - size, y - size, size * 2, size * 2)
         ctx.fillStyle = this.color
-        ctx.fillRect(x - 3, y - 3, 6, 6)
+        ctx.fillRect(x - size + 1, y - size + 1, size * 2 - 2, size * 2 - 2)
       }
+    }
+  }
+
+  clone () {
+    return new RegionAnnotation(
+      this.pointList,
+      this.labelId,
+      this.color,
+      this.instance,
+      this.score,
+    )
+  }
+
+  static nearPoint (x, y, point) {
+    return Math.abs(x - point.x) <= PROXIMITY * 3 && Math.abs(y - point.y) <= PROXIMITY * 3
+  }
+
+  nearPoints (mouseX, mouseY) {
+    let ret = false
+    for (const point of this.pointList) {
+      ret = ret || RegionAnnotation.nearPoint(mouseX, mouseY, point)
+    }
+    return ret
+  }
+
+  nearBoundary (mouseX, mouseY) {
+    const indexList = []
+    for (let i = 0; i < this.pointList.length; i++) {
+      indexList.push(i)
+    }
+    indexList.push(0)
+    for (let i = 0; i < indexList.length - 1; i++) {
+      const p1 = this.pointList[indexList[i]]
+      const p2 = this.pointList[indexList[i + 1]]
+      // ax + by + c = 0
+      const a = 1 / (p2.x - p1.x)
+      const b = 1 / (p1.y - p2.y)
+      const c = -p1.y * b - p1.x * a
+      const distance = Math.abs((a * mouseX + b * mouseY + c) / Math.sqrt(a * a + b * b))
+      // approximate estimation
+      if (distance < PROXIMITY &&
+        mouseX > Math.min(p1.x, p2.x) &&
+        mouseX < Math.max(p1.x, p2.x) &&
+        mouseY > Math.min(p1.y, p2.y) &&
+        mouseY < Math.max(p1.y, p2.y)
+      )
+        return true
+    }
+    return false
+  }
+
+  move (deltaX, deltaY) {
+    for (const point of this.pointList) {
+      point.x += deltaX
+      point.y += deltaY
     }
   }
 }

@@ -3,7 +3,7 @@ const REGION_TABLE_TEMPLATE = `
   dense
   flat
   :data="regionAnnotationList"
-  row-key=""
+  row-key="pointList"
   :columns="columnList"
   :pagination.sync="pagination"
 >
@@ -12,10 +12,31 @@ const REGION_TABLE_TEMPLATE = `
     <q-space></q-space>
     <q-btn icon="clear_all" @click="handleClearAll">CLEAR</q-btn>
   </template>
+  <template v-slot:header="props">
+    <q-tr :props="props">
+      <q-th auto-width></q-th>
+      <q-th
+        v-for="col in props.cols"
+        :key="col.name"
+        :props="props"
+      >
+        {{ col.label }}
+      </q-th>
+    </q-tr>
+  </template>
   <template v-slot:body="props">
     <q-tr :props="props">
+      <q-td auto-width>
+        <q-btn
+          size="sm"
+          round
+          dense
+          @click="props.expand = !props.expand"
+          :icon="props.expand ? 'expand_more' : 'chevron_right'"
+        ></q-btn>
+      </q-td>
       <q-td key="pointList" :props="props">
-        {{ props.row.pointList }}
+        {{ props.row.pointList.length }}
       </q-td>
       <q-td key="label" :props="props">
         <q-select
@@ -86,6 +107,41 @@ const REGION_TABLE_TEMPLATE = `
         </q-btn-group>
       </q-td>
     </q-tr>
+    <q-tr v-show="props.expand" :props="props">
+      <q-td colspan="100%" style="padding: 0;">
+        <q-table
+          dense
+          flat
+          hide-bottom
+          :data="props.row.pointList"
+          :columns="[
+            { name: 'x', align: 'left', label: 'x', field: 'x' },
+            { name: 'y', align: 'left', label: 'y', field: 'y' },
+          ]"
+        >
+        <template v-slot:body="props">
+          <q-tr :props="props">
+            <q-td key="x" :props="props">
+              <q-input
+                v-model.number="props.row.x"
+                dense
+                borderless
+                type="number"
+              ></q-input>
+            </q-td>
+            <q-td key="y" :props="props">
+              <q-input
+                v-model.number="props.row.y"
+                dense
+                borderless
+                type="number"
+              ></q-input>
+            </q-td>
+          </q-tr>
+        </template>
+        </q-table>
+      </q-td>
+    </q-tr>
   </template>
 </q-table>
 `
@@ -93,7 +149,7 @@ const REGION_TABLE_TEMPLATE = `
 import utils from '../../../libs/utils.js'
 
 const columnList = [
-  { name: 'pointList', align: 'center', label: 'points', field: 'pointList' },
+  { name: 'pointList', align: 'center', label: '#points', field: 'pointList' },
   { name: 'label', align: 'center', label: 'label', field: 'labelId' },
   { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 120px' },
   { name: 'instance', align: 'center', label: 'instance', field: 'instance' },

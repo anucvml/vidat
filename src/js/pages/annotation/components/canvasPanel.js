@@ -169,9 +169,8 @@ export default {
           }
         }
         // highlight the object
-        let found = false
-        let i
-        for (i = 0; i < this.annotationList.length; i++) {
+        let found = null
+        for (let i = 0; i < this.annotationList.length; i++) {
           const objectAnnotation = this.annotationList[i]
           if (
             !found &&
@@ -180,25 +179,64 @@ export default {
             )
           ) {
             objectAnnotation.highlight = true
-            found = true
+            found = i
           } else {
             objectAnnotation.highlight = false
           }
         }
-        if (found) {
+        if (typeof (found) === 'number') {
           this.activeContext = {
-            index: i - 1,
+            index: found,
           }
         } else {
           this.activeContext = null
         }
       } else if (this.mode === 'region') {
+        // creating a region
         if (this.createContext) {
           const activeAnnotation = this.createContext.regionAnnotation
           const lastPoint = activeAnnotation.pointList[activeAnnotation.pointList.length - 1]
-          console.log(lastPoint)
           lastPoint.x = mouseX
           lastPoint.y = mouseY
+        }
+        // drag the region
+        if (this.dragContext) {
+          const activeAnnotation = this.dragContext.regionAnnotation
+          const deltaX = mouseX - this.dragContext.mousedownX
+          const deltaY = mouseY - this.dragContext.mousedownY
+          this.dragContext.mousedownX = mouseX
+          this.dragContext.mousedownY = mouseY
+          if (this.dragContext.type === 'moving') {
+            activeAnnotation.move(deltaX, deltaY)
+          } else if (this.dragContext.type === 'sizing') {
+            for (const point of this.dragContext.regionAnnotation.pointList) {
+              if (RegionAnnotation.nearPoint(mouseX, mouseY, point)) {
+                point.x = mouseX
+                point.y = mouseY
+                break
+              }
+            }
+          } else {
+            throw 'Unknown drag type'
+          }
+        }
+        // highlight the region
+        let found = null
+        for (let i = 0; i < this.annotationList.length; i++) {
+          const regionAnnotation = this.annotationList[i]
+          if (!found && regionAnnotation.nearPoints(mouseX, mouseY) || regionAnnotation.nearBoundary(mouseX, mouseY)) {
+            regionAnnotation.highlight = true
+            found = i
+          } else {
+            regionAnnotation.highlight = false
+          }
+        }
+        if (typeof (found) === 'number') {
+          this.activeContext = {
+            index: found,
+          }
+        } else {
+          this.activeContext = null
         }
       } else if (this.mode === 'skeleton') {
       } else {
@@ -240,8 +278,21 @@ export default {
           this.annotationList.push(objectAnnotation)
         }
       } else if (this.mode === 'region') {
+        let found = false
+        for (const regionAnnotation of this.annotationList) {
+          if (regionAnnotation.highlight) {
+            found = true
+            this.dragContext = {
+              type: regionAnnotation.nearBoundary(mouseX, mouseY) ? 'moving' : 'sizing',
+              regionAnnotation: regionAnnotation,
+              mousedownX: mouseX,
+              mousedownY: mouseY,
+            }
+            break
+          }
+        }
         // creating a region
-        if (!this.createContext) {
+        if (!found && !this.createContext) {
           const regionAnnotation = new RegionAnnotation([{ x: mouseX, y: mouseY }])
           this.createContext = {
             regionAnnotation: regionAnnotation,
@@ -270,13 +321,32 @@ export default {
         }
       } else if (this.mode === 'region') {
         if (this.createContext) {
-          const activeAnnotation = this.createContext.regionAnnotation
-          activeAnnotation.pointList.push({
-            x: mouseX,
-            y: mouseY,
-          })
+          // handle mouseout
+          if (event.type === 'mouseout') {
+            this.createContext = null
+            return
+          }
+          const pointList = this.createContext.regionAnnotation.pointList
+          // finish
+          if (pointList.length >= 3 &&
+            (RegionAnnotation.nearPoint(mouseX, mouseY, pointList[0]) ||
+              RegionAnnotation.nearPoint(mouseX, mouseY, pointList[pointList.length - 2])
+            )) {
+            pointList.pop()
+            this.createContext = null
+          } else {
+            // add new point
+            pointList.push({
+              x: mouseX,
+              y: mouseY,
+            })
+          }
+        }
+        if (this.dragContext) {
+          this.dragContext = null
         }
       } else if (this.mode === 'skeleton') {
+
       } else {
         throw 'Unknown mode: ' + this.mode
       }
@@ -317,6 +387,12 @@ export default {
       if (event.keyCode === 0x2E) { // delete
         if (this.activeContext) {
           this.annotationList.splice(this.activeContext.index, 1)
+        }
+      } else if (event.keyCode === 0x1B) { // Esc
+        if (this.createContext) {
+          this.activeContext = null
+          this.createContext = null
+          this.annotationList.pop()
         }
       } else if (event.keyCode === 0xDB) { // [, {
         if (this.position === 'left') {
