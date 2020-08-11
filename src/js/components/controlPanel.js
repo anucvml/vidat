@@ -24,7 +24,7 @@ const CONTROL_PANEL_TEMPLATE = `
   <q-item>
     <q-item-section>
       <q-btn-group spread>
-        <q-btn @click="handleInterpolate" icon="double_arrow">interpolate</q-btn>
+        <q-btn @click="handleInterpolate" icon="double_arrow">FILL</q-btn>
       </q-btn-group>
     </q-item-section>
   </q-item>
@@ -33,15 +33,14 @@ const CONTROL_PANEL_TEMPLATE = `
   </q-item>
   <q-item>
     <q-item-section>
-      <q-option-group
-      type="radio"
-      v-model="mode"
-      :options="[
-        {label: 'Object', value: 'object', disable: !preference.objects},
-        {label: 'Region', value: 'region', disable: !preference.regions},
-        {label: 'Skeleton', value: 'skeleton', disable: !preference.skeletons}
-      ]"
-    ></q-option-group>
+      <q-select
+        v-model="mode"
+        outlined
+        stack-label
+        dense
+        options-dense
+        :options="modeOptions"
+      ></q-select>
     </q-item-section>
   </q-item>
   <q-item dense>
@@ -241,6 +240,19 @@ export default {
     },
     preference () {
       return this.$store.state.settings.preferenceData
+    },
+    modeOptions () {
+      const ret = []
+      if (this.preference.objects) {
+        ret.push('object')
+      }
+      if (this.preference.regions) {
+        ret.push('region')
+      }
+      if (this.preference.skeletons) {
+        ret.push('skeleton')
+      }
+      return ret
     },
   },
   template: CONTROL_PANEL_TEMPLATE,

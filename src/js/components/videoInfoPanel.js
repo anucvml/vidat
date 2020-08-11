@@ -2,59 +2,65 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
 <div>
   <div v-if="video.src" class="row q-mb-sm" style="min-height: 100px">
     <q-list class="col-3" dense>
-      <q-item class="col">
-        <q-item-section class="text-center">Video Info</q-item-section>
-      </q-item>
-      <q-item class="col">
-        <q-item-section>Duration/FPS:</q-item-section>
-        <q-item-section class="text-right">{{ video.duration }}s @ {{ video.fps }}fps</q-item-section>
-      </q-item>
-      <q-item class="col">
-        <q-item-section>Size/#Frames:</q-item-section>
-        <q-item-section class="text-right">{{ video.width }} &times; {{ video.height }}px &times; {{ video.frames }}</q-item-section>
-      </q-item>
+      <q-btn-group spread dense flat>
+        <q-btn class="no-pointer-events">Video Info</q-btn>
+        <q-btn class="no-pointer-events">{{ video.duration }}s @ {{ video.fps }}fps</q-btn>
+        <q-btn class="no-pointer-events">{{ video.width }} &times; {{ video.height }}px &times; {{ video.frames }}</q-btn>
+      </q-btn-group>
     </q-list>
     <q-list class="col-3" dense>
-      <q-item>
-        <q-item-section class="text-center">Video</q-item-section>
-      </q-item>
-      <q-item clickable v-ripple @click="handleOpen">
-        <q-item-section avatar><q-icon name="movie"></q-icon></q-item-section>
-        <q-item-section class="text-right">Reopen</q-item-section>
-      </q-item>
-      <q-item clickable v-ripple @click="handleClose">
-        <q-item-section avatar><q-icon name="close"></q-icon></q-item-section>
-        <q-item-section class="text-right">Close</q-item-section>
-      </q-item>
+      <q-btn-group spread dense flat>
+        <q-btn class="no-pointer-events">
+          Video
+        </q-btn>
+        <q-btn
+          icon="movie"
+          @click="handleOpen"
+        > Reopen
+        </q-btn>
+        <q-btn
+          icon="close"
+          @click="handleClose"
+        > Close
+        </q-btn>
+      </q-btn-group>
     </q-list>
     <q-list class="col-3" dense>
-      <q-item>
-        <q-item-section class="text-center">KeyFrames</q-item-section>
-      </q-item>
-      <q-item clickable v-ripple @click="handleGenerate">
-        <q-item-section avatar><q-icon name="more_time"></q-icon></q-item-section>
-        <q-item-section class="text-right">Generate</q-item-section>
-      </q-item>
-      <q-item clickable v-ripple @click="handleExport">
-        <q-item-section avatar><q-icon name="save"></q-icon></q-item-section>
-        <q-item-section class="text-right">Export</q-item-section>
-      </q-item>
+      <q-btn-group spread dense flat>
+        <q-btn class="no-pointer-events">
+          KeyFrames
+        </q-btn>
+        <q-btn
+          icon="more_time"
+          @click="handleGenerate"
+        > Generate
+        </q-btn>
+        <q-btn
+          icon="save"
+          @click="handleExport"
+        > Export
+        </q-btn>
+      </q-btn-group>
     </q-list>
     <q-list class="col-3" dense>
-      <q-item>
-        <q-item-section class="text-center">Annotations</q-item-section>
-      </q-item>
-      <q-item clickable v-ripple @click="handleLoad">
-        <q-item-section avatar><q-icon name="cloud_upload"></q-icon></q-item-section>
-        <q-item-section class="text-right">Load</q-item-section>
-      </q-item>
-      <q-item clickable v-ripple @click="handleSave">
-        <q-item-section avatar><q-icon name="cloud_download"></q-icon></q-item-section>
-        <q-item-section class="text-right">Save</q-item-section>
-      </q-item>
+      <q-btn-group spread dense flat>
+        <q-btn class="no-pointer-events">
+          Annotations
+        </q-btn>
+        <q-btn
+          icon="cloud_upload"
+          @click="handleLoad"
+        > Load
+        </q-btn>
+        <q-btn
+          icon="cloud_download"
+          @click="handleSave"
+        > Save
+        </q-btn>
+      </q-btn-group>
     </q-list>
     <q-list class="col-12 row">
-      <q-item class="q-px-md">
+      <q-item class="q-px-md" dense>
         <q-item-section class="text-center">Keyframes:</q-item-section>
       </q-item>
       <q-item class="col q-pa-none">
@@ -71,8 +77,8 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
         ></q-range>
       </q-item>
       <q-space></q-space>
-      <q-item class="q-pa-sm">
-        <q-btn-group flat>
+      <q-item class="q-pa-none" dense>
+        <q-btn-group flat dense spread>
           <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left"></q-btn>
           <q-btn @click="handleNextKeyframe" icon="keyboard_arrow_right"></q-btn>
         </q-btn-group>
@@ -105,6 +111,7 @@ export default {
   data: () => {
     return {
       utils,
+      show: true,
       priorityQueue: [], // index of priority frame that needs to process now
       backendQueue: [], // index of frame for backend processing
     }
