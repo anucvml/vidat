@@ -64,7 +64,7 @@ const CONTROL_PANEL_TEMPLATE = `
 `
 
 import utils from '../../../libs/utils.js'
-import { ObjectAnnotation } from '../../../libs/annotationlib.js'
+import { ObjectAnnotation, RegionAnnotation } from '../../../libs/annotationlib.js'
 
 export default {
   data: () => {
@@ -136,63 +136,85 @@ export default {
       }
     },
     handleInterpolate () {
-      if (this.mode === 'object') {
-        const leftObjectAnnotationList = this.annotationListMap[this.leftCurrentFrame]
-        const rightObjectAnnotationList = this.annotationListMap[this.rightCurrentFrame]
-        let found = false
-        for (let leftObjectAnnotation of leftObjectAnnotationList) {
-          let rightObjectAnnotation = rightObjectAnnotationList.find(
-            rightObjectAnnotation => rightObjectAnnotation.instance &&
-              leftObjectAnnotation.instance &&
-              rightObjectAnnotation.instance === leftObjectAnnotation.instance,
-          )
-          // decide whether to interpolate
-          if (!rightObjectAnnotation) {
-            break
-          } else {
-            found = true
+      const leftAnnotationList = this.annotationListMap[this.leftCurrentFrame]
+      const rightAnnotationList = this.annotationListMap[this.rightCurrentFrame]
+      let found = false
+      for (let leftAnnotation of leftAnnotationList) {
+        let rightAnnotation = rightAnnotationList.find(
+          rightAnnotation => rightAnnotation.instance &&
+            leftAnnotation.instance &&
+            rightAnnotation.instance === leftAnnotation.instance,
+        )
+        // decide whether to interpolate
+        if (!rightAnnotation) {
+          break
+        } else {
+          found = true
+        }
+        let i = 1
+        const nFrames = this.rightCurrentFrame - this.leftCurrentFrame - 1
+        for (let frame = this.leftCurrentFrame + 1; frame < this.rightCurrentFrame; frame++) {
+          const ratio = i / nFrames
+          i += 1
+          const originalAnnotationList = this.annotationListMap[frame] || []
+          // remove archive interpolations
+          for (let k = 0; k < originalAnnotationList.length; k++) {
+            if (originalAnnotationList[k].instance === leftAnnotation.instance) {
+              originalAnnotationList.splice(k, 1)
+            }
           }
           // interpolate from left to right
-          let i = 1
-          const nFrames = this.rightCurrentFrame - this.leftCurrentFrame - 1
-          for (let frame = this.leftCurrentFrame + 1; frame < this.rightCurrentFrame; frame++) {
-            const ratio = i / nFrames
-            i += 1
-            const originalAnnotationList = this.annotationListMap[frame] || []
-            // remove archive interpolations
-            for (let k = 0; k < originalAnnotationList.length; k++) {
-              if (originalAnnotationList[k].instance === leftObjectAnnotation.instance) {
-                originalAnnotationList.splice(k, 1)
-              }
-            }
+          if (this.mode === 'object') {
             originalAnnotationList.push(new ObjectAnnotation(
-              leftObjectAnnotation.x * (1 - ratio) + rightObjectAnnotation.x * ratio,
-              leftObjectAnnotation.y * (1 - ratio) + rightObjectAnnotation.y * ratio,
-              leftObjectAnnotation.width * (1 - ratio) + rightObjectAnnotation.width * ratio,
-              leftObjectAnnotation.height * (1 - ratio) + rightObjectAnnotation.height * ratio,
-              leftObjectAnnotation.labelId,
-              leftObjectAnnotation.color,
-              leftObjectAnnotation.instance,
-              leftObjectAnnotation.score,
+              leftAnnotation.x * (1 - ratio) + rightAnnotation.x * ratio,
+              leftAnnotation.y * (1 - ratio) + rightAnnotation.y * ratio,
+              leftAnnotation.width * (1 - ratio) + rightAnnotation.width * ratio,
+              leftAnnotation.height * (1 - ratio) + rightAnnotation.height * ratio,
+              leftAnnotation.labelId,
+              leftAnnotation.color,
+              leftAnnotation.instance,
+              leftAnnotation.score,
             ))
-            this.setAnnotationList({
-              mode: this.mode,
-              index: frame,
-              annotationList: originalAnnotationList,
-            })
+          } else if (this.mode === 'region') {
+            // same number of points only
+            if (leftAnnotation.pointList.length !== rightAnnotation.pointList.length) {
+              utils.notify('Interpolate between different #points regions not supported!')
+              return
+            }
+            let newPointList = []
+            for (let k = 0; k < leftAnnotation.pointList.length; k++) {
+              const leftPoint = leftAnnotation.pointList[k]
+              const rightPoint = rightAnnotation.pointList[k]
+              newPointList.push({
+                x: leftPoint.x * (1 - ratio) + rightPoint.x * ratio,
+                y: leftPoint.y * (1 - ratio) + rightPoint.y * ratio,
+              })
+            }
+            originalAnnotationList.push(new RegionAnnotation(
+              newPointList,
+              leftAnnotation.labelId,
+              leftAnnotation.color,
+              leftAnnotation.instance,
+              leftAnnotation.score,
+            ))
+          } else if (this.mode === 'skeleton') {
+            utils.notify(this.mode + ' not support yet!')
+            return
+          } else {
+            utils.notify(this.mode + ' not support!')
+            return
           }
+          this.setAnnotationList({
+            mode: this.mode,
+            index: frame,
+            annotationList: originalAnnotationList,
+          })
         }
-        if (found) {
-          utils.notify('Interpolated successfully.')
-        } else {
-          utils.notify('There is nothing to interpolate.')
-        }
-      } else if (this.mode === 'region') {
-
-      } else if (this.mode === 'skeleton') {
-
+      }
+      if (found) {
+        utils.notify('Interpolated successfully.')
       } else {
-        utils.notify(this.mode + ' not support!')
+        utils.notify('There is nothing to interpolate.')
       }
     },
     handleSwap () {

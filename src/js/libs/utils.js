@@ -63,4 +63,16 @@ export default {
   randomColor () {
     return `#${('000000' + (Math.random() * 16777216 | 0).toString(16)).slice(-6)}`
   },
+  deepClone (object) {
+    let newObject = new object.constructor
+    if (object === null) return object
+    if (typeof object == 'function') return new Function('return ' + object.toString())()
+    if (typeof object != 'object') return object
+    if (object instanceof RegExp) return new RegExp(object)
+    if (object instanceof Date) return new Date(object)
+    for (let i in object) {
+      newObject[i] = this.deepClone(object[i])
+    }
+    return newObject
+  },
 }

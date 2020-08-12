@@ -1,4 +1,5 @@
 import store from '../store/store.js'
+import utils from './utils.js'
 
 const PROXIMITY = 5 // proximity in pixels for active object / key point
 
@@ -211,7 +212,7 @@ class RegionAnnotation extends Annotation {
 
   clone () {
     return new RegionAnnotation(
-      this.pointList,
+      utils.deepClone(this.pointList),
       this.labelId,
       this.color,
       this.instance,
