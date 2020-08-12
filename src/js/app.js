@@ -72,8 +72,13 @@ const app = new Vue({
         },
         {
           icon: 'settings',
-          label: 'Settings',
-          path: '/settings',
+          label: 'Configuration',
+          path: '/configuration',
+        },
+        {
+          icon: 'dashboard',
+          label: 'Preference',
+          path: '/preference',
         },
         {
           icon: 'help',
