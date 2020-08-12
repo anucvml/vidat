@@ -132,6 +132,7 @@ export default {
       activeContext: null,
       playTimeInterval: null,
       popup: { x: 0, y: 0 },
+      shiftDown: false,
     }
   },
   methods: {
@@ -329,12 +330,17 @@ export default {
         // drag
         let found = false
         for (let i = 0; i < this.annotationList.length; i++) {
-          const objectAnnotation = this.annotationList[i]
+          let objectAnnotation = this.annotationList[i]
           if (objectAnnotation.highlight) {
             found = true
+            const nearBoundary = objectAnnotation.nearBoundary(mouseX, mouseY)
+            if (this.shiftDown && nearBoundary) {
+              objectAnnotation = objectAnnotation.clone()
+              this.annotationList.push(objectAnnotation)
+            }
             this.dragContext = {
               index: i,
-              type: objectAnnotation.nearBoundary(mouseX, mouseY) ? 'moving' : 'sizing',
+              type: nearBoundary ? 'moving' : 'sizing',
               x: objectAnnotation.x,
               y: objectAnnotation.y,
               width: objectAnnotation.width,
@@ -361,7 +367,7 @@ export default {
       } else if (this.mode === 'region') {
         // drag
         let found = false
-        for (const regionAnnotation of this.annotationList) {
+        for (let regionAnnotation of this.annotationList) {
           if (regionAnnotation.highlight) {
             found = true
             let nearPoint = null
@@ -370,6 +376,10 @@ export default {
                 nearPoint = point
                 break
               }
+            }
+            if (this.shiftDown && !nearPoint) {
+              regionAnnotation = regionAnnotation.clone()
+              this.annotationList.push(regionAnnotation)
             }
             this.dragContext = {
               type: nearPoint ? 'sizing' : 'moving',
@@ -392,7 +402,7 @@ export default {
       } else if (this.mode === 'skeleton') {
         // drag
         let found = false
-        for (const skeletonAnnotation of this.annotationList) {
+        for (let skeletonAnnotation of this.annotationList) {
           if (skeletonAnnotation.highlight) {
             found = true
             let nearPoint = null
@@ -401,6 +411,10 @@ export default {
                 nearPoint = point
                 break
               }
+            }
+            if (this.shiftDown && nearPoint && nearPoint.name === 'center') {
+              skeletonAnnotation = skeletonAnnotation.clone()
+              this.annotationList.push(skeletonAnnotation)
             }
             this.dragContext = {
               type: nearPoint && nearPoint.name !== 'center' ? 'sizing' : 'moving',
@@ -547,6 +561,9 @@ export default {
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
       }
+      if (event.keyCode === 0x10) { // shift
+        this.shiftDown = true
+      }
     })
     document.addEventListener('keyup', event => {
       if (event.target.nodeName.toLowerCase() === 'input') {
@@ -572,6 +589,8 @@ export default {
         }
       } else if (event.keyCode === 0x50) { // p
         if (this.position === 'left') this.handlePlayPause()
+      } else if (event.keyCode === 0x10) { // shift
+        this.shiftDown = false
       }
     })
   },
