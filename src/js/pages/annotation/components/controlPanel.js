@@ -234,7 +234,7 @@ export default {
     },
     lockSliders: {
       get () {
-        return this.$store.state.annotation.lockSliders
+        return this.$store.state.settings.lockSliders
       },
       set (value) {
         this.setLockSliders(value)
@@ -243,7 +243,7 @@ export default {
     },
     grayscale: {
       get () {
-        return this.$store.state.annotation.grayscale
+        return this.$store.state.settings.grayscale
       },
       set (value) {
         this.setGrayscale(value)

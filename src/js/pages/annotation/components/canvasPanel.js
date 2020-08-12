@@ -513,13 +513,13 @@ export default {
       return this.$store.state.annotation.cachedFrameList
     },
     lockSliders () {
-      return this.$store.state.annotation.lockSliders
+      return this.$store.state.settings.lockSliders
     },
     lockSlidersDistance () {
-      return this.$store.state.annotation.lockSlidersDistance
+      return this.$store.state.settings.lockSlidersDistance
     },
     grayscale () {
-      return this.$store.state.annotation.grayscale
+      return this.$store.state.settings.grayscale
     },
     mode () {
       return this.$store.state.annotation.mode

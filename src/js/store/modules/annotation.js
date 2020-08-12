@@ -13,9 +13,6 @@ export default {
     rightCurrentFrame: 50,
     cachedFrameList: [],
     mode: 'object', // 'object', 'region', 'skeleton'
-    lockSliders: false,
-    lockSlidersDistance: 0,
-    grayscale: false,
     objectAnnotationListMap: {},
     regionAnnotationListMap: {},
     skeletonAnnotationListMap: {},
@@ -83,15 +80,6 @@ export default {
     },
     setMode (state, value) {
       Vue.set(state, 'mode', value)
-    },
-    setLockSliders (state, value) {
-      Vue.set(state, 'lockSliders', value)
-    },
-    setLockSlidersDistance (state, value) {
-      Vue.set(state, 'lockSlidersDistance', value)
-    },
-    setGrayscale (state, value) {
-      Vue.set(state, 'grayscale', value)
     },
     setObjectAnnotationListMap (state, value) {
       Vue.set(state, 'objectAnnotationListMap', value)

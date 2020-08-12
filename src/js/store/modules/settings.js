@@ -170,6 +170,9 @@ export default {
         skeletons: true,
         actions: true,
       },
+    lockSliders: JSON.parse(localStorage.getItem('lockSliders')) || false,
+    lockSlidersDistance: JSON.parse(localStorage.getItem('lockSlidersDistance')) || 0,
+    grayscale: JSON.parse(localStorage.getItem('grayscale')) || false,
   }),
   getters: {},
   mutations: {
@@ -196,6 +199,18 @@ export default {
     },
     setShowActions (state, value) {
       Vue.set(state.preferenceData, 'actions', value)
+    },
+    setLockSliders (state, value) {
+      Vue.set(state, 'lockSliders', value)
+      localStorage.setItem('lockSliders', JSON.stringify(value))
+    },
+    setLockSlidersDistance (state, value) {
+      Vue.set(state, 'lockSlidersDistance', value)
+      localStorage.setItem('lockSlidersDistance', JSON.stringify(value))
+    },
+    setGrayscale (state, value) {
+      Vue.set(state, 'grayscale', value)
+      localStorage.setItem('grayscale', JSON.stringify(value))
     },
   },
   actions: {},
