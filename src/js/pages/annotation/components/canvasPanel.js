@@ -27,7 +27,6 @@ const VIDEO_PANEL_TEMPLATE = `
         @mouseout="handleMouseupAndMouseout"
         @mousedown="handleMousedown"
         @mouseup="handleMouseupAndMouseout"
-        @keyup="handleKeyup"
       ></canvas>
       <img
         ref="img"
@@ -101,14 +100,19 @@ const VIDEO_PANEL_TEMPLATE = `
       :position="position"
       v-if="mode === 'region' && preference.regions"
     ></region-table>
+    <skeleton-table
+      :position="position"
+      v-if="mode === 'skeleton' && preference.skeletons"
+    ></skeleton-table>
   </div>
 `
 
 import filmStrip from './filmStrip.js'
 import objectTable from './objectTable.js'
 import regionTable from './regionTable.js'
+import skeletonTable from './skeletonTable.js'
 import utils from '../../../libs/utils.js'
-import { ObjectAnnotation, RegionAnnotation } from '../../../libs/annotationlib.js'
+import { ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '../../../libs/annotationlib.js'
 
 export default {
   props: ['position'],
@@ -116,6 +120,7 @@ export default {
     filmStrip,
     objectTable,
     regionTable,
+    skeletonTable,
   },
   data: () => {
     return {
@@ -273,6 +278,47 @@ export default {
           this.activeContext = null
         }
       } else if (this.mode === 'skeleton') {
+        // create a skeleton
+        if (this.createContext) {
+          this.createContext.skeletonAnnotation.ratio =
+            Math.sqrt((mouseX - this.createContext.mouseDownX) ** 2 + (mouseY - this.createContext.mouseDownY) ** 2) /
+            10
+        }
+        // drag the skeleton
+        if (this.dragContext) {
+          const skeletonAnnotation = this.dragContext.skeletonAnnotation
+          const deltaX = mouseX - this.dragContext.mousedownX
+          const deltaY = mouseY - this.dragContext.mousedownY
+          this.dragContext.mousedownX = mouseX
+          this.dragContext.mousedownY = mouseY
+          if (this.dragContext.type === 'moving') {
+            skeletonAnnotation.move(deltaX, deltaY)
+          } else if (this.dragContext.type === 'sizing') {
+            const point = this.dragContext.nearPoint
+            point.x = mouseX
+            point.y = mouseY
+          } else {
+            throw 'Unknown drag type'
+          }
+        }
+        // highlight the skeleton
+        let found = null
+        for (let i = 0; i < this.annotationList.length; i++) {
+          const skeletonAnnotation = this.annotationList[i]
+          if (!found && skeletonAnnotation.nearPoints(mouseX, mouseY)) {
+            skeletonAnnotation.highlight = true
+            found = i
+          } else {
+            skeletonAnnotation.highlight = false
+          }
+        }
+        if (typeof (found) === 'number') {
+          this.activeContext = {
+            index: found,
+          }
+        } else {
+          this.activeContext = null
+        }
       } else {
         throw 'Unknown mode: ' + this.mode
       }
@@ -280,6 +326,7 @@ export default {
     handleMousedown (event) {
       const [mouseX, mouseY] = this.getMouseLocation(event)
       if (this.mode === 'object') {
+        // drag
         let found = false
         for (let i = 0; i < this.annotationList.length; i++) {
           const objectAnnotation = this.annotationList[i]
@@ -312,6 +359,7 @@ export default {
           this.annotationList.push(objectAnnotation)
         }
       } else if (this.mode === 'region') {
+        // drag
         let found = false
         for (const regionAnnotation of this.annotationList) {
           if (regionAnnotation.highlight) {
@@ -342,6 +390,38 @@ export default {
           this.annotationList.push(regionAnnotation)
         }
       } else if (this.mode === 'skeleton') {
+        // drag
+        let found = false
+        for (const skeletonAnnotation of this.annotationList) {
+          if (skeletonAnnotation.highlight) {
+            found = true
+            let nearPoint = null
+            for (const point of skeletonAnnotation.pointList) {
+              if (SkeletonAnnotation.nearPoint(mouseX, mouseY, point)) {
+                nearPoint = point
+                break
+              }
+            }
+            this.dragContext = {
+              type: nearPoint && nearPoint.name !== 'center' ? 'sizing' : 'moving',
+              skeletonAnnotation: skeletonAnnotation,
+              nearPoint: nearPoint,
+              mousedownX: mouseX,
+              mousedownY: mouseY,
+            }
+            break
+          }
+        }
+        // creating a skeleton
+        if (!found && !this.createContext) {
+          const skeletonAnnotation = new SkeletonAnnotation(mouseX, mouseY)
+          this.createContext = {
+            skeletonAnnotation: skeletonAnnotation,
+            mouseDownX: mouseX,
+            mouseDownY: mouseY,
+          }
+          this.annotationList.push(skeletonAnnotation)
+        }
       } else {
         throw 'Unknown mode: ' + this.mode
       }
@@ -399,13 +479,21 @@ export default {
           this.dragContext = null
         }
       } else if (this.mode === 'skeleton') {
-
+        if (this.createContext) {
+          this.createContext = null
+          this.popup = {
+            x: event.offsetX,
+            y: event.offsetY,
+          }
+          this.$refs.popup.show()
+          this.createContext = null
+        }
+        if (this.dragContext) {
+          this.dragContext = null
+        }
       } else {
         throw 'Unknown mode: ' + this.mode
       }
-    },
-    handleKeyup (event) {
-      console.log(event)
     },
     getCursor () {
       if (this.dragContext) {
