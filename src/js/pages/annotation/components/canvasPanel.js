@@ -9,6 +9,14 @@ const VIDEO_PANEL_TEMPLATE = `
         :height="video.height"
         :width="video.width"
       ></canvas>
+      <div
+        v-if="actionList.length"
+        style="display: block; position: absolute; bottom: 0; padding: 4px; font-size: 20px; color: white; background-color: black; opacity: 0.6">
+        Action:
+        <span v-for="action in actionList" :key="action.id" :style="{color: action.color}">
+        {{ action.text }}<span v-if="actionList.length !== 1 && action.id != actionList.length - 1" style="color: white;">,</span>
+        </span>
+      </div>
       <canvas
         ref="canvas"
         :style="{display: 'block', position: 'relative', top: 0, cursor: getCursor()}"
@@ -489,6 +497,30 @@ export default {
     },
     preference () {
       return this.$store.state.settings.preferenceData
+    },
+    objectLabelData () {
+      return this.$store.state.settings.objectLabelData
+    },
+    actionLabelData () {
+      return this.$store.state.settings.actionLabelData
+    },
+    actionList () {
+      const actionAnnotationList = this.$store.state.annotation.actionAnnotationList
+      let actionList = []
+      let id = 0
+      for (const actionAnnotation of actionAnnotationList) {
+        if (this.currentFrame >= utils.time2index(actionAnnotation.start) &&
+          this.currentFrame <= utils.time2index(actionAnnotation.end)) {
+          actionList.push({
+              id: id,
+              text: `${this.actionLabelData[actionAnnotation.action].name} ${this.objectLabelData[actionAnnotation.object].name}`,
+              color: this.actionLabelData[actionAnnotation.action].color,
+            },
+          )
+          id += 1
+        }
+      }
+      return actionList
     },
   },
   filters: {
