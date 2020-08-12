@@ -547,9 +547,6 @@ export default {
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
       }
-      if (event.keyCode === 0x50) { // p
-        if (this.position === 'left') this.handlePlayPause()
-      }
     })
     document.addEventListener('keyup', event => {
       if (event.target.nodeName.toLowerCase() === 'input') {
@@ -573,6 +570,8 @@ export default {
         if (this.position === 'right') {
           this.$refs.slider.__focus()
         }
+      } else if (event.keyCode === 0x50) { // p
+        if (this.position === 'left') this.handlePlayPause()
       }
     })
   },

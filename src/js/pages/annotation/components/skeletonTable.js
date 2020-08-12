@@ -36,12 +36,7 @@ const SKELETON_TABLE_TEMPLATE = `
         ></q-btn>
       </q-td>
       <q-td key="ratio" :props="props">
-        <q-input
-          v-model.number="props.row.ratio"
-          dense
-          borderless
-          type="number"
-        ></q-input>
+        {{ props.row.ratio }}
       </q-td>
       <q-td key="label" :props="props">
         <q-select

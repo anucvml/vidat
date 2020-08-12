@@ -65,7 +65,7 @@ const CONTROL_PANEL_TEMPLATE = `
 `
 
 import utils from '../../../libs/utils.js'
-import { ObjectAnnotation, RegionAnnotation } from '../../../libs/annotationlib.js'
+import { ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '../../../libs/annotationlib.js'
 
 export default {
   data: () => {
@@ -200,8 +200,26 @@ export default {
               leftAnnotation.score,
             ))
           } else if (this.mode === 'skeleton') {
-            utils.notify(this.mode + ' not support yet!')
-            return
+            let newPointList = []
+            for (let k = 0; k < leftAnnotation.pointList.length; k++) {
+              const leftPoint = leftAnnotation.pointList[k]
+              const rightPoint = rightAnnotation.pointList[k]
+              newPointList.push({
+                x: leftPoint.x * (1 - ratio) + rightPoint.x * ratio,
+                y: leftPoint.y * (1 - ratio) + rightPoint.y * ratio,
+              })
+            }
+            const newSkeletonAnnotation = new SkeletonAnnotation(
+              leftAnnotation.centerX * (1 - ratio) + rightAnnotation.centerX * ratio,
+              leftAnnotation.centerY * (1 - ratio) + rightAnnotation.centerY * ratio,
+              leftAnnotation.labelId,
+              leftAnnotation.color,
+              leftAnnotation.instance,
+              leftAnnotation.score,
+            )
+            newSkeletonAnnotation.ratio = leftAnnotation.ratio * (1 - ratio) + rightAnnotation.ratio * ratio
+            newSkeletonAnnotation.pointList = newPointList
+            originalAnnotationList.push(newSkeletonAnnotation)
           } else {
             utils.notify(this.mode + ' not support!')
             return
