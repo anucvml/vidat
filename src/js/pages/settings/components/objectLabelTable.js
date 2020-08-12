@@ -11,6 +11,7 @@ const OBJECT_LABEL_TABLE_TEMPLATE = `
       <q-td key="name" :props="props" style="font-size: 14px">
         {{ props.row.name }}
         <q-popup-edit
+          auto-save
           v-model="props.row.name"
           title="Edit the label name"
           v-if="props.row.name !== 'default'"
@@ -33,6 +34,7 @@ const OBJECT_LABEL_TABLE_TEMPLATE = `
           {{ props.row.color.toUpperCase() }}
          </q-chip>
         <q-popup-edit
+          auto-save
           v-model="props.row.color"
           title="Edit the label color"
           @save="saveTableData"

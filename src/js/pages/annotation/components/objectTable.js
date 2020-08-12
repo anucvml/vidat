@@ -66,6 +66,7 @@ const OBJECT_TABLE_TEMPLATE = `
           {{ props.row.color.toUpperCase() }}
          </q-chip>
         <q-popup-edit
+          auto-save
           v-model="props.row.color"
           title="Edit the object color"
         >
