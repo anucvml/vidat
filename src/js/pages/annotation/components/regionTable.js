@@ -196,7 +196,7 @@ export default {
       }
     },
     handleDelete (row) {
-      utils.confirm('Are you sure to delete this object?').onOk(() => {
+      utils.confirm('Are you sure to delete this region?').onOk(() => {
         for (let i in this.regionAnnotationList) {
           if (this.regionAnnotationList[i] === row) {
             this.regionAnnotationList.splice(i, 1)
