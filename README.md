@@ -36,6 +36,9 @@ Video tutorials will be posted on YouTube.
 |  `showRegions`  |         `true`/`false`          |      show regions or not       |
 | `showSkeletons` |         `true`/`false`          |     show skeletons or not      |
 |  `showActions`  |         `true`/`false`          |      show actions or not       |
+|  `lockSliders`  |         `true`/`false`          |      lock sliders or not       |
+|   `grayscale`   |         `true`/`false`          |        grayscale or not        |
+|   `showPopup`   |         `true`/`false`          |       show popup or not        |
 |     `debug`     |         `true`/`false`          | auto load a video and no cache |
 
 ## Development
