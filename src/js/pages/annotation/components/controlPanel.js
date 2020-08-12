@@ -50,7 +50,7 @@ const CONTROL_PANEL_TEMPLATE = `
     <q-item-section>
       <q-toggle v-model="lockSliders" label="Lock sliders"></q-toggle>
       <q-toggle v-model="grayscale" label="Grayscale"></q-toggle>
-      <q-toggle v-model="showPopup" label="Popup"></q-toggle>
+      <q-toggle v-model="showPopup" label="Show popup"></q-toggle>
     </q-item-section>
   </q-item>
   <q-item dense>
