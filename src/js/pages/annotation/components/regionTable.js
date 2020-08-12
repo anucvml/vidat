@@ -119,6 +119,7 @@ const REGION_TABLE_TEMPLATE = `
             { name: 'x', align: 'left', label: 'x', field: 'x' },
             { name: 'y', align: 'left', label: 'y', field: 'y' },
           ]"
+          :pagination.sync="pagination"
         >
         <template v-slot:body="props">
           <q-tr :props="props">
