@@ -400,7 +400,7 @@ class SkeletonAnnotation extends Annotation {
     // leg
     const hipCenter = {
       x: (this.pointList[10].x + this.pointList[11].x) / 2,
-      y: (this.pointList[11].y + this.pointList[11].y) / 2,
+      y: (this.pointList[10].y + this.pointList[11].y) / 2,
     }
     ctx.lineTo(hipCenter.x, hipCenter.y)
     ctx.lineTo(this.pointList[10].x, this.pointList[10].y)
