@@ -209,13 +209,9 @@ export default {
           if (this.dragContext.type === 'moving') {
             activeAnnotation.move(deltaX, deltaY)
           } else if (this.dragContext.type === 'sizing') {
-            for (const point of this.dragContext.regionAnnotation.pointList) {
-              if (RegionAnnotation.nearPoint(mouseX, mouseY, point)) {
-                point.x = mouseX
-                point.y = mouseY
-                break
-              }
-            }
+            const point = this.dragContext.nearPoint
+            point.x = mouseX
+            point.y = mouseY
           } else {
             throw 'Unknown drag type'
           }
@@ -282,9 +278,17 @@ export default {
         for (const regionAnnotation of this.annotationList) {
           if (regionAnnotation.highlight) {
             found = true
+            let nearPoint = null
+            for (const point of regionAnnotation.pointList) {
+              if (RegionAnnotation.nearPoint(mouseX, mouseY, point)) {
+                nearPoint = point
+                break
+              }
+            }
             this.dragContext = {
-              type: regionAnnotation.nearBoundary(mouseX, mouseY) ? 'moving' : 'sizing',
+              type: nearPoint ? 'sizing' : 'moving',
               regionAnnotation: regionAnnotation,
+              nearPoint: nearPoint,
               mousedownX: mouseX,
               mousedownY: mouseY,
             }
