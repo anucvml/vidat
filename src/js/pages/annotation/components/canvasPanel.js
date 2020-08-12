@@ -43,6 +43,35 @@ const VIDEO_PANEL_TEMPLATE = `
         @click="$store.commit('setZoom', !zoom)"
         :icon="zoom ? 'zoom_out' : 'zoom_in'"
       ></q-btn>
+      <div v-show="popup.x" v-if="annotationList" :style="{position: 'absolute', top: popup.y + 'px', left: popup.x + 'px'}">
+        <q-popup-edit ref="popup" :value="1" :title="'new ' + mode">
+          <q-select
+            dense
+            options-dense
+            borderless
+            emit-value
+            map-options
+            :options="labelOption"
+            v-if="annotationList.length"
+            v-model="annotationList[annotationList.length - 1].labelId"
+          ></q-select>
+          <q-input
+            dense
+            flat
+            label="instance"
+            v-if="annotationList.length"
+            v-model="annotationList[annotationList.length - 1].instance"
+          ></q-input>
+          <q-input
+            dense
+            flat
+            label="score"
+            v-if="annotationList.length"
+            v-model="annotationList[annotationList.length - 1].score"
+          ></q-input>
+          <q-btn dense falt class="full-width q-mt-sm" @click="$refs.popup.hide()" color="primary">Confirm</q-btn>
+        </q-popup-edit>
+      </div>
     </div>
     <film-strip></film-strip>
     <q-toolbar class="q-pa-none">
@@ -97,6 +126,7 @@ export default {
       dragContext: null,
       activeContext: null,
       playTimeInterval: null,
+      popup: { x: 0, y: 0 },
     }
   },
   methods: {
@@ -319,12 +349,18 @@ export default {
     handleMouseupAndMouseout (event) {
       const [mouseX, mouseY] = this.getMouseLocation(event)
       if (this.mode === 'object') {
-        // creating an object
         if (this.createContext) {
           const activeAnnotation = this.annotationList[this.createContext.index]
           if (activeAnnotation.width < 8 || activeAnnotation.height < 8) {
             utils.notify('The object is too small. At least 8x8.')
             this.annotationList.splice(this.createContext.index, 1)
+          } else {
+            this.createContext = null
+            this.popup = {
+              x: event.offsetX,
+              y: event.offsetY,
+            }
+            this.$refs.popup.show()
           }
           this.createContext = null
         }
@@ -345,6 +381,11 @@ export default {
               RegionAnnotation.nearPoint(mouseX, mouseY, pointList[pointList.length - 2])
             )) {
             pointList.pop()
+            this.popup = {
+              x: event.offsetX,
+              y: event.offsetY,
+            }
+            this.$refs.popup.show()
             this.createContext = null
           } else {
             // add new point
@@ -521,6 +562,18 @@ export default {
         }
       }
       return actionList
+    },
+    labelOption () {
+      const objectLabelData = this.$store.state.settings.objectLabelData
+      let labelOption = []
+      for (let objectLabel of objectLabelData) {
+        labelOption.push({
+          label: objectLabel.name,
+          value: objectLabel.id,
+          color: objectLabel.color,
+        })
+      }
+      return labelOption
     },
   },
   filters: {
