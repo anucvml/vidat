@@ -173,6 +173,7 @@ export default {
     lockSliders: JSON.parse(localStorage.getItem('lockSliders')) || false,
     lockSlidersDistance: JSON.parse(localStorage.getItem('lockSlidersDistance')) || 0,
     grayscale: JSON.parse(localStorage.getItem('grayscale')) || false,
+    showPopup: JSON.parse(localStorage.getItem('showPopup')) || false,
   }),
   getters: {},
   mutations: {
@@ -211,6 +212,10 @@ export default {
     setGrayscale (state, value) {
       Vue.set(state, 'grayscale', value)
       localStorage.setItem('grayscale', JSON.stringify(value))
+    },
+    setShowPopup (state, value) {
+      Vue.set(state, 'showPopup', value)
+      localStorage.setItem('showPopup', JSON.stringify(value))
     },
   },
   actions: {},

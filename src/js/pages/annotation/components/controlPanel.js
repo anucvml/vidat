@@ -50,6 +50,7 @@ const CONTROL_PANEL_TEMPLATE = `
     <q-item-section>
       <q-toggle v-model="lockSliders" label="Lock sliders"></q-toggle>
       <q-toggle v-model="grayscale" label="Grayscale"></q-toggle>
+      <q-toggle v-model="showPopup" label="Popup"></q-toggle>
     </q-item-section>
   </q-item>
   <q-item dense>
@@ -77,6 +78,7 @@ export default {
       'setMode',
       'setLockSliders',
       'setGrayscale',
+      'setShowPopup',
       'setLockSlidersDistance',
       'setLeftCurrentFrame',
       'setRightCurrentFrame',
@@ -247,6 +249,14 @@ export default {
       },
       set (value) {
         this.setGrayscale(value)
+      },
+    },
+    showPopup: {
+      get () {
+        return this.$store.state.settings.showPopup
+      },
+      set (value) {
+        this.setShowPopup(value)
       },
     },
     leftCurrentFrame: {

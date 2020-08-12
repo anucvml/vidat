@@ -436,11 +436,13 @@ export default {
             this.annotationList.splice(this.createContext.index, 1)
           } else {
             this.createContext = null
-            this.popup = {
-              x: event.offsetX,
-              y: event.offsetY,
+            if (this.showPopup) {
+              this.popup = {
+                x: event.offsetX,
+                y: event.offsetY,
+              }
+              this.$refs.popup.show()
             }
-            this.$refs.popup.show()
           }
           this.createContext = null
         }
@@ -461,11 +463,13 @@ export default {
               RegionAnnotation.nearPoint(mouseX, mouseY, pointList[pointList.length - 2])
             )) {
             pointList.pop()
-            this.popup = {
-              x: event.offsetX,
-              y: event.offsetY,
+            if (this.showPopup) {
+              this.popup = {
+                x: event.offsetX,
+                y: event.offsetY,
+              }
+              this.$refs.popup.show()
             }
-            this.$refs.popup.show()
             this.createContext = null
           } else {
             // add new point
@@ -481,11 +485,13 @@ export default {
       } else if (this.mode === 'skeleton') {
         if (this.createContext) {
           this.createContext = null
-          this.popup = {
-            x: event.offsetX,
-            y: event.offsetY,
+          if (this.showPopup) {
+            this.popup = {
+              x: event.offsetX,
+              y: event.offsetY,
+            }
+            this.$refs.popup.show()
           }
-          this.$refs.popup.show()
           this.createContext = null
         }
         if (this.dragContext) {
@@ -608,6 +614,9 @@ export default {
     },
     grayscale () {
       return this.$store.state.settings.grayscale
+    },
+    showPopup () {
+      return this.$store.state.settings.showPopup
     },
     mode () {
       return this.$store.state.annotation.mode
