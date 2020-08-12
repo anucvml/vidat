@@ -276,6 +276,9 @@ export default {
   },
   mounted () {
     document.addEventListener('keyup', event => {
+      if (event.target.nodeName.toLowerCase() === 'input') {
+        return false
+      }
       if (event.keyCode === 0xBB) { // +
         this.handleAdd()
       }

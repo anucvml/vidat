@@ -543,7 +543,18 @@ export default {
         deep: true,
       },
     )
+    document.addEventListener('keydown', event => {
+      if (event.target.nodeName.toLowerCase() === 'input') {
+        return false
+      }
+      if (event.keyCode === 0x50) { // p
+        if (this.position === 'left') this.handlePlayPause()
+      }
+    })
     document.addEventListener('keyup', event => {
+      if (event.target.nodeName.toLowerCase() === 'input') {
+        return false
+      }
       if (event.keyCode === 0x2E) { // delete
         if (this.activeContext) {
           this.annotationList.splice(this.activeContext.index, 1)
