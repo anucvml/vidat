@@ -714,7 +714,9 @@ export default {
           this.currentFrame <= utils.time2index(actionAnnotation.end)) {
           actionList.push({
               id: id,
-              text: `${this.actionLabelData[actionAnnotation.action].name} ${this.objectLabelData[actionAnnotation.object].name}`,
+              text: `${this.actionLabelData[actionAnnotation.action].name} ${actionAnnotation.object === 0
+                ? ''
+                : this.objectLabelData[actionAnnotation.object].name}`,
               color: this.actionLabelData[actionAnnotation.action].color,
             },
           )
