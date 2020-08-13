@@ -27,6 +27,7 @@ const VIDEO_PANEL_TEMPLATE = `
         @mouseout="handleMouseupAndMouseout"
         @mousedown="handleMousedown"
         @mouseup="handleMouseupAndMouseout"
+        @mouseenter="handleMouseenter"
       ></canvas>
       <img
         ref="img"
@@ -42,6 +43,10 @@ const VIDEO_PANEL_TEMPLATE = `
         @click="$store.commit('setZoom', !zoom)"
         :icon="zoom ? 'zoom_out' : 'zoom_in'"
       ></q-btn>
+      <q-badge v-if="status" style="position: absolute; bottom: 1px; right: 1px; opacity: 0.6;">
+        <span v-if="status.message">{{ status.message }},</span>
+        <span>{{status.x | toFixed2}},{{status.y | toFixed2}}</span>
+      </q-badge>
       <div v-show="popup.x" v-if="annotationList" :style="{position: 'absolute', top: popup.y + 'px', left: popup.x + 'px'}">
         <q-popup-edit ref="popup" :value="1" :title="'new ' + mode">
           <q-select
@@ -133,6 +138,7 @@ export default {
       playTimeInterval: null,
       popup: { x: 0, y: 0 },
       shiftDown: false,
+      status: null,
     }
   },
   methods: {
@@ -177,6 +183,15 @@ export default {
     },
     handleMousemove (event) {
       const [mouseX, mouseY] = this.getMouseLocation(event)
+      if (this.status) {
+        this.status.x = mouseX
+        this.status.y = mouseY
+      } else {
+        this.status = {
+          x: mouseX,
+          y: mouseY,
+        }
+      }
       if (this.mode === 'object') {
         // creating an object
         if (this.createContext) {
@@ -306,7 +321,15 @@ export default {
         let found = null
         for (let i = 0; i < this.annotationList.length; i++) {
           const skeletonAnnotation = this.annotationList[i]
-          if (!found && skeletonAnnotation.nearPoints(mouseX, mouseY)) {
+          let nearPoint
+          for (const point of skeletonAnnotation.pointList) {
+            if (SkeletonAnnotation.nearPoint(mouseX, mouseY, point)) {
+              nearPoint = point
+              this.status.message = point.name
+              break
+            }
+          }
+          if (!found && nearPoint) {
             skeletonAnnotation.highlight = true
             found = i
           } else {
@@ -318,6 +341,7 @@ export default {
             index: found,
           }
         } else {
+          this.status.message = ''
           this.activeContext = null
         }
       } else {
@@ -442,6 +466,9 @@ export default {
     },
     handleMouseupAndMouseout (event) {
       const [mouseX, mouseY] = this.getMouseLocation(event)
+      if (event.type === 'mouseout') {
+        this.status = null
+      }
       if (this.mode === 'object') {
         if (this.createContext) {
           const activeAnnotation = this.annotationList[this.createContext.index]
@@ -513,6 +540,13 @@ export default {
         }
       } else {
         throw 'Unknown mode: ' + this.mode
+      }
+    },
+    handleMouseenter (event) {
+      const [mouseX, mouseY] = this.getMouseLocation(event)
+      this.status = {
+        x: mouseX,
+        y: mouseY,
       }
     },
     getCursor () {

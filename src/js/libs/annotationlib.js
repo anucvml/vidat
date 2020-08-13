@@ -455,14 +455,6 @@ class SkeletonAnnotation extends Annotation {
     return Math.abs(x - point.x) <= PROXIMITY * 3 && Math.abs(y - point.y) <= PROXIMITY * 3
   }
 
-  nearPoints (mouseX, mouseY) {
-    let ret = false
-    for (const point of this.pointList) {
-      ret = ret || SkeletonAnnotation.nearPoint(mouseX, mouseY, point)
-    }
-    return ret
-  }
-
   move (deltaX, deltaY) {
     this.centerX += deltaX
     this.centerY += deltaY
