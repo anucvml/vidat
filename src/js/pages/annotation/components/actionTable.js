@@ -152,12 +152,9 @@ export default {
       'setRightCurrentFrame',
     ]),
     handleAdd () {
-      const last = this.actionAnnotationList[this.actionAnnotationList.length - 1]
-      const start = last && last.end ? last.end : utils.index2time(this.leftCurrentFrame)
-      const end = this.leftCurrentFrame <= this.rightCurrentFrame ? utils.index2time(this.rightCurrentFrame) : null
       const actionAnnotation = new ActionAnnotation(
-        start,
-        end,
+        utils.index2time(this.leftCurrentFrame),
+        utils.index2time(this.rightCurrentFrame),
         this.actionOptionList[0] ? this.actionOptionList[0].value : null,
         this.actionOptionList[0] &&
         (this.actionOptionList[0].objects[0] || this.actionOptionList[0].objects[0] === 0)
