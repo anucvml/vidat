@@ -129,12 +129,6 @@ export default {
     return {
       columnList,
       pagination: { rowsPerPage: 0 },
-      desert: {
-        Icecream: false,
-        Eclair: true,
-        Cupcake: false,
-        Gingerbread: false,
-      },
     }
   },
   methods: {
