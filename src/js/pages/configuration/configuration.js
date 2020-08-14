@@ -10,17 +10,20 @@ const CONFIGURATION_TEMPLATE = `
   </div>
   <object-label-table></object-label-table>
   <action-label-table></action-label-table>
+  <skeleton-type-table></skeleton-type-table>
 </div>
 `
 
 import objectLabelTable from './components/objectLabelTable.js'
 import actionLabelTable from './components/actionLabelTable.js'
+import skeletonTypeTable from './components/skeletonTypeTable.js'
 import utils from '../../libs/utils.js'
 
 export default {
   components: {
     objectLabelTable,
     actionLabelTable,
+    skeletonTypeTable,
   },
   data: () => {
     return {}

@@ -163,6 +163,174 @@ export default {
           'objects': [0],
         },
       ],
+    skeletonTypeData: JSON.parse(localStorage.getItem('skeletonTypeData')) ||
+      [
+        {
+          id: 0,
+          name: 'human',
+          description: 'open pose',
+          color: '#00FF00',
+          pointList: [
+            {
+              id: 0,
+              name: 'nose',
+              x: 0,
+              y: -30,
+            },
+            {
+              id: 1,
+              name: 'left eye',
+              x: -3,
+              y: -35,
+            },
+            {
+              id: 2,
+              name: 'right eye',
+              x: 3,
+              y: -35,
+            },
+            {
+              id: 3,
+              name: 'left ear',
+              x: -7,
+              y: -32,
+            },
+            {
+              id: 4,
+              name: 'right ear',
+              x: 7,
+              y: 32,
+            },
+            {
+              id: 5,
+              name: 'left shoulder',
+              x: -13,
+              y: -20,
+            },
+            {
+              id: 6,
+              name: 'right shoulder',
+              x: 13,
+              y: -20,
+            },
+            {
+              id: 7,
+              name: 'left wrist',
+              x: -15,
+              y: 10,
+            },
+            {
+              id: 8,
+              name: 'right wrist',
+              x: 15,
+              y: 10,
+            },
+            {
+              id: 9,
+              name: 'left hip',
+              x: -8,
+              y: 10,
+            },
+            {
+              id: 10,
+              name: 'right hip',
+              x: 8,
+              y: 10,
+            },
+            {
+              id: 11,
+              name: 'left knee',
+              x: -9,
+              y: 30,
+            },
+            {
+              id: 12,
+              name: 'right knee',
+              x: 9,
+              y: 30,
+            },
+            {
+              id: 13,
+              name: 'left ankle',
+              x: -10,
+              y: 45,
+            },
+            {
+              id: 14,
+              name: 'right ankle',
+              x: 10,
+              y: 45,
+            },
+          ],
+          edgeList: [
+            {
+              id: 0,
+              from: 0,
+              to: 1,
+            },
+            {
+              id: 1,
+              from: 0,
+              to: 2,
+            },
+            {
+              id: 2,
+              from: 0,
+              to: 3,
+            },
+            {
+              id: 3,
+              from: 0,
+              to: 4,
+            },
+            {
+              id: 4,
+              from: 0,
+              to: 9,
+            },
+            {
+              id: 5,
+              from: 0,
+              to: 10,
+            },
+            {
+              id: 6,
+              from: 5,
+              to: 7,
+            },
+            {
+              id: 7,
+              from: 5,
+              to: 6,
+            },
+            {
+              id: 8,
+              from: 6,
+              to: 8,
+            },
+            {
+              id: 9,
+              from: 9,
+              to: 11,
+            },
+            {
+              id: 10,
+              from: 11,
+              to: 13,
+            },
+            {
+              id: 11,
+              from: 10,
+              to: 12,
+            },
+            {
+              id: 12,
+              from: 12,
+              to: 14,
+            },
+          ],
+        },
+      ],
     preferenceData: JSON.parse(localStorage.getItem('preferenceData')) ||
       {
         objects: true,
@@ -184,6 +352,10 @@ export default {
     setActionLabelData (state, value) {
       state.actionLabelData = value
       localStorage.setItem('actionLabelData', JSON.stringify(value))
+    },
+    setSkeletonTypeData (state, value) {
+      state.skeletonTypeData = value
+      localStorage.setItem('skeletonTypeData', JSON.stringify(value))
     },
     setPreferenceData (state, value) {
       state.preferenceData = value
