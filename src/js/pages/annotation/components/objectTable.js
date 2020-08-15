@@ -8,7 +8,7 @@ const OBJECT_TABLE_TEMPLATE = `
   :pagination.sync="pagination"
 >
   <template v-slot:top="props">
-    <div class="col-2 q-table__title">Objects</div>
+    <div class="col-6 q-table__title">Objects</div>
     <q-space></q-space>
     <q-btn icon="clear_all" @click="handleClearAll">CLEAR</q-btn>
   </template>

@@ -8,7 +8,7 @@ const ACTION_TABLE_TEMPLATE = `
   :pagination.sync="pagination"
 >
   <template v-slot:top="props">
-    <div class="col-4 q-table__title">Actions / Video Segments</div>
+    <div class="col-6 q-table__title">Actions / Video Segments</div>
     <q-space></q-space>
     <q-btn-group>
       <q-btn icon="add" @click="handleAdd">ADD</q-btn>

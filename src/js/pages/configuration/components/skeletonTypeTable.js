@@ -1,11 +1,15 @@
 const SKELETON_TYPE_TABLE_TEMPLATE = `
 <q-table
-  title="Skeleton Types"
   :data="tableData"
   :columns="columnList"
   :pagination.sync="pagination"
   row-key="id"
 >
+  <template v-slot:top="props">
+    <div class="col-6 q-table__title">Skeleton Types</div>
+    <q-space></q-space>
+    <q-btn icon="add" @click="handleAdd">Add</q-btn>
+  </template>
   <template v-slot:header="props">
     <q-tr :props="props">
       <q-th auto-width></q-th>
@@ -94,7 +98,6 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
         <q-table
           flat
           dense
-          title="Points"
           :data="props.row.pointList"
           :columns="[
             { name: 'name', align: 'center', label: 'name', field: 'name' },
@@ -105,6 +108,11 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
           :pagination.sync="pagination"
           row-key="id"
         >
+          <template v-slot:top="pointProps">
+            <div class="col-6 q-table__title">Points</div>
+            <q-space></q-space>
+            <q-btn icon="add" @click="handleAddPoint(props)">Add</q-btn>
+          </template>
           <template v-slot:body="pointProps">
             <q-tr :props="pointProps">
               <q-td key="name" :props="pointProps" style="font-size: 14px">
@@ -152,22 +160,10 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
               </q-td>
             </q-tr>
           </template>
-          <template v-slot:bottom>
-            <q-btn
-              icon="add"
-              color="primary"
-              flat
-              dense
-              style="margin: 0 auto; width: 100%"
-              @click="handleAddPoint(props)"
-            ></q-btn>
-          </template>
         </q-table>
-
         <q-table
           flat
           dense
-          title="Edges"
           :data="props.row.edgeList"
           :columns="[
             { name: 'from', align: 'left', label: 'from', field: 'from' },
@@ -177,6 +173,11 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
           :pagination.sync="pagination"
           row-key="id"
         >
+          <template v-slot:top="edgeProps">
+            <div class="col-6 q-table__title">Edges</div>
+            <q-space></q-space>
+            <q-btn icon="add" @click="handleAddEdge(props)">Add</q-btn>
+          </template>
           <template v-slot:body="edgeProps">
             <q-tr :props="edgeProps">
               <q-td key="from" :props="edgeProps" style="font-size: 14px">
@@ -207,29 +208,9 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
               </q-td>
             </q-tr>
           </template>
-          <template v-slot:bottom>
-            <q-btn
-              icon="add"
-              color="primary"
-              flat
-              dense
-              style="margin: 0 auto; width: 100%"
-              @click="handleAddEdge(props)"
-            ></q-btn>
-          </template>
         </q-table>
       </q-td>
     </q-tr>
-  </template>
-  <template v-slot:bottom>
-    <q-btn
-      icon="add"
-      color="primary"
-      flat
-      dense
-      style="margin: 0 auto; width: 100%"
-      @click="handleAdd()"
-    ></q-btn>
   </template>
 </q-table>
 `
@@ -265,7 +246,7 @@ export default {
       })
     },
     handleAdd () {
-      let lastId = this.tableData[this.tableData.length - 1].id
+      let lastId = this.tableData.length ? this.tableData[this.tableData.length - 1].id : -1
       this.tableData.push({
         id: lastId + 1,
         name: 'new',
@@ -307,7 +288,6 @@ export default {
     },
     handleAddEdge (props) {
       const edgeList = props.row.edgeList
-      console.log(edgeList, edgeList.length)
       let lastId = edgeList.length ? edgeList[edgeList.length - 1].id : -1
       console.log(lastId)
       edgeList.push({

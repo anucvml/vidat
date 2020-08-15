@@ -2,10 +2,14 @@ const OBJECT_LABEL_TABLE_TEMPLATE = `
 <q-table
   :data="tableData"
   :columns="columnList"
-  title="Object Labels"
   row-key="id"
   :pagination.sync="pagination"
 >
+  <template v-slot:top="props">
+    <div class="col-6 q-table__title">Object Labels</div>
+    <q-space></q-space>
+    <q-btn icon="add" @click="handleAdd">Add</q-btn>
+  </template>
   <template v-slot:body="props">
     <q-tr :props="props">
       <q-td key="name" :props="props" style="font-size: 14px">
@@ -55,16 +59,6 @@ const OBJECT_LABEL_TABLE_TEMPLATE = `
       </q-td>
     </q-tr>
   </template>
-  <template v-slot:bottom>
-    <q-btn
-      icon="add"
-      color="primary"
-      flat
-      dense
-      style="margin: 0 auto; width: 100%"
-      @click="handleAdd()"
-    ></q-btn>
-  </template>
 </q-table>
 `
 
@@ -96,7 +90,7 @@ export default {
       })
     },
     handleAdd () {
-      let lastId = this.tableData[this.tableData.length - 1].id
+      let lastId = this.tableData.length ? this.tableData[this.tableData.length - 1].id : -1
       this.tableData.push({
         id: lastId + 1,
         name: 'new',
