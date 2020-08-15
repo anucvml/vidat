@@ -38,18 +38,6 @@ const SKELETON_TABLE_TEMPLATE = `
       <q-td key="type" :props="props">
         {{ props.row.type.name }}
       </q-td>
-      <q-td key="label" :props="props">
-        <q-select
-          v-model="props.row.labelId"
-          :options="labelOption"
-          dense
-          options-dense
-          borderless
-          emit-value
-          map-options
-          @input="handleLabelInput(props.row)"
-        ></q-select>
-      </q-td>
       <q-td key="color" :props="props">
         <q-chip
           outline
@@ -156,7 +144,6 @@ import utils from '../../../libs/utils.js'
 
 const columnList = [
   { name: 'type', align: 'center', label: 'type', field: 'type' },
-  { name: 'label', align: 'center', label: 'label', field: 'labelId' },
   { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 120px' },
   { name: 'instance', align: 'center', label: 'instance', field: 'instance' },
   { name: 'score', align: 'center', label: 'score', field: 'score' },
@@ -177,9 +164,6 @@ export default {
     ...Vuex.mapMutations([
       'setAnnotationList',
     ]),
-    handleLabelInput (row) {
-      row.color = this.labelOption[row.labelId].color
-    },
     handleUp (row) {
       for (let i = 0; i < this.skeletonAnnotationList.length; i++) {
         if (this.skeletonAnnotationList[i] === row) {
@@ -231,18 +215,6 @@ export default {
     },
     skeletonAnnotationList () {
       return this.$store.state.annotation.skeletonAnnotationListMap[this.currentFrame]
-    },
-    labelOption () {
-      const objectLabelData = this.$store.state.settings.objectLabelData
-      let labelOption = []
-      for (let objectLabel of objectLabelData) {
-        labelOption.push({
-          label: objectLabel.name,
-          value: objectLabel.id,
-          color: objectLabel.color,
-        })
-      }
-      return labelOption
     },
   },
   template: SKELETON_TABLE_TEMPLATE,
