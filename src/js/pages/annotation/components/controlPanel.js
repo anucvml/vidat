@@ -219,6 +219,8 @@ export default {
               const leftPoint = leftAnnotation.pointList[k]
               const rightPoint = rightAnnotation.pointList[k]
               newPointList.push({
+                id: leftPoint.id,
+                name: leftPoint.name,
                 x: leftPoint.x * (1 - ratio) + rightPoint.x * ratio,
                 y: leftPoint.y * (1 - ratio) + rightPoint.y * ratio,
               })
@@ -226,7 +228,7 @@ export default {
             const newSkeletonAnnotation = new SkeletonAnnotation(
               leftAnnotation.centerX * (1 - ratio) + rightAnnotation.centerX * ratio,
               leftAnnotation.centerY * (1 - ratio) + rightAnnotation.centerY * ratio,
-              leftAnnotation.labelId,
+              leftAnnotation.typeId,
               leftAnnotation.color,
               leftAnnotation.instance,
               leftAnnotation.score,
