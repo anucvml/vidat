@@ -74,7 +74,7 @@ const ACTION_LABEL_TABLE_TEMPLATE = `
           dense
           style="width: 100%"
           :disabled="props.row.name === 'default'"
-          @click="handleDelete(props.key)"
+          @click="handleDelete(props)"
         ></q-btn>
       </q-td>
     </q-tr>
@@ -135,21 +135,13 @@ export default {
     saveTableData () {
       this.$store.commit('setActionLabelData', this.tableData)
     },
-    handleDelete (id) {
-      let targetIndex
-      for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].id === id) {
-          targetIndex = i
-          break
-        }
-      }
+    handleDelete (props) {
       utils.confirm(
-        'Are you sure to delete label ' + this.tableData[targetIndex].name + ' ?',
+        'Are you sure to delete label ' + props.row.name + ' ?',
       ).onOk(() => {
-        this.tableData.splice(targetIndex, 1)
+        this.tableData.splice(this.tableData.findIndex(type => type.id === props.key), 1)
         this.saveTableData()
       })
-
     },
     handleAdd () {
       let lastId = this.tableData[this.tableData.length - 1].id
