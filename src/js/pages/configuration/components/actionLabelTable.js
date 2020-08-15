@@ -84,8 +84,7 @@ const ACTION_LABEL_TABLE_TEMPLATE = `
     </q-tr>
     <q-tr v-show="props.expand" :props="props">
       <q-td colspan="100%" style="white-space: normal;">
-        <div class="row q-mb-sm">
-          <q-space></q-space>
+        <div class="q-mb-sm">
           <q-btn-group dense flat>
             <q-btn icon="apps" @click="handleSelectAll(props.row)"></q-btn>
             <q-btn icon="clear_all" @click="handleClearAll(props.row)"></q-btn>

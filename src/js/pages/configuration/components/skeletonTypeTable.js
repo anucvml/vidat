@@ -95,6 +95,14 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
     </q-tr>
     <q-tr v-show="props.expand" :props="props">
       <q-td colspan="100%" style="padding: 0;">
+        <div class="q-px-md">
+          <div class="q-table__title">
+            Preview
+          </div>
+          <div style="width: 30%; margin: 0 auto;">
+            <skeleton-type-preview class="full-width" :typeId="props.key"></skeleton-type-preview>
+          </div>
+        </div>
         <q-table
           flat
           dense
@@ -219,12 +227,6 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
             </q-tr>
           </template>
         </q-table>
-        <div class="q-px-md">
-          <div class="q-table__title">
-            Preview
-          </div>
-          <skeleton-type-preview class="full-width" :typeId="props.key"></skeleton-type-preview>
-        </div>
       </q-td>
     </q-tr>
   </template>
