@@ -56,7 +56,7 @@ const VIDEO_PANEL_TEMPLATE = `
             emit-value
             map-options
             :options="labelOption"
-            v-if="annotationList.length"
+            v-if="annotationList.length && (mode === 'object' || mode === 'region')"
             v-model="annotationList[annotationList.length - 1].labelId"
           ></q-select>
           <q-input
