@@ -199,7 +199,7 @@ export default {
               id: 4,
               name: 'right ear',
               x: 7,
-              y: 32,
+              y: -32,
             },
             {
               id: 5,

@@ -35,8 +35,8 @@ const SKELETON_TABLE_TEMPLATE = `
           :icon="props.expand ? 'expand_more' : 'chevron_right'"
         ></q-btn>
       </q-td>
-      <q-td key="ratio" :props="props">
-        {{ props.row.ratio }}
+      <q-td key="type" :props="props">
+        {{ props.row.type.name }}
       </q-td>
       <q-td key="label" :props="props">
         <q-select
@@ -155,7 +155,7 @@ const SKELETON_TABLE_TEMPLATE = `
 import utils from '../../../libs/utils.js'
 
 const columnList = [
-  { name: 'ratio', align: 'center', label: 'ratio', field: 'ratio' },
+  { name: 'type', align: 'center', label: 'type', field: 'type' },
   { name: 'label', align: 'center', label: 'label', field: 'labelId' },
   { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 120px' },
   { name: 'instance', align: 'center', label: 'instance', field: 'instance' },

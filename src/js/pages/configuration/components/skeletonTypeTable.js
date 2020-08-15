@@ -100,6 +100,7 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
           dense
           :data="props.row.pointList"
           :columns="[
+            { name: 'id', align: 'center', label: 'id', field: 'id' },
             { name: 'name', align: 'center', label: 'name', field: 'name' },
             { name: 'x', align: 'left', label: 'x', field: 'x' },
             { name: 'y', align: 'left', label: 'y', field: 'y' },
@@ -115,6 +116,9 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
           </template>
           <template v-slot:body="pointProps">
             <q-tr :props="pointProps">
+              <q-td key="id" :props="pointProps" style="font-size: 14px">
+                {{ pointProps.row.id }}
+              </q-td>
               <q-td key="name" :props="pointProps" style="font-size: 14px">
                 {{ pointProps.row.name }}
                 <q-popup-edit

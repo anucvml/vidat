@@ -43,6 +43,19 @@ const CONTROL_PANEL_TEMPLATE = `
       ></q-select>
     </q-item-section>
   </q-item>
+  <q-item v-if="mode === 'skeleton'">
+    <q-item-section>
+      <q-select
+        v-model="skeletonTypeId"
+        outlined
+        stack-label
+        dense
+        options-dense
+        map-options
+        :options="skeletonTypeOptions"
+      ></q-select>
+    </q-item-section>
+  </q-item>
   <q-item dense>
     <q-item-section class="text-center">Options</q-item-section>
   </q-item>
@@ -76,6 +89,7 @@ export default {
   methods: {
     ...Vuex.mapMutations([
       'setMode',
+      'setSkeletonTypeId',
       'setLockSliders',
       'setGrayscale',
       'setShowPopup',
@@ -252,6 +266,14 @@ export default {
         this.setMode(value)
       },
     },
+    skeletonTypeId: {
+      get () {
+        return this.$store.state.annotation.skeletonTypeId
+      },
+      set (value) {
+        this.setSkeletonTypeId(value.value)
+      },
+    },
     lockSliders: {
       get () {
         return this.$store.state.settings.lockSliders
@@ -311,6 +333,14 @@ export default {
         ret.push('skeleton')
       }
       return ret
+    },
+    skeletonTypeOptions () {
+      return this.$store.state.settings.skeletonTypeData.map(type => {
+        return {
+          label: type.name,
+          value: type.id,
+        }
+      })
     },
   },
   template: CONTROL_PANEL_TEMPLATE,

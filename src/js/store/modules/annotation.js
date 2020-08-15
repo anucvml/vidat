@@ -13,6 +13,7 @@ export default {
     rightCurrentFrame: 50,
     cachedFrameList: [],
     mode: 'object', // 'object', 'region', 'skeleton'
+    skeletonTypeId: 0,
     objectAnnotationListMap: {},
     regionAnnotationListMap: {},
     skeletonAnnotationListMap: {},
@@ -80,6 +81,9 @@ export default {
     },
     setMode (state, value) {
       Vue.set(state, 'mode', value)
+    },
+    setSkeletonTypeId (state, value) {
+      Vue.set(state, 'skeletonTypeId', value)
     },
     setObjectAnnotationListMap (state, value) {
       Vue.set(state, 'objectAnnotationListMap', value)

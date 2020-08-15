@@ -452,7 +452,7 @@ export default {
         }
         // creating a skeleton
         if (!found && !this.createContext) {
-          const skeletonAnnotation = new SkeletonAnnotation(mouseX, mouseY)
+          const skeletonAnnotation = new SkeletonAnnotation(mouseX, mouseY, this.skeletonTypeId)
           this.createContext = {
             skeletonAnnotation: skeletonAnnotation,
             mouseDownX: mouseX,
@@ -631,6 +631,9 @@ export default {
   computed: {
     zoom () {
       return this.$store.state.annotation.zoom
+    },
+    skeletonTypeId () {
+      return this.$store.state.annotation.skeletonTypeId
     },
     video () {
       return this.$store.state.annotation.video
