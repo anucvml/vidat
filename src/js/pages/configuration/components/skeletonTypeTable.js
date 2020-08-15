@@ -100,7 +100,6 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
           dense
           :data="props.row.pointList"
           :columns="[
-            { name: 'id', align: 'center', label: 'id', field: 'id' },
             { name: 'name', align: 'center', label: 'name', field: 'name' },
             { name: 'x', align: 'left', label: 'x', field: 'x' },
             { name: 'y', align: 'left', label: 'y', field: 'y' },
@@ -116,9 +115,6 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
           </template>
           <template v-slot:body="pointProps">
             <q-tr :props="pointProps">
-              <q-td key="id" :props="pointProps" style="font-size: 14px">
-                {{ pointProps.row.id }}
-              </q-td>
               <q-td key="name" :props="pointProps" style="font-size: 14px">
                 {{ pointProps.row.name }}
                 <q-popup-edit
@@ -185,20 +181,30 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
           <template v-slot:body="edgeProps">
             <q-tr :props="edgeProps">
               <q-td key="from" :props="edgeProps" style="font-size: 14px">
-                <q-input
-                  v-model.number="edgeProps.row.from"
-                  borderless
+                <q-select
+                  v-model="edgeProps.row.from"
+                  stack-label
                   dense
+                  options-dense
+                  borderless
+                  map-options
+                  emit-value
+                  :options="pointOptions[props.key]"
                   @input="saveTableData"
-                ></q-input>
+                ></q-select>
               </q-td>
               <q-td key="to" :props="edgeProps" style="font-size: 14px">
-                <q-input
-                  v-model.number="edgeProps.row.to"
-                  borderless
+                <q-select
+                  v-model="edgeProps.row.to"
+                  stack-label
                   dense
+                  options-dense
+                  borderless
+                  map-options
+                  emit-value
+                  :options="pointOptions[props.key]"
                   @input="saveTableData"
-                ></q-input>
+                ></q-select>
               </q-td>
               <q-td key="delete" :props="edgeProps">
                 <q-btn
@@ -293,11 +299,10 @@ export default {
     handleAddEdge (props) {
       const edgeList = props.row.edgeList
       let lastId = edgeList.length ? edgeList[edgeList.length - 1].id : -1
-      console.log(lastId)
       edgeList.push({
         id: lastId + 1,
-        x: 0,
-        y: 0,
+        from: -1,
+        to: -1,
       })
       this.saveTableData()
     },
@@ -305,6 +310,22 @@ export default {
   computed: {
     tableData () {
       return this.$store.state.settings.skeletonTypeData
+    },
+    pointOptions () {
+      const ret = {}
+      for (const type of this.tableData) {
+        ret[type.id] = type.pointList.map(point => {
+          return {
+            label: point.name,
+            value: point.id,
+          }
+        })
+        ret[type.id].unshift({
+          label: 'center',
+          value: -1,
+        })
+      }
+      return ret
     },
   },
   template: SKELETON_TYPE_TABLE_TEMPLATE,
