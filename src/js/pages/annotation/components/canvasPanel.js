@@ -43,7 +43,7 @@ const VIDEO_PANEL_TEMPLATE = `
         @click="$store.commit('setZoom', !zoom)"
         :icon="zoom ? 'zoom_out' : 'zoom_in'"
       ></q-btn>
-      <q-badge v-if="status" style="position: absolute; bottom: 1px; right: 1px; opacity: 0.6;">
+      <q-badge v-if="preference.actions && status" style="position: absolute; bottom: 1px; right: 1px; opacity: 0.6;">
         <span v-if="status.message">{{ status.message }},</span>
         <span>{{status.x | toFixed2}},{{status.y | toFixed2}}</span>
       </q-badge>
@@ -562,12 +562,32 @@ export default {
         return 'crosshair'
       }
     },
-    draw (annotationList) {
-      if (!annotationList) {
-        this.annotationList = []
-      } else {
-        for (let annotation of annotationList) {
-          annotation.draw(this.ctx)
+    draw () {
+      if (this.preference.objects) {
+        if (!this.objectAnnotationList) {
+          this.objectAnnotationList = []
+        } else {
+          for (let annotation of this.objectAnnotationList) {
+            annotation.draw(this.ctx)
+          }
+        }
+      }
+      if (this.preference.regions) {
+        if (!this.regionAnnotationList) {
+          this.regionAnnotationList = []
+        } else {
+          for (let annotation of this.regionAnnotationList) {
+            annotation.draw(this.ctx)
+          }
+        }
+      }
+      if (this.preference.skeletons) {
+        if (!this.skeletonAnnotationList) {
+          this.skeletonAnnotationList = []
+        } else {
+          for (let annotation of this.skeletonAnnotationList) {
+            annotation.draw(this.ctx)
+          }
         }
       }
     },
@@ -582,9 +602,9 @@ export default {
       function () {
         return eval('this.$store.state.annotation.' + this.mode + 'AnnotationListMap[this.currentFrame]')
       },
-      function (newValue) {
+      function () {
         this.clear()
-        this.draw(newValue)
+        this.draw()
       },
       {
         immediate: true,
@@ -695,6 +715,42 @@ export default {
         this.setAnnotationList({
           index: this.currentFrame,
           mode: this.mode,
+          annotationList: value,
+        })
+      },
+    },
+    objectAnnotationList: {
+      get () {
+        return eval('this.$store.state.annotation.objectAnnotationListMap[this.currentFrame]')
+      },
+      set (value) {
+        this.setAnnotationList({
+          index: this.currentFrame,
+          mode: 'object',
+          annotationList: value,
+        })
+      },
+    },
+    regionAnnotationList: {
+      get () {
+        return eval('this.$store.state.annotation.regionAnnotationListMap[this.currentFrame]')
+      },
+      set (value) {
+        this.setAnnotationList({
+          index: this.currentFrame,
+          mode: 'region',
+          annotationList: value,
+        })
+      },
+    },
+    skeletonAnnotationList: {
+      get () {
+        return eval('this.$store.state.annotation.skeletonAnnotationListMap[this.currentFrame]')
+      },
+      set (value) {
+        this.setAnnotationList({
+          index: this.currentFrame,
+          mode: 'skeleton',
           annotationList: value,
         })
       },
