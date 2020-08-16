@@ -8,7 +8,7 @@ export default {
       fps: 10,
     },
     secondPerKeyframe: 5,
-    keyframeList: {},
+    keyframeList: [],
     leftCurrentFrame: 0,
     rightCurrentFrame: 50,
     cachedFrameList: [],
@@ -44,15 +44,13 @@ export default {
     },
     closeVideo (state) {
       Vue.set(state.video, 'src', null)
-      Vue.set(state.video, 'fps', 10)
+      Vue.set(state.video, 'duration', null)
       Vue.set(state.video, 'frames', null)
       Vue.set(state, 'secondPerKeyframe', 5)
-      Vue.set(state, 'keyframeList', {})
+      Vue.set(state, 'keyframeList', [])
       Vue.set(state, 'leftCurrentFrame', 0)
-      Vue.set(state, 'rightCurrentFrame', 50)
-      Vue.set(state, 'mode', 'object')
-      Vue.set(state, 'lockSliders', false)
-      Vue.set(state, 'grayscale', false)
+      Vue.set(state, 'rightCurrentFrame', state.video.fps * 5)
+      Vue.set(state, 'cachedFrameList', [])
     },
     setSecondPerKeyframe (state, value) {
       Vue.set(state, 'secondPerKeyframe', value)

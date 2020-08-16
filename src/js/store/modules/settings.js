@@ -333,6 +333,7 @@ export default {
       ],
     preferenceData: JSON.parse(localStorage.getItem('preferenceData')) ||
       {
+        defaultFps: 10,
         objects: true,
         regions: true,
         skeletons: true,
@@ -360,6 +361,9 @@ export default {
     setPreferenceData (state, value) {
       state.preferenceData = value
       localStorage.setItem('preferenceData', JSON.stringify(value))
+    },
+    setDefaultFps (state, value) {
+      Vue.set(state.preferenceData, 'defaultFps', value)
     },
     setShowObjects (state, value) {
       Vue.set(state.preferenceData, 'objects', value)

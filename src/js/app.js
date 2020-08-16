@@ -96,6 +96,7 @@ const app = new Vue({
   methods: {
     ...Vuex.mapMutations([
       'setMode',
+      'setDefaultFps',
       'setShowObjects',
       'setShowRegions',
       'setShowSkeletons',
@@ -114,6 +115,13 @@ const app = new Vue({
       URLParameter[key] = value
     }
     // set options in silence
+    const defaultFps = URLParameter['defaultFps']
+    if (defaultFps) {
+      const fps = parseInt(defaultFps, 10)
+      if (fps >= 1 && fps <= 60 && fps % 1 === 0) {
+        this.setDefaultFps(fps)
+      }
+    }
     const showObjects = URLParameter['showObjects']
     if (showObjects) {
       if (showObjects.toLowerCase() === 'true') {

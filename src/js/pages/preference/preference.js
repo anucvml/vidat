@@ -8,6 +8,21 @@ const PREFERENCE_TEMPLATE = `
   <q-list>
     <q-item tag="label" v-ripple>
       <q-item-section>
+        <q-item-label>Default FPS</q-item-label>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-input
+          dense
+          borderless
+          v-model.number="preference.defaultFps"
+          type="number"
+          @input="handleSavePreference"
+          :rules="[fps => fps >= 1 && fps <= 60 && fps % 1 === 0 || 'Integer between 1 and 60.']"
+        ></q-input>
+      </q-item-section>
+    </q-item>
+    <q-item tag="label" v-ripple>
+      <q-item-section>
         <q-item-label>Objects</q-item-label>
       </q-item-section>
       <q-item-section avatar>
@@ -78,6 +93,7 @@ export default {
     ]),
     handleRestore () {
       this.setPreferenceData({
+        defaultFps: 10,
         objects: true,
         regions: true,
         skeletons: true,

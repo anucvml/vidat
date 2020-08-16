@@ -133,24 +133,15 @@ export default {
       'setSkeletonAnnotationListMap',
     ]),
     handleOpenWithFPS () {
-      utils.prompt(
-        'FPS',
-        'Please enter the FPS you want. Integer between 1 and 60.',
-        10,
-        'number').onOk((fps) => {
-        if (fps >= 1 && fps <= 60 && fps % 1 === 0) {
-          this.setVideoFPS(parseInt(fps))
-          utils.importVideo().then(videoSrc => {
-            this.setVideoSrc(videoSrc)
-          })
-        } else {
-          utils.notify('Please enter an integer between 1 and 60.')
-        }
+      this.setVideoFPS(this.$store.state.settings.preferenceData.defaultFps)
+      utils.importVideo().then(videoSrc => {
+        this.setVideoSrc(videoSrc)
       })
     },
     handleOpen () {
       if (this.video.src) {
         utils.confirm('Are you sure to open a new video? You will LOSE all data!').onOk(() => {
+          this.closeVideo()
           this.handleOpenWithFPS()
         })
       } else {
