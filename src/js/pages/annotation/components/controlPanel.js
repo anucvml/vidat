@@ -214,6 +214,10 @@ export default {
               leftAnnotation.score,
             ))
           } else if (this.mode === 'skeleton') {
+            if (leftAnnotation.typeId !== rightAnnotation.typeId) {
+              utils.notify('Interpolate between different types of skeletons not supported!')
+              return
+            }
             let newPointList = []
             for (let k = 0; k < leftAnnotation.pointList.length; k++) {
               const leftPoint = leftAnnotation.pointList[k]
