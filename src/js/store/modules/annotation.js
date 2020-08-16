@@ -65,6 +65,9 @@ export default {
       Vue.set(state, 'leftCurrentFrame', 0)
       Vue.set(state, 'rightCurrentFrame', value * state.video.fps)
     },
+    setKeyframeList (state, value) {
+      Vue.set(state, 'keyframeList', value)
+    },
     setLeftCurrentFrame (state, value) {
       Vue.set(state, 'leftCurrentFrame', value)
       if (!state.cachedFrameList[value]) {
@@ -79,6 +82,9 @@ export default {
     },
     cacheFrame (state, value) {
       Vue.set(state.cachedFrameList, value['index'], value['frame'])
+    },
+    setCacheFrameList (state, value) {
+      Vue.set(state.cachedFrameList, value)
     },
     setMode (state, value) {
       Vue.set(state, 'mode', value)

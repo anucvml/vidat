@@ -362,7 +362,7 @@ class SkeletonAnnotation extends Annotation {
       this.instance,
       this.score,
     )
-    skeletonAnnotation.ratio = this.ratio
+    skeletonAnnotation._ratio = this._ratio
     skeletonAnnotation.pointList = utils.deepClone(this.pointList)
     return skeletonAnnotation
   }

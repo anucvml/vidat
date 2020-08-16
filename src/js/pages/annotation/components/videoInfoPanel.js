@@ -102,6 +102,7 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
 
 import utils from '../../../libs/utils.js'
 import {
+  ActionAnnotation,
   ObjectAnnotation,
   RegionAnnotation,
   SkeletonAnnotation,
@@ -123,14 +124,20 @@ export default {
       'setVideoWidth',
       'setVideoHeight',
       'setSecondPerKeyframe',
+      'setKeyframeList',
       'setLeftCurrentFrame',
       'setRightCurrentFrame',
       'cacheFrame',
       'setVideoFPS',
       'closeVideo',
+      'setCacheFrameList',
       'setObjectAnnotationListMap',
       'setRegionAnnotationListMap',
       'setSkeletonAnnotationListMap',
+      'setActionAnnotationList',
+      'importObjectLabelData',
+      'importActionLabelData',
+      'importSkeletonTypeData',
     ]),
     handleOpenWithFPS () {
       this.setVideoFPS(this.$store.state.settings.preferenceData.defaultFps)
@@ -271,83 +278,160 @@ export default {
         'Are you sure to load? This would override current data!',
       ).onOk(() => {
         utils.importFile().then(file => {
-            const fileData = JSON.parse(file)
+          try {
             const {
               version,
-              fps,
-              frames,
+              annotation,
+              configuration,
+            } = JSON.parse(file)
+            // version
+            if (version !== VERSION) {
+              utils.notify('Version mismatched, weird things are likely to happen! ' + version + '!=' + VERSION)
+            }
+            // annotation
+            const {
+              video,
               secondPerKeyframe,
-              keyframes,
+              keyframeList,
               objectAnnotationListMap,
               regionAnnotationListMap,
               skeletonAnnotationListMap,
-            } = fileData
-            // Check the json file
-            let isOk = true
-            if (version !== VERSION) {
-              utils.notify('Version mismatch, weird things likely to happen! ' + version + '!=' + VERSION)
-            }
-            if (fps !== this.video.fps) {
-              isOk = false
-              utils.notify('FPS mismatch, unable to load annotations! ' + fps + '!=' + this.video.fps)
-            }
-            if (frames !== this.video.frames) {
-              isOk = false
-              utils.notify('#frames mismatch, unable to load annotations! ' + frames + '!=' + this.video.frames)
-            }
-            if (isOk) {
-              this.setSecondPerKeyframe(secondPerKeyframe)
-              // TODO: configuration
-              // objectAnnotationListMap
-              for (let frame in objectAnnotationListMap) {
-                const objectAnnotationList = objectAnnotationListMap[frame]
-                for (let i in objectAnnotationList) {
-                  let objectAnnotation = objectAnnotationList[i]
-                  objectAnnotationList[i] = new ObjectAnnotation(
-                    objectAnnotation.x,
-                    objectAnnotation.y,
-                    objectAnnotation.width,
-                    objectAnnotation.height,
-                    objectAnnotation.labelId,
-                    objectAnnotation.color,
-                    objectAnnotation.instance,
-                    objectAnnotation.score)
-                }
+              actionAnnotationList,
+            } = annotation
+            /// video
+            this.setVideoFPS(video.fps)
+            this.setCacheFrameList([])
+            /// secondPerKeyframe
+            this.setSecondPerKeyframe(secondPerKeyframe)
+            /// keyframeList
+            this.setKeyframeList(keyframeList)
+            this.setLeftCurrentFrame(0)
+            this.setRightCurrentFrame(keyframeList.length > 2 ? keyframeList[1] : keyframeList[0])
+            /// objectAnnotationListMap
+            for (let frame in objectAnnotationListMap) {
+              const objectAnnotationList = objectAnnotationListMap[frame]
+              for (let i in objectAnnotationList) {
+                let objectAnnotation = objectAnnotationList[i]
+                objectAnnotationList[i] = new ObjectAnnotation(
+                  objectAnnotation.x,
+                  objectAnnotation.y,
+                  objectAnnotation.width,
+                  objectAnnotation.height,
+                  objectAnnotation.labelId,
+                  objectAnnotation.color,
+                  objectAnnotation.instance,
+                  objectAnnotation.score,
+                )
               }
-              this.setObjectAnnotationListMap(objectAnnotationListMap)
-              // TODO: objectAnnotationListMap
-              // TODO: regionAnnotationListMap
-              // TODO: skeletonAnnotationListMap
-              // TODO: actionAnnotationList
             }
-          },
-        )
+            this.setObjectAnnotationListMap(objectAnnotationListMap)
+            /// regionAnnotationListMap
+            for (let frame in regionAnnotationListMap) {
+              const regionAnnotationList = regionAnnotationListMap[frame]
+              for (let i in regionAnnotationList) {
+                let regionAnnotation = regionAnnotationList[i]
+                regionAnnotationList[i] = new RegionAnnotation(
+                  regionAnnotation.pointList,
+                  regionAnnotation.labelId,
+                  regionAnnotation.color,
+                  regionAnnotation.instance,
+                  regionAnnotation.score,
+                )
+              }
+            }
+            this.setRegionAnnotationListMap(regionAnnotationListMap)
+            /// skeletonAnnotationListMap
+            for (let frame in skeletonAnnotationListMap) {
+              const skeletonAnnotationList = skeletonAnnotationListMap[frame]
+              for (let i in skeletonAnnotationList) {
+                let skeletonAnnotation = skeletonAnnotationList[i]
+                const newSkeletonAnnotation = new SkeletonAnnotation(
+                  skeletonAnnotation.centerX,
+                  skeletonAnnotation.centerY,
+                  skeletonAnnotation.typeId,
+                  skeletonAnnotation.color,
+                  skeletonAnnotation.instance,
+                  skeletonAnnotation.score,
+                )
+                newSkeletonAnnotation._ratio = skeletonAnnotation._ratio
+                newSkeletonAnnotation.pointList = skeletonAnnotation.pointList
+                skeletonAnnotationList[i] = newSkeletonAnnotation
+              }
+            }
+            this.setSkeletonAnnotationListMap(skeletonAnnotationListMap)
+            /// actionAnnotationList
+            for (let i in actionAnnotationList) {
+              const actionAnnotation = actionAnnotationList[i]
+              actionAnnotationList[i] = new ActionAnnotation(
+                actionAnnotation.start,
+                actionAnnotation.end,
+                actionAnnotation.action,
+                actionAnnotation.object,
+                actionAnnotation.color,
+                actionAnnotation.description,
+              )
+            }
+            this.setActionAnnotationList(actionAnnotationList)
+            // configuration
+            const {
+              objectLabelData,
+              actionLabelData,
+              skeletonTypeData,
+            } = configuration
+            this.importObjectLabelData(objectLabelData)
+            this.importActionLabelData(actionLabelData)
+            this.importSkeletonTypeData(skeletonTypeData)
+          } catch (e) {
+            utils.notify(e.toString())
+          }
+          utils.notify('Load successfully!')
+        })
       })
     },
     handleSave () {
-      const data = {
-        version: VERSION,
-        fps: this.video.fps,
-        frames: this.video.frames,
-        secondPerKeyframe: this.secondPerKeyframe,
-        keyframes: this.keyframeList,
-        configuration: {
-          objectLabelData: this.objectLabelData,
-          actionLabelData: this.actionLabelData,
-          preferenceData: this.preferenceData,
-        },
-        annotation: {
-          objectAnnotationListMap: this.objectAnnotationListMap,
-          regionAnnotationListMap: this.regionAnnotationListMap,
-          skeletonAnnotationListMap: this.skeletonAnnotationListMap,
-          actionAnnotationList: this.actionAnnotationList,
-        },
-      }
-      Quasar.utils.exportFile(
-        'annotations.json',
-        new Blob([JSON.stringify(data)]),
-        { type: 'text/plain' },
-      )
+      utils.prompt(
+        'Save',
+        'Enter annotation filename for saving',
+        'annotations.json').onOk(filename => {
+        // remove type in each skeletonAnnotation
+        const skeletonAnnotationListMap = {}
+        for (const frame in this.skeletonAnnotationListMap) {
+          skeletonAnnotationListMap[frame] = this.skeletonAnnotationListMap[frame].map(skeletonAnnotation => {
+            return {
+              instance: skeletonAnnotation.instance,
+              score: skeletonAnnotation.score,
+              centerX: skeletonAnnotation.centerX,
+              centerY: skeletonAnnotation.centerY,
+              typeId: skeletonAnnotation.typeId,
+              color: skeletonAnnotation.color,
+              _ratio: skeletonAnnotation._ratio,
+              pointList: skeletonAnnotation.pointList,
+            }
+          })
+        }
+        const data = {
+          version: VERSION,
+          annotation: {
+            video: this.video,
+            secondPerKeyframe: this.secondPerKeyframe,
+            keyframeList: this.keyframeList,
+            objectAnnotationListMap: this.objectAnnotationListMap,
+            regionAnnotationListMap: this.regionAnnotationListMap,
+            skeletonAnnotationListMap,
+            actionAnnotationList: this.actionAnnotationList,
+          },
+          configuration: {
+            objectLabelData: this.objectLabelData,
+            actionLabelData: this.actionLabelData,
+            skeletonTypeData: this.skeletonTypeData,
+          },
+        }
+        Quasar.utils.exportFile(
+          filename,
+          new Blob([JSON.stringify(data)]),
+          { type: 'text/plain' },
+        )
+      })
     },
     nearestKeyframe (currentFrame) {
       let min = this.video.frames
@@ -441,6 +525,9 @@ export default {
     },
     actionLabelData () {
       return this.$store.state.settings.actionLabelData
+    },
+    skeletonTypeData () {
+      return this.$store.state.settings.skeletonTypeData
     },
     preferenceData () {
       return this.$store.state.settings.preferenceData
