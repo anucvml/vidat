@@ -29,32 +29,31 @@ export default {
     return {}
   },
   methods: {
+    ...Vuex.mapMutations([
+      'importObjectLabelData',
+      'importActionLabelData',
+      'importSkeletonTypeData',
+    ]),
     handleLoad () {
       utils.confirm(
         'Are you sure to load? This would override the configuration!',
       ).onOk(() => {
         utils.importFile().then(file => {
-          const fileData = JSON.parse(file)
-          let objectLabelData = []
-          let currentID = 0
-          for (const key in fileData.objectLabels) {
-            objectLabelData.push({
-              id: currentID++,
-              name: key,
-              color: fileData.objectLabels[key],
-            })
+          try {
+            const data = JSON.parse(file)
+            if (data.objectLabelData) {
+              this.importObjectLabelData(data.objectLabelData)
+            }
+            if (data.actionLabelData) {
+              this.importActionLabelData(data.actionLabelData)
+            }
+            if (data.skeletonTypeData) {
+              this.importSkeletonTypeData(data.skeletonTypeData)
+            }
+          } catch (e) {
+            utils.notify(e.toString())
           }
-          let actionLabelData = []
-          currentID = 0
-          for (const key in fileData.actionLabels) {
-            actionLabelData.push({
-              id: currentID++,
-              name: key,
-              color: fileData.actionLabels[key],
-            })
-          }
-          this.$store.commit('objectLabelData', objectLabelData)
-          this.$store.commit('actionLabelData', actionLabelData)
+          utils.notify('Load successfully!')
         })
       })
     },
@@ -63,17 +62,10 @@ export default {
         'Save',
         'Enter configuration filename for saving',
         'config.json').onOk(filename => {
-        let objectLabels = {}
-        this.$store.state.settings.objectLabelData.forEach(element => {
-          objectLabels[element.name] = element.color
-        })
-        let actionLabels = {}
-        this.$store.state.settings.actionLabelData.forEach(element => {
-          actionLabels[element.name] = element.color
-        })
         const data = {
-          objectLabels,
-          actionLabels,
+          objectLabelData: this.$store.state.settings.objectLabelData,
+          actionLabelData: this.$store.state.settings.actionLabelData,
+          skeletonTypeData: this.$store.state.settings.skeletonTypeData,
         }
         const file = new Blob([JSON.stringify(data)], { type: 'text/plain' })
         Quasar.utils.exportFile(filename, file)
