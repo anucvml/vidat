@@ -5,11 +5,12 @@ const ACTION_LABEL_TABLE_TEMPLATE = `
       <div class="col-6 q-table__title">Action Labels</div>
       <q-space></q-space>
       <q-btn-group :flat="false">
-        <q-btn @click="handleSave">Save</q-btn>
+        <q-btn icon="save" color="primary" @click="handleSave">Save</q-btn>
         <q-btn icon="close" color="negative" @click="handleCancel">Cancel</q-btn>
       </q-btn-group>
       <q-input
         class="full-width"
+        style="font-family: console;"
         v-model="json"
         borderless
         autogrow
@@ -28,7 +29,7 @@ const ACTION_LABEL_TABLE_TEMPLATE = `
       <div class="col-6 q-table__title">Action Labels</div>
       <q-space></q-space>
       <q-btn-group>
-        <q-btn icon="edit" @click="showEdit = !showEdit">Edit</q-btn>
+        <q-btn icon="edit" @click="showEdit = !showEdit; json = jsonData">Edit</q-btn>
         <q-btn icon="add" @click="handleAdd">Add</q-btn>
       </q-btn-group>
     </template>
@@ -150,8 +151,12 @@ export default {
     }
   },
   methods: {
+    ...Vuex.mapMutations([
+      'setActionLabelData',
+      'importActionLabelData',
+    ]),
     saveTableData () {
-      this.$store.commit('setActionLabelData', this.tableData)
+      this.setActionLabelData(this.tableData)
     },
     handleDelete (props) {
       utils.confirm(
@@ -190,15 +195,39 @@ export default {
       this.saveTableData()
     },
     handleSave () {
-      this.showEdit = !this.showEdit
+      if (this.json !== this.jsonData) {
+        try {
+          this.jsonData = this.json
+          this.showEdit = !this.showEdit
+        } catch (e) {
+          utils.notify(e.toString())
+        }
+      } else {
+        this.showEdit = !this.showEdit
+      }
     },
     handleCancel () {
-      this.showEdit = !this.showEdit
+      if (this.json !== this.jsonData) {
+        utils.confirm('Are you sure to leave without save?').onOk(() => {
+          this.json = this.jsonData
+          this.showEdit = !this.showEdit
+        })
+      } else {
+        this.showEdit = !this.showEdit
+      }
     },
   },
   computed: {
     tableData () {
       return this.$store.state.settings.actionLabelData
+    },
+    jsonData: {
+      get () {
+        return JSON.stringify(this.$store.state.settings.actionLabelData, null, '   ')
+      },
+      set (value) {
+        this.importActionLabelData(JSON.parse(value))
+      },
     },
     objectLabelList () {
       return this.$store.state.settings.objectLabelData
