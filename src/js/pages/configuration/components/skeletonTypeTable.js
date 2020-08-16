@@ -1,236 +1,259 @@
 const SKELETON_TYPE_TABLE_TEMPLATE = `
-<q-table
-  :data="tableData"
-  :columns="columnList"
-  :pagination.sync="pagination"
-  row-key="id"
->
-  <template v-slot:top="props">
-    <div class="col-6 q-table__title">Skeleton Types</div>
-    <q-space></q-space>
-    <q-btn icon="add" @click="handleAdd">Add</q-btn>
-  </template>
-  <template v-slot:header="props">
-    <q-tr :props="props">
-      <q-th auto-width></q-th>
-      <q-th
-        v-for="col in props.cols"
-        :key="col.name"
-        :props="props"
-      >
-        {{ col.label }}
-      </q-th>
-    </q-tr>
-  </template>
-  <template v-slot:body="props">
-    <q-tr :props="props">
-      <q-td auto-width>
-        <q-btn
-          size="sm"
-          round
-          dense
-          @click="props.expand = !props.expand"
-          :icon="props.expand ? 'expand_more' : 'chevron_right'"
-        ></q-btn>
-      </q-td>
-      <q-td key="name" :props="props" style="font-size: 14px">
-        {{ props.row.name }}
-        <q-popup-edit
-          auto-save
-          v-model="props.row.name"
-          title="Edit the type name"
-          v-if="props.row.name !== 'default'"
-          @save="saveTableData"
+<div>
+  <div v-show="showEdit">
+    <q-card class="row q-pa-md">
+      <div class="col-6 q-table__title">Skeleton Types</div>
+      <q-space></q-space>
+      <q-btn-group :flat="false">
+        <q-btn @click="handleSave">Save</q-btn>
+        <q-btn icon="close" color="negative" @click="handleCancel">Cancel</q-btn>
+      </q-btn-group>
+      <q-input
+        class="full-width"
+        v-model="json"
+        borderless
+        autogrow
+        type="textarea"
+      ></q-input>
+    </q-card>
+  </div>
+  <q-table
+    v-show="!showEdit"
+    :data="tableData"
+    :columns="columnList"
+    :pagination.sync="pagination"
+    row-key="id"
+  >
+    <template v-slot:top="props">
+      <div class="col-6 q-table__title">Skeleton Types</div>
+      <q-space></q-space>
+      <q-btn-group>
+        <q-btn icon="edit" @click="showEdit = !showEdit">Edit</q-btn>
+        <q-btn icon="add" @click="handleAdd">Add</q-btn>
+      </q-btn-group>
+    </template>
+    <template v-slot:header="props">
+      <q-tr :props="props">
+        <q-th auto-width></q-th>
+        <q-th
+          v-for="col in props.cols"
+          :key="col.name"
+          :props="props"
         >
-          <q-input
-            v-model="props.row.name"
+          {{ col.label }}
+        </q-th>
+      </q-tr>
+    </template>
+    <template v-slot:body="props">
+      <q-tr :props="props">
+        <q-td auto-width>
+          <q-btn
+            size="sm"
+            round
             dense
-            autofocus
-            counter
-            :rules="[ val => val.length != 0 || 'Please enter at least 1 character' ]"
+            @click="props.expand = !props.expand"
+            :icon="props.expand ? 'expand_more' : 'chevron_right'"
+          ></q-btn>
+        </q-td>
+        <q-td key="name" :props="props" style="font-size: 14px">
+          {{ props.row.name }}
+          <q-popup-edit
+            auto-save
+            v-model="props.row.name"
+            title="Edit the type name"
+            v-if="props.row.name !== 'default'"
+            @save="saveTableData"
+          >
+            <q-input
+              v-model="props.row.name"
+              dense
+              autofocus
+              counter
+              :rules="[ val => val.length != 0 || 'Please enter at least 1 character' ]"
+            ></q-input>
+          </q-popup-edit>
+        </q-td>
+        <q-td key="description" :props="props" style="font-size: 14px">
+          <q-input
+            v-model="props.row.description"
+            borderless
+            dense
+            @input="saveTableData"
           ></q-input>
-        </q-popup-edit>
-      </q-td>
-      <q-td key="description" :props="props" style="font-size: 14px">
-        <q-input
-          v-model="props.row.description"
-          borderless
-          dense
-          @input="saveTableData"
-        ></q-input>
-      </q-td>
-      <q-td key="color" :props="props">
-        <q-chip
-          outline
-          :style="{ 'border-color': props.row.color, 'color': props.row.color }"
-        >
-          {{ props.row.color.toUpperCase() }}
-         </q-chip>
-        <q-popup-edit
-          auto-save
-          v-model="props.row.color"
-          title="Edit the type color"
-          @save="saveTableData"
-        >
-          <q-color v-model="props.row.color"></q-color>
-        </q-popup-edit>
-      </q-td>
-      <q-td key="nPoints" :props="props" style="font-size: 14px">
-        {{ props.row.pointList.length }}
-      </q-td>
-      <q-td key="nEdges" :props="props" style="font-size: 14px">
-        {{ props.row.edgeList.length }}
-      </q-td>
-      <q-td key="delete" :props="props">
-        <q-btn
-          icon="delete"
-          color="negative"
-          flat
-          dense
-          style="width: 100%"
-          :disabled="props.row.name === 'default'"
-          @click="handleDelete(props)"
-        ></q-btn>
-      </q-td>
-    </q-tr>
-    <q-tr v-show="props.expand" :props="props">
-      <q-td colspan="100%" style="padding: 0;">
-        <div class="q-px-md">
-          <div class="q-table__title">
-            Preview
+        </q-td>
+        <q-td key="color" :props="props">
+          <q-chip
+            outline
+            :style="{ 'border-color': props.row.color, 'color': props.row.color }"
+          >
+            {{ props.row.color.toUpperCase() }}
+           </q-chip>
+          <q-popup-edit
+            auto-save
+            v-model="props.row.color"
+            title="Edit the type color"
+            @save="saveTableData"
+          >
+            <q-color v-model="props.row.color"></q-color>
+          </q-popup-edit>
+        </q-td>
+        <q-td key="nPoints" :props="props" style="font-size: 14px">
+          {{ props.row.pointList.length }}
+        </q-td>
+        <q-td key="nEdges" :props="props" style="font-size: 14px">
+          {{ props.row.edgeList.length }}
+        </q-td>
+        <q-td key="delete" :props="props">
+          <q-btn
+            icon="delete"
+            color="negative"
+            flat
+            dense
+            style="width: 100%"
+            :disabled="props.row.name === 'default'"
+            @click="handleDelete(props)"
+          ></q-btn>
+        </q-td>
+      </q-tr>
+      <q-tr v-show="props.expand" :props="props">
+        <q-td colspan="100%" style="padding: 0;">
+          <div class="q-px-md">
+            <div class="q-table__title">
+              Preview
+            </div>
+            <div style="width: 30%; margin: 0 auto;">
+              <skeleton-type-preview class="full-width" :typeId="props.key"></skeleton-type-preview>
+            </div>
           </div>
-          <div style="width: 30%; margin: 0 auto;">
-            <skeleton-type-preview class="full-width" :typeId="props.key"></skeleton-type-preview>
-          </div>
-        </div>
-        <q-table
-          flat
-          dense
-          :data="props.row.pointList"
-          :columns="[
-            { name: 'name', align: 'center', label: 'name', field: 'name' },
-            { name: 'x', align: 'left', label: 'x', field: 'x' },
-            { name: 'y', align: 'left', label: 'y', field: 'y' },
-            { name: 'delete', align: 'center', label: 'delete', field: 'delete' },
-          ]"
-          :pagination.sync="pagination"
-          row-key="id"
-        >
-          <template v-slot:top="pointProps">
-            <div class="col-6 q-table__title">Points</div>
-            <q-space></q-space>
-            <q-btn icon="add" @click="handleAddPoint(props)">Add</q-btn>
-          </template>
-          <template v-slot:body="pointProps">
-            <q-tr :props="pointProps">
-              <q-td key="name" :props="pointProps" style="font-size: 14px">
-                {{ pointProps.row.name }}
-                <q-popup-edit
-                  auto-save
-                  v-model="pointProps.row.name"
-                  title="Edit the point name"
-                  @save="saveTableData"
-                >
-                  <q-input
+          <q-table
+            flat
+            dense
+            :data="props.row.pointList"
+            :columns="[
+              { name: 'name', align: 'center', label: 'name', field: 'name' },
+              { name: 'x', align: 'left', label: 'x', field: 'x' },
+              { name: 'y', align: 'left', label: 'y', field: 'y' },
+              { name: 'delete', align: 'center', label: 'delete', field: 'delete' },
+            ]"
+            :pagination.sync="pagination"
+            row-key="id"
+          >
+            <template v-slot:top="pointProps">
+              <div class="col-6 q-table__title">Points</div>
+              <q-space></q-space>
+              <q-btn icon="add" @click="handleAddPoint(props)">Add</q-btn>
+            </template>
+            <template v-slot:body="pointProps">
+              <q-tr :props="pointProps">
+                <q-td key="name" :props="pointProps" style="font-size: 14px">
+                  {{ pointProps.row.name }}
+                  <q-popup-edit
+                    auto-save
                     v-model="pointProps.row.name"
+                    title="Edit the point name"
+                    @save="saveTableData"
+                  >
+                    <q-input
+                      v-model="pointProps.row.name"
+                      dense
+                      autofocus
+                      counter
+                      :rules="[ val => val.length != 0 || 'Please enter at least 1 character' ]"
+                    ></q-input>
+                  </q-popup-edit>
+                </q-td>
+                <q-td key="x" :props="pointProps" style="font-size: 14px">
+                  <q-input
+                    v-model.number="pointProps.row.x"
+                    borderless
                     dense
-                    autofocus
-                    counter
-                    :rules="[ val => val.length != 0 || 'Please enter at least 1 character' ]"
+                    @input="saveTableData"
                   ></q-input>
-                </q-popup-edit>
-              </q-td>
-              <q-td key="x" :props="pointProps" style="font-size: 14px">
-                <q-input
-                  v-model.number="pointProps.row.x"
-                  borderless
-                  dense
-                  @input="saveTableData"
-                ></q-input>
-              </q-td>
-              <q-td key="y" :props="pointProps" style="font-size: 14px">
-                <q-input
-                  v-model.number="pointProps.row.y"
-                  borderless
-                  dense
-                  @input="saveTableData"
-                ></q-input>
-              </q-td>
-              <q-td key="delete" :props="pointProps">
-                <q-btn
-                  icon="delete"
-                  color="negative"
-                  flat
-                  dense
-                  style="width: 100%"
-                  @click="handleDeletePoint(props, pointProps)"
-                ></q-btn>
-              </q-td>
-            </q-tr>
-          </template>
-        </q-table>
-        <q-table
-          flat
-          dense
-          :data="props.row.edgeList"
-          :columns="[
-            { name: 'from', align: 'left', label: 'from', field: 'from' },
-            { name: 'to', align: 'left', label: 'to', field: 'to' },
-            { name: 'delete', align: 'center', label: 'delete', field: 'delete' },
-          ]"
-          :pagination.sync="pagination"
-          row-key="id"
-        >
-          <template v-slot:top="edgeProps">
-            <div class="col-6 q-table__title">Edges</div>
-            <q-space></q-space>
-            <q-btn icon="add" @click="handleAddEdge(props)">Add</q-btn>
-          </template>
-          <template v-slot:body="edgeProps">
-            <q-tr :props="edgeProps">
-              <q-td key="from" :props="edgeProps" style="font-size: 14px">
-                <q-select
-                  v-model="edgeProps.row.from"
-                  stack-label
-                  dense
-                  options-dense
-                  borderless
-                  map-options
-                  emit-value
-                  :options="pointOptions[props.key]"
-                  @input="saveTableData"
-                ></q-select>
-              </q-td>
-              <q-td key="to" :props="edgeProps" style="font-size: 14px">
-                <q-select
-                  v-model="edgeProps.row.to"
-                  stack-label
-                  dense
-                  options-dense
-                  borderless
-                  map-options
-                  emit-value
-                  :options="pointOptions[props.key]"
-                  @input="saveTableData"
-                ></q-select>
-              </q-td>
-              <q-td key="delete" :props="edgeProps">
-                <q-btn
-                  icon="delete"
-                  color="negative"
-                  flat
-                  dense
-                  style="width: 100%"
-                  @click="handleDeleteEdge(props, edgeProps)"
-                ></q-btn>
-              </q-td>
-            </q-tr>
-          </template>
-        </q-table>
-      </q-td>
-    </q-tr>
-  </template>
-</q-table>
+                </q-td>
+                <q-td key="y" :props="pointProps" style="font-size: 14px">
+                  <q-input
+                    v-model.number="pointProps.row.y"
+                    borderless
+                    dense
+                    @input="saveTableData"
+                  ></q-input>
+                </q-td>
+                <q-td key="delete" :props="pointProps">
+                  <q-btn
+                    icon="delete"
+                    color="negative"
+                    flat
+                    dense
+                    style="width: 100%"
+                    @click="handleDeletePoint(props, pointProps)"
+                  ></q-btn>
+                </q-td>
+              </q-tr>
+            </template>
+          </q-table>
+          <q-table
+            flat
+            dense
+            :data="props.row.edgeList"
+            :columns="[
+              { name: 'from', align: 'left', label: 'from', field: 'from' },
+              { name: 'to', align: 'left', label: 'to', field: 'to' },
+              { name: 'delete', align: 'center', label: 'delete', field: 'delete' },
+            ]"
+            :pagination.sync="pagination"
+            row-key="id"
+          >
+            <template v-slot:top="edgeProps">
+              <div class="col-6 q-table__title">Edges</div>
+              <q-space></q-space>
+              <q-btn icon="add" @click="handleAddEdge(props)">Add</q-btn>
+            </template>
+            <template v-slot:body="edgeProps">
+              <q-tr :props="edgeProps">
+                <q-td key="from" :props="edgeProps" style="font-size: 14px">
+                  <q-select
+                    v-model="edgeProps.row.from"
+                    stack-label
+                    dense
+                    options-dense
+                    borderless
+                    map-options
+                    emit-value
+                    :options="pointOptions[props.key]"
+                    @input="saveTableData"
+                  ></q-select>
+                </q-td>
+                <q-td key="to" :props="edgeProps" style="font-size: 14px">
+                  <q-select
+                    v-model="edgeProps.row.to"
+                    stack-label
+                    dense
+                    options-dense
+                    borderless
+                    map-options
+                    emit-value
+                    :options="pointOptions[props.key]"
+                    @input="saveTableData"
+                  ></q-select>
+                </q-td>
+                <q-td key="delete" :props="edgeProps">
+                  <q-btn
+                    icon="delete"
+                    color="negative"
+                    flat
+                    dense
+                    style="width: 100%"
+                    @click="handleDeleteEdge(props, edgeProps)"
+                  ></q-btn>
+                </q-td>
+              </q-tr>
+            </template>
+          </q-table>
+        </q-td>
+      </q-tr>
+    </template>
+  </q-table>
+</div>
 `
 
 const columnList = [
@@ -253,6 +276,8 @@ export default {
     return {
       columnList,
       pagination: { rowsPerPage: 0 },
+      showEdit: false,
+      json: null,
     }
   },
   methods: {
@@ -317,6 +342,12 @@ export default {
         to: -1,
       })
       this.saveTableData()
+    },
+    handleSave () {
+      this.showEdit = !this.showEdit
+    },
+    handleCancel () {
+      this.showEdit = !this.showEdit
     },
   },
   computed: {

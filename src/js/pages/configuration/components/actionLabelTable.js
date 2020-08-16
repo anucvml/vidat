@@ -1,111 +1,134 @@
 const ACTION_LABEL_TABLE_TEMPLATE = `
-<q-table
-  :data="tableData"
-  :columns="columnList"
-  :pagination.sync="pagination"
-  row-key="id"
->
-  <template v-slot:top="props">
-    <div class="col-6 q-table__title">Action Labels</div>
-    <q-space></q-space>
-    <q-btn icon="add" @click="handleAdd">Add</q-btn>
-  </template>
-  <template v-slot:header="props">
-    <q-tr :props="props">
-      <q-th auto-width></q-th>
-      <q-th
-        v-for="col in props.cols"
-        :key="col.name"
-        :props="props"
-      >
-        {{ col.label }}
-      </q-th>
-    </q-tr>
-  </template>
-  <template v-slot:body="props">
-    <q-tr :props="props">
-      <q-td auto-width>
-        <q-btn
-          size="sm"
-          round
-          dense
-          @click="props.expand = !props.expand"
-          :icon="props.expand ? 'expand_more' : 'chevron_right'"
-        ></q-btn>
-      </q-td>
-      <q-td key="name" :props="props" style="font-size: 14px">
-        {{ props.row.name }}
-        <q-popup-edit
-          auto-save
-          v-model="props.row.name"
-          title="Edit the label name"
-          v-if="props.row.name !== 'default'"
-          @save="saveTableData"
+<div>
+  <div v-show="showEdit">
+    <q-card class="row q-pa-md">
+      <div class="col-6 q-table__title">Action Labels</div>
+      <q-space></q-space>
+      <q-btn-group :flat="false">
+        <q-btn @click="handleSave">Save</q-btn>
+        <q-btn icon="close" color="negative" @click="handleCancel">Cancel</q-btn>
+      </q-btn-group>
+      <q-input
+        class="full-width"
+        v-model="json"
+        borderless
+        autogrow
+        type="textarea"
+      ></q-input>
+    </q-card>
+  </div>
+  <q-table
+    v-show="!showEdit"
+    :data="tableData"
+    :columns="columnList"
+    :pagination.sync="pagination"
+    row-key="id"
+  >
+    <template v-slot:top="props">
+      <div class="col-6 q-table__title">Action Labels</div>
+      <q-space></q-space>
+      <q-btn-group>
+        <q-btn icon="edit" @click="showEdit = !showEdit">Edit</q-btn>
+        <q-btn icon="add" @click="handleAdd">Add</q-btn>
+      </q-btn-group>
+    </template>
+    <template v-slot:header="props">
+      <q-tr :props="props">
+        <q-th auto-width></q-th>
+        <q-th
+          v-for="col in props.cols"
+          :key="col.name"
+          :props="props"
         >
-          <q-input
-            v-model="props.row.name"
+          {{ col.label }}
+        </q-th>
+      </q-tr>
+    </template>
+    <template v-slot:body="props">
+      <q-tr :props="props">
+        <q-td auto-width>
+          <q-btn
+            size="sm"
+            round
             dense
-            autofocus
-            counter
-            :rules="[ val => val.length != 0 || 'Please enter at least 1 character' ]"
-          ></q-input>
-        </q-popup-edit>
-      </q-td>
-      <q-td key="nObjects" :props="props" style="font-size: 14px">
-        {{ props.row.objects.length }}
-      </q-td>
-      <q-td key="color" :props="props">
-        <q-chip
-          outline
-          :style="{ 'border-color': props.row.color, 'color': props.row.color }"
-        >
-          {{ props.row.color.toUpperCase() }}
-         </q-chip>
-        <q-popup-edit
-          auto-save
-          v-model="props.row.color"
-          title="Edit the label color"
-          @save="saveTableData"
-        >
-          <q-color v-model="props.row.color"></q-color>
-        </q-popup-edit>
-      </q-td>
-      <q-td key="delete" :props="props">
-        <q-btn
-          icon="delete"
-          color="negative"
-          flat
-          dense
-          style="width: 100%"
-          :disabled="props.row.name === 'default'"
-          @click="handleDelete(props)"
-        ></q-btn>
-      </q-td>
-    </q-tr>
-    <q-tr v-show="props.expand" :props="props">
-      <q-td colspan="100%" style="white-space: normal;">
-        <div class="q-mb-sm">
-          <q-btn-group dense flat>
-            <q-btn icon="apps" @click="handleSelectAll(props.row)"></q-btn>
-            <q-btn icon="clear_all" @click="handleClearAll(props.row)"></q-btn>
-          </q-btn-group>
-        </div>
-        <div class="q-gutter-xs">
-          <q-chip
-            v-for="object in objectLabelList"
-            :key="object.id"
-            :selected.sync="selectedObjectListMap[props.row.id][object.id]"
-            color="primary"
-            text-color="white"
-            @update:selected="handleSelected(props.row.id, object.id)"
+            @click="props.expand = !props.expand"
+            :icon="props.expand ? 'expand_more' : 'chevron_right'"
+          ></q-btn>
+        </q-td>
+        <q-td key="name" :props="props" style="font-size: 14px">
+          {{ props.row.name }}
+          <q-popup-edit
+            auto-save
+            v-model="props.row.name"
+            title="Edit the label name"
+            v-if="props.row.name !== 'default'"
+            @save="saveTableData"
           >
-            {{ object.name }}
-          </q-chip>
-        </div>
-      </q-td>
-    </q-tr>
-  </template>
-</q-table>
+            <q-input
+              v-model="props.row.name"
+              dense
+              autofocus
+              counter
+              :rules="[ val => val.length != 0 || 'Please enter at least 1 character' ]"
+            ></q-input>
+          </q-popup-edit>
+        </q-td>
+        <q-td key="nObjects" :props="props" style="font-size: 14px">
+          {{ props.row.objects.length }}
+        </q-td>
+        <q-td key="color" :props="props">
+          <q-chip
+            outline
+            :style="{ 'border-color': props.row.color, 'color': props.row.color }"
+          >
+            {{ props.row.color.toUpperCase() }}
+           </q-chip>
+          <q-popup-edit
+            auto-save
+            v-model="props.row.color"
+            title="Edit the label color"
+            @save="saveTableData"
+          >
+            <q-color v-model="props.row.color"></q-color>
+          </q-popup-edit>
+        </q-td>
+        <q-td key="delete" :props="props">
+          <q-btn
+            icon="delete"
+            color="negative"
+            flat
+            dense
+            style="width: 100%"
+            :disabled="props.row.name === 'default'"
+            @click="handleDelete(props)"
+          ></q-btn>
+        </q-td>
+      </q-tr>
+      <q-tr v-show="props.expand" :props="props">
+        <q-td colspan="100%" style="white-space: normal;">
+          <div class="q-mb-sm">
+            <q-btn-group dense flat>
+              <q-btn icon="apps" @click="handleSelectAll(props.row)"></q-btn>
+              <q-btn icon="clear_all" @click="handleClearAll(props.row)"></q-btn>
+            </q-btn-group>
+          </div>
+          <div class="q-gutter-xs">
+            <q-chip
+              v-for="object in objectLabelList"
+              :key="object.id"
+              :selected.sync="selectedObjectListMap[props.row.id][object.id]"
+              color="primary"
+              text-color="white"
+              @update:selected="handleSelected(props.row.id, object.id)"
+            >
+              {{ object.name }}
+            </q-chip>
+          </div>
+        </q-td>
+      </q-tr>
+    </template>
+  </q-table>
+</div>
 `
 
 const columnList = [
@@ -122,6 +145,8 @@ export default {
     return {
       columnList,
       pagination: { rowsPerPage: 0 },
+      showEdit: false,
+      json: null,
     }
   },
   methods: {
@@ -163,6 +188,12 @@ export default {
     handleClearAll (row) {
       row.objects = []
       this.saveTableData()
+    },
+    handleSave () {
+      this.showEdit = !this.showEdit
+    },
+    handleCancel () {
+      this.showEdit = !this.showEdit
     },
   },
   computed: {
