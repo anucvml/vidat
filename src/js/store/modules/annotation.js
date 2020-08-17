@@ -54,6 +54,11 @@ export default {
       Vue.set(state, 'leftCurrentFrame', 0)
       Vue.set(state, 'rightCurrentFrame', state.video.fps * 5)
       Vue.set(state, 'cachedFrameList', [])
+      Vue.set(state, 'skeletonTypeId', 0)
+      Vue.set(state, 'objectAnnotationListMap', {})
+      Vue.set(state, 'regionAnnotationListMap', {})
+      Vue.set(state, 'skeletonAnnotationListMap', {})
+      Vue.set(state, 'actionAnnotationList', [])
     },
     setSecondPerKeyframe (state, value) {
       Vue.set(state, 'secondPerKeyframe', value)
