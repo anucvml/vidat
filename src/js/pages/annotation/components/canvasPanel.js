@@ -357,14 +357,14 @@ export default {
           let objectAnnotation = this.annotationList[i]
           if (objectAnnotation.highlight) {
             found = true
-            const nearBoundary = objectAnnotation.nearBoundary(mouseX, mouseY)
-            if (this.shiftDown && nearBoundary) {
+            const nearAnchor = objectAnnotation.nearAnchor(mouseX, mouseY)
+            if (this.shiftDown) {
               objectAnnotation = objectAnnotation.clone()
               this.annotationList.push(objectAnnotation)
             }
             this.dragContext = {
               index: i,
-              type: nearBoundary ? 'moving' : 'sizing',
+              type: nearAnchor ? 'sizing' : 'moving',
               x: objectAnnotation.x,
               y: objectAnnotation.y,
               width: objectAnnotation.width,
@@ -430,12 +430,16 @@ export default {
           if (skeletonAnnotation.highlight) {
             found = true
             let nearPoint = null
-            for (const point of skeletonAnnotation.pointList) {
+            // special order, see: https://github.com/anucvml/vidat/issues/69
+            for (let i = 1; i < skeletonAnnotation.pointList.length; i++) {
+              const point = skeletonAnnotation.pointList[i]
               if (SkeletonAnnotation.nearPoint(mouseX, mouseY, point)) {
                 nearPoint = point
                 break
               }
             }
+            const centerPoint = skeletonAnnotation.pointList[0]
+            if (!nearPoint && SkeletonAnnotation.nearPoint(mouseX, mouseY, centerPoint)) nearPoint = centerPoint
             if (this.shiftDown && nearPoint && nearPoint.name === 'center') {
               skeletonAnnotation = skeletonAnnotation.clone()
               this.annotationList.push(skeletonAnnotation)
