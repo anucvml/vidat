@@ -67,8 +67,6 @@ export default {
         keyframeList.push(keyframe * state.video.fps)
       }
       Vue.set(state, 'keyframeList', keyframeList)
-      Vue.set(state, 'leftCurrentFrame', 0)
-      Vue.set(state, 'rightCurrentFrame', value * state.video.fps)
     },
     setKeyframeList (state, value) {
       Vue.set(state, 'keyframeList', value)

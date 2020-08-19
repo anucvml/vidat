@@ -165,13 +165,13 @@ export default {
       if (!this.video.height) {
         this.setVideoHeight(event.target.videoHeight)
       }
-      this.setSecondPerKeyframe(5)
+      this.setSecondPerKeyframe(this.secondPerKeyframe)
       // add keyframe to priorityQueue
-      this.keyframeList.forEach(keyframe => {
+      for (const keyframe of this.keyframeList) {
         if (keyframe !== 0) {
           this.priorityQueue.push(keyframe)
         }
-      })
+      }
       if (this.$store.state.debug === false) {
         // add frame index into the backendQueue
         // 1. every one second
