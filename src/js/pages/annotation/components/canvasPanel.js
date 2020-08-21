@@ -48,8 +48,9 @@ const VIDEO_PANEL_TEMPLATE = `
         <span>{{status.x | toFixed2}},{{status.y | toFixed2}}</span>
       </q-badge>
       <div v-show="popup.x" v-if="annotationList" :style="{position: 'absolute', top: popup.y + 'px', left: popup.x + 'px'}">
-        <q-popup-edit ref="popup" :value="1" :title="'new ' + mode">
+        <q-popup-edit ref="popup" :value="1" :title="'new ' + mode" @show="handlePopupShow">
           <q-select
+            ref="select"
             dense
             options-dense
             borderless
@@ -61,6 +62,7 @@ const VIDEO_PANEL_TEMPLATE = `
             @input="handleSelectInput"
           ></q-select>
           <q-input
+            ref="input"
             dense
             flat
             label="instance"
@@ -99,14 +101,17 @@ const VIDEO_PANEL_TEMPLATE = `
       </q-badge>
     </q-toolbar>
     <object-table
+      ref="table"
       :position="position"
       v-if="mode === 'object' && preference.objects"
     ></object-table>
     <region-table
+      ref="table"
       :position="position"
       v-if="mode === 'region' && preference.regions"
     ></region-table>
     <skeleton-table
+      ref="table"
       :position="position"
       v-if="mode === 'skeleton' && preference.skeletons"
     ></skeleton-table>
@@ -487,8 +492,8 @@ export default {
                 x: event.offsetX,
                 y: event.offsetY,
               }
-              this.$refs.popup.show()
             }
+            this.autoFocus()
           }
           this.createContext = null
         }
@@ -514,8 +519,9 @@ export default {
                 x: event.offsetX,
                 y: event.offsetY,
               }
-              this.$refs.popup.show()
+
             }
+            this.autoFocus()
             this.createContext = null
           } else {
             // add new point
@@ -536,8 +542,8 @@ export default {
               x: event.offsetX,
               y: event.offsetY,
             }
-            this.$refs.popup.show()
           }
+          this.autoFocus()
           this.createContext = null
         }
         if (this.dragContext) {
@@ -557,6 +563,20 @@ export default {
     handleSelectInput (value) {
       const label = this.objectLabelData.find(label => label.id === value)
       this.annotationList[this.annotationList.length - 1].color = label.color
+    },
+    handlePopupShow () {
+      if (this.$refs.select) {
+        this.$refs.select.showPopup()
+      } else if (this.$refs.input) {
+        this.$refs.input.focus()
+      }
+    },
+    autoFocus () {
+      if (this.showPopup) {
+        this.$refs.popup.show()
+      } else {
+        this.$refs.table.focusLast()
+      }
     },
     getCursor () {
       if (this.dragContext) {

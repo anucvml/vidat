@@ -40,6 +40,7 @@ const REGION_TABLE_TEMPLATE = `
       </q-td>
       <q-td key="label" :props="props">
         <q-select
+          ref="select"
           v-model="props.row.labelId"
           :options="labelOption"
           dense
@@ -217,6 +218,9 @@ export default {
       } else {
         utils.notify('There are no regions!')
       }
+    },
+    focusLast () {
+      this.$refs.select.showPopup()
     },
   },
   computed: {

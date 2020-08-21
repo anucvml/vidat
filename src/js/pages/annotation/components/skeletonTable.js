@@ -55,6 +55,7 @@ const SKELETON_TABLE_TEMPLATE = `
       </q-td>
       <q-td key="instance" :props="props">
         <q-input
+          ref="input"
           v-model.number="props.row.instance"
           dense
           borderless
@@ -207,6 +208,9 @@ export default {
       } else {
         utils.notify('There are no regions!')
       }
+    },
+    focusLast () {
+      this.$refs.input.focus()
     },
   },
   computed: {
