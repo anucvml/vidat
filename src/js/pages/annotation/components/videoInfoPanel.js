@@ -498,6 +498,16 @@ export default {
         this.setRightCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 1])
       }
     },
+    handleKeyup (event) {
+      if (event.target.nodeName.toLowerCase() === 'input') {
+        return false
+      }
+      if (event.keyCode === 0xBC) { // comma, <
+        this.handlePreviousKeyframe()
+      } else if (event.keyCode === 0xBE) { // period, >
+        this.handleNextKeyframe()
+      }
+    },
   },
   computed: {
     video () {
@@ -550,16 +560,10 @@ export default {
     },
   },
   mounted () {
-    document.addEventListener('keydown', event => {
-      if (event.target.nodeName.toLowerCase() === 'input') {
-        return false
-      }
-      if (event.keyCode === 0xBC) { // comma, <
-        this.handlePreviousKeyframe()
-      } else if (event.keyCode === 0xBE) { // period, >
-        this.handleNextKeyframe()
-      }
-    })
+    document.addEventListener('keyup', this.handleKeyup)
+  },
+  destroyed () {
+    document.removeEventListener('keyup', this.handleKeyup)
   },
   template: VIDEO_INFO_PANEL_TEMPLATE,
 }

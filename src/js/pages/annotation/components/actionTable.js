@@ -217,6 +217,14 @@ export default {
         }
       })
     },
+    handleKeyup (event) {
+      if (event.target.nodeName.toLowerCase() === 'input') {
+        return false
+      }
+      if (event.keyCode === 0xBB) { // +
+        this.handleAdd()
+      }
+    },
   },
   computed: {
     video () {
@@ -272,14 +280,10 @@ export default {
     },
   },
   mounted () {
-    document.addEventListener('keyup', event => {
-      if (event.target.nodeName.toLowerCase() === 'input') {
-        return false
-      }
-      if (event.keyCode === 0xBB) { // +
-        this.handleAdd()
-      }
-    })
+    document.addEventListener('keyup', this.handleKeyup)
+  },
+  destroyed () {
+    document.removeEventListener('keyup', this.handleKeyup)
   },
   template: ACTION_TABLE_TEMPLATE,
 }

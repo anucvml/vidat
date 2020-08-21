@@ -623,32 +623,7 @@ export default {
     clear () {
       this.ctx.clearRect(0, 0, this.$refs.canvas.width, this.$refs.canvas.height)
     },
-  },
-  mounted () {
-    this.ctx = this.$refs.canvas.getContext('2d')
-    this.backgroundCtx = this.$refs.background.getContext('2d')
-    this.$watch(
-      function () {
-        return eval('this.$store.state.annotation.' + this.mode + 'AnnotationListMap[this.currentFrame]')
-      },
-      function () {
-        this.clear()
-        this.draw()
-      },
-      {
-        immediate: true,
-        deep: true,
-      },
-    )
-    document.addEventListener('keydown', event => {
-      if (event.target.nodeName.toLowerCase() === 'input') {
-        return false
-      }
-      if (event.keyCode === 0x10) { // shift
-        this.shiftDown = true
-      }
-    })
-    document.addEventListener('keyup', event => {
+    handleKeyup (event) {
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
       }
@@ -675,7 +650,38 @@ export default {
       } else if (event.keyCode === 0x10) { // shift
         this.shiftDown = false
       }
-    })
+    },
+    handleKeydown (event) {
+      if (event.target.nodeName.toLowerCase() === 'input') {
+        return false
+      }
+      if (event.keyCode === 0x10) { // shift
+        this.shiftDown = true
+      }
+    },
+  },
+  mounted () {
+    this.ctx = this.$refs.canvas.getContext('2d')
+    this.backgroundCtx = this.$refs.background.getContext('2d')
+    this.$watch(
+      function () {
+        return eval('this.$store.state.annotation.' + this.mode + 'AnnotationListMap[this.currentFrame]')
+      },
+      function () {
+        this.clear()
+        this.draw()
+      },
+      {
+        immediate: true,
+        deep: true,
+      },
+    )
+    document.addEventListener('keyup', this.handleKeyup)
+    document.addEventListener('keydown', this.handleKeydown)
+  },
+  destroyed () {
+    document.removeEventListener('keyup', this.handleKeyup)
+    document.removeEventListener('keydown', this.handleKeydown)
   },
   computed: {
     zoom () {
