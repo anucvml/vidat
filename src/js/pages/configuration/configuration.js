@@ -61,14 +61,14 @@ export default {
       utils.prompt(
         'Save',
         'Enter configuration filename for saving',
-        'config.json').onOk(filename => {
+        'config').onOk(filename => {
         const data = {
           objectLabelData: this.$store.state.settings.objectLabelData,
           actionLabelData: this.$store.state.settings.actionLabelData,
           skeletonTypeData: this.$store.state.settings.skeletonTypeData,
         }
         const file = new Blob([JSON.stringify(data)], { type: 'text/plain' })
-        Quasar.utils.exportFile(filename, file)
+        Quasar.utils.exportFile(filename + '.json', file)
       })
     },
   },

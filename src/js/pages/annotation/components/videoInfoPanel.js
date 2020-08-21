@@ -220,7 +220,6 @@ export default {
     },
     handleClose () {
       utils.confirm('Are you sure to close? You will LOSE all data!').onOk(() => {
-        // this.setVideoSrc(null)
         this.closeVideo()
       })
     },
@@ -247,31 +246,36 @@ export default {
       })
     },
     handleExport () {
-      // ensure that we have all the keyframes
-      let isOk = true
-      for (let i = 0; i < this.keyframeList.length; i++) {
-        if (!this.cachedFrameList[this.keyframeList[i]]) {
-          isOk = false
-          break
-        }
-      }
-      // export all keyframes as a zip file
-      if (isOk) {
-        const zip = new JSZip()
+      utils.prompt(
+        'Save',
+        'Enter keyframes filename for saving',
+        'keyframes').onOk(filename => {
+        // ensure that we have all the keyframes
+        let isOk = true
         for (let i = 0; i < this.keyframeList.length; i++) {
-          const imgDataURL = this.cachedFrameList[this.keyframeList[i]]
-          zip.file(
-            utils.index2time(this.keyframeList[i]) + '.jpg',
-            imgDataURL.slice(imgDataURL.indexOf(',') + 1),
-            { base64: true },
-          )
+          if (!this.cachedFrameList[this.keyframeList[i]]) {
+            isOk = false
+            break
+          }
         }
-        zip.generateAsync({ type: 'blob' }).then(content => {
-          saveAs(content, 'keyframes.zip')
-        })
-      } else {
-        utils.notify('Please wait for caching!')
-      }
+        // export all keyframes as a zip file
+        if (isOk) {
+          const zip = new JSZip()
+          for (let i = 0; i < this.keyframeList.length; i++) {
+            const imgDataURL = this.cachedFrameList[this.keyframeList[i]]
+            zip.file(
+              this.keyframeList[i] + '.jpg',
+              imgDataURL.slice(imgDataURL.indexOf(',') + 1),
+              { base64: true },
+            )
+          }
+          zip.generateAsync({ type: 'blob' }).then(content => {
+            saveAs(content, filename + '-' + this.video.fps + '-fps.zip')
+          })
+        } else {
+          utils.notify('Please wait for caching!')
+        }
+      })
     },
     handleLoad () {
       utils.confirm(
@@ -392,7 +396,7 @@ export default {
       utils.prompt(
         'Save',
         'Enter annotation filename for saving',
-        'annotations.json').onOk(filename => {
+        'annotations').onOk(filename => {
         // remove type in each skeletonAnnotation
         const skeletonAnnotationListMap = {}
         for (const frame in this.skeletonAnnotationListMap) {
@@ -427,7 +431,7 @@ export default {
           },
         }
         Quasar.utils.exportFile(
-          filename,
+          filename + '.json',
           new Blob([JSON.stringify(data)]),
           { type: 'text/plain' },
         )
