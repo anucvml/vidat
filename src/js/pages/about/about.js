@@ -35,6 +35,11 @@ export default {
           url: 'https://github.com/DavidZhang73',
           avatar: 'https://avatars1.githubusercontent.com/u/33928385',
         },
+        {
+          name: 'Itzik Ben Shabat',
+          url: 'https://github.com/sitzikbs',
+          avatar: 'https://avatars1.githubusercontent.com/u/13794171',
+        },
       ],
     }
   },

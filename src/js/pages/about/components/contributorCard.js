@@ -1,5 +1,5 @@
 const CONTRIBUTOR_CARD_TEMPLATE = `
-<a :href="contributor.url">
+<a :href="contributor.url" target="_blank">
   <q-card>
     <q-card-section>
       <q-avatar size="100px">
