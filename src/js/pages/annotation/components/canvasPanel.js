@@ -58,6 +58,7 @@ const VIDEO_PANEL_TEMPLATE = `
             :options="labelOption"
             v-if="annotationList.length && (mode === 'object' || mode === 'region')"
             v-model="annotationList[annotationList.length - 1].labelId"
+            @input="handleSelectInput"
           ></q-select>
           <q-input
             dense
@@ -552,6 +553,10 @@ export default {
         x: mouseX,
         y: mouseY,
       }
+    },
+    handleSelectInput (value) {
+      const label = this.objectLabelData.find(label => label.id === value)
+      this.annotationList[this.annotationList.length - 1].color = label.color
     },
     getCursor () {
       if (this.dragContext) {
