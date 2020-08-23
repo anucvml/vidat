@@ -811,7 +811,7 @@ export default {
               text: `${this.actionLabelData[actionAnnotation.action].name} ${actionAnnotation.object === 0
                 ? ''
                 : this.objectLabelData[actionAnnotation.object].name}`,
-              color: this.actionLabelData[actionAnnotation.action].color,
+              color: actionAnnotation.color,
             },
           )
           id += 1
