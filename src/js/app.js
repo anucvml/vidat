@@ -47,7 +47,7 @@ const APP_TEMPLATE = `
   <q-page-container>
     <q-page padding>
       <router-view></router-view>
-    <div class="text-black text-center text-weight-thin text-caption text-italic q-ma-sm absolute-bottom">
+    <div class="text-black text-center text-weight-thin text-caption q-ma-sm absolute-bottom">
         Copyright © 2020, <a href='https://github.com/anucvml/vidat' target="_blank">ANU CVML</a>. All rights reserved.
     </div>
     </q-page>
