@@ -154,9 +154,11 @@ export default {
     ...Vuex.mapMutations([
       'setActionLabelData',
       'importActionLabelData',
+      'setIsSaved',
     ]),
     saveTableData () {
       this.setActionLabelData(this.tableData)
+      this.setIsSaved(false)
     },
     handleDelete (props) {
       utils.confirm(

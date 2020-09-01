@@ -110,6 +110,14 @@ const app = new Vue({
     ]),
   },
   mounted: function () {
+    // handle unsaved
+    window.addEventListener('beforeunload', event => {
+      if (!this.$store.state.annotation.debug &&
+        this.$store.state.annotation.video.src &&
+        !this.$store.state.annotation.isSaved) {
+        event.returnValue = 'The annotations are not saved!'
+      }
+    })
     // get parameters from url
     const URLParameter = {}
     for (const pair of window.location.search.replace('?', '').split('&')) {

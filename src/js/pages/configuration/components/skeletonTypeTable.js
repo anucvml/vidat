@@ -285,9 +285,11 @@ export default {
     ...Vuex.mapMutations([
       'setSkeletonTypeData',
       'importSkeletonTypeData',
+      'setIsSaved',
     ]),
     saveTableData () {
       this.setSkeletonTypeData(this.tableData)
+      this.setIsSaved(false)
     },
     handleDelete (props) {
       utils.confirm(

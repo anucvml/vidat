@@ -138,6 +138,7 @@ export default {
       'importObjectLabelData',
       'importActionLabelData',
       'importSkeletonTypeData',
+      'setIsSaved',
     ]),
     handleOpenWithFPS () {
       this.setVideoFPS(this.$store.state.settings.preferenceData.defaultFps)
@@ -435,6 +436,7 @@ export default {
           new Blob([JSON.stringify(data)]),
           { type: 'text/plain' },
         )
+        this.setIsSaved(true)
       })
     },
     nearestKeyframe (currentFrame) {

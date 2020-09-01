@@ -107,9 +107,11 @@ export default {
     ...Vuex.mapMutations([
       'setObjectLabelData',
       'importObjectLabelData',
+      'setIsSaved',
     ]),
     saveTableData () {
       this.setObjectLabelData(this.tableData)
+      this.setIsSaved(false)
     },
     handleDelete (props) {
       utils.confirm(

@@ -19,6 +19,7 @@ export default {
     skeletonAnnotationListMap: {},
     actionAnnotationList: [],
     zoom: false,
+    isSaved: true,
   }),
   getters: {},
   mutations: {
@@ -27,6 +28,7 @@ export default {
     },
     setVideoSrc (state, value) {
       Vue.set(state.video, 'src', value)
+      Vue.set(state, 'isSaved', true)
     },
     setVideoDuration (state, value) {
       Vue.set(state.video, 'duration', value)
@@ -59,6 +61,7 @@ export default {
       Vue.set(state, 'regionAnnotationListMap', {})
       Vue.set(state, 'skeletonAnnotationListMap', {})
       Vue.set(state, 'actionAnnotationList', [])
+      Vue.set(state, 'isSaved', true)
     },
     setSecondPerKeyframe (state, value) {
       Vue.set(state, 'secondPerKeyframe', value)
@@ -97,12 +100,15 @@ export default {
     },
     setObjectAnnotationListMap (state, value) {
       Vue.set(state, 'objectAnnotationListMap', value)
+      Vue.set(state, 'isSaved', false)
     },
     setRegionAnnotationListMap (state, value) {
       Vue.set(state, 'regionAnnotationListMap', value)
+      Vue.set(state, 'isSaved', false)
     },
     setSkeletonAnnotationListMap (state, value) {
       Vue.set(state, 'skeletonAnnotationListMap', value)
+      Vue.set(state, 'isSaved', false)
     },
     setAnnotationList (state, value) {
       if (value.mode === 'object') {
@@ -114,12 +120,17 @@ export default {
       } else {
         throw 'Unknown mode: ' + value.mode
       }
+      Vue.set(state, 'isSaved', false)
     },
     setActionAnnotationList (state, value) {
       Vue.set(state, 'actionAnnotationList', value)
+      Vue.set(state, 'isSaved', false)
     },
     setZoom (state, value) {
       Vue.set(state, 'zoom', value)
+    },
+    setIsSaved (state, value) {
+      Vue.set(state, 'isSaved', value)
     },
   },
   actions: {},
