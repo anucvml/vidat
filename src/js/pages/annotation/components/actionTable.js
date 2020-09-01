@@ -58,6 +58,7 @@ const ACTION_TABLE_TEMPLATE = `
       </q-td>
       <q-td key="color" :props="props">
         <q-chip
+          dense
           outline
           :style="{ 'border-color': props.row.color, 'color': props.row.color }"
         >
