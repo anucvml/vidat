@@ -3,7 +3,7 @@ const APP_TEMPLATE = `
   <q-header elevated>
     <q-toolbar>
       <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-      <q-toolbar-title class="text-center">ANU CVML In-browser Video Annotation Tool</q-toolbar-title>
+      <q-toolbar-title class="text-center"><router-link :to="'annotation'" style="color: inherit;">Vidat</router-link></q-toolbar-title>
       <a href="https://www.anu.edu.au/" target="_blank">
         <q-avatar square>
           <img src="img/logo.png" alt="logo">
@@ -36,7 +36,9 @@ const APP_TEMPLATE = `
           <q-item-section>{{ item.label }}</q-item-section>
         </q-item>
         <q-item class="fixed-bottom">
-          <q-item-section class="text-center">{{ version }}</q-item-section>
+          <q-item-section class="text-center">
+            <a href='https://github.com/anucvml/vidat/releases' target="_blank">{{ version }}</a>
+          </q-item-section>
         </q-item>
       </q-list>
     </q-scroll-area>
@@ -46,7 +48,7 @@ const APP_TEMPLATE = `
     <q-page padding>
       <router-view></router-view>
     <div class="text-black text-center text-weight-thin text-caption text-italic q-ma-sm absolute-bottom">
-        Copyright © 2020, <a href='mailto:stephen.gould@anu.edu.au'>Stephen Gould</a>. All rights reserved.
+        Copyright © 2020, <a href='https://github.com/anucvml/vidat' target="_blank">ANU CVML</a>. All rights reserved.
     </div>
     </q-page>
   </q-page-container>

@@ -3,9 +3,11 @@
     <img src="src/img/logo.png" alt="ANU logo">
   </a> -->
 
-  # ANU CVML Video Annotation Tool
+  # Vidat
 
-  _A video annotation tool developed by the ANU._
+  _An in-browser video annotation tool developed by [ANU CVML](https://github.com/anucvml)._
+
+  _[Demo1](http://users.cecs.anu.edu.au/~sgould/vidat/)_ | _[Demo2](https://vidat.davidz.cn)_
 
 </div>
 
@@ -40,6 +42,14 @@ Video tutorials will be posted on YouTube.
 |   `grayscale`   |         `true`/`false`          |        grayscale or not        |
 |   `showPopup`   |         `true`/`false`          |       show popup or not        |
 |     `debug`     |         `true`/`false`          | auto load a video and no cache |
+
+### Examples
+
+```
+http://localhost/index.html?mode=skeleton&showPopup=false
+```
+
+will set the current mode to skeleton and disable popup window.
 
 ## Development
 
