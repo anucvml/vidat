@@ -106,48 +106,95 @@ export default {
       return ret
     },
     handleCopyLeft () {
-      if (this.leftCurrentFrame !== this.rightCurrentFrame) {
-        this.setAnnotationList({
-          index: this.leftCurrentFrame,
-          mode: this.mode,
-          annotationList: [
-            ...this.annotationListMap[this.leftCurrentFrame],
-            ...this.clone(this.annotationListMap[this.rightCurrentFrame]),
-          ],
-        })
+      if (this.leftCurrentFrame === this.rightCurrentFrame) {
+        utils.notify('Cannot copy from itself.')
+        return
       }
+      if (this.annotationListMap[this.rightCurrentFrame].length === 0) {
+        utils.notify('There is nothing to copy.')
+        return
+      }
+      this.setAnnotationList({
+        index: this.leftCurrentFrame,
+        mode: this.mode,
+        annotationList: [
+          ...this.annotationListMap[this.leftCurrentFrame],
+          ...this.clone(this.annotationListMap[this.rightCurrentFrame]),
+        ],
+      })
     },
     handleCopyRight () {
-      if (this.leftCurrentFrame !== this.rightCurrentFrame) {
-        this.setAnnotationList({
-          index: this.rightCurrentFrame,
-          mode: this.mode,
-          annotationList: [
-            ...this.annotationListMap[this.rightCurrentFrame],
-            ...this.clone(this.annotationListMap[this.leftCurrentFrame]),
-          ],
-        })
+      if (this.leftCurrentFrame === this.rightCurrentFrame) {
+        utils.notify('Cannot copy from itself.')
+        return
       }
+      if (this.annotationListMap[this.leftCurrentFrame].length === 0) {
+        utils.notify('There is nothing to copy.')
+        return
+      }
+      this.setAnnotationList({
+        index: this.rightCurrentFrame,
+        mode: this.mode,
+        annotationList: [
+          ...this.annotationListMap[this.rightCurrentFrame],
+          ...this.clone(this.annotationListMap[this.leftCurrentFrame]),
+        ],
+      })
     },
     handleReplaceLeft () {
-      if (this.leftCurrentFrame !== this.rightCurrentFrame) {
+      if (this.leftCurrentFrame === this.rightCurrentFrame) {
+        utils.notify('Cannot replace with itself.')
+        return
+      }
+      if (this.annotationListMap[this.rightCurrentFrame].length === 0) {
+        utils.notify('There is nothing to replace.')
+        return
+      }
+      if (this.annotationListMap[this.leftCurrentFrame].length === 0) {
         this.setAnnotationList({
           index: this.leftCurrentFrame,
           mode: this.mode,
           annotationList: [
             ...this.clone(this.annotationListMap[this.rightCurrentFrame]),
           ],
+        })
+      } else {
+        utils.confirm('Are you sure to replace? This would remove ALL annotations in the LEFT panel!').onOk(() => {
+          this.setAnnotationList({
+            index: this.leftCurrentFrame,
+            mode: this.mode,
+            annotationList: [
+              ...this.clone(this.annotationListMap[this.rightCurrentFrame]),
+            ],
+          })
         })
       }
     },
     handleReplaceRight () {
-      if (this.leftCurrentFrame !== this.rightCurrentFrame) {
+      if (this.leftCurrentFrame === this.rightCurrentFrame) {
+        utils.notify('Cannot replace with itself.')
+      }
+      if (this.annotationListMap[this.leftCurrentFrame].length === 0) {
+        utils.notify('There is nothing to replace.')
+        return
+      }
+      if (this.annotationListMap[this.rightCurrentFrame].length === 0) {
         this.setAnnotationList({
           index: this.rightCurrentFrame,
           mode: this.mode,
           annotationList: [
             ...this.clone(this.annotationListMap[this.leftCurrentFrame]),
           ],
+        })
+      } else {
+        utils.confirm('Are you sure to replace? This would remove ALL annotations in the RIGHT panel!').onOk(() => {
+          this.setAnnotationList({
+            index: this.rightCurrentFrame,
+            mode: this.mode,
+            annotationList: [
+              ...this.clone(this.annotationListMap[this.leftCurrentFrame]),
+            ],
+          })
         })
       }
     },
