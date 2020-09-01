@@ -73,7 +73,7 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
           :left-label-value="'L:' + CurrentFrameRange.min"
           :right-label-value="'R:' + CurrentFrameRange.max"
           label-always
-          readonly
+          drag-range
         ></q-range>
       </q-item>
       <q-space></q-space>
@@ -530,11 +530,17 @@ export default {
     cachedFrameList () {
       return this.$store.state.annotation.cachedFrameList
     },
-    CurrentFrameRange () {
-      return {
-        min: this.leftCurrentFrame,
-        max: this.rightCurrentFrame,
-      }
+    CurrentFrameRange: {
+      get () {
+        return {
+          min: Math.min(this.leftCurrentFrame, this.rightCurrentFrame),
+          max: Math.max(this.leftCurrentFrame, this.rightCurrentFrame),
+        }
+      },
+      set (value) {
+        this.setLeftCurrentFrame(value.min)
+        this.setRightCurrentFrame(value.max)
+      },
     },
     objectLabelData () {
       return this.$store.state.settings.objectLabelData

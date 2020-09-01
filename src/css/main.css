@@ -50,3 +50,13 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+.q-slider--active .q-slider__track {
+  height: 10px;
+  top: -4px;
+  border-style: solid;
+  border-width: 3px;
+  border-radius: 4px;
+  background: transparent;
+  transition: top .28s, border-width .28s;
+}
