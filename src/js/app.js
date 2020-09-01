@@ -3,7 +3,7 @@ const APP_TEMPLATE = `
   <q-header elevated>
     <q-toolbar>
       <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-      <q-toolbar-title class="text-center"><router-link :to="'annotation'" style="color: inherit;">Vidat</router-link></q-toolbar-title>
+      <q-toolbar-title class="text-center"><router-link :to="'annotation'" style="color: inherit;">ANU CVML Video Annotation Tool</router-link></q-toolbar-title>
       <a href="https://www.anu.edu.au/" target="_blank">
         <q-avatar square>
           <img src="img/logo.png" alt="logo">
