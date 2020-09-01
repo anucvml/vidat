@@ -39,36 +39,57 @@ class ObjectAnnotation extends Annotation {
     const v = this.y
     const w = this.width
     const h = this.height
-
+    // draw the boundaries
     let lineWidth = this.highlight ? 4 : 2
-
     ctx.lineWidth = lineWidth + 2
     ctx.strokeStyle = '#000000'
     ctx.strokeRect(u, v, w, h)
     ctx.lineWidth = lineWidth
     ctx.strokeStyle = this.color
     ctx.strokeRect(u, v, w, h)
-    const handle = 8
-    if ((w > handle) && (h > handle)) {
-      ctx.beginPath()
-      ctx.moveTo(u, v + handle)
-      ctx.lineTo(u, v)
-      ctx.lineTo(u + handle, v)
-      ctx.moveTo(u, v + h - handle)
-      ctx.lineTo(u, v + h)
-      ctx.lineTo(u + handle, v + h)
-      ctx.moveTo(u + w, v + handle)
-      ctx.lineTo(u + w, v)
-      ctx.lineTo(u + w - handle, v)
-      ctx.moveTo(u + w, v + h - handle)
-      ctx.lineTo(u + w, v + h)
-      ctx.lineTo(u + w - handle, v + h)
-      ctx.lineWidth = lineWidth + 4
-      ctx.strokeStyle = '#000000'
-      ctx.stroke()
-      ctx.lineWidth = lineWidth + 2
-      ctx.strokeStyle = this.color
-      ctx.stroke()
+    // draw the handles
+    const pointList = [
+      { // top left
+        x: u,
+        y: v,
+      },
+      { // top
+        x: u + w / 2,
+        y: v,
+      },
+      { // top right
+        x: u + w,
+        y: v,
+      },
+      { // left
+        x: u,
+        y: v + h / 2,
+      },
+      { // right
+        x: u + w,
+        y: v + h / 2,
+      },
+      { // bottom left
+        x: u,
+        y: v + h,
+      },
+      { // bottom
+        x: u + w / 2,
+        y: v + h,
+      },
+      { // bottom right
+        x: u + w,
+        y: v + h,
+      },
+    ]
+    for (const point of pointList) {
+      const x = point.x
+      const y = point.y
+      ctx.fillStyle = '#000000'
+      const size = this.highlight ? 6 : 5
+      ctx.fillRect(x - size, y - size, size * 2, size * 2)
+      ctx.fillStyle = this.color
+      ctx.fillRect(x - size + 1, y - size + 1, size * 2 - 2, size * 2 - 2)
     }
   }
 
@@ -103,63 +124,95 @@ class ObjectAnnotation extends Annotation {
     }
   }
 
+  nearLeftBoundary (mouseX, mouseY) {
+    return Math.abs(mouseX - this.x) <= PROXIMITY &&
+      mouseY < this.y + this.height - PROXIMITY &&
+      mouseY > this.y + PROXIMITY
+  }
+
+  nearRightBoundary (mouseX, mouseY) {
+    return Math.abs(mouseX - this.x - this.width) <= PROXIMITY &&
+      mouseY < this.y + this.height - PROXIMITY &&
+      mouseY > this.y + PROXIMITY
+  }
+
+  nearTopBoundary (mouseX, mouseY) {
+    return Math.abs(mouseY - this.y) <= PROXIMITY &&
+      mouseX > this.x + PROXIMITY &&
+      mouseX < this.x + this.width - PROXIMITY
+  }
+
+  nearBottomBoundary (mouseX, mouseY) {
+    return Math.abs(mouseY - this.y - this.height) <= PROXIMITY &&
+      mouseX > this.x + PROXIMITY &&
+      mouseX < this.x + this.width - PROXIMITY
+  }
+
   nearBoundary (mouseX, mouseY) {
-    return (
-      (
-        // left boundary
-        Math.abs(mouseX - this.x) <= PROXIMITY &&
-        mouseY < this.y + this.height - PROXIMITY &&
-        mouseY > this.y + PROXIMITY
-      ) ||
-      (
-        // right boundary
-        Math.abs(mouseX - this.x - this.width) <= PROXIMITY &&
-        mouseY < this.y + this.height - PROXIMITY &&
-        mouseY > this.y + PROXIMITY
-      ) ||
-      (
-        // top boundary
-        Math.abs(mouseY - this.y) <= PROXIMITY &&
-        mouseX > this.x + PROXIMITY &&
-        mouseX < this.x + this.width - PROXIMITY
-      ) ||
-      (
-        // bottom boundary
-        Math.abs(mouseY - this.y - this.height) <= PROXIMITY &&
-        mouseX > this.x + PROXIMITY &&
-        mouseX < this.x + this.width - PROXIMITY
-      )
-    )
+    return this.nearLeftBoundary(mouseX, mouseY) || this.nearRightBoundary(mouseX, mouseY) ||
+      this.nearTopBoundary(mouseX, mouseY) || this.nearBottomBoundary(mouseX, mouseY)
+  }
+
+  nearTopLeftAnchor (mouseX, mouseY) {
+    return Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY
+  }
+
+  nearTopAnchor (mouseX, mouseY) {
+    return Math.abs(mouseX - this.x - this.width / 2) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY
+  }
+
+  nearTopRightAnchor (mouseX, mouseY) {
+    return Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY
+  }
+
+  nearLeftAnchor (mouseX, mouseY) {
+    return Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y - this.height / 2) <= PROXIMITY
+  }
+
+  nearRightAnchor (mouseX, mouseY) {
+    return Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y - this.height / 2) <=
+      PROXIMITY
+  }
+
+  nearBottomLeftAnchor (mouseX, mouseY) {
+    return Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <= PROXIMITY
+  }
+
+  nearBottomAnchor (mouseX, mouseY) {
+    return Math.abs(mouseX - this.x - this.width / 2) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <=
+      PROXIMITY
+  }
+
+  nearBottomRightAnchor (mouseX, mouseY) {
+    return Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <= PROXIMITY
   }
 
   nearAnchor (mouseX, mouseY) {
-    return (
-      // top left anchor
-      (Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY) ||
-      // top right anchor
-      (Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY) ||
-      // bottom left anchor
-      (Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <= PROXIMITY) ||
-      // bottom right anchor
-      (Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <= PROXIMITY)
-    )
+    return this.nearTopLeftAnchor(mouseX, mouseY) ||
+      this.nearTopAnchor(mouseX, mouseY) ||
+      this.nearTopRightAnchor(mouseX, mouseY) ||
+      this.nearLeftAnchor(mouseX, mouseY) ||
+      this.nearRightAnchor(mouseX, mouseY) ||
+      this.nearBottomLeftAnchor(mouseX, mouseY) ||
+      this.nearBottomAnchor(mouseX, mouseY) ||
+      this.nearBottomRightAnchor(mouseX, mouseY)
   }
 
   oppositeAnchor (mouseX, mouseY) {
     // top left anchor => bottom right anchor
-    if (Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY) {
+    if (this.nearTopLeftAnchor(mouseX, mouseY)) {
       return { x: this.x + this.width, y: this.y + this.height }
     }
     // top right anchor => bottom left anchor
-    if (Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY) {
+    if (this.nearTopRightAnchor(mouseX, mouseY)) {
       return { x: this.x, y: this.y + this.height }
     }
     // bottom left anchor => top right anchor
-    if (Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <= PROXIMITY) {
+    if (this.nearBottomLeftAnchor(mouseX, mouseY)) {
       return { x: this.x + this.width, y: this.y }
     }
     // bottom right anchor => top left anchor
-    if (Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <= PROXIMITY) {
+    if (this.nearBottomRightAnchor(mouseX, mouseY)) {
       return { x: this.x, y: this.y }
     }
     return null
@@ -181,7 +234,7 @@ class RegionAnnotation extends Annotation {
 
   draw (ctx) {
     if (this.pointList && this.pointList.length) {
-      // draw the border
+      // draw the boundaries
       let lineWidth = this.highlight ? 4 : 2
       ctx.lineWidth = lineWidth + 2
       ctx.strokeStyle = '#000000'

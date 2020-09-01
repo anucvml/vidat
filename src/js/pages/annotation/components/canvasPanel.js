@@ -19,7 +19,7 @@ const VIDEO_PANEL_TEMPLATE = `
       </div>
       <canvas
         ref="canvas"
-        :style="{display: 'block', position: 'relative', top: 0, cursor: getCursor()}"
+        :style="{display: 'block', position: 'relative', top: 0, cursor: cursor}"
         class="full-width"
         :height="video.height"
         :width="video.width"
@@ -145,6 +145,7 @@ export default {
       popup: { x: 0, y: 0 },
       shiftDown: false,
       status: null,
+      cursor: 'crosshair',
     }
   },
   methods: {
@@ -221,7 +222,7 @@ export default {
               this.dragContext.x + deltaX,
               this.dragContext.y + deltaY,
             )
-          } else if (this.dragContext.type === 'sizing') {
+          } else if (this.dragContext.type === 'cornerSizing') {
             const oppositeAnchor = this.dragContext.oppositeAnchor
             activeAnnotation.resize(
               oppositeAnchor.x,
@@ -229,6 +230,28 @@ export default {
               (oppositeAnchor.x > this.dragContext.x ? -this.dragContext.width : this.dragContext.width) + deltaX,
               (oppositeAnchor.y > this.dragContext.y ? -this.dragContext.height : this.dragContext.height) + deltaY,
             )
+          } else if (this.dragContext.type === 'topSizing') {
+            activeAnnotation.resize(
+              undefined,
+              mouseY,
+              undefined,
+              this.dragContext.height - deltaY)
+          } else if (this.dragContext.type === 'bottomSizing') {
+            activeAnnotation.resize(
+              undefined,
+              mouseY > this.dragContext.y ? undefined : mouseY,
+              undefined,
+              mouseY > this.dragContext.y ? this.dragContext.height + deltaY : this.dragContext.y - mouseY)
+          } else if (this.dragContext.type === 'leftSizing') {
+            activeAnnotation.resize(
+              mouseX,
+              undefined,
+              this.dragContext.width - deltaX)
+          } else if (this.dragContext.type === 'rightSizing') {
+            activeAnnotation.resize(
+              mouseX > this.dragContext.x ? undefined : mouseX,
+              undefined,
+              mouseX > this.dragContext.x ? this.dragContext.width + deltaX : this.dragContext.x - mouseX)
           } else {
             throw 'Unknown drag type'
           }
@@ -237,12 +260,40 @@ export default {
         let found = null
         for (let i = 0; i < this.annotationList.length; i++) {
           const objectAnnotation = this.annotationList[i]
-          if (
-            !found &&
-            (objectAnnotation.nearBoundary(mouseX, mouseY) ||
-              objectAnnotation.nearAnchor(mouseX, mouseY)
-            )
-          ) {
+          if (!found && objectAnnotation.nearTopLeftAnchor(mouseX, mouseY)) {
+            if (!this.dragContext) this.cursor = 'nw-resize'
+            objectAnnotation.highlight = true
+            found = i
+          } else if (!found && objectAnnotation.nearTopAnchor(mouseX, mouseY)) {
+            if (!this.dragContext) this.cursor = 'n-resize'
+            objectAnnotation.highlight = true
+            found = i
+          } else if (!found && objectAnnotation.nearTopRightAnchor(mouseX, mouseY)) {
+            if (!this.dragContext) this.cursor = 'ne-resize'
+            objectAnnotation.highlight = true
+            found = i
+          } else if (!found && objectAnnotation.nearLeftAnchor(mouseX, mouseY)) {
+            if (!this.dragContext) this.cursor = 'w-resize'
+            objectAnnotation.highlight = true
+            found = i
+          } else if (!found && objectAnnotation.nearRightAnchor(mouseX, mouseY)) {
+            if (!this.dragContext) this.cursor = 'e-resize'
+            objectAnnotation.highlight = true
+            found = i
+          } else if (!found && objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY)) {
+            if (!this.dragContext) this.cursor = 'sw-resize'
+            objectAnnotation.highlight = true
+            found = i
+          } else if (!found && objectAnnotation.nearBottomAnchor(mouseX, mouseY)) {
+            if (!this.dragContext) this.cursor = 's-resize'
+            objectAnnotation.highlight = true
+            found = i
+          } else if (!found && objectAnnotation.nearBottomRightAnchor(mouseX, mouseY)) {
+            if (!this.dragContext) this.cursor = 'se-resize'
+            objectAnnotation.highlight = true
+            found = i
+          } else if (!found && objectAnnotation.nearBoundary(mouseX, mouseY)) {
+            if (!this.dragContext) this.cursor = 'pointer'
             objectAnnotation.highlight = true
             found = i
           } else {
@@ -255,6 +306,7 @@ export default {
           }
         } else {
           this.activeContext = null
+          this.cursor = 'crosshair'
         }
       } else if (this.mode === 'region') {
         // creating a region
@@ -285,7 +337,12 @@ export default {
         let found = null
         for (let i = 0; i < this.annotationList.length; i++) {
           const regionAnnotation = this.annotationList[i]
-          if (!found && regionAnnotation.nearPoints(mouseX, mouseY) || regionAnnotation.nearBoundary(mouseX, mouseY)) {
+          if (!found && regionAnnotation.nearPoints(mouseX, mouseY)) {
+            this.cursor = 'move'
+            regionAnnotation.highlight = true
+            found = i
+          } else if (!found && regionAnnotation.nearBoundary(mouseX, mouseY)) {
+            this.cursor = 'pointer'
             regionAnnotation.highlight = true
             found = i
           } else {
@@ -298,6 +355,7 @@ export default {
           }
         } else {
           this.activeContext = null
+          this.cursor = 'crosshair'
         }
       } else if (this.mode === 'skeleton') {
         // create a skeleton
@@ -336,6 +394,11 @@ export default {
             }
           }
           if (!found && nearPoint) {
+            if (nearPoint.name === 'center') {
+              this.cursor = 'pointer'
+            } else {
+              this.cursor = 'move'
+            }
             skeletonAnnotation.highlight = true
             found = i
           } else {
@@ -349,6 +412,7 @@ export default {
         } else {
           this.status.message = ''
           this.activeContext = null
+          this.cursor = 'crosshair'
         }
       } else {
         throw 'Unknown mode: ' + this.mode
@@ -363,21 +427,35 @@ export default {
           let objectAnnotation = this.annotationList[i]
           if (objectAnnotation.highlight) {
             found = true
-            const nearAnchor = objectAnnotation.nearAnchor(mouseX, mouseY)
             if (this.shiftDown) {
               objectAnnotation = objectAnnotation.clone()
               this.annotationList.push(objectAnnotation)
             }
+            let type = 'moving'
+            if (objectAnnotation.nearTopLeftAnchor(mouseX, mouseY) ||
+              objectAnnotation.nearTopRightAnchor(mouseX, mouseY) ||
+              objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY) ||
+              objectAnnotation.nearBottomRightAnchor(mouseX, mouseY)) {
+              type = 'cornerSizing'
+            } else if (objectAnnotation.nearTopAnchor(mouseX, mouseY)) {
+              type = 'topSizing'
+            } else if (objectAnnotation.nearBottomAnchor(mouseX, mouseY)) {
+              type = 'bottomSizing'
+            } else if (objectAnnotation.nearLeftAnchor(mouseX, mouseY)) {
+              type = 'leftSizing'
+            } else if (objectAnnotation.nearRightAnchor(mouseX, mouseY)) {
+              type = 'rightSizing'
+            }
             this.dragContext = {
               index: i,
-              type: nearAnchor ? 'sizing' : 'moving',
+              type: type,
               x: objectAnnotation.x,
               y: objectAnnotation.y,
               width: objectAnnotation.width,
               height: objectAnnotation.height,
               mousedownX: mouseX,
               mousedownY: mouseY,
-              oppositeAnchor: objectAnnotation.oppositeAnchor(mouseX, mouseY),
+              oppositeAnchor: type === 'cornerSizing' ? objectAnnotation.oppositeAnchor(mouseX, mouseY) : null,
             }
             break
           }
@@ -576,19 +654,6 @@ export default {
         this.$refs.popup.show()
       } else {
         this.$refs.table.focusLast()
-      }
-    },
-    getCursor () {
-      if (this.dragContext) {
-        if (this.dragContext.type === 'moving') {
-          return 'move'
-        } else if (this.dragContext.type === 'sizing') {
-          return 'move'
-        }
-      } else if (this.activeContext) {
-        return 'pointer'
-      } else {
-        return 'crosshair'
       }
     },
     draw () {
