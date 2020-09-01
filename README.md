@@ -7,7 +7,7 @@
 
   _An in-browser video annotation tool developed by [ANU CVML](https://github.com/anucvml)._
 
-  _[Demo1](http://users.cecs.anu.edu.au/~sgould/vidat/)_ | _[Demo2](https://vidat.davidz.cn)_
+  _[Prototype](http://users.cecs.anu.edu.au/~sgould/vidatproto/)_ | _[Demo1](http://users.cecs.anu.edu.au/~sgould/vidat/)_ | _[Demo2](https://vidat.davidz.cn)_
 
 </div>
 
