@@ -285,7 +285,8 @@ class RegionAnnotation extends Annotation {
     return ret
   }
 
-  nearBoundary (mouseX, mouseY) {
+  getPointIndexListOfBoundary (mouseX, mouseY) {
+    const ret = []
     const indexList = []
     for (let i = 0; i < this.pointList.length; i++) {
       indexList.push(i)
@@ -305,10 +306,15 @@ class RegionAnnotation extends Annotation {
         mouseX < Math.max(p1.x, p2.x) &&
         mouseY > Math.min(p1.y, p2.y) &&
         mouseY < Math.max(p1.y, p2.y)
-      )
-        return true
+      ) {
+        return [indexList[i], indexList[i + 1]]
+      }
     }
-    return false
+    return []
+  }
+
+  nearBoundary (mouseX, mouseY) {
+    return this.getPointIndexListOfBoundary(mouseX, mouseY).length !== 0
   }
 
   move (deltaX, deltaY) {

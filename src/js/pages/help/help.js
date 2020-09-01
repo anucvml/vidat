@@ -69,6 +69,14 @@ export default {
           description: 'duplicate currently active object when mouse down',
         },
         {
+          key: 'alt',
+          description: 'add new point to a region when mouse down',
+        },
+        {
+          key: 'backspace',
+          description: 'delete current point in a region when mouse down',
+        },
+        {
           key: 'tab',
           description: 'move to next field when editing objects',
         },

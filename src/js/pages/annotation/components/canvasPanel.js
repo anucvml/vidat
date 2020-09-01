@@ -44,6 +44,7 @@ const VIDEO_PANEL_TEMPLATE = `
         :icon="zoom ? 'zoom_out' : 'zoom_in'"
       ></q-btn>
       <q-badge v-if="preference.actions && status" style="position: absolute; bottom: 1px; right: 1px; opacity: 0.6;">
+        <span v-if="status.keydown">{{ status.keydown }},</span>
         <span v-if="status.message">{{ status.message }},</span>
         <span>{{status.x | toFixed2}},{{status.y | toFixed2}}</span>
       </q-badge>
@@ -144,6 +145,8 @@ export default {
       playTimeInterval: null,
       popup: { x: 0, y: 0 },
       shiftDown: false,
+      backspaceDown: false,
+      altDown: false,
       status: null,
       cursor: 'crosshair',
     }
@@ -485,16 +488,40 @@ export default {
                 break
               }
             }
-            if (this.shiftDown && !nearPoint) {
-              regionAnnotation = regionAnnotation.clone()
-              this.annotationList.push(regionAnnotation)
-            }
-            this.dragContext = {
-              type: nearPoint ? 'sizing' : 'moving',
-              regionAnnotation: regionAnnotation,
-              nearPoint: nearPoint,
-              mousedownX: mouseX,
-              mousedownY: mouseY,
+            if (this.backspaceDown && nearPoint) {
+              if (regionAnnotation.pointList.length <= 3) {
+                utils.notify('At least 3 points.')
+              } else {
+                regionAnnotation.pointList.splice(regionAnnotation.pointList.indexOf(nearPoint), 1)
+              }
+            } else if (this.altDown && !nearPoint) {
+              let pointIndexList = regionAnnotation.getPointIndexListOfBoundary(mouseX, mouseY)
+              const minIndex = Math.min(...pointIndexList)
+              const maxIndex = Math.max(...pointIndexList)
+              if (minIndex === 0 && maxIndex === regionAnnotation.pointList.length - 1) {
+                regionAnnotation.pointList.push({
+                  x: mouseX,
+                  y: mouseY,
+                })
+              } else {
+                console.log(minIndex, maxIndex)
+                regionAnnotation.pointList.splice(minIndex + 1, 0, {
+                  x: mouseX,
+                  y: mouseY,
+                })
+              }
+            } else {
+              if (this.shiftDown && !nearPoint) {
+                regionAnnotation = regionAnnotation.clone()
+                this.annotationList.push(regionAnnotation)
+              }
+              this.dragContext = {
+                type: nearPoint ? 'sizing' : 'moving',
+                regionAnnotation: regionAnnotation,
+                nearPoint: nearPoint,
+                mousedownX: mouseX,
+                mousedownY: mouseY,
+              }
             }
             break
           }
@@ -691,8 +718,7 @@ export default {
     handleKeyup (event) {
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
-      }
-      if (event.keyCode === 0x2E) { // delete
+      } else if (event.keyCode === 0x2E) { // delete
         if (this.activeContext) {
           this.annotationList.splice(this.activeContext.index, 1)
         }
@@ -714,14 +740,27 @@ export default {
         if (this.position === 'left') this.handlePlayPause()
       } else if (event.keyCode === 0x10) { // shift
         this.shiftDown = false
+        if (this.status) this.status.keydown = null
+      } else if (this.mode === 'region' && event.keyCode === 0x08) { // backspace
+        if (this.status) this.status.keydown = null
+        this.backspaceDown = false
+      } else if (this.mode === 'region' && event.keyCode === 0x12) { // alt
+        if (this.status) this.status.keydown = null
+        this.altDown = false
       }
     },
     handleKeydown (event) {
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
-      }
-      if (event.keyCode === 0x10) { // shift
+      } else if (event.keyCode === 0x10) { // shift
         this.shiftDown = true
+        if (this.status) this.status.keydown = 'copy'
+      } else if (this.mode === 'region' && event.keyCode === 0x08) { // backspace
+        this.backspaceDown = true
+        if (this.status) this.status.keydown = 'delete'
+      } else if (this.mode === 'region' && event.keyCode === 0x12) { // alt
+        this.altDown = true
+        if (this.status) this.status.keydown = 'add'
       }
     },
   },
