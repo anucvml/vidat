@@ -65,7 +65,8 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
       </q-item>
       <q-item class="col q-pa-none">
         <q-range
-          style="transform: translateY(20px)"
+          :style="rangeStyle"
+          class="custom-range"
           v-model="CurrentFrameRange"
           :min="0"
           :max="video.frames"
@@ -74,12 +75,14 @@ const VIDEO_INFO_PANEL_TEMPLATE = `
           :right-label-value="'R:' + CurrentFrameRange.max"
           label-always
           drag-range
+          snap
         ></q-range>
       </q-item>
       <q-space></q-space>
       <q-item class="q-pa-none" dense>
         <q-btn-group flat dense spread>
           <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left"></q-btn>
+          <q-btn @click="handleNearestKeyframe" icon="gps_fixed"></q-btn>
           <q-btn @click="handleNextKeyframe" icon="keyboard_arrow_right"></q-btn>
         </q-btn-group>
       </q-item>
@@ -115,6 +118,7 @@ export default {
       show: true,
       priorityQueue: [], // index of priority frame that needs to process now
       backendQueue: [], // index of frame for backend processing
+      rangeStyle: {},
     }
   },
   methods: {
@@ -475,6 +479,19 @@ export default {
         this.setRightCurrentFrame(leftCurrentKeyFrame)
       }
     },
+    handleNearestKeyframe () {
+      const leftCurrentKeyFrame = this.nearestKeyframe(this.leftCurrentFrame)
+      const rightCurrentKeyFrame = this.nearestKeyframe(this.rightCurrentFrame)
+      const leftCurrentKeyFrameIndex = this.keyframeList.indexOf(leftCurrentKeyFrame)
+      const rightCurrentKeyFrameIndex = this.keyframeList.indexOf(rightCurrentKeyFrame)
+      if (rightCurrentKeyFrameIndex - leftCurrentKeyFrameIndex === 1) {
+        this.setLeftCurrentFrame(leftCurrentKeyFrame)
+        this.setRightCurrentFrame(rightCurrentKeyFrame)
+      } else {
+        this.setLeftCurrentFrame(leftCurrentKeyFrame)
+        this.setRightCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 1] || leftCurrentKeyFrame)
+      }
+    },
     handleNextKeyframe () { // base on left most one
       const leftCurrentKeyFrame = this.nearestKeyframe(this.leftCurrentFrame)
       const rightCurrentKeyFrame = this.nearestKeyframe(this.rightCurrentFrame)
@@ -565,6 +582,29 @@ export default {
     },
     actionAnnotationList () {
       return this.$store.state.annotation.actionAnnotationList
+    },
+  },
+  watch: {
+    '$store.state.annotation.keyframeList': {
+      handler (keyframeList) {
+        const baseStyle = {
+          transform: 'translateY(20px)',
+        }
+        const ticksBg = []
+        const ticksBgPos = []
+        const ticksBgSize = []
+        for (const frame of keyframeList) {
+          ticksBg.push('linear-gradient(to right, black 0, black 100%)')
+          ticksBgPos.push(`${frame / this.video.frames * 100}% 5px`)
+          ticksBgSize.push('2px 10px')
+        }
+        this.rangeStyle = {
+          ...baseStyle,
+          '--tick-bg': ticksBg.join(', '),
+          '--tick-bg-pos': ticksBgPos.join(', '),
+          '--tick-bg-size': ticksBgSize.join(', '),
+        }
+      },
     },
   },
   mounted () {
