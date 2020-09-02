@@ -296,7 +296,7 @@ export default {
             objectAnnotation.highlight = true
             found = i
           } else if (!found && objectAnnotation.nearBoundary(mouseX, mouseY)) {
-            if (!this.dragContext) this.cursor = 'pointer'
+            if (!this.dragContext) this.cursor = 'grab'
             objectAnnotation.highlight = true
             found = i
           } else {
@@ -345,7 +345,7 @@ export default {
             regionAnnotation.highlight = true
             found = i
           } else if (!found && regionAnnotation.nearBoundary(mouseX, mouseY)) {
-            this.cursor = 'pointer'
+            this.cursor = 'grab'
             regionAnnotation.highlight = true
             found = i
           } else {
@@ -398,7 +398,7 @@ export default {
           }
           if (!found && nearPoint) {
             if (nearPoint.name === 'center') {
-              this.cursor = 'pointer'
+              this.cursor = 'grab'
             } else {
               this.cursor = 'move'
             }
