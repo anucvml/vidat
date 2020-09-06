@@ -11,9 +11,7 @@ const APP_TEMPLATE = `
       </a>
     </q-toolbar>
   </q-header>
-
   <drawer></drawer>
-
   <q-page-container>
     <q-page padding>
       <videoLoader></videoLoader>
