@@ -23,9 +23,6 @@ export default {
   }),
   getters: {},
   mutations: {
-    setDebug (state, value) {
-      Vue.set(state, 'debug', value)
-    },
     setVideoSrc (state, value) {
       Vue.set(state.video, 'src', value)
       Vue.set(state, 'isSaved', true)

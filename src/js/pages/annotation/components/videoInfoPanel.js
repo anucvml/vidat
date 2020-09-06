@@ -177,7 +177,7 @@ export default {
           this.priorityQueue.push(keyframe)
         }
       }
-      if (this.$store.state.annotation.debug === false) {
+      if (this.$store.state.debug === false) {
         // add frame index into the backendQueue
         // 1. every one second
         for (let i = 1.0; i < this.video.duration; i++) {
