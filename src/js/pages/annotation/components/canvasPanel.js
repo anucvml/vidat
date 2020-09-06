@@ -82,25 +82,6 @@ const VIDEO_PANEL_TEMPLATE = `
       </div>
     </div>
     <film-strip></film-strip>
-    <q-toolbar class="q-pa-none">
-      <q-btn-group flat>
-        <q-btn dense @click="handlePlayPause" :icon="playTimeInterval ? 'pause' : 'play_arrow'"></q-btn>
-        <q-btn dense @click="handleStop" icon="stop"></q-btn>
-      </q-btn-group>
-      <q-slider
-        ref="slider"
-        class="q-mx-sm"
-        v-model="currentFrame"
-        :min="0"
-        :max="video.frames"
-        :step="1"
-        label
-      ></q-slider>
-      <q-space></q-space>
-      <q-badge class="q-mr-xs">
-        {{ utils.index2time(this.currentFrame) | toFixed2 }} / {{ video.duration | toFixed2 }} s
-      </q-badge>
-    </q-toolbar>
     <object-table
       ref="table"
       :position="position"
@@ -728,14 +709,6 @@ export default {
           this.createContext = null
           this.annotationList.pop()
         }
-      } else if (event.keyCode === 0xDB) { // [, {
-        if (this.position === 'left') {
-          this.$refs.slider.__focus()
-        }
-      } else if (event.keyCode === 0xDD) { // ], }
-        if (this.position === 'right') {
-          this.$refs.slider.__focus()
-        }
       } else if (event.keyCode === 0x50) { // p
         if (this.position === 'left') this.handlePlayPause()
       } else if (event.keyCode === 0x10) { // shift
@@ -802,40 +775,12 @@ export default {
         return eval('this.$store.state.annotation.' + this.position + 'CurrentFrame')
       },
       set (value) {
-        if (this.lockSliders) {
-          const otherPosition = {
-            'left': 'Right',
-            'right': 'Left',
-          }[this.position]
-          let otherNextFrame = 0
-          if (this.position === 'left') {
-            otherNextFrame = value + this.lockSlidersDistance
-          } else if (this.position === 'right') {
-            otherNextFrame = value - this.lockSlidersDistance
-          }
-          if (otherNextFrame <= 0) {
-            this.$store.commit(
-              'set' + otherPosition + 'CurrentFrame', 0)
-          } else if (otherNextFrame >= this.video.frames) {
-            this.$store.commit(
-              'set' + otherPosition + 'CurrentFrame', this.video.frames)
-          } else {
-            this.$store.commit(
-              'set' + otherPosition + 'CurrentFrame', otherNextFrame)
-          }
-        }
         this.$store.commit('set' + this.position.slice(0, 1).toUpperCase() + this.position.slice(1) + 'CurrentFrame',
           value)
       },
     },
     cachedFrameList () {
       return this.$store.state.annotation.cachedFrameList
-    },
-    lockSliders () {
-      return this.$store.state.settings.lockSliders
-    },
-    lockSlidersDistance () {
-      return this.$store.state.settings.lockSlidersDistance
     },
     grayscale () {
       return this.$store.state.settings.grayscale

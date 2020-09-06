@@ -33,14 +33,6 @@ export default {
           description: 'retreat to previous keyframe',
         },
         {
-          key: '[, {',
-          description: 'select left slider(TODO)',
-        },
-        {
-          key: '], }',
-          description: 'select right slider(TODO)',
-        },
-        {
           key: 'left-arrow',
           description: 'previous frame (when slider is selected)',
         },

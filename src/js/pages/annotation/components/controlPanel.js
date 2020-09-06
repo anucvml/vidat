@@ -61,7 +61,6 @@ const CONTROL_PANEL_TEMPLATE = `
   </q-item>
   <q-item>
     <q-item-section>
-      <q-toggle v-model="lockSliders" label="Lock sliders"></q-toggle>
       <q-toggle v-model="grayscale" label="Grayscale"></q-toggle>
       <q-toggle v-model="showPopup" label="Show popup"></q-toggle>
     </q-item-section>
@@ -90,10 +89,8 @@ export default {
     ...Vuex.mapMutations([
       'setMode',
       'setSkeletonTypeId',
-      'setLockSliders',
       'setGrayscale',
       'setShowPopup',
-      'setLockSlidersDistance',
       'setLeftCurrentFrame',
       'setRightCurrentFrame',
       'setAnnotationList',
@@ -325,15 +322,6 @@ export default {
       },
       set (value) {
         this.setSkeletonTypeId(value.value)
-      },
-    },
-    lockSliders: {
-      get () {
-        return this.$store.state.settings.lockSliders
-      },
-      set (value) {
-        this.setLockSliders(value)
-        this.setLockSlidersDistance(this.rightCurrentFrame - this.leftCurrentFrame)
       },
     },
     grayscale: {

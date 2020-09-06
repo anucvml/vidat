@@ -48,7 +48,6 @@ const app = new Vue({
       'setShowRegions',
       'setShowSkeletons',
       'setShowActions',
-      'setLockSliders',
       'setGrayscale',
       'setShowPopup',
       'setZoom',
@@ -117,14 +116,6 @@ const app = new Vue({
         this.setShowActions(true)
       } else if (showActions.toLowerCase() === 'false') {
         this.setShowActions(false)
-      }
-    }
-    const lockSliders = URLParameter['lockSliders']
-    if (lockSliders) {
-      if (lockSliders.toLowerCase() === 'true') {
-        this.setLockSliders(true)
-      } else if (lockSliders.toLowerCase() === 'false') {
-        this.setLockSliders(false)
       }
     }
     const grayscale = URLParameter['grayscale']

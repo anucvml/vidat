@@ -1,11 +1,16 @@
 const KEYFRAMES_PANEL_TEMPLATE = `
 <div>
-  <div v-if="video.src" class="row items-center q-mb-sm" style="min-height: 100px">
+  <div v-if="video.src" class="row items-center">
     <q-list class="col-12 row">
-      <q-item class="q-px-md" dense>
-        <q-item-section class="text-center">Keyframes:</q-item-section>
+      <q-item dense>
+        <q-item-section class="text-center">
+          <q-btn-group flat>
+            <q-btn @click="handlePlayPause" :icon="playTimeInterval ? 'pause' : 'play_arrow'"></q-btn>
+            <q-btn @click="handleStop" icon="stop"></q-btn>
+          </q-btn-group>
+        </q-item-section>
       </q-item>
-      <q-item class="col q-pa-none">
+      <q-item class="col">
         <q-range
           :style="rangeStyle"
           class="custom-range"
@@ -13,29 +18,35 @@ const KEYFRAMES_PANEL_TEMPLATE = `
           :min="0"
           :max="video.frames"
           :step="1"
-          :left-label-value="'L:' + CurrentFrameRange.min"
-          :right-label-value="'R:' + CurrentFrameRange.max"
+          :left-label-value="'L: ' + CurrentFrameRange.min + ' | ' + toFixed2(index2time(CurrentFrameRange.min)) + ' s'"
+          :right-label-value="'R: ' + CurrentFrameRange.max + ' | ' + toFixed2(index2time(CurrentFrameRange.max)) + ' s'"
           label-always
           drag-range
           snap
         ></q-range>
       </q-item>
       <q-space></q-space>
-      <q-item class="q-pa-none" dense>
-        <q-btn-group flat dense spread>
-          <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left"></q-btn>
-          <q-btn @click="handleNearestKeyframe" icon="gps_fixed"></q-btn>
-          <q-btn @click="handleNextKeyframe" icon="keyboard_arrow_right"></q-btn>
-        </q-btn-group>
+      <q-item dense>
+        <q-item-section class="text-center">
+          <q-btn-group flat>
+            <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left"></q-btn>
+            <q-btn @click="handleNearestKeyframe" icon="gps_fixed"></q-btn>
+            <q-btn @click="handleNextKeyframe" icon="keyboard_arrow_right"></q-btn>
+          </q-btn-group>
+        </q-item-section>
       </q-item>
     </q-list>
   </div>
 </div>
 `
 
+import utils from '../../../libs/utils.js'
+
 export default {
   data: () => {
     return {
+      index2time: utils.index2time,
+      playTimeInterval: null,
       rangeStyle: {},
     }
   },
@@ -44,6 +55,34 @@ export default {
       'setLeftCurrentFrame',
       'setRightCurrentFrame',
     ]),
+    handlePlayPause () {
+      if (!this.playTimeInterval) {
+        if (this.leftCurrentFrame === this.video.frames) {
+          this.leftCurrentFrame = 0
+        }
+        this.playTimeInterval = setInterval(
+          () => {
+            if (this.leftCurrentFrame === this.video.frames) {
+              clearInterval(this.playTimeInterval)
+              this.playTimeInterval = null
+            } else {
+              this.leftCurrentFrame = this.leftCurrentFrame + 1
+            }
+          },
+          1000 / this.video.fps,
+        )
+      } else {
+        clearInterval(this.playTimeInterval)
+        this.playTimeInterval = null
+      }
+    },
+    handleStop () {
+      if (this.playTimeInterval) {
+        clearInterval(this.playTimeInterval)
+        this.playTimeInterval = null
+      }
+      this.leftCurrentFrame = 0
+    },
     nearestKeyframe (currentFrame) {
       let min = this.video.frames
       let nearestKeyframe = currentFrame
@@ -128,16 +167,33 @@ export default {
         this.handleNextKeyframe()
       }
     },
+    toFixed2 (value) {
+      if (value) {
+        return value.toFixed(2)
+      } else {
+        return '0.00'
+      }
+    },
   },
   computed: {
     video () {
       return this.$store.state.annotation.video
     },
-    leftCurrentFrame () {
-      return this.$store.state.annotation.leftCurrentFrame
+    leftCurrentFrame: {
+      get () {
+        return this.$store.state.annotation.leftCurrentFrame
+      },
+      set (value) {
+        this.setLeftCurrentFrame(value)
+      },
     },
-    rightCurrentFrame () {
-      return this.$store.state.annotation.rightCurrentFrame
+    rightCurrentFrame: {
+      get () {
+        return this.$store.state.annotation.rightCurrentFrame
+      },
+      set (value) {
+        this.setRightCurrentFrame(value)
+      },
     },
     CurrentFrameRange: {
       get () {
