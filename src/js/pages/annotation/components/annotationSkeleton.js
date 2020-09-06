@@ -10,6 +10,8 @@ const ANNOTATION_SKELETON_TEMPLATE = `
     <div class="col-1 q-ma-sm"></div>
     <q-skeleton class="col q-ma-sm"></q-skeleton>
   </div>
+  <div class="row" style="min-height: 100px"><q-skeleton class="col q-ma-sm"></q-skeleton></div>
+  <div class="row" style="min-height: 100px"><q-skeleton class="col q-ma-sm"></q-skeleton></div>
 </div>
 `
 

@@ -2,7 +2,7 @@ const APP_TEMPLATE = `
 <q-layout view="hHh Lpr lFf" style="height: 100%">
   <q-header elevated>
     <q-toolbar>
-      <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
+      <q-btn flat @click="drawer = !drawer" round dense :icon="drawer ? 'menu_open' : 'menu'"></q-btn>
       <q-toolbar-title class="text-center"><router-link :to="'annotation'" style="color: inherit;">ANU CVML Video Annotation Tool</router-link></q-toolbar-title>
       <a href="https://www.anu.edu.au/" target="_blank">
         <q-avatar square>
@@ -16,10 +16,11 @@ const APP_TEMPLATE = `
 
   <q-page-container>
     <q-page padding>
+      <videoLoader></videoLoader>
       <router-view></router-view>
-    <div class="text-black text-center text-weight-thin text-caption q-ma-sm absolute-bottom">
-        Copyright © 2020, <a href='https://github.com/anucvml/vidat' target="_blank">ANU CVML</a>. All rights reserved.
-    </div>
+      <div class="text-black text-center text-weight-thin text-caption q-ma-sm absolute-bottom">
+          Copyright © 2020, <a href='https://github.com/anucvml/vidat' target="_blank">ANU CVML</a>. All rights reserved.
+      </div>
     </q-page>
   </q-page-container>
 </q-layout>
@@ -28,6 +29,7 @@ const APP_TEMPLATE = `
 import router from './router/router.js'
 import store from './store/store.js'
 import drawer from './components/drawer.js'
+import videoLoader from './components/videoLoader.js'
 
 const app = new Vue({
   router,
@@ -35,6 +37,7 @@ const app = new Vue({
   el: '#app',
   components: {
     drawer,
+    videoLoader,
   },
   data: () => {
     return {}

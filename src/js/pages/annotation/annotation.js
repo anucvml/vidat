@@ -1,9 +1,7 @@
 const ANNOTATION_TEMPLATE = `
 <div>
-  <q-card class="q-mb-md no-border-radius" style="min-height: 100px">
-    <video-info-panel></video-info-panel>
-  </q-card>
   <q-card class="q-mb-md no-border-radius" v-if="!video.src">
+    <q-btn flat class="full-width" size="40px" @click="handleOpen" icon="movie">Open</q-btn>
     <annotation-skeleton></annotation-skeleton>
   </q-card>
   <q-card class="q-mb-md no-border-radius" v-if="video.src">
@@ -13,29 +11,53 @@ const ANNOTATION_TEMPLATE = `
       <canvas-panel class="col-lg col-md-10 col-sm-10" v-show="!zoom" position="right"></canvas-panel>
       <div class="col lg-hide xl-hide"></div>
     </div>
+    <keyframes-panel></keyframes-panel>
     <action-table v-if="preference.actions"></action-table>
   </q-card>
 </div>
 `
 
-import videoInfoPanel from './components/videoInfoPanel.js'
 import annotationSkeleton from './components/annotationSkeleton.js'
 import canvasPanel from './components/canvasPanel.js'
 import controlPanel from './components/controlPanel.js'
+import keyframesPanel from './components/keyframesPanel.js'
 import actionTable from './components/actionTable.js'
+import utils from '../../libs/utils.js'
 
 export default {
   components: {
-    videoInfoPanel,
     annotationSkeleton,
     canvasPanel,
     controlPanel,
+    keyframesPanel,
     actionTable,
   },
   data: () => {
     return {}
   },
-  methods: {},
+  methods: {
+    ...Vuex.mapMutations([
+      'setVideoSrc',
+      'setSecondPerKeyframe',
+      'setVideoFPS',
+    ]),
+    handleOpenWithFPS () {
+      this.setVideoFPS(this.$store.state.settings.preferenceData.defaultFps)
+      utils.importVideo().then(videoSrc => {
+        this.setVideoSrc(videoSrc)
+      })
+    },
+    handleOpen () {
+      if (this.video.src) {
+        utils.confirm('Are you sure to open a new video? You will LOSE all data!').onOk(() => {
+          this.closeVideo()
+          this.handleOpenWithFPS()
+        })
+      } else {
+        this.handleOpenWithFPS()
+      }
+    },
+  },
   computed: {
     video () {
       return this.$store.state.annotation.video
