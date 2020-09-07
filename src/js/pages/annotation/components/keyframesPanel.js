@@ -1,43 +1,41 @@
 const KEYFRAMES_PANEL_TEMPLATE = `
-<div>
-  <div v-if="video.src" class="row items-center">
-    <q-list class="col-12 row">
-      <q-item dense>
-        <q-item-section class="text-center">
-          <q-btn-group flat>
-            <q-btn @click="handlePlayPause" :icon="playTimeInterval ? 'pause' : 'play_arrow'"></q-btn>
-            <q-btn @click="handleStop" icon="stop"></q-btn>
-          </q-btn-group>
-        </q-item-section>
-      </q-item>
-      <q-item class="col">
-        <q-range
-          ref="slider"
-          :style="rangeStyle"
-          class="custom-range"
-          v-model="CurrentFrameRange"
-          :min="0"
-          :max="video.frames"
-          :step="1"
-          :left-label-value="'L: ' + CurrentFrameRange.min + ' | ' + toFixed2(index2time(CurrentFrameRange.min)) + ' s'"
-          :right-label-value="'R: ' + CurrentFrameRange.max + ' | ' + toFixed2(index2time(CurrentFrameRange.max)) + ' s'"
-          label-always
-          drag-range
-          snap
-        ></q-range>
-      </q-item>
-      <q-space></q-space>
-      <q-item dense>
-        <q-item-section class="text-center">
-          <q-btn-group flat>
-            <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left"></q-btn>
-            <q-btn @click="handleNearestKeyframe" icon="gps_fixed"></q-btn>
-            <q-btn @click="handleNextKeyframe" icon="keyboard_arrow_right"></q-btn>
-          </q-btn-group>
-        </q-item-section>
-      </q-item>
-    </q-list>
-  </div>
+<div v-if="video.src" class="row">
+  <q-list class="col-12 row">
+    <q-item dense>
+      <q-item-section class="text-center">
+        <q-btn-group flat>
+          <q-btn @click="handlePlayPause" :icon="playTimeInterval ? 'pause' : 'play_arrow'"></q-btn>
+          <q-btn @click="handleStop" icon="stop"></q-btn>
+        </q-btn-group>
+      </q-item-section>
+    </q-item>
+    <q-item class="col">
+      <q-range
+        ref="slider"
+        :style="rangeStyle"
+        class="custom-range"
+        v-model="CurrentFrameRange"
+        :min="0"
+        :max="video.frames"
+        :step="1"
+        :left-label-value="'L: ' + CurrentFrameRange.min + ' | ' + toFixed2(index2time(CurrentFrameRange.min)) + ' s'"
+        :right-label-value="'R: ' + CurrentFrameRange.max + ' | ' + toFixed2(index2time(CurrentFrameRange.max)) + ' s'"
+        label-always
+        drag-range
+        snap
+      ></q-range>
+    </q-item>
+    <q-space></q-space>
+    <q-item dense>
+      <q-item-section class="text-center">
+        <q-btn-group flat>
+          <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left"></q-btn>
+          <q-btn @click="handleNearestKeyframe" icon="gps_fixed"></q-btn>
+          <q-btn @click="handleNextKeyframe" icon="keyboard_arrow_right"></q-btn>
+        </q-btn-group>
+      </q-item-section>
+    </q-item>
+  </q-list>
 </div>
 `
 
@@ -245,17 +243,17 @@ export default {
     },
     updateObjectAnnotationRangeStyle (objectAnnotationListMap) {
       if (objectAnnotationListMap) {
-        this.objectAnnotationRangeStyle = this.getAnnotationRangeStyle(objectAnnotationListMap, 'blue', 11)
+        this.objectAnnotationRangeStyle = this.getAnnotationRangeStyle(objectAnnotationListMap, 'blue', 20)
       }
     },
     updateRegionAnnotationRangeStyle (regionAnnotationListMap) {
       if (regionAnnotationListMap) {
-        this.regionAnnotationRangeStyle = this.getAnnotationRangeStyle(regionAnnotationListMap, 'red', 13)
+        this.regionAnnotationRangeStyle = this.getAnnotationRangeStyle(regionAnnotationListMap, 'red', 27)
       }
     },
     updateSkeletonAnnotationRangeStyle (skeletonAnnotationListMap) {
       if (skeletonAnnotationListMap) {
-        this.skeletonAnnotationRangeStyle = this.getAnnotationRangeStyle(skeletonAnnotationListMap, 'green', 15)
+        this.skeletonAnnotationRangeStyle = this.getAnnotationRangeStyle(skeletonAnnotationListMap, 'green', 34)
       }
     },
     updateActionAnnotationRangeStyle (actionAnnotationList) {
@@ -270,11 +268,11 @@ export default {
             const endFrame = utils.time2index(actionAnnotation.end)
             const color = 'purple'
             const position = {
-              x: startFrame / this.video.frames * sliderWidth,
-              y: 17,
+              x: startFrame / this.video.frames * sliderWidth - sliderWidth / this.video.frames / 2,
+              y: 41,
             }
             const size = {
-              width: (endFrame - startFrame) / this.video.frames * sliderWidth,
+              width: (endFrame - startFrame + 1) / this.video.frames * sliderWidth,
               height: 2,
             }
             ticksBg.push(`linear-gradient(to right, ${color} 0, ${color} 100%)`)
@@ -324,7 +322,7 @@ export default {
     },
     rangeStyle () {
       const rangeStyle = {
-        transform: 'translateY(14px)',
+        height: '73px',
       }
       for (const key of ['--tick-bg', '--tick-bg-pos', '--tick-bg-size']) {
         rangeStyle[key] = this.keyframeRangeStyle[key]
@@ -358,6 +356,7 @@ export default {
         this.updateObjectAnnotationRangeStyle(objectAnnotationListMap)
       },
       immediate: true,
+      deep: true,
     },
     '$store.state.annotation.regionAnnotationListMap': {
       handler (regionAnnotationListMap) {
@@ -365,6 +364,7 @@ export default {
         this.updateRegionAnnotationRangeStyle(regionAnnotationListMap)
       },
       immediate: true,
+      deep: true,
     },
     '$store.state.annotation.skeletonAnnotationListMap': {
       handler (skeletonAnnotationListMap) {
@@ -372,6 +372,7 @@ export default {
         this.updateSkeletonAnnotationRangeStyle(skeletonAnnotationListMap)
       },
       immediate: true,
+      deep: true,
     },
     '$store.state.annotation.actionAnnotationList': {
       handler (actionAnnotationList) {

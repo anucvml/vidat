@@ -56,17 +56,38 @@ input[type="number"] {
     to right,
     rgba(0, 0, 0, 0.26) 0%,
     rgba(0, 0, 0, 0.26) 100%
+  ),
+  linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.26) 0%,
+    rgba(0, 0, 0, 0.26) 100%
+  ),
+  linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.26) 0%,
+    rgba(0, 0, 0, 0.26) 100%
+  ),
+  linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.26) 0%,
+    rgba(0, 0, 0, 0.26) 100%
+  ),
+  linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.26) 0%,
+    rgba(0, 0, 0, 0.26) 100%
   ), var(--tick-bg);
   background-repeat: no-repeat;
-  background-position: 0 9px, var(--tick-bg-pos);
-  background-size: 100% 2px, var(--tick-bg-size);
+  background-position: 0 9px, 0 20px, 0 27px, 0 34px, 0 41px, var(--tick-bg-pos);
+  background-size: 100% 2px, 100% 2px, 100% 2px, 100% 2px, 100% 2px, var(--tick-bg-size);
   background-blend-mode: soft-light;
   margin-top: -10px;
-  height: 20px;
+  height: 54px;
   overflow: visible !important;
 }
 
 .custom-range .q-slider__track--h {
+  height: 2px;
   top: 9px;
   bottom: 9px;
   border: 1px solid currentColor;
@@ -77,8 +98,9 @@ input[type="number"] {
 }
 
 .custom-range.q-slider--active .q-slider__track--h {
+  height: 10px;
   top: 5px;
   bottom: 5px;
   border-width: 3px;
-  transition: top 0.28s, bottom 0.28s, border-width 0.28s;
+  transition: border-width 0.28s;
 }
