@@ -39,11 +39,6 @@ const DRAWER_TEMPLATE = `
         <q-item-section>
           <q-btn-group spread dense flat style="height: 36px">
             <q-btn
-              icon="more_time"
-              @click="handleGenerate"
-              label="generate"
-            ></q-btn>
-            <q-btn
               icon="save"
               @click="handleExport"
               label="export"
@@ -166,20 +161,6 @@ export default {
     handleClose () {
       utils.confirm('Are you sure to close? You will LOSE all data!').onOk(() => {
         this.closeVideo()
-      })
-    },
-    handleGenerate () {
-      utils.prompt(
-        'Generate keyframes',
-        'Generate keyframe every how many seconds? Integer bigger or equal to 1.',
-        5,
-        'number',
-      ).onOk((secondPerKeyframe) => {
-        if (secondPerKeyframe >= 1 && secondPerKeyframe % 1 === 0) {
-          this.setSecondPerKeyframe(parseInt(secondPerKeyframe))
-        } else {
-          utils.notify('Please enter an integer bigger than 1.')
-        }
       })
     },
     handleExport () {
