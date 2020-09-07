@@ -71,6 +71,8 @@ export default {
   methods: {
     ...Vuex.mapMutations([
       'setKeyframeList',
+      'setLeftCurrentFrame',
+      'setRightCurrentFrame',
     ]),
     handleAddCurrentFrame (currentFrame) {
       const currentKeyframeIndex = this.keyframeList.indexOf(currentFrame)
@@ -79,9 +81,11 @@ export default {
           if (this.keyframeList[i] > currentFrame) {
             this.keyframeList.splice(i, 0, currentFrame)
             utils.notify(`Frame ${currentFrame} is added successfully!`)
-            break
+            return
           }
         }
+        this.keyframeList.push(currentFrame)
+        utils.notify(`Frame ${currentFrame} is added successfully!`)
       } else {
         utils.notify(`Frame ${currentFrame} is already a keyframe!`)
       }
@@ -99,6 +103,7 @@ export default {
         0,
         'number',
       ).onOk((frame) => {
+        frame = parseInt(frame)
         if (frame >= 0 && frame % 1 === 0 && frame <= this.video.frames) {
           this.handleAddCurrentFrame(frame)
         } else {
@@ -120,6 +125,8 @@ export default {
             keyframeList.push(parseInt(i))
           }
           this.setKeyframeList(keyframeList)
+          this.setLeftCurrentFrame(keyframeList[0])
+          this.setRightCurrentFrame(keyframeList[1] || keyframeList[0])
         } else {
           utils.notify('Please enter an integer bigger than 1.')
         }

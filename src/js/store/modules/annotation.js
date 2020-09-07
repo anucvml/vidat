@@ -7,7 +7,6 @@ export default {
       src: null,
       fps: 10,
     },
-    secondPerKeyframe: 5,
     keyframeList: [],
     leftCurrentFrame: 0,
     rightCurrentFrame: 50,
@@ -39,7 +38,6 @@ export default {
     },
     setVideoFPS (state, value) {
       Vue.set(state.video, 'fps', value)
-      Vue.set(state, 'rightCurrentFrame', value * state.secondPerKeyframe)
     },
     closeVideo (state) {
       Vue.set(state.video, 'src', null)
@@ -48,7 +46,6 @@ export default {
       Vue.set(state.video, 'width', null)
       Vue.set(state.video, 'height', null)
       Vue.set(state.video, 'frames', null)
-      Vue.set(state, 'secondPerKeyframe', 5)
       Vue.set(state, 'keyframeList', [])
       Vue.set(state, 'leftCurrentFrame', 0)
       Vue.set(state, 'rightCurrentFrame', state.video.fps * 5)
@@ -59,14 +56,6 @@ export default {
       Vue.set(state, 'skeletonAnnotationListMap', {})
       Vue.set(state, 'actionAnnotationList', [])
       Vue.set(state, 'isSaved', true)
-    },
-    setSecondPerKeyframe (state, value) {
-      Vue.set(state, 'secondPerKeyframe', value)
-      let keyframeList = []
-      for (let keyframe = 0; keyframe < state.video.duration; keyframe += value) {
-        keyframeList.push(keyframe * state.video.fps)
-      }
-      Vue.set(state, 'keyframeList', keyframeList)
     },
     setKeyframeList (state, value) {
       Vue.set(state, 'keyframeList', value)

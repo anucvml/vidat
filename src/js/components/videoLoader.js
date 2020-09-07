@@ -28,7 +28,7 @@ export default {
       'setVideoDuration',
       'setVideoWidth',
       'setVideoHeight',
-      'setSecondPerKeyframe',
+      'setKeyframeList',
       'setLeftCurrentFrame',
       'setRightCurrentFrame',
       'cacheFrame',
@@ -43,7 +43,15 @@ export default {
       if (!this.video.height) {
         this.setVideoHeight(event.target.videoHeight)
       }
-      this.setSecondPerKeyframe(this.secondPerKeyframe)
+      // init keyframe list
+      const keyframeList = []
+      for (let i = 0; i < this.video.frames; i += 50) {
+        keyframeList.push(parseInt(i))
+      }
+      this.setKeyframeList(keyframeList)
+      // init navigation
+      this.setLeftCurrentFrame(keyframeList[0])
+      this.setRightCurrentFrame(keyframeList[1] || keyframeList[0])
       // add keyframe to priorityQueue
       for (const keyframe of this.keyframeList) {
         if (keyframe !== 0) {
@@ -100,9 +108,6 @@ export default {
   computed: {
     video () {
       return this.$store.state.annotation.video
-    },
-    secondPerKeyframe () {
-      return this.$store.state.annotation.secondPerKeyframe
     },
     keyframeList () {
       return this.$store.state.annotation.keyframeList

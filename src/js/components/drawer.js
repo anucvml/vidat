@@ -126,7 +126,6 @@ export default {
   methods: {
     ...Vuex.mapMutations([
       'setVideoSrc',
-      'setSecondPerKeyframe',
       'setKeyframeList',
       'setLeftCurrentFrame',
       'setRightCurrentFrame',
@@ -213,7 +212,6 @@ export default {
             // annotation
             const {
               video,
-              secondPerKeyframe,
               keyframeList,
               objectAnnotationListMap,
               regionAnnotationListMap,
@@ -223,8 +221,6 @@ export default {
             /// video
             this.setVideoFPS(video.fps)
             this.setCacheFrameList([])
-            /// secondPerKeyframe
-            this.setSecondPerKeyframe(secondPerKeyframe)
             /// keyframeList
             this.setKeyframeList(keyframeList)
             this.setLeftCurrentFrame(0)
@@ -335,7 +331,6 @@ export default {
           version: VERSION,
           annotation: {
             video: this.video,
-            secondPerKeyframe: this.secondPerKeyframe,
             keyframeList: this.keyframeList,
             objectAnnotationListMap: this.objectAnnotationListMap,
             regionAnnotationListMap: this.regionAnnotationListMap,
@@ -368,9 +363,6 @@ export default {
     },
     video () {
       return this.$store.state.annotation.video
-    },
-    secondPerKeyframe () {
-      return this.$store.state.annotation.secondPerKeyframe
     },
     keyframeList () {
       return this.$store.state.annotation.keyframeList

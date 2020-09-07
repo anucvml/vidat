@@ -38,7 +38,6 @@ export default {
   methods: {
     ...Vuex.mapMutations([
       'setVideoSrc',
-      'setSecondPerKeyframe',
       'setVideoFPS',
     ]),
     handleOpenWithFPS () {
