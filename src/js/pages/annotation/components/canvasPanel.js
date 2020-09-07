@@ -139,34 +139,6 @@ export default {
     handleLoad () {
       this.backgroundCtx.drawImage(this.$refs.img, 0, 0, this.video.width, this.video.height)
     },
-    handlePlayPause () {
-      if (!this.playTimeInterval) {
-        if (this.currentFrame === this.video.frames) {
-          this.currentFrame = 0
-        }
-        this.playTimeInterval = setInterval(
-          () => {
-            if (this.currentFrame === this.video.frames) {
-              clearInterval(this.playTimeInterval)
-              this.playTimeInterval = null
-            } else {
-              this.currentFrame = this.currentFrame + 1
-            }
-          },
-          1000 / this.video.fps,
-        )
-      } else {
-        clearInterval(this.playTimeInterval)
-        this.playTimeInterval = null
-      }
-    },
-    handleStop () {
-      if (this.playTimeInterval) {
-        clearInterval(this.playTimeInterval)
-        this.playTimeInterval = null
-      }
-      this.currentFrame = 0
-    },
     getMouseLocation (event) {
       const mouseX = event.offsetX / this.$refs.canvas.clientWidth * this.video.width
       const mouseY = event.offsetY / this.$refs.canvas.clientHeight * this.video.height
