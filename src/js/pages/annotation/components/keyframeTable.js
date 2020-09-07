@@ -22,6 +22,7 @@ const KEYFRAME_TABLE_TEMPLATE = `
       <q-btn icon="add" @click="handleAdd" label="add"></q-btn>
       <q-btn icon="arrow_right" @click="handleAddRight" label="add right"></q-btn>
       <q-btn icon="more_time" @click="handleGenerate" label="generate"></q-btn>
+      <q-btn icon="save" @click="handleExport" label="export"></q-btn>
     </q-btn-group>
   </template>
   <template v-slot:body="props">
@@ -132,6 +133,38 @@ export default {
         }
       })
     },
+    handleExport () {
+      utils.prompt(
+        'Save',
+        'Enter keyframes filename for saving',
+        'keyframes').onOk(filename => {
+        // ensure that we have all the keyframes
+        let isOk = true
+        for (let i = 0; i < this.keyframeList.length; i++) {
+          if (!this.cachedFrameList[this.keyframeList[i]]) {
+            isOk = false
+            break
+          }
+        }
+        // export all keyframes as a zip file
+        if (isOk) {
+          const zip = new JSZip()
+          for (let i = 0; i < this.keyframeList.length; i++) {
+            const imgDataURL = this.cachedFrameList[this.keyframeList[i]]
+            zip.file(
+              this.keyframeList[i] + '.jpg',
+              imgDataURL.slice(imgDataURL.indexOf(',') + 1),
+              { base64: true },
+            )
+          }
+          zip.generateAsync({ type: 'blob' }).then(content => {
+            saveAs(content, filename + '-' + this.video.fps + '-fps.zip')
+          })
+        } else {
+          utils.notify('Please wait for caching!')
+        }
+      })
+    },
     handleDelete (keyframe) {
       utils.confirm(`Are you sure delete keyframe ${keyframe}?`).onOk(() => {
         this.keyframeList.splice(this.keyframeList.indexOf(keyframe), 1)
@@ -160,6 +193,9 @@ export default {
     },
     skeletonAnnotationListMap () {
       return this.$store.state.annotation.skeletonAnnotationListMap
+    },
+    cachedFrameList () {
+      return this.$store.state.annotation.cachedFrameList
     },
   },
   template: KEYFRAME_TABLE_TEMPLATE,

@@ -34,18 +34,6 @@ const DRAWER_TEMPLATE = `
           </q-btn-group>
         </q-item-section>
       </q-item>
-      <q-item dense class="text-h6" v-if="video.src">KeyFrames</q-item>
-      <q-item dense v-if="video.src">
-        <q-item-section>
-          <q-btn-group spread dense flat style="height: 36px">
-            <q-btn
-              icon="save"
-              @click="handleExport"
-              label="export"
-            ></q-btn>
-          </q-btn-group>
-        </q-item-section>
-      </q-item>
       <q-item dense class="text-h6" v-if="video.src">Annotations</q-item>
       <q-item dense v-if="video.src">
         <q-item-section>
@@ -160,38 +148,6 @@ export default {
     handleClose () {
       utils.confirm('Are you sure to close? You will LOSE all data!').onOk(() => {
         this.closeVideo()
-      })
-    },
-    handleExport () {
-      utils.prompt(
-        'Save',
-        'Enter keyframes filename for saving',
-        'keyframes').onOk(filename => {
-        // ensure that we have all the keyframes
-        let isOk = true
-        for (let i = 0; i < this.keyframeList.length; i++) {
-          if (!this.cachedFrameList[this.keyframeList[i]]) {
-            isOk = false
-            break
-          }
-        }
-        // export all keyframes as a zip file
-        if (isOk) {
-          const zip = new JSZip()
-          for (let i = 0; i < this.keyframeList.length; i++) {
-            const imgDataURL = this.cachedFrameList[this.keyframeList[i]]
-            zip.file(
-              this.keyframeList[i] + '.jpg',
-              imgDataURL.slice(imgDataURL.indexOf(',') + 1),
-              { base64: true },
-            )
-          }
-          zip.generateAsync({ type: 'blob' }).then(content => {
-            saveAs(content, filename + '-' + this.video.fps + '-fps.zip')
-          })
-        } else {
-          utils.notify('Please wait for caching!')
-        }
       })
     },
     handleLoad () {
@@ -372,9 +328,6 @@ export default {
     },
     rightCurrentFrame () {
       return this.$store.state.annotation.rightCurrentFrame
-    },
-    cachedFrameList () {
-      return this.$store.state.annotation.cachedFrameList
     },
     objectLabelData () {
       return this.$store.state.settings.objectLabelData
