@@ -387,6 +387,7 @@ export default {
     },
   },
   mounted () {
+    this.handleOnresize()
     document.addEventListener('keyup', this.handleKeyup)
     window.addEventListener('resize', this.handleOnresize)
   },
