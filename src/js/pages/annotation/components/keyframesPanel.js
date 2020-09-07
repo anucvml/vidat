@@ -12,6 +12,7 @@ const KEYFRAMES_PANEL_TEMPLATE = `
       </q-item>
       <q-item class="col">
         <q-range
+          ref="slider"
           :style="rangeStyle"
           class="custom-range"
           v-model="CurrentFrameRange"
@@ -47,7 +48,11 @@ export default {
     return {
       index2time: utils.index2time,
       playTimeInterval: null,
-      rangeStyle: {},
+      keyframeRangeStyle: {},
+      objectAnnotationRangeStyle: {},
+      regionAnnotationRangeStyle: {},
+      skeletonAnnotationRangeStyle: {},
+      actionAnnotationRangeStyle: {},
     }
   },
   methods: {
@@ -210,29 +215,188 @@ export default {
     keyframeList () {
       return this.$store.state.annotation.keyframeList
     },
+    rangeStyle () {
+      const ret = {
+        transform: 'translateY(14px)',
+      }
+      for (const key of ['--tick-bg', '--tick-bg-pos', '--tick-bg-size']) {
+        ret[key] = this.keyframeRangeStyle[key]
+        if (this.objectAnnotationRangeStyle[key]) {
+          ret[key] += ',' + this.objectAnnotationRangeStyle[key]
+        }
+        if (this.regionAnnotationRangeStyle[key]) {
+          ret[key] += ',' + this.regionAnnotationRangeStyle[key]
+        }
+        if (this.skeletonAnnotationRangeStyle[key]) {
+          ret[key] += ',' + this.skeletonAnnotationRangeStyle[key]
+        }
+        if (this.actionAnnotationRangeStyle[key]) {
+          ret[key] += ',' + this.actionAnnotationRangeStyle[key]
+        }
+      }
+      return ret
+    },
   },
   watch: {
     '$store.state.annotation.keyframeList': {
       handler (keyframeList) {
-        const baseStyle = {
-          transform: 'translateY(10px)',
-        }
         const ticksBg = []
         const ticksBgPos = []
         const ticksBgSize = []
+        const sliderWidth = this.$refs.slider ? this.$refs.slider.$el.clientWidth : 0
+        // keyframe
         for (const frame of keyframeList) {
-          ticksBg.push('linear-gradient(to right, black 0, black 100%)')
-          ticksBgPos.push(`${frame / this.video.frames * 100}% 5px`)
-          ticksBgSize.push('2px 10px')
+          const color = 'black'
+          const size = {
+            width: sliderWidth / this.video.frames,
+            height: 2,
+          }
+          const position = {
+            x: frame / this.video.frames * sliderWidth - size.width / 2,
+            y: 9,
+          }
+          ticksBg.push(`linear-gradient(to right, ${color} 0, ${color} 100%)`)
+          ticksBgPos.push(`${position.x}px ${position.y}px`)
+          ticksBgSize.push(`${size.width}px ${size.height}px`)
         }
-        this.rangeStyle = {
-          ...baseStyle,
+        this.keyframeRangeStyle = {
           '--tick-bg': ticksBg.join(', '),
           '--tick-bg-pos': ticksBgPos.join(', '),
           '--tick-bg-size': ticksBgSize.join(', '),
         }
       },
       immediate: true,
+    },
+    '$store.state.annotation.objectAnnotationListMap': {
+      handler (objectAnnotationListMap) {
+        if (objectAnnotationListMap) {
+          const ticksBg = []
+          const ticksBgPos = []
+          const ticksBgSize = []
+          const sliderWidth = this.$refs.slider ? this.$refs.slider.$el.clientWidth : 0
+          for (const frame in objectAnnotationListMap) {
+            if (objectAnnotationListMap[frame].length !== 0) {
+              const color = 'blue'
+              const size = {
+                width: sliderWidth / this.video.frames,
+                height: 2,
+              }
+              const position = {
+                x: frame / this.video.frames * sliderWidth - size.width / 2,
+                y: 11,
+              }
+              ticksBg.push(`linear-gradient(to right, ${color} 0, ${color} 100%)`)
+              ticksBgPos.push(`${position.x}px ${position.y}px`)
+              ticksBgSize.push(`${size.width}px ${size.height}px`)
+            }
+          }
+          this.objectAnnotationRangeStyle = {
+            '--tick-bg': ticksBg.join(', '),
+            '--tick-bg-pos': ticksBgPos.join(', '),
+            '--tick-bg-size': ticksBgSize.join(', '),
+          }
+        }
+      },
+      immediate: true,
+    },
+    '$store.state.annotation.regionAnnotationListMap': {
+      handler (regionAnnotationListMap) {
+        if (regionAnnotationListMap) {
+          const ticksBg = []
+          const ticksBgPos = []
+          const ticksBgSize = []
+          const sliderWidth = this.$refs.slider ? this.$refs.slider.$el.clientWidth : 0
+          for (const frame in regionAnnotationListMap) {
+            if (regionAnnotationListMap[frame].length !== 0) {
+              const color = 'red'
+              const size = {
+                width: sliderWidth / this.video.frames,
+                height: 2,
+              }
+              const position = {
+                x: frame / this.video.frames * sliderWidth - size.width / 2,
+                y: 13,
+              }
+              ticksBg.push(`linear-gradient(to right, ${color} 0, ${color} 100%)`)
+              ticksBgPos.push(`${position.x}px ${position.y}px`)
+              ticksBgSize.push(`${size.width}px ${size.height}px`)
+            }
+          }
+          this.regionAnnotationRangeStyle = {
+            '--tick-bg': ticksBg.join(', '),
+            '--tick-bg-pos': ticksBgPos.join(', '),
+            '--tick-bg-size': ticksBgSize.join(', '),
+          }
+        }
+      },
+      immediate: true,
+    },
+    '$store.state.annotation.skeletonAnnotationListMap': {
+      handler (skeletonAnnotationListMap) {
+        if (skeletonAnnotationListMap) {
+          const ticksBg = []
+          const ticksBgPos = []
+          const ticksBgSize = []
+          const sliderWidth = this.$refs.slider ? this.$refs.slider.$el.clientWidth : 0
+          for (const frame in skeletonAnnotationListMap) {
+            if (skeletonAnnotationListMap[frame].length !== 0) {
+              const color = 'green'
+              const size = {
+                width: sliderWidth / this.video.frames,
+                height: 2,
+              }
+              const position = {
+                x: frame / this.video.frames * sliderWidth - size.width / 2,
+                y: 15,
+              }
+              ticksBg.push(`linear-gradient(to right, ${color} 0, ${color} 100%)`)
+              ticksBgPos.push(`${position.x}px ${position.y}px`)
+              ticksBgSize.push(`${size.width}px ${size.height}px`)
+            }
+          }
+          this.skeletonAnnotationRangeStyle = {
+            '--tick-bg': ticksBg.join(', '),
+            '--tick-bg-pos': ticksBgPos.join(', '),
+            '--tick-bg-size': ticksBgSize.join(', '),
+          }
+        }
+      },
+      immediate: true,
+    },
+    '$store.state.annotation.actionAnnotationList': {
+      handler (actionAnnotationList) {
+        if (actionAnnotationList) {
+          const ticksBg = []
+          const ticksBgPos = []
+          const ticksBgSize = []
+          const sliderWidth = this.$refs.slider ? this.$refs.slider.$el.clientWidth : 0
+          for (const actionAnnotation of actionAnnotationList) {
+            if (typeof actionAnnotation.start === 'number' && typeof actionAnnotation.end === 'number') {
+              const startFrame = utils.time2index(actionAnnotation.start)
+              const endFrame = utils.time2index(actionAnnotation.end)
+              const color = 'purple'
+              const position = {
+                x: startFrame / this.video.frames * sliderWidth,
+                y: 17,
+              }
+              const size = {
+                width: (endFrame - startFrame) / this.video.frames * sliderWidth,
+                height: 2,
+              }
+              ticksBg.push(`linear-gradient(to right, ${color} 0, ${color} 100%)`)
+              ticksBgPos.push(`${position.x}px ${position.y}px`)
+              ticksBgSize.push(`${size.width}px ${size.height}px`)
+            }
+          }
+          this.actionAnnotationRangeStyle = {
+            '--tick-bg': ticksBg.join(', '),
+            '--tick-bg-pos': ticksBgPos.join(', '),
+            '--tick-bg-size': ticksBgSize.join(', '),
+          }
+        }
+      },
+      immediate: true,
+      deep: true,
     },
   },
   mounted () {
