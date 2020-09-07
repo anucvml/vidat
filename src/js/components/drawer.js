@@ -323,12 +323,6 @@ export default {
     keyframeList () {
       return this.$store.state.annotation.keyframeList
     },
-    leftCurrentFrame () {
-      return this.$store.state.annotation.leftCurrentFrame
-    },
-    rightCurrentFrame () {
-      return this.$store.state.annotation.rightCurrentFrame
-    },
     objectLabelData () {
       return this.$store.state.settings.objectLabelData
     },
