@@ -77,7 +77,7 @@ const VIDEO_PANEL_TEMPLATE = `
             v-if="annotationList.length"
             v-model="annotationList[annotationList.length - 1].score"
           ></q-input>
-          <q-btn dense falt class="full-width q-mt-sm" @click="$refs.popup.hide()" color="primary">Confirm</q-btn>
+          <q-btn dense falt class="full-width q-mt-sm" @click="$refs.popup.hide()" color="primary" label="confirm"></q-btn>
         </q-popup-edit>
       </div>
     </div>

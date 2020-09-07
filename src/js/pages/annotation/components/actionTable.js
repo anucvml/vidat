@@ -11,8 +11,8 @@ const ACTION_TABLE_TEMPLATE = `
     <div class="col-6 q-table__title">Actions / Video Segments</div>
     <q-space></q-space>
     <q-btn-group>
-      <q-btn icon="add" @click="handleAdd">ADD</q-btn>
-      <q-btn icon="clear_all" @click="handleClearAll">CLEAR</q-btn>
+      <q-btn icon="add" @click="handleAdd" label="add"></q-btn>
+      <q-btn icon="clear_all" @click="handleClearAll" label="clear"></q-btn>
     </q-btn-group>
   </template>
   <template v-slot:body="props">

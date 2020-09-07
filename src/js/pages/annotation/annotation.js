@@ -1,7 +1,7 @@
 const ANNOTATION_TEMPLATE = `
 <div>
   <q-card class="q-mb-md no-border-radius" v-if="!video.src">
-    <q-btn flat class="full-width" size="40px" @click="handleOpen" icon="movie">Open</q-btn>
+    <q-btn flat class="full-width" size="40px" @click="handleOpen" icon="movie" label="open"></q-btn>
     <annotation-skeleton></annotation-skeleton>
   </q-card>
   <q-card class="q-mb-md no-border-radius" v-if="video.src">

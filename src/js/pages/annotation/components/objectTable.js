@@ -10,7 +10,7 @@ const OBJECT_TABLE_TEMPLATE = `
   <template v-slot:top="props">
     <div class="col-6 q-table__title">Objects</div>
     <q-space></q-space>
-    <q-btn icon="clear_all" @click="handleClearAll">CLEAR</q-btn>
+    <q-btn icon="clear_all" @click="handleClearAll" label="clear"></q-btn>
   </template>
   <template v-slot:body="props">
     <q-tr :props="props">

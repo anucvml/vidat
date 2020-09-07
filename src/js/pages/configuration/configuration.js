@@ -4,8 +4,8 @@ const CONFIGURATION_TEMPLATE = `
     <div class="text-h5">Configuration</div>
     <q-space></q-space>
     <q-btn-group>
-      <q-btn class="q-px-md" dense @click="handleLoad" icon="publish">Load</q-btn>
-      <q-btn class="q-px-md" dense color="primary" icon="get_app" @click="handleSave">Save</q-btn>
+      <q-btn class="q-px-md" dense @click="handleLoad" icon="publish" label="load"></q-btn>
+      <q-btn class="q-px-md" dense color="primary" icon="get_app" @click="handleSave" label="save"></q-btn>
     </q-btn-group>
   </div>
   <object-label-table></object-label-table>

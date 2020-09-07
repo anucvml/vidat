@@ -10,7 +10,7 @@ const SKELETON_TABLE_TEMPLATE = `
   <template v-slot:top="props">
     <div class="col-6 q-table__title">Skeleton</div>
     <q-space></q-space>
-    <q-btn icon="clear_all" @click="handleClearAll">CLEAR</q-btn>
+    <q-btn icon="clear_all" @click="handleClearAll" label="clear"></q-btn>
   </template>
   <template v-slot:header="props">
     <q-tr :props="props">

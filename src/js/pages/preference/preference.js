@@ -3,7 +3,7 @@ const PREFERENCE_TEMPLATE = `
   <div class="row">
     <div class="text-h5">Preferences</div>
     <q-space></q-space>
-    <q-btn class="q-px-md" dense color="primary" icon="cached" @click="handleRestore">Restore</q-btn>
+    <q-btn class="q-px-md" dense color="primary" icon="cached" @click="handleRestore" label="restore"></q-btn>
   </div>
   <q-list>
     <q-item tag="label" v-ripple>

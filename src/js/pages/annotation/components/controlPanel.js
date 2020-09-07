@@ -24,7 +24,7 @@ const CONTROL_PANEL_TEMPLATE = `
   <q-item>
     <q-item-section>
       <q-btn-group spread>
-        <q-btn @click="handleInterpolate" icon="double_arrow">FILL</q-btn>
+        <q-btn @click="handleInterpolate" icon="double_arrow" label="fill"></q-btn>
       </q-btn-group>
     </q-item-section>
   </q-item>
@@ -70,7 +70,7 @@ const CONTROL_PANEL_TEMPLATE = `
   </q-item>
   <q-item>
     <q-item-section>
-       <q-btn class="full-width" @click="handleSwap" icon="swap_horiz">swap</q-btn>
+       <q-btn class="full-width" @click="handleSwap" icon="swap_horiz" label="swap"></q-btn>
     </q-item-section>
   </q-item>
 </q-list>

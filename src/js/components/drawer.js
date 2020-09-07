@@ -23,14 +23,14 @@ const DRAWER_TEMPLATE = `
             <q-btn
               icon="movie"
               @click="handleOpen"
-            > {{ video.src ? "Reopen" : "Open" }}
-            </q-btn>
+              :label="video.src ? 'reopen' : 'open'"
+            ></q-btn>
             <q-btn
               icon="close"
               @click="handleClose"
               v-if="video.src"
-            > Close
-            </q-btn>
+              label="close"
+            ></q-btn>
           </q-btn-group>
         </q-item-section>
       </q-item>
@@ -41,13 +41,13 @@ const DRAWER_TEMPLATE = `
             <q-btn
               icon="more_time"
               @click="handleGenerate"
-            > Generate
-            </q-btn>
+              label="generate"
+            ></q-btn>
             <q-btn
               icon="save"
               @click="handleExport"
-            > Export
-            </q-btn>
+              label="export"
+            ></q-btn>
           </q-btn-group>
         </q-item-section>
       </q-item>
@@ -58,13 +58,13 @@ const DRAWER_TEMPLATE = `
             <q-btn
               icon="cloud_upload"
               @click="handleLoad"
-            > Load
-            </q-btn>
+              label="load"
+            ></q-btn>
             <q-btn
               icon="cloud_download"
               @click="handleSave"
-            > Save
-            </q-btn>
+              label="save"
+            ></q-btn>
           </q-btn-group>
         </q-item-section>
       </q-item>

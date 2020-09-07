@@ -5,8 +5,8 @@ const OBJECT_LABEL_TABLE_TEMPLATE = `
       <div class="col-6 q-table__title">Object Labels</div>
       <q-space></q-space>
       <q-btn-group :flat="false">
-        <q-btn icon="save" color="primary" @click="handleSave">Save</q-btn>
-        <q-btn icon="close" color="negative" @click="handleCancel">Cancel</q-btn>
+        <q-btn icon="save" color="primary" @click="handleSave" label="save"></q-btn>
+        <q-btn icon="close" color="negative" @click="handleCancel" label="cancel"></q-btn>
       </q-btn-group>
       <q-input
         class="full-width"
@@ -29,8 +29,8 @@ const OBJECT_LABEL_TABLE_TEMPLATE = `
       <div class="col-6 q-table__title">Object Labels</div>
       <q-space></q-space>
       <q-btn-group>
-        <q-btn icon="edit" @click="showEdit = !showEdit; json = jsonData">Edit</q-btn>
-        <q-btn icon="add" @click="handleAdd">Add</q-btn>
+        <q-btn icon="edit" @click="showEdit = !showEdit; json = jsonData" label="edit"></q-btn>
+        <q-btn icon="add" @click="handleAdd" label="add"></q-btn>
       </q-btn-group>
     </template>
     <template v-slot:body="props">
