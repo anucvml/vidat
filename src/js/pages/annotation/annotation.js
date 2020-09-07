@@ -20,7 +20,7 @@ const ANNOTATION_TEMPLATE = `
 import annotationSkeleton from './components/annotationSkeleton.js'
 import canvasPanel from './components/canvasPanel.js'
 import controlPanel from './components/controlPanel.js'
-import keyframesPanel from './components/keyframesPanel.js'
+import keyframesPanel from './components/keyframePanel.js'
 import actionTable from './components/actionTable.js'
 import utils from '../../libs/utils.js'
 

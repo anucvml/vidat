@@ -1,11 +1,12 @@
 const KEYFRAMES_PANEL_TEMPLATE = `
 <div v-if="video.src" class="row">
   <q-list class="col-12 row">
-    <q-item dense>
+    <q-item>
       <q-item-section class="text-center">
-        <q-btn-group flat>
+        <q-btn-group>
           <q-btn @click="handlePlayPause" :icon="playTimeInterval ? 'pause' : 'play_arrow'"></q-btn>
-          <q-btn @click="handleStop" icon="stop"></q-btn>
+          <q-btn @click="handleStop" icon="stop" :disabled="!playTimeInterval"></q-btn>
+          <q-btn @click="showEdit = !showEdit" :icon="showEdit ? 'done' : 'edit'"></q-btn>
         </q-btn-group>
       </q-item-section>
     </q-item>
@@ -26,9 +27,9 @@ const KEYFRAMES_PANEL_TEMPLATE = `
       ></q-range>
     </q-item>
     <q-space></q-space>
-    <q-item dense>
+    <q-item>
       <q-item-section class="text-center">
-        <q-btn-group flat>
+        <q-btn-group>
           <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left"></q-btn>
           <q-btn @click="handleNearestKeyframe" icon="gps_fixed"></q-btn>
           <q-btn @click="handleNextKeyframe" icon="keyboard_arrow_right"></q-btn>
@@ -36,12 +37,17 @@ const KEYFRAMES_PANEL_TEMPLATE = `
       </q-item-section>
     </q-item>
   </q-list>
+  <keyframe-table v-if="showEdit"></keyframe-table>
 </div>
 `
 
 import utils from '../../../libs/utils.js'
+import keyframeTable from './keyframeTable.js'
 
 export default {
+  components: {
+    keyframeTable,
+  },
   data: () => {
     return {
       index2time: utils.index2time,
@@ -56,6 +62,7 @@ export default {
       regionAnnotationRangeStyle: {},
       skeletonAnnotationRangeStyle: {},
       actionAnnotationRangeStyle: {},
+      showEdit: false,
     }
   },
   methods: {
