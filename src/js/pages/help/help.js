@@ -22,7 +22,7 @@ export default {
       shortcuts: [
         {
           key: 'p',
-          description: 'play video segment',
+          description: 'play / pause video segment',
         },
         {
           key: 'comma, <',
