@@ -69,13 +69,7 @@ export default {
     ...Vuex.mapMutations([
       'setSecondPerKeyframe',
     ]),
-    toFixed2 (value) {
-      if (value) {
-        return value.toFixed(2)
-      } else {
-        return '0.00'
-      }
-    },
+
     handleAdd () {
 
     },

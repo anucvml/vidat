@@ -51,6 +51,7 @@ export default {
   data: () => {
     return {
       index2time: utils.index2time,
+      toFixed2: utils.toFixed2,
       playTimeInterval: null,
       keyframeList: null,
       objectAnnotationListMap: null,
@@ -188,13 +189,6 @@ export default {
       this.updateRegionAnnotationRangeStyle(this.regionAnnotationListMap)
       this.updateSkeletonAnnotationRangeStyle(this.skeletonAnnotationListMap)
       this.updateActionAnnotationRangeStyle(this.actionAnnotationList)
-    },
-    toFixed2 (value) {
-      if (value) {
-        return value.toFixed(2)
-      } else {
-        return '0.00'
-      }
     },
     updateKeyframeRangeStyle (keyframeList) {
       const ticksBg = []

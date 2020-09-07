@@ -60,6 +60,13 @@ export default {
     return Math.round(store.state.annotation.video.fps * time)
   },
   index2time (index) { return parseFloat((index / store.state.annotation.video.fps).toFixed(3)) },
+  toFixed2 (value) {
+    if (value) {
+      return value.toFixed(2)
+    } else {
+      return '0.00'
+    }
+  },
   randomColor () {
     return `#${('000000' + (Math.random() * 16777216 | 0).toString(16)).slice(-6)}`
   },

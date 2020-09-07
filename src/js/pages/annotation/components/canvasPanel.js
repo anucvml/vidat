@@ -854,13 +854,7 @@ export default {
     },
   },
   filters: {
-    'toFixed2': function (value) {
-      if (value) {
-        return value.toFixed(2)
-      } else {
-        return '0.00'
-      }
-    },
+    'toFixed2': utils.toFixed2,
   },
   template: VIDEO_PANEL_TEMPLATE,
 }
