@@ -6,7 +6,7 @@ const KEYFRAME_TABLE_TEMPLATE = `
   :data="keyframeList"
   :pagination.sync="pagination"
   :columns="[
-    { name: 'frame', align: 'center', label: '#frame' },
+    { name: 'frame', align: 'center', label: 'frame' },
     { name: 'time', align: 'center', label: 'time' },
     { name: 'nObject', align: 'center', label: '# object' },
     { name: 'nRegion', align: 'center', label: '# region' },
@@ -18,7 +18,9 @@ const KEYFRAME_TABLE_TEMPLATE = `
     <div class="col-6 q-table__title">Keyframes</div>
     <q-space></q-space>
     <q-btn-group>
+      <q-btn icon="arrow_left" @click="handleAddLeft" label="add left"></q-btn>
       <q-btn icon="add" @click="handleAdd" label="add"></q-btn>
+      <q-btn icon="arrow_right" @click="handleAddRight" label="add right"></q-btn>
       <q-btn icon="more_time" @click="handleGenerate" label="generate"></q-btn>
     </q-btn-group>
   </template>
@@ -68,33 +70,80 @@ export default {
   },
   methods: {
     ...Vuex.mapMutations([
-      'setSecondPerKeyframe',
+      'setKeyframeList',
     ]),
-
+    handleAddCurrentFrame (currentFrame) {
+      const currentKeyframeIndex = this.keyframeList.indexOf(currentFrame)
+      if (currentKeyframeIndex === -1) {
+        for (const i in this.keyframeList) {
+          if (this.keyframeList[i] > currentFrame) {
+            this.keyframeList.splice(i, 0, currentFrame)
+            utils.notify(`Frame ${currentFrame} is added successfully!`)
+            break
+          }
+        }
+      } else {
+        utils.notify(`Frame ${currentFrame} is already a keyframe!`)
+      }
+    },
+    handleAddLeft () {
+      this.handleAddCurrentFrame(this.leftCurrentFrame)
+    },
+    handleAddRight () {
+      this.handleAddCurrentFrame(this.rightCurrentFrame)
+    },
     handleAdd () {
-
+      utils.prompt(
+        'Add keyframe',
+        'Please input the id of frame you would like to mark as keyframe',
+        0,
+        'number',
+      ).onOk((frame) => {
+        if (frame >= 0 && frame % 1 === 0 && frame <= this.video.frames) {
+          this.handleAddCurrentFrame(frame)
+        } else {
+          utils.notify(`Please enter an integer bigger than 0 and less than ${this.video.frames}`)
+        }
+      })
     },
     handleGenerate () {
       utils.prompt(
         'Generate keyframes',
-        'Generate keyframe every how many seconds? Integer bigger or equal to 1.',
+        'Generate keyframe every how many frames? Integer bigger or equal to 1.',
         5,
         'number',
-      ).onOk((secondPerKeyframe) => {
-        if (secondPerKeyframe >= 1 && secondPerKeyframe % 1 === 0) {
-          this.setSecondPerKeyframe(parseInt(secondPerKeyframe))
+      ).onOk((framePerKeyframe) => {
+        framePerKeyframe = parseInt(framePerKeyframe)
+        if (framePerKeyframe >= 1 && framePerKeyframe % 1 === 0) {
+          const keyframeList = []
+          for (let i = 0; i < this.video.frames; i += framePerKeyframe) {
+            keyframeList.push(parseInt(i))
+          }
+          this.setKeyframeList(keyframeList)
         } else {
           utils.notify('Please enter an integer bigger than 1.')
         }
       })
     },
     handleDelete (keyframe) {
-
+      utils.confirm(`Are you sure delete keyframe ${keyframe}?`).onOk(() => {
+        this.keyframeList.splice(this.keyframeList.indexOf(keyframe), 1)
+        this.setKeyframeList(this.keyframeList)
+      })
     },
   },
   computed: {
+    video () {
+      return this.$store.state.annotation.video
+    },
     keyframeList () {
       return this.$store.state.annotation.keyframeList
+    },
+    leftCurrentFrame () {
+      return this.$store.state.annotation.leftCurrentFrame
+    },
+    rightCurrentFrame () {
+      return this.$store.state.annotation.rightCurrentFrame
     },
     objectAnnotationListMap () {
       return this.$store.state.annotation.objectAnnotationListMap
