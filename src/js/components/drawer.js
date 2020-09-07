@@ -177,14 +177,6 @@ export default {
       ).onOk((secondPerKeyframe) => {
         if (secondPerKeyframe >= 1 && secondPerKeyframe % 1 === 0) {
           this.setSecondPerKeyframe(parseInt(secondPerKeyframe))
-          // re-cache keyframes
-          this.keyframeList.forEach(keyframe => {
-            if (keyframe !== 0) {
-              this.priorityQueue.push(keyframe)
-            }
-          })
-          // trigger again
-          this.$refs.video.currentTime = 0.0
         } else {
           utils.notify('Please enter an integer bigger than 1.')
         }
