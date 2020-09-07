@@ -681,8 +681,6 @@ export default {
           this.createContext = null
           this.annotationList.pop()
         }
-      } else if (event.keyCode === 0x50) { // p
-        if (this.position === 'left') this.handlePlayPause()
       } else if (event.keyCode === 0x10) { // shift
         this.shiftDown = false
         if (this.status) this.status.keydown = null

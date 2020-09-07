@@ -181,6 +181,8 @@ export default {
         this.handlePreviousKeyframe()
       } else if (event.keyCode === 0xBE) { // period, >
         this.handleNextKeyframe()
+      } else if (event.keyCode === 0x50) { // p
+        this.handlePlayPause()
       }
     },
     handleOnresize (event) {
