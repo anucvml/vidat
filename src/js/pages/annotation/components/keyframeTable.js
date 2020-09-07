@@ -62,6 +62,7 @@ export default {
   data: () => {
     return {
       index2time: utils.index2time,
+      toFixed2: utils.toFixed2,
       pagination: { rowsPerPage: 5 },
     }
   },
