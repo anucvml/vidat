@@ -5,13 +5,13 @@ const ANNOTATION_TEMPLATE = `
     <annotation-skeleton></annotation-skeleton>
   </q-card>
   <q-card class="q-mb-md no-border-radius" v-if="video.src">
+    <keyframes-panel></keyframes-panel>
     <div class="row justify-around">
       <canvas-panel :class="[{'col-lg': !zoom}, {'col-md-10': !zoom}, {'col-sm-10': !zoom}, {'col': zoom}]" position="left"></canvas-panel>
       <control-panel class="col" v-show="!zoom"></control-panel>
       <canvas-panel class="col-lg col-md-10 col-sm-10" v-show="!zoom" position="right"></canvas-panel>
       <div class="col lg-hide xl-hide"></div>
     </div>
-    <keyframes-panel></keyframes-panel>
     <action-table v-if="preference.actions"></action-table>
   </q-card>
 </div>
