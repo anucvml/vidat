@@ -11,7 +11,7 @@ const KEYFRAME_TABLE_TEMPLATE = `
     { name: 'nObject', align: 'center', label: '# object' },
     { name: 'nRegion', align: 'center', label: '# region' },
     { name: 'nSkeleton', align: 'center', label: '# skeleton' },
-    { name: 'operation', align: 'center', label: 'operation' },
+    { name: 'operation', align: 'center', label: 'operation', style: 'width: 10%' },
   ]"
 >
   <template v-slot:top="props">
@@ -43,13 +43,18 @@ const KEYFRAME_TABLE_TEMPLATE = `
         {{ skeletonAnnotationListMap[props.row] ? skeletonAnnotationListMap[props.row].length : 0 }}
       </q-td>
       <q-td key="operation" :props="props">
-        <q-btn-group spread flat>
+        <q-btn-group flat>
+          <q-btn
+            flat
+            dense
+            icon="gps_fixed"
+            @click="handleLocate(props.row)"
+          ></q-btn>
           <q-btn
             flat
             dense
             icon="delete"
             color="negative"
-            style="width: 100%"
             @click="handleDelete(props.row)"
           ></q-btn>
         </q-btn-group>
@@ -170,6 +175,9 @@ export default {
         this.keyframeList.splice(this.keyframeList.indexOf(keyframe), 1)
         this.setKeyframeList(this.keyframeList)
       })
+    },
+    handleLocate (keyframe) {
+      this.setLeftCurrentFrame(keyframe)
     },
   },
   computed: {
