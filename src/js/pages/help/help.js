@@ -34,19 +34,19 @@ export default {
         },
         {
           key: 'left-arrow',
-          description: 'previous frame (when slider is selected)',
+          description: 'previous frame',
         },
         {
           key: 'right-arrow',
-          description: 'next frame (when slider is selected)',
+          description: 'next frame',
         },
         {
           key: 'page-up',
-          description: 'jump to previous 10% of video (when slider is selected)',
+          description: 'jump to previous 10% of video',
         },
         {
           key: 'page-down',
-          description: 'jump to next 10% of video (when slider is selected)',
+          description: 'jump to next 10% of video',
         },
         {
           key: 'plus (+)',

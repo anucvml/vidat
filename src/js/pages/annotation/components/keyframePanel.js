@@ -173,16 +173,43 @@ export default {
         this.setRightCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 1])
       }
     },
+    moveRange (interval) {
+      if (interval < 0) {
+        if (Math.min(this.leftCurrentFrame, this.rightCurrentFrame) + interval >= 0) {
+          this.leftCurrentFrame += interval
+          this.rightCurrentFrame += interval
+        }
+      } else {
+        if (Math.max(this.leftCurrentFrame, this.rightCurrentFrame) + interval <= this.video.frames) {
+          this.leftCurrentFrame += interval
+          this.rightCurrentFrame += interval
+        }
+      }
+    },
     handleKeyup (event) {
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
       }
-      if (event.keyCode === 0xBC) { // comma, <
+      if (event.keyCode === 0x50) { // p
+        this.handlePlayPause()
+      }
+    },
+    handleKeydown (event) {
+      if (event.target.nodeName.toLowerCase() === 'input') {
+        return false
+      }
+      if (event.keyCode === 0x25) { // <-
+        this.moveRange(-1)
+      } else if (event.keyCode === 0x27) { // ->
+        this.moveRange(1)
+      } else if (event.keyCode === 0x21) { // page up
+        this.moveRange(Math.round(-0.1 * this.video.frames))
+      } else if (event.keyCode === 0x22) { // page down
+        this.moveRange(Math.round(0.1 * this.video.frames))
+      } else if (event.keyCode === 0xBC) { // comma, <
         this.handlePreviousKeyframe()
       } else if (event.keyCode === 0xBE) { // period, >
         this.handleNextKeyframe()
-      } else if (event.keyCode === 0x50) { // p
-        this.handlePlayPause()
       }
     },
     handleOnresize (event) {
@@ -389,10 +416,12 @@ export default {
   mounted () {
     this.handleOnresize()
     document.addEventListener('keyup', this.handleKeyup)
+    document.addEventListener('keydown', this.handleKeydown)
     window.addEventListener('resize', this.handleOnresize)
   },
   destroyed () {
     document.removeEventListener('keyup', this.handleKeyup)
+    document.removeEventListener('keydown', this.handleKeydown)
     window.removeEventListener('resize', this.handleOnresize)
   },
   template: KEYFRAMES_PANEL_TEMPLATE,
