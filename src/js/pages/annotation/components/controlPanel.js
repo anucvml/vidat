@@ -8,23 +8,33 @@ const CONTROL_PANEL_TEMPLATE = `
   <q-item>
     <q-item-section>
       <q-btn-group spread>
-        <q-btn @click="handleCopyLeft" icon="arrow_back"></q-btn>
-        <q-btn @click="handleCopyRight" icon="arrow_forward"></q-btn>
+        <q-btn @click="handleCopyLeft" icon="arrow_back">
+          <q-tooltip>copy from right to left</q-tooltip>
+        </q-btn>
+        <q-btn @click="handleCopyRight" icon="arrow_forward">
+          <q-tooltip>copy from left to right</q-tooltip>
+        </q-btn>
       </q-btn-group>
     </q-item-section>
   </q-item>
   <q-item>
     <q-item-section>
       <q-btn-group spread>
-        <q-btn @click="handleReplaceLeft" icon="first_page"></q-btn>
-        <q-btn @click="handleReplaceRight" icon="last_page"></q-btn>
+        <q-btn @click="handleReplaceLeft" icon="first_page">
+          <q-tooltip>replace left with right</q-tooltip>
+        </q-btn>
+        <q-btn @click="handleReplaceRight" icon="last_page">
+          <q-tooltip>replace right with left</q-tooltip>
+        </q-btn>
       </q-btn-group>
     </q-item-section>
   </q-item>
   <q-item>
     <q-item-section>
       <q-btn-group spread>
-        <q-btn @click="handleInterpolate" icon="double_arrow" label="fill"></q-btn>
+        <q-btn @click="handleInterpolate" icon="double_arrow" label="fill">
+          <q-tooltip>interpolate between with same instance id</q-tooltip>
+        </q-btn>
       </q-btn-group>
     </q-item-section>
   </q-item>

@@ -4,9 +4,15 @@ const KEYFRAMES_PANEL_TEMPLATE = `
     <q-item>
       <q-item-section class="text-center">
         <q-btn-group>
-          <q-btn @click="handlePlayPause" :icon="playTimeInterval ? 'pause' : 'play_arrow'"></q-btn>
-          <q-btn @click="handleStop" icon="stop" :disabled="!playTimeInterval"></q-btn>
-          <q-btn @click="showEdit = !showEdit" :icon="showEdit ? 'done' : 'edit'"></q-btn>
+          <q-btn @click="handlePlayPause" :icon="playTimeInterval ? 'pause' : 'play_arrow'">
+            <q-tooltip>{{ playTimeInterval ? 'pause (p)' : 'play (p)' }}</q-tooltip>
+          </q-btn>
+          <q-btn @click="handleStop" icon="stop" :disabled="!playTimeInterval">
+            <q-tooltip>stop</q-tooltip>
+          </q-btn>
+          <q-btn @click="showEdit = !showEdit" :icon="showEdit ? 'done' : 'edit'">
+            <q-tooltip>{{ showEdit ? 'done' : 'edit' }}</q-tooltip>
+          </q-btn>
         </q-btn-group>
       </q-item-section>
     </q-item>
@@ -30,9 +36,15 @@ const KEYFRAMES_PANEL_TEMPLATE = `
     <q-item>
       <q-item-section class="text-center">
         <q-btn-group>
-          <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left"></q-btn>
-          <q-btn @click="handleNearestKeyframe" icon="gps_fixed"></q-btn>
-          <q-btn @click="handleNextKeyframe" icon="keyboard_arrow_right"></q-btn>
+          <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left">
+            <q-tooltip>preview keyframe (<)</q-tooltip>
+          </q-btn>
+          <q-btn @click="handleNearestKeyframe" icon="gps_fixed">
+            <q-tooltip>locate nearest keyframe</q-tooltip>
+          </q-btn>
+          <q-btn @click="handleNextKeyframe" icon="keyboard_arrow_right">
+            <q-tooltip>next keyframe (>)</q-tooltip>
+          </q-btn>
         </q-btn-group>
       </q-item-section>
     </q-item>
