@@ -451,17 +451,21 @@ export default {
               let pointIndexList = regionAnnotation.getPointIndexListOfBoundary(mouseX, mouseY)
               const minIndex = Math.min(...pointIndexList)
               const maxIndex = Math.max(...pointIndexList)
+              const newPoint = {
+                x: mouseX,
+                y: mouseY,
+              }
               if (minIndex === 0 && maxIndex === regionAnnotation.pointList.length - 1) {
-                regionAnnotation.pointList.push({
-                  x: mouseX,
-                  y: mouseY,
-                })
+                regionAnnotation.pointList.push(newPoint)
               } else {
-                console.log(minIndex, maxIndex)
-                regionAnnotation.pointList.splice(minIndex + 1, 0, {
-                  x: mouseX,
-                  y: mouseY,
-                })
+                regionAnnotation.pointList.splice(minIndex + 1, 0, newPoint)
+              }
+              this.dragContext = {
+                type: 'sizing',
+                regionAnnotation: regionAnnotation,
+                nearPoint: newPoint,
+                mousedownX: mouseX,
+                mousedownY: mouseY,
               }
             } else {
               if (this.shiftDown && !nearPoint) {
