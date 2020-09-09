@@ -75,14 +75,6 @@ const CONTROL_PANEL_TEMPLATE = `
       <q-toggle v-model="showPopup" label="Show popup"></q-toggle>
     </q-item-section>
   </q-item>
-  <q-item dense>
-    <q-item-section class="text-center">Frames</q-item-section>
-  </q-item>
-  <q-item>
-    <q-item-section>
-       <q-btn class="full-width" @click="handleSwap" icon="swap_horiz" label="swap"></q-btn>
-    </q-item-section>
-  </q-item>
 </q-list>
 `
 
@@ -310,11 +302,6 @@ export default {
       } else {
         utils.notify('There is nothing to interpolate.')
       }
-    },
-    handleSwap () {
-      const leftCurrentFrame = this.leftCurrentFrame
-      this.leftCurrentFrame = this.rightCurrentFrame
-      this.rightCurrentFrame = leftCurrentFrame
     },
   },
   computed: {
