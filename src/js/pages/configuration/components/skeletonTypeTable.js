@@ -118,13 +118,13 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
       </q-tr>
       <q-tr v-show="props.expand" :props="props">
         <q-td colspan="100%" style="padding: 0;">
-          <div class="q-px-md">
+          <div class="q-px-md q-pb-md">
             <div class="q-table__title">
-              Preview
+              Preview (100px &times; 100px)
             </div>
-            <div style="width: 30%; margin: 0 auto;">
+            <q-card flat bordered style="width: 200px; margin: 0 auto">
               <skeleton-type-preview class="full-width" :typeId="props.key"></skeleton-type-preview>
-            </div>
+            </q-card>
           </div>
           <q-table
             flat
