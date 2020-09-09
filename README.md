@@ -52,13 +52,4 @@ will set the current mode to skeleton and disable popup window.
 
 ## Development
 
-### Requirements
-
-1. [Vue.js](https://vuejs.org/)
-2. [Quasar](https://quasar.dev/)
-3. [JSZip](https://stuk.github.io/jszip/)
-
-### Optional
-
-1. [WebStorm](https://www.jetbrains.com/webstorm/)
-2. [Gitmoji](https://github.com/carloscuesta/gitmoji)
+See `/doc/design/main.md`
