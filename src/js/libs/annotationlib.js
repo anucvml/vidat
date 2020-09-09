@@ -40,8 +40,9 @@ class ObjectAnnotation extends Annotation {
     const w = this.width
     const h = this.height
     // draw the boundaries
-    let lineWidth = this.highlight ? 4 : 2
-    ctx.lineWidth = lineWidth + 2
+    const unitLineWidth = ctx.canvas.width / 1000
+    let lineWidth = this.highlight ? 4 * unitLineWidth : 2 * unitLineWidth
+    ctx.lineWidth = lineWidth + 2 * unitLineWidth
     ctx.strokeStyle = '#000000'
     ctx.strokeRect(u, v, w, h)
     ctx.lineWidth = lineWidth
@@ -86,10 +87,11 @@ class ObjectAnnotation extends Annotation {
       const x = point.x
       const y = point.y
       ctx.fillStyle = '#000000'
-      const size = this.highlight ? 6 : 5
+      const size = this.highlight ? 6 * unitLineWidth : 5 * unitLineWidth
       ctx.fillRect(x - size, y - size, size * 2, size * 2)
       ctx.fillStyle = this.color
-      ctx.fillRect(x - size + 1, y - size + 1, size * 2 - 2, size * 2 - 2)
+      ctx.fillRect(x - size + unitLineWidth, y - size + unitLineWidth, size * 2 - 2 * unitLineWidth,
+        size * 2 - 2 * unitLineWidth)
     }
   }
 
@@ -235,8 +237,9 @@ class RegionAnnotation extends Annotation {
   draw (ctx) {
     if (this.pointList && this.pointList.length) {
       // draw the boundaries
-      let lineWidth = this.highlight ? 4 : 2
-      ctx.lineWidth = lineWidth + 2
+      const unitLineWidth = ctx.canvas.width / 1000
+      let lineWidth = this.highlight ? 4 * unitLineWidth : 2 * unitLineWidth
+      ctx.lineWidth = lineWidth + 2 * unitLineWidth
       ctx.strokeStyle = '#000000'
       ctx.beginPath()
       const firstPoint = this.pointList[0]
@@ -255,10 +258,11 @@ class RegionAnnotation extends Annotation {
         const x = point.x
         const y = point.y
         ctx.fillStyle = '#000000'
-        const size = this.highlight ? 6 : 5
+        const size = this.highlight ? 6 * unitLineWidth : 5 * unitLineWidth
         ctx.fillRect(x - size, y - size, size * 2, size * 2)
         ctx.fillStyle = this.color
-        ctx.fillRect(x - size + 1, y - size + 1, size * 2 - 2, size * 2 - 2)
+        ctx.fillRect(x - size + unitLineWidth, y - size + unitLineWidth, size * 2 - 2 * unitLineWidth,
+          size * 2 - 2 * unitLineWidth)
       }
     }
   }
@@ -376,8 +380,9 @@ class SkeletonAnnotation extends Annotation {
 
   draw (ctx) {
     // draw the line
-    let lineWidth = this.highlight ? 4 : 2
-    ctx.lineWidth = lineWidth + 2
+    const unitLineWidth = ctx.canvas.width / 1000
+    let lineWidth = this.highlight ? 4 * unitLineWidth : 2 * unitLineWidth
+    ctx.lineWidth = lineWidth + 2 * unitLineWidth
     ctx.strokeStyle = '#000000'
     ctx.beginPath()
     for (const edge of this.type.edgeList) {
@@ -395,14 +400,15 @@ class SkeletonAnnotation extends Annotation {
       const x = point.x
       const y = point.y
       ctx.fillStyle = '#000000'
-      const size = this.highlight ? 6 : 5
+      const size = this.highlight ? 6 * unitLineWidth : 5 * unitLineWidth
       if (point.name === 'center') {
         ctx.fillRect(x - size, y - size, size * 2, size * 2)
         ctx.fillStyle = this.color
-        ctx.fillRect(x - size + 1, y - size + 1, size * 2 - 2, size * 2 - 2)
+        ctx.fillRect(x - size + unitLineWidth, y - size + unitLineWidth, size * 2 - 2 * unitLineWidth,
+          size * 2 - 2 * unitLineWidth)
       } else {
         ctx.beginPath()
-        ctx.arc(x, y, size + 1, 0, Math.PI * 2, false)
+        ctx.arc(x, y, size + unitLineWidth, 0, Math.PI * 2, false)
         ctx.fill()
         ctx.fillStyle = this.color
         ctx.beginPath()
