@@ -43,7 +43,7 @@ const VIDEO_PANEL_TEMPLATE = `
         @click="$store.commit('setZoom', !zoom)"
         :icon="zoom ? 'zoom_out' : 'zoom_in'"
       ></q-btn>
-      <q-badge v-if="preference.actions && status" style="position: absolute; bottom: 1px; right: 1px; opacity: 0.6;">
+      <q-badge v-if="preference.actions && status" :style="statusStyle">
         <span v-if="status.keydown">{{ status.keydown }},</span>
         <span v-if="status.message">{{ status.message }},</span>
         <span>{{status.x | toFixed2}},{{status.y | toFixed2}}</span>
@@ -129,6 +129,7 @@ export default {
       backspaceDown: false,
       altDown: false,
       status: null,
+      statusStyle: {},
       cursor: 'crosshair',
     }
   },
@@ -153,6 +154,23 @@ export default {
         this.status = {
           x: mouseX,
           y: mouseY,
+        }
+      }
+      const statusBaseStyle = {
+        position: 'absolute',
+        opacity: 0.6,
+      }
+      if (mouseX > this.video.width / 2 && mouseY > this.video.height / 2) {
+        this.statusStyle = {
+          ...statusBaseStyle,
+          top: '1px',
+          left: '1px',
+        }
+      } else {
+        this.statusStyle = {
+          ...statusBaseStyle,
+          bottom: '1px',
+          right: '1px',
         }
       }
       if (this.mode === 'object') {
