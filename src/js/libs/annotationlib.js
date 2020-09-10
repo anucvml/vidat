@@ -249,6 +249,8 @@ class RegionAnnotation extends Annotation {
         ctx.lineTo(point.x, point.y)
       }
       ctx.lineTo(firstPoint.x, firstPoint.y)
+      ctx.fillStyle = this.color + '40'
+      ctx.fill()
       ctx.stroke()
       ctx.lineWidth = lineWidth
       ctx.strokeStyle = this.color
