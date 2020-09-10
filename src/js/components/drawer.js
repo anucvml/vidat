@@ -23,7 +23,7 @@ const DRAWER_TEMPLATE = `
             <q-btn
               icon="movie"
               @click="handleOpen"
-              :label="video.src ? 'reopen' : 'open'"
+              label="open"
             ></q-btn>
             <q-btn
               icon="close"
@@ -34,6 +34,7 @@ const DRAWER_TEMPLATE = `
           </q-btn-group>
         </q-item-section>
       </q-item>
+      <q-separator v-if="video.src"></q-separator>
       <q-item dense class="text-h6" v-if="video.src">Annotations</q-item>
       <q-item dense v-if="video.src">
         <q-item-section>
@@ -51,6 +52,7 @@ const DRAWER_TEMPLATE = `
           </q-btn-group>
         </q-item-section>
       </q-item>
+      <q-separator></q-separator>
       <q-item
         clickable
         v-ripple
