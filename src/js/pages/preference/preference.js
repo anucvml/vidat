@@ -82,8 +82,6 @@ const PREFERENCE_TEMPLATE = `
 `
 
 export default {
-  components: {
-  },
   data: () => {
     return {}
   },

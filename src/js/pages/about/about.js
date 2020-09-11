@@ -11,7 +11,6 @@ const ABOUT_TEMPLATE = `
     >
     </contributor-card>
   </div>
-  </contributor-card>
 </div>
 `
 
@@ -20,8 +19,7 @@ import contributorCard from './components/contributorCard.js'
 export default {
   components: {
     contributorCard,
-  }
-  ,
+  },
   data: () => {
     return {
       contributorList: [
