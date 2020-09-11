@@ -300,16 +300,23 @@ class RegionAnnotation extends Annotation {
       const p1 = this.pointList[indexList[i]]
       const p2 = this.pointList[indexList[i + 1]]
       // ax + by + c = 0
-      const a = 1 / (p2.x - p1.x)
-      const b = 1 / (p1.y - p2.y)
-      const c = -p1.y * b - p1.x * a
-      const distance = Math.abs((a * mouseX + b * mouseY + c) / Math.sqrt(a * a + b * b))
+      let distance
+      if (Math.abs(p2.x - p1.x) <= 1) { // vertical
+        distance = Math.abs(mouseX - (p1.x + p2.x) / 2)
+      } else if (Math.abs(p2.y - p1.y) <= 1) { // horizontal
+        distance = Math.abs(mouseY - (p1.y + p2.y) / 2)
+      } else { // others
+        const a = 1 / (p2.x - p1.x)
+        const b = 1 / (p1.y - p2.y)
+        const c = -p1.y * b - p1.x * a
+        distance = Math.abs((a * mouseX + b * mouseY + c) / Math.sqrt(a * a + b * b))
+      }
       // approximate estimation
       if (distance < PROXIMITY &&
-        mouseX > Math.min(p1.x, p2.x) &&
-        mouseX < Math.max(p1.x, p2.x) &&
-        mouseY > Math.min(p1.y, p2.y) &&
-        mouseY < Math.max(p1.y, p2.y)
+        mouseX > Math.min(p1.x, p2.x) - PROXIMITY &&
+        mouseX < Math.max(p1.x, p2.x) + PROXIMITY &&
+        mouseY > Math.min(p1.y, p2.y) - PROXIMITY &&
+        mouseY < Math.max(p1.y, p2.y) + PROXIMITY
       ) {
         return [indexList[i], indexList[i + 1]]
       }
