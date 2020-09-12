@@ -426,15 +426,18 @@ export default {
     },
   },
   mounted () {
-    this.handleOnresize()
     document.addEventListener('keyup', this.handleKeyup)
     document.addEventListener('keydown', this.handleKeydown)
     window.addEventListener('resize', this.handleOnresize)
+    const drawer = document.getElementById('drawer')
+    drawer.addEventListener('transitionend', this.handleOnresize)
   },
   destroyed () {
     document.removeEventListener('keyup', this.handleKeyup)
     document.removeEventListener('keydown', this.handleKeydown)
     window.removeEventListener('resize', this.handleOnresize)
+    const drawer = document.getElementById('drawer')
+    drawer.removeEventListener('transitionend', this.handleOnresize)
   },
   template: KEYFRAMES_PANEL_TEMPLATE,
 }

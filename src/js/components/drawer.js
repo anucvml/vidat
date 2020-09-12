@@ -1,5 +1,6 @@
 const DRAWER_TEMPLATE = `
 <q-drawer
+  id="drawer"
   v-model="drawer"
   :width="300"
   :breakpoint="500"
