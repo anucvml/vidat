@@ -577,7 +577,7 @@ export default {
           }
           this.createContext = null
         }
-        if (this.dragContext) {
+        if (this.dragContext && event.type === 'mouseup') {
           this.dragContext = null
         }
       } else if (this.mode === 'region') {
@@ -599,7 +599,6 @@ export default {
                 x: event.offsetX,
                 y: event.offsetY,
               }
-
             }
             this.autoFocus()
             this.createContext = null
@@ -611,7 +610,7 @@ export default {
             })
           }
         }
-        if (this.dragContext) {
+        if (this.dragContext && event.type === 'mouseup') {
           this.dragContext = null
         }
       } else if (this.mode === 'skeleton') {
@@ -626,7 +625,7 @@ export default {
           this.autoFocus()
           this.createContext = null
         }
-        if (this.dragContext) {
+        if (this.dragContext && event.type === 'mouseup') {
           this.dragContext = null
         }
       } else {
