@@ -691,7 +691,7 @@ export default {
       this.ctx.clearRect(0, 0, this.$refs.canvas.width, this.$refs.canvas.height)
     },
     handleKeyup (event) {
-      if (event.target.nodeName.toLowerCase() === 'input') {
+      if (event.target.nodeName.toLowerCase() === 'input' && event.keyCode !== 0x2E) { // see: https://github.com/anucvml/vidat/issues/91
         return false
       } else if (event.keyCode === 0x2E) { // delete
         if (this.activeContext) {
