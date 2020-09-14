@@ -25,8 +25,7 @@ const VIDEO_PANEL_TEMPLATE = `
         ref="canvas"
         :style="{display: 'block', position: 'relative', top: 0, cursor: cursor}"
         class="full-width"
-        :height="video.height"
-        :width="video.width"
+        :width="CANVAS_WIDTH"
         @mousemove="handleMousemove"
         @mouseout="handleMouseupAndMouseout"
         @mousedown="handleMousedown"
@@ -115,6 +114,7 @@ export default {
   },
   data: () => {
     return {
+      CANVAS_WIDTH: 1920,
       ctx: null,
       utils,
       createContext: null,
@@ -128,6 +128,7 @@ export default {
       status: null,
       statusStyle: {},
       cursor: 'crosshair',
+      isFirstLoad: true,
     }
   },
   methods: {
@@ -136,6 +137,10 @@ export default {
     ]),
     handleLoad () {
       this.$refs.background.src = this.$refs.img.src
+      if (this.isFirstLoad) {
+        this.isFirstLoad = false
+        this.$refs.canvas.height = this.CANVAS_WIDTH * this.video.height / this.video.width
+      }
     },
     getMouseLocation (event) {
       const mouseX = event.offsetX / this.$refs.canvas.clientWidth * this.video.width

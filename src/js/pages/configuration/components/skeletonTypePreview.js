@@ -1,5 +1,5 @@
 const SKELETON_TYPE_PREVIEW_TEMPLATE = `
-<canvas ref="preview" height="100px" width="100px"></canvas>
+<canvas ref="preview" height="400" width="400"></canvas>
 `
 
 import { SkeletonAnnotation } from '../../../libs/annotationlib.js'
@@ -21,7 +21,10 @@ export default {
       },
       function () {
         this.ctx.clearRect(0, 0, this.$refs.preview.width, this.$refs.preview.height)
-        new SkeletonAnnotation(50, 50, this.typeId).draw(this.ctx)
+        const skeletonAnnotation = new SkeletonAnnotation(200, 200, this.typeId)
+        skeletonAnnotation.ratio = 4
+        skeletonAnnotation.highlight = true
+        skeletonAnnotation.draw(this.ctx, true)
       },
       {
         immediate: true,

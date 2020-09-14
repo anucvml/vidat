@@ -35,10 +35,12 @@ class ObjectAnnotation extends Annotation {
   }
 
   draw (ctx) {
-    const u = this.x
-    const v = this.y
-    const w = this.width
-    const h = this.height
+    const widthFactor = ctx.canvas.width / store.state.annotation.video.width
+    const heightFactor = ctx.canvas.height / store.state.annotation.video.height
+    const u = this.x * widthFactor
+    const v = this.y * heightFactor
+    const w = this.width * widthFactor
+    const h = this.height * heightFactor
     // draw the boundaries
     const unitLineWidth = ctx.canvas.width / 1000
     let lineWidth = this.highlight ? 4 * unitLineWidth : 2 * unitLineWidth
@@ -236,6 +238,8 @@ class RegionAnnotation extends Annotation {
 
   draw (ctx) {
     if (this.pointList && this.pointList.length) {
+      const widthFactor = ctx.canvas.width / store.state.annotation.video.width
+      const heightFactor = ctx.canvas.height / store.state.annotation.video.height
       // draw the boundaries
       const unitLineWidth = ctx.canvas.width / 1000
       let lineWidth = this.highlight ? 4 * unitLineWidth : 2 * unitLineWidth
@@ -243,12 +247,12 @@ class RegionAnnotation extends Annotation {
       ctx.strokeStyle = '#000000'
       ctx.beginPath()
       const firstPoint = this.pointList[0]
-      ctx.moveTo(firstPoint.x, firstPoint.y)
+      ctx.moveTo(firstPoint.x * widthFactor, firstPoint.y * heightFactor)
       for (let i = 1; i < this.pointList.length; i++) {
         const point = this.pointList[i]
-        ctx.lineTo(point.x, point.y)
+        ctx.lineTo(point.x * widthFactor, point.y * heightFactor)
       }
-      ctx.lineTo(firstPoint.x, firstPoint.y)
+      ctx.lineTo(firstPoint.x * widthFactor, firstPoint.y * heightFactor)
       ctx.fillStyle = this.color + '40'
       ctx.fill()
       ctx.stroke()
@@ -257,8 +261,8 @@ class RegionAnnotation extends Annotation {
       ctx.stroke()
       // draw the handles
       for (const point of this.pointList) {
-        const x = point.x
-        const y = point.y
+        const x = point.x * widthFactor
+        const y = point.y * heightFactor
         ctx.fillStyle = '#000000'
         const size = this.highlight ? 6 * unitLineWidth : 5 * unitLineWidth
         ctx.fillRect(x - size, y - size, size * 2, size * 2)
@@ -387,8 +391,10 @@ class SkeletonAnnotation extends Annotation {
     return ret
   }
 
-  draw (ctx) {
+  draw (ctx, preview = false) {
     // draw the line
+    const widthFactor = preview ? 1 : ctx.canvas.width / store.state.annotation.video.width
+    const heightFactor = preview ? 1 : ctx.canvas.height / store.state.annotation.video.height
     const unitLineWidth = ctx.canvas.width / 1000
     let lineWidth = this.highlight ? 4 * unitLineWidth : 2 * unitLineWidth
     ctx.lineWidth = lineWidth + 2 * unitLineWidth
@@ -397,8 +403,8 @@ class SkeletonAnnotation extends Annotation {
     for (const edge of this.type.edgeList) {
       const fromPoint = this.pointList.find(point => point.id === edge.from)
       const toPoint = this.pointList.find(point => point.id === edge.to)
-      ctx.moveTo(fromPoint.x, fromPoint.y)
-      ctx.lineTo(toPoint.x, toPoint.y)
+      ctx.moveTo(fromPoint.x * widthFactor, fromPoint.y * heightFactor)
+      ctx.lineTo(toPoint.x * widthFactor, toPoint.y * heightFactor)
     }
     ctx.stroke()
     ctx.lineWidth = lineWidth
@@ -406,8 +412,8 @@ class SkeletonAnnotation extends Annotation {
     ctx.stroke()
     // draw the handles
     for (const point of this.pointList) {
-      const x = point.x
-      const y = point.y
+      const x = point.x * widthFactor
+      const y = point.y * heightFactor
       ctx.fillStyle = '#000000'
       const size = this.highlight ? 6 * unitLineWidth : 5 * unitLineWidth
       if (point.name === 'center') {

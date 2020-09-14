@@ -122,7 +122,7 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
             <div class="q-table__title">
               Preview (100px &times; 100px)
             </div>
-            <q-card flat bordered style="width: 200px; margin: 0 auto">
+            <q-card flat bordered style="width: 400px; margin: 0 auto">
               <skeleton-type-preview class="full-width" :typeId="props.key"></skeleton-type-preview>
             </q-card>
           </div>
