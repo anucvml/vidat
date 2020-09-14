@@ -2,13 +2,17 @@ const VIDEO_PANEL_TEMPLATE = `
   <div>
     <film-strip></film-strip>
     <div style="position: relative;">
-      <canvas
+      <img
         ref="background"
         style="display: block; position: absolute;"
         :class="['full-width', {'grayscale': grayscale}]"
-        :height="video.height"
-        :width="video.width"
-      ></canvas>
+      >
+      <img
+        ref="img"
+        :src="cachedFrameList[currentFrame]"
+        style="display: none"
+        @load="handleLoad"
+      >
       <div
         v-if="actionList.length"
         style="display: block; position: absolute; bottom: 0; padding: 4px; font-size: 20px; color: white; background-color: black; opacity: 0.6">
@@ -29,12 +33,6 @@ const VIDEO_PANEL_TEMPLATE = `
         @mouseup="handleMouseupAndMouseout"
         @mouseenter="handleMouseenter"
       ></canvas>
-      <img
-        ref="img"
-        :src="cachedFrameList[currentFrame]"
-        style="display: none"
-        @load="handleLoad"
-      >
       <q-btn
         v-if="position === 'left'"
         class="bg-white"
@@ -118,7 +116,6 @@ export default {
   data: () => {
     return {
       ctx: null,
-      backgroundCtx: null,
       utils,
       createContext: null,
       dragContext: null,
@@ -138,7 +135,7 @@ export default {
       'setAnnotationList',
     ]),
     handleLoad () {
-      this.backgroundCtx.drawImage(this.$refs.img, 0, 0, this.video.width, this.video.height)
+      this.$refs.background.src = this.$refs.img.src
     },
     getMouseLocation (event) {
       const mouseX = event.offsetX / this.$refs.canvas.clientWidth * this.video.width
@@ -730,7 +727,6 @@ export default {
   },
   mounted () {
     this.ctx = this.$refs.canvas.getContext('2d')
-    this.backgroundCtx = this.$refs.background.getContext('2d')
     this.$watch(
       function () {
         return eval('this.$store.state.annotation.' + this.mode + 'AnnotationListMap[this.currentFrame]')
