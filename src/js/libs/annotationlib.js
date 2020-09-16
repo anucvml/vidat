@@ -1,3 +1,7 @@
+/**
+ * Library for annotations
+ */
+
 import store from '../store/store.js'
 import utils from './utils.js'
 
@@ -20,6 +24,17 @@ class Annotation {
 }
 
 class ObjectAnnotation extends Annotation {
+  /**
+   * Constructor
+   * @param x
+   * @param y
+   * @param width
+   * @param height
+   * @param labelId
+   * @param color
+   * @param instance
+   * @param score
+   */
   constructor (x, y, width, height, labelId = 0, color = null, instance, score) {
     super(instance, score)
     this.labelId = labelId
@@ -34,6 +49,10 @@ class ObjectAnnotation extends Annotation {
     this.height = height
   }
 
+  /**
+   * Draw on canvas
+   * @param ctx: canvas context
+   */
   draw (ctx) {
     const widthFactor = ctx.canvas.width / store.state.annotation.video.width
     const heightFactor = ctx.canvas.height / store.state.annotation.video.height
@@ -97,6 +116,10 @@ class ObjectAnnotation extends Annotation {
     }
   }
 
+  /**
+   * Self-clone
+   * @returns {ObjectAnnotation}
+   */
   clone () {
     return new ObjectAnnotation(
       this.x,
@@ -110,6 +133,13 @@ class ObjectAnnotation extends Annotation {
     )
   }
 
+  /**
+   * Resize object
+   * @param x
+   * @param y
+   * @param width
+   * @param height
+   */
   resize (x = this.x, y = this.y, width = this.width, height = this.height) {
     if (width < 0) {
       this.x = x + width
@@ -128,69 +158,153 @@ class ObjectAnnotation extends Annotation {
     }
   }
 
+  /**
+   * Whether mouse is close to left boundary
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearLeftBoundary (mouseX, mouseY) {
     return Math.abs(mouseX - this.x) <= PROXIMITY &&
       mouseY < this.y + this.height - PROXIMITY &&
       mouseY > this.y + PROXIMITY
   }
 
+  /**
+   * Whether mouse is close to right boundary
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearRightBoundary (mouseX, mouseY) {
     return Math.abs(mouseX - this.x - this.width) <= PROXIMITY &&
       mouseY < this.y + this.height - PROXIMITY &&
       mouseY > this.y + PROXIMITY
   }
 
+  /**
+   * Whether mouse is close to top boundary
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearTopBoundary (mouseX, mouseY) {
     return Math.abs(mouseY - this.y) <= PROXIMITY &&
       mouseX > this.x + PROXIMITY &&
       mouseX < this.x + this.width - PROXIMITY
   }
 
+  /**
+   * Whether mouse is close to bottom boundary
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearBottomBoundary (mouseX, mouseY) {
     return Math.abs(mouseY - this.y - this.height) <= PROXIMITY &&
       mouseX > this.x + PROXIMITY &&
       mouseX < this.x + this.width - PROXIMITY
   }
 
+  /**
+   * Whether mouse is close to any boundary out of four
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearBoundary (mouseX, mouseY) {
     return this.nearLeftBoundary(mouseX, mouseY) || this.nearRightBoundary(mouseX, mouseY) ||
       this.nearTopBoundary(mouseX, mouseY) || this.nearBottomBoundary(mouseX, mouseY)
   }
 
+  /**
+   * Whether mouse is close to top left anchor
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearTopLeftAnchor (mouseX, mouseY) {
     return Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY
   }
 
+  /**
+   * Whether mouse is close to top anchor
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearTopAnchor (mouseX, mouseY) {
     return Math.abs(mouseX - this.x - this.width / 2) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY
   }
 
+  /**
+   * Whether mouse is close to top right anchor
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearTopRightAnchor (mouseX, mouseY) {
     return Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY
   }
 
+  /**
+   * Whether mouse is close to left anchor
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearLeftAnchor (mouseX, mouseY) {
     return Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y - this.height / 2) <= PROXIMITY
   }
 
+  /**
+   * Whether mouse is close to right anchor
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearRightAnchor (mouseX, mouseY) {
     return Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y - this.height / 2) <=
       PROXIMITY
   }
 
+  /**
+   * Whether mouse is close to bottom left anchor
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearBottomLeftAnchor (mouseX, mouseY) {
     return Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <= PROXIMITY
   }
 
+  /**
+   * Whether mouse is close to bottom anchor
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearBottomAnchor (mouseX, mouseY) {
     return Math.abs(mouseX - this.x - this.width / 2) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <=
       PROXIMITY
   }
 
+  /**
+   * Whether mouse is close to bottom right anchor
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearBottomRightAnchor (mouseX, mouseY) {
     return Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <= PROXIMITY
   }
 
+  /**
+   * Whether mouse is close to any anchor out of eight
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearAnchor (mouseX, mouseY) {
     return this.nearTopLeftAnchor(mouseX, mouseY) ||
       this.nearTopAnchor(mouseX, mouseY) ||
@@ -202,6 +316,12 @@ class ObjectAnnotation extends Annotation {
       this.nearBottomRightAnchor(mouseX, mouseY)
   }
 
+  /**
+   * Get the anchor in the opposite position
+   * @param mouseX
+   * @param mouseY
+   * @returns {null|{x: *, y: *}}
+   */
   oppositeAnchor (mouseX, mouseY) {
     // top left anchor => bottom right anchor
     if (this.nearTopLeftAnchor(mouseX, mouseY)) {
@@ -225,6 +345,14 @@ class ObjectAnnotation extends Annotation {
 }
 
 class RegionAnnotation extends Annotation {
+  /**
+   * Constructor
+   * @param pointList
+   * @param labelId
+   * @param color
+   * @param instance
+   * @param score
+   */
   constructor (pointList = [], labelId = 0, color = null, instance, score) {
     super(instance, score)
     this.labelId = labelId
@@ -236,6 +364,10 @@ class RegionAnnotation extends Annotation {
     this.pointList = pointList
   }
 
+  /**
+   * Draw on canvas
+   * @param ctx: canvas context
+   */
   draw (ctx) {
     if (this.pointList && this.pointList.length) {
       const widthFactor = ctx.canvas.width / store.state.annotation.video.width
@@ -273,6 +405,10 @@ class RegionAnnotation extends Annotation {
     }
   }
 
+  /**
+   * Self-clone
+   * @returns {RegionAnnotation}
+   */
   clone () {
     return new RegionAnnotation(
       utils.deepClone(this.pointList),
@@ -283,10 +419,23 @@ class RegionAnnotation extends Annotation {
     )
   }
 
-  static nearPoint (x, y, point) {
-    return Math.abs(x - point.x) <= PROXIMITY * 3 && Math.abs(y - point.y) <= PROXIMITY * 3
+  /**
+   * Whether mouse is close to a point
+   * @param mouseX
+   * @param mouseY
+   * @param point
+   * @returns {boolean}
+   */
+  static nearPoint (mouseX, mouseY, point) {
+    return Math.abs(mouseX - point.x) <= PROXIMITY * 3 && Math.abs(mouseY - point.y) <= PROXIMITY * 3
   }
 
+  /**
+   *  Whether mouse is close to any point
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearPoints (mouseX, mouseY) {
     let ret = false
     for (const point of this.pointList) {
@@ -295,6 +444,12 @@ class RegionAnnotation extends Annotation {
     return ret
   }
 
+  /**
+   * Get a list of indexes of points that are the two end points of the boundary closed to mouse, if no boundary is found, return empty list
+   * @param mouseX
+   * @param mouseY
+   * @returns {[]}
+   */
   getPointIndexListOfBoundary (mouseX, mouseY) {
     const ret = []
     const indexList = []
@@ -330,10 +485,21 @@ class RegionAnnotation extends Annotation {
     return []
   }
 
+  /**
+   * Whether mouse is close to any boundary
+   * @param mouseX
+   * @param mouseY
+   * @returns {boolean}
+   */
   nearBoundary (mouseX, mouseY) {
     return this.getPointIndexListOfBoundary(mouseX, mouseY).length !== 0
   }
 
+  /**
+   * Move the region
+   * @param deltaX
+   * @param deltaY
+   */
   move (deltaX, deltaY) {
     this.centerX += deltaX
     this.centerY += deltaY
@@ -345,6 +511,15 @@ class RegionAnnotation extends Annotation {
 }
 
 class SkeletonAnnotation extends Annotation {
+  /**
+   * Constructor
+   * @param mouseX
+   * @param mouseY
+   * @param typeId
+   * @param color
+   * @param instance
+   * @param score
+   */
   constructor (mouseX, mouseY, typeId, color = null, instance, score) {
     super(instance, score)
     this.centerX = mouseX
@@ -360,15 +535,28 @@ class SkeletonAnnotation extends Annotation {
     this.pointList = this.getPointList()
   }
 
+  /**
+   * ratio getter
+   * @returns {number}
+   */
   get ratio () {
     return this._ratio
   }
 
+  /**
+   * ratio setter
+   * @param ratio
+   */
   set ratio (ratio) {
     this._ratio = ratio
+    // refresh point list
     this.pointList = this.getPointList()
   }
 
+  /**
+   * Set related parameters and return point list
+   * @returns {[{name: string, x: *, y: *, id: number}]}
+   */
   getPointList () {
     const x = this.centerX
     const y = this.centerY
@@ -391,6 +579,11 @@ class SkeletonAnnotation extends Annotation {
     return ret
   }
 
+  /**
+   * Draw on canvas
+   * @param ctx: canvas context
+   * @param preview: for preview mode only, ignore video width/height ratio
+   */
   draw (ctx, preview = false) {
     // draw the line
     const widthFactor = preview ? 1 : ctx.canvas.width / store.state.annotation.video.width
@@ -433,6 +626,10 @@ class SkeletonAnnotation extends Annotation {
     }
   }
 
+  /**
+   * Self-clone
+   * @returns {SkeletonAnnotation}
+   */
   clone () {
     const skeletonAnnotation = new SkeletonAnnotation(
       this.centerX,
@@ -447,10 +644,22 @@ class SkeletonAnnotation extends Annotation {
     return skeletonAnnotation
   }
 
-  static nearPoint (x, y, point) {
-    return Math.abs(x - point.x) <= PROXIMITY * 3 && Math.abs(y - point.y) <= PROXIMITY * 3
+  /**
+   * Whether mouse is close to a point
+   * @param mouseX
+   * @param mouseY
+   * @param point
+   * @returns {boolean}
+   */
+  static nearPoint (mouseX, mouseY, point) {
+    return Math.abs(mouseX - point.x) <= PROXIMITY * 3 && Math.abs(mouseY - point.y) <= PROXIMITY * 3
   }
 
+  /**
+   * Move skeleton
+   * @param deltaX
+   * @param deltaY
+   */
   move (deltaX, deltaY) {
     this.centerX += deltaX
     this.centerY += deltaY
@@ -462,6 +671,15 @@ class SkeletonAnnotation extends Annotation {
 }
 
 class ActionAnnotation {
+  /**
+   * Constructor
+   * @param start
+   * @param end
+   * @param action
+   * @param object
+   * @param color
+   * @param description
+   */
   constructor (start, end = null, action = null, object = null, color = null, description = null) {
     this.start = start
     this.end = end

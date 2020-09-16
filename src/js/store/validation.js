@@ -1,3 +1,7 @@
+/**
+ * Validation function to verify uploaded json files
+ */
+
 function validateObjectLabelData (state, json) {
   if (!json.length) {
     throw 'At least one object!'

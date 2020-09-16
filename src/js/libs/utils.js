@@ -1,6 +1,15 @@
+/**
+ * Utils
+ */
+
 import store from '../store/store.js'
 
 export default {
+  /**
+   * Confirm popup
+   * @param message
+   * @returns {Promise}
+   */
   confirm (message) {
     return Quasar.Dialog.create({
       title: 'Confirm',
@@ -9,6 +18,11 @@ export default {
       persistent: true,
     })
   },
+  /**
+   * Notify popup
+   * @param message
+   * @returns {Promise}
+   */
   notify (message) {
     return Quasar.Notify.create({
       message: message,
@@ -16,6 +30,14 @@ export default {
       position: 'bottom-right',
     })
   },
+  /**
+   * Prompt popup
+   * @param title
+   * @param message
+   * @param defaultValue of input
+   * @param type of input
+   * @returns {Promise}
+   */
   prompt (title, message, defaultValue, type = 'text') {
     return Quasar.Dialog.create({
       title: title,
@@ -28,6 +50,10 @@ export default {
       persistent: true,
     })
   },
+  /**
+   * Import a json file
+   * @returns {Promise}
+   */
   importFile: () => {
     return new Promise(function (resolve, reject) {
       const dialog = document.createElement('input')
@@ -44,6 +70,10 @@ export default {
       dialog.click()
     })
   },
+  /**
+   * Import a video file
+   * @returns {Promise}
+   */
   importVideo: () => {
     return new Promise(function (resolve, reject) {
       const dialog = document.createElement('input')
@@ -56,10 +86,25 @@ export default {
       dialog.click()
     })
   },
+  /**
+   * Convert time to index
+   * @param time
+   * @returns {number}
+   */
   time2index (time) {
     return Math.round(store.state.annotation.video.fps * time)
   },
+  /**
+   * Convert index to time
+   * @param index
+   * @returns {number}
+   */
   index2time (index) { return parseFloat((index / store.state.annotation.video.fps).toFixed(3)) },
+  /**
+   * Convert a number to fixed 2 format
+   * @param value
+   * @returns {string}
+   */
   toFixed2 (value) {
     if (value) {
       return value.toFixed(2)
@@ -67,9 +112,18 @@ export default {
       return '0.00'
     }
   },
+  /**
+   * Generate a random color
+   * @returns {string}
+   */
   randomColor () {
     return `#${('000000' + (Math.random() * 16777216 | 0).toString(16)).slice(-6)}`
   },
+  /**
+   * DeepClone
+   * @param object
+   * @returns {Object}
+   */
   deepClone (object) {
     let newObject = new object.constructor
     if (object === null) return object

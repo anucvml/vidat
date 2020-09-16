@@ -1,3 +1,7 @@
+/**
+ * Store for settings (configuration and preference)
+ */
+
 import { validateObjectLabelData, validateActionLabelData, validateSkeletonTypeData } from '../validation.js'
 
 export default {

@@ -1,3 +1,7 @@
+/**
+ * Store for annotations
+ */
+
 import utils from '../../libs/utils.js'
 
 export default {

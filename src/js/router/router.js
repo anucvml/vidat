@@ -1,3 +1,7 @@
+/**
+ * Vue router
+ */
+
 import annotation from '../pages/annotation/annotation.js'
 import configuration from '../pages/configuration/configuration.js'
 import preference from '../pages/preference/preference.js'

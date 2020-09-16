@@ -1,3 +1,7 @@
+/**
+ * Vuex
+ */
+
 import annotation from './modules/annotation.js'
 import settings from './modules/settings.js'
 
