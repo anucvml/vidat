@@ -148,6 +148,7 @@ export default {
       return [mouseX, mouseY]
     },
     handleMousemove (event) {
+      event.preventDefault()
       const [mouseX, mouseY] = this.getMouseLocation(event)
       if (this.status) {
         this.status.x = mouseX
@@ -395,6 +396,7 @@ export default {
       }
     },
     handleMousedown (event) {
+      event.preventDefault()
       const [mouseX, mouseY] = this.getMouseLocation(event)
       if (this.mode === 'object') {
         // drag
@@ -557,6 +559,7 @@ export default {
       }
     },
     handleMouseupAndMouseout (event) {
+      event.preventDefault()
       const [mouseX, mouseY] = this.getMouseLocation(event)
       if (event.type === 'mouseout') {
         this.status = null
@@ -635,6 +638,7 @@ export default {
       }
     },
     handleMouseenter (event) {
+      event.preventDefault()
       const [mouseX, mouseY] = this.getMouseLocation(event)
       this.status = {
         x: mouseX,
