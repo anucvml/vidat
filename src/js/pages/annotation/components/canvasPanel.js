@@ -640,6 +640,10 @@ export default {
         x: mouseX,
         y: mouseY,
       }
+      // if left button of mouse is not pressed when entering the canvas, drag stops
+      if (event.buttons !== 1 && this.dragContext) {
+        this.dragContext = null
+      }
     },
     handleSelectInput (value) {
       const label = this.objectLabelData.find(label => label.id === value)
