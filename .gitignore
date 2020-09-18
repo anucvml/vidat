@@ -4,6 +4,9 @@
 .vs
 
 # assets
-video/*
-config/*
-annotation/*
+src/annotation/*
+!src/annotation/.gitkeep
+src/config/*
+!src/config/.gitkeep
+src/video/*
+!src/video/.gitkeep
