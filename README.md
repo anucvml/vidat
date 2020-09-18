@@ -46,6 +46,11 @@ Video tutorials will be posted on YouTube.
 |   `showPopup`   |         `true`/`false`          |               show popup or not               |
 |     `debug`     |         `true`/`false`          |        auto load a video and no cache         |
 
+notes:
+
+1. `annotation` will overwrite `config`
+2. `video` or `debug` is the precondition of `annotation`
+
 ### Examples
 
 ```

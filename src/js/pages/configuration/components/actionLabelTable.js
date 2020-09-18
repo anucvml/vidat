@@ -203,6 +203,7 @@ export default {
           this.showEdit = !this.showEdit
         } catch (e) {
           utils.notify(e.toString())
+          throw e
         }
       } else {
         this.showEdit = !this.showEdit

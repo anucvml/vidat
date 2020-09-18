@@ -117,19 +117,10 @@ export default {
   methods: {
     ...Vuex.mapMutations([
       'setVideoSrc',
-      'setKeyframeList',
-      'setLeftCurrentFrame',
-      'setRightCurrentFrame',
       'setVideoFPS',
       'closeVideo',
-      'setCacheFrameList',
-      'setObjectAnnotationListMap',
-      'setRegionAnnotationListMap',
-      'setSkeletonAnnotationListMap',
-      'setActionAnnotationList',
-      'importObjectLabelData',
-      'importActionLabelData',
-      'importSkeletonTypeData',
+      'importAnnotation',
+      'importConfig',
       'setIsSaved',
     ]),
     handleOpenWithFPS () {
@@ -162,106 +153,21 @@ export default {
             const {
               version,
               annotation,
-              configuration,
+              config,
             } = JSON.parse(file)
             // version
             if (version !== VERSION) {
               utils.notify('Version mismatched, weird things are likely to happen! ' + version + '!=' + VERSION)
             }
             // annotation
-            const {
-              video,
-              keyframeList,
-              objectAnnotationListMap,
-              regionAnnotationListMap,
-              skeletonAnnotationListMap,
-              actionAnnotationList,
-            } = annotation
-            /// video
-            this.setVideoFPS(video.fps)
-            this.setCacheFrameList([])
-            /// keyframeList
-            this.setKeyframeList(keyframeList)
-            this.setLeftCurrentFrame(0)
-            this.setRightCurrentFrame(keyframeList.length > 2 ? keyframeList[1] : keyframeList[0])
-            /// objectAnnotationListMap
-            for (let frame in objectAnnotationListMap) {
-              const objectAnnotationList = objectAnnotationListMap[frame]
-              for (let i in objectAnnotationList) {
-                let objectAnnotation = objectAnnotationList[i]
-                objectAnnotationList[i] = new ObjectAnnotation(
-                  objectAnnotation.x,
-                  objectAnnotation.y,
-                  objectAnnotation.width,
-                  objectAnnotation.height,
-                  objectAnnotation.labelId,
-                  objectAnnotation.color,
-                  objectAnnotation.instance,
-                  objectAnnotation.score,
-                )
-              }
-            }
-            this.setObjectAnnotationListMap(objectAnnotationListMap)
-            /// regionAnnotationListMap
-            for (let frame in regionAnnotationListMap) {
-              const regionAnnotationList = regionAnnotationListMap[frame]
-              for (let i in regionAnnotationList) {
-                let regionAnnotation = regionAnnotationList[i]
-                regionAnnotationList[i] = new RegionAnnotation(
-                  regionAnnotation.pointList,
-                  regionAnnotation.labelId,
-                  regionAnnotation.color,
-                  regionAnnotation.instance,
-                  regionAnnotation.score,
-                )
-              }
-            }
-            this.setRegionAnnotationListMap(regionAnnotationListMap)
-            /// skeletonAnnotationListMap
-            for (let frame in skeletonAnnotationListMap) {
-              const skeletonAnnotationList = skeletonAnnotationListMap[frame]
-              for (let i in skeletonAnnotationList) {
-                let skeletonAnnotation = skeletonAnnotationList[i]
-                const newSkeletonAnnotation = new SkeletonAnnotation(
-                  skeletonAnnotation.centerX,
-                  skeletonAnnotation.centerY,
-                  skeletonAnnotation.typeId,
-                  skeletonAnnotation.color,
-                  skeletonAnnotation.instance,
-                  skeletonAnnotation.score,
-                )
-                newSkeletonAnnotation._ratio = skeletonAnnotation._ratio
-                newSkeletonAnnotation.pointList = skeletonAnnotation.pointList
-                skeletonAnnotationList[i] = newSkeletonAnnotation
-              }
-            }
-            this.setSkeletonAnnotationListMap(skeletonAnnotationListMap)
-            /// actionAnnotationList
-            for (let i in actionAnnotationList) {
-              const actionAnnotation = actionAnnotationList[i]
-              actionAnnotationList[i] = new ActionAnnotation(
-                actionAnnotation.start,
-                actionAnnotation.end,
-                actionAnnotation.action,
-                actionAnnotation.object,
-                actionAnnotation.color,
-                actionAnnotation.description,
-              )
-            }
-            this.setActionAnnotationList(actionAnnotationList)
-            // configuration
-            const {
-              objectLabelData,
-              actionLabelData,
-              skeletonTypeData,
-            } = configuration
-            this.importObjectLabelData(objectLabelData)
-            this.importActionLabelData(actionLabelData)
-            this.importSkeletonTypeData(skeletonTypeData)
+            this.importAnnotation(annotation)
+            // config
+            this.importConfig(config)
+            utils.notify('Load successfully!')
           } catch (e) {
             utils.notify(e.toString())
+            throw e
           }
-          utils.notify('Load successfully!')
         })
       })
     },
@@ -270,37 +176,10 @@ export default {
         'Save',
         'Enter annotation filename for saving',
         'annotations').onOk(filename => {
-        // remove type in each skeletonAnnotation
-        const skeletonAnnotationListMap = {}
-        for (const frame in this.skeletonAnnotationListMap) {
-          skeletonAnnotationListMap[frame] = this.skeletonAnnotationListMap[frame].map(skeletonAnnotation => {
-            return {
-              instance: skeletonAnnotation.instance,
-              score: skeletonAnnotation.score,
-              centerX: skeletonAnnotation.centerX,
-              centerY: skeletonAnnotation.centerY,
-              typeId: skeletonAnnotation.typeId,
-              color: skeletonAnnotation.color,
-              _ratio: skeletonAnnotation._ratio,
-              pointList: skeletonAnnotation.pointList,
-            }
-          })
-        }
         const data = {
           version: VERSION,
-          annotation: {
-            video: this.video,
-            keyframeList: this.keyframeList,
-            objectAnnotationListMap: this.objectAnnotationListMap,
-            regionAnnotationListMap: this.regionAnnotationListMap,
-            skeletonAnnotationListMap,
-            actionAnnotationList: this.actionAnnotationList,
-          },
-          configuration: {
-            objectLabelData: this.objectLabelData,
-            actionLabelData: this.actionLabelData,
-            skeletonTypeData: this.skeletonTypeData,
-          },
+          annotation: this.$store.getters.exportAnnotation,
+          config: this.$store.getters.exportConfig,
         }
         Quasar.utils.exportFile(
           filename + '.json',
@@ -323,32 +202,8 @@ export default {
     video () {
       return this.$store.state.annotation.video
     },
-    keyframeList () {
-      return this.$store.state.annotation.keyframeList
-    },
-    objectLabelData () {
-      return this.$store.state.settings.objectLabelData
-    },
-    actionLabelData () {
-      return this.$store.state.settings.actionLabelData
-    },
-    skeletonTypeData () {
-      return this.$store.state.settings.skeletonTypeData
-    },
     preferenceData () {
       return this.$store.state.settings.preferenceData
-    },
-    objectAnnotationListMap () {
-      return this.$store.state.annotation.objectAnnotationListMap
-    },
-    regionAnnotationListMap () {
-      return this.$store.state.annotation.regionAnnotationListMap
-    },
-    skeletonAnnotationListMap () {
-      return this.$store.state.annotation.skeletonAnnotationListMap
-    },
-    actionAnnotationList () {
-      return this.$store.state.annotation.actionAnnotationList
     },
   },
   template: DRAWER_TEMPLATE,

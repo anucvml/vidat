@@ -80,30 +80,65 @@ const app = new Vue({
       const [key, value] = pair.split('=')
       URLParameter[key] = value
     }
+    const {
+      defaultFps,
+      video,
+      annotation,
+      config,
+      showObjects,
+      showRegions,
+      showSkeletons,
+      showActions,
+      grayscale,
+      showPopup,
+      zoom,
+      mode,
+      debug,
+    } = URLParameter
     // set options in silence
-    const defaultFps = URLParameter['defaultFps']
     if (defaultFps) {
       const fps = parseInt(defaultFps, 10)
       if (fps >= 1 && fps <= 60 && fps % 1 === 0) {
         this.setDefaultFps(fps)
       }
     }
-    const video = URLParameter['video']
     if (video) {
       this.setVideoSrc(`video/${video}`)
     }
-    const configFile = URLParameter['config']
-    if (configFile) {
-      utils.readFile(`config/${configFile}`).then(res => {
+    if ((video || debug) && annotation) {
+      utils.readFile(`annotation/${annotation}`).then(res => {
         try {
-          this.$store.commit('importConfig', res)
-          utils.notify('Config loaded successfully!')
+          const {
+            version,
+            annotation,
+            config,
+          } = JSON.parse(res)
+          // version
+          if (version !== VERSION) {
+            utils.notify('Version mismatched, weird things are likely to happen! ' + version + '!=' + VERSION)
+          }
+          // annotation
+          this.$store.commit('importAnnotation', annotation)
+          // config
+          this.$store.commit('importConfig', config)
+          utils.notify('Annotation load successfully!')
         } catch (e) {
           utils.notify(e.toString())
+          throw e
         }
       })
     }
-    const showObjects = URLParameter['showObjects']
+    if (!annotation && config) {
+      utils.readFile(`config/${config}`).then(res => {
+        try {
+          this.$store.commit('importConfig', JSON.parse(res))
+          utils.notify('Config loaded successfully!')
+        } catch (e) {
+          utils.notify(e.toString())
+          throw e
+        }
+      })
+    }
     if (showObjects) {
       if (showObjects.toLowerCase() === 'true') {
         this.setShowObjects(true)
@@ -111,7 +146,6 @@ const app = new Vue({
         this.setShowObjects(false)
       }
     }
-    const showRegions = URLParameter['showRegions']
     if (showRegions) {
       if (showRegions.toLowerCase() === 'true') {
         this.setShowRegions(true)
@@ -119,7 +153,6 @@ const app = new Vue({
         this.setShowRegions(false)
       }
     }
-    const showSkeletons = URLParameter['showSkeletons']
     if (showSkeletons) {
       if (showSkeletons.toLowerCase() === 'true') {
         this.setShowSkeletons(true)
@@ -127,7 +160,6 @@ const app = new Vue({
         this.setShowSkeletons(false)
       }
     }
-    const showActions = URLParameter['showActions']
     if (showActions) {
       if (showActions.toLowerCase() === 'true') {
         this.setShowActions(true)
@@ -135,7 +167,6 @@ const app = new Vue({
         this.setShowActions(false)
       }
     }
-    const grayscale = URLParameter['grayscale']
     if (grayscale) {
       if (grayscale.toLowerCase() === 'true') {
         this.setGrayscale(true)
@@ -143,7 +174,6 @@ const app = new Vue({
         this.setGrayscale(false)
       }
     }
-    const showPopup = URLParameter['showPopup']
     if (showPopup) {
       if (showPopup.toLowerCase() === 'true') {
         this.setShowPopup(true)
@@ -151,7 +181,6 @@ const app = new Vue({
         this.setShowPopup(false)
       }
     }
-    const zoom = URLParameter['zoom']
     if (zoom) {
       if (zoom.toLowerCase() === 'true') {
         this.setZoom(true)
@@ -159,13 +188,11 @@ const app = new Vue({
         this.setZoom(false)
       }
     }
-    const mode = URLParameter['mode']
     if (mode) {
       if (mode === 'object' || mode === 'region' || mode === 'skeleton') {
         this.setMode(mode)
       }
     }
-    const debug = URLParameter['debug']
     if (debug) {
       if (debug.toLowerCase() === 'true') {
         this.$store.commit('setDebug', true)

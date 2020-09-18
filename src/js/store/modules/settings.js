@@ -409,8 +409,7 @@ export default {
       validateSkeletonTypeData(state, json)
       Vue.set(state, 'skeletonTypeData', json)
     },
-    importConfig (state, json) {
-      const data = JSON.parse(json)
+    importConfig (state, data) {
       if (data.objectLabelData) {
         this.commit('importObjectLabelData', data.objectLabelData)
       }

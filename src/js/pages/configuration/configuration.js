@@ -38,10 +38,11 @@ export default {
       ).onOk(() => {
         utils.importFile().then(file => {
           try {
-            this.importConfig(file)
+            this.importConfig(JSON.parse(file))
             utils.notify('Load successfully!')
           } catch (e) {
             utils.notify(e.toString())
+            throw e
           }
         })
       })

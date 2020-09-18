@@ -3,6 +3,7 @@
  */
 
 import utils from '../../libs/utils.js'
+import { ActionAnnotation, ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '../../libs/annotationlib.js'
 
 export default {
   state: () => ({
@@ -24,7 +25,34 @@ export default {
     zoom: false,
     isSaved: true,
   }),
-  getters: {},
+  getters: {
+    exportAnnotation (state) {
+      // remove type in each skeletonAnnotation
+      const skeletonAnnotationListMap = {}
+      for (const frame in state.skeletonAnnotationListMap) {
+        skeletonAnnotationListMap[frame] = state.skeletonAnnotationListMap[frame].map(skeletonAnnotation => {
+          return {
+            instance: skeletonAnnotation.instance,
+            score: skeletonAnnotation.score,
+            centerX: skeletonAnnotation.centerX,
+            centerY: skeletonAnnotation.centerY,
+            typeId: skeletonAnnotation.typeId,
+            color: skeletonAnnotation.color,
+            _ratio: skeletonAnnotation._ratio,
+            pointList: skeletonAnnotation.pointList,
+          }
+        })
+      }
+      return {
+        video: state.video,
+        keyframeList: state.keyframeList,
+        objectAnnotationListMap: state.objectAnnotationListMap,
+        regionAnnotationListMap: state.regionAnnotationListMap,
+        skeletonAnnotationListMap,
+        actionAnnotationList: state.actionAnnotationList,
+      }
+    },
+  },
   mutations: {
     setVideoSrc (state, value) {
       Vue.set(state.video, 'src', value)
@@ -121,6 +149,91 @@ export default {
     },
     setIsSaved (state, value) {
       Vue.set(state, 'isSaved', value)
+    },
+    importAnnotation (state, data) {
+      const {
+        video,
+        keyframeList,
+        objectAnnotationListMap,
+        regionAnnotationListMap,
+        skeletonAnnotationListMap,
+        actionAnnotationList,
+      } = data
+      /// video
+      this.commit('setVideoFPS', video.fps)
+      this.commit('setCacheFrameList', [])
+      /// keyframeList
+      this.commit('setKeyframeList', keyframeList)
+      this.commit('setLeftCurrentFrame', 0)
+      // TODO: hack
+      setTimeout(() => {
+        this.commit('setRightCurrentFrame', keyframeList.length > 2 ? keyframeList[1] : keyframeList[0])
+      }, 500)
+      /// objectAnnotationListMap
+      for (let frame in objectAnnotationListMap) {
+        const objectAnnotationList = objectAnnotationListMap[frame]
+        for (let i in objectAnnotationList) {
+          let objectAnnotation = objectAnnotationList[i]
+          objectAnnotationList[i] = new ObjectAnnotation(
+            objectAnnotation.x,
+            objectAnnotation.y,
+            objectAnnotation.width,
+            objectAnnotation.height,
+            objectAnnotation.labelId,
+            objectAnnotation.color,
+            objectAnnotation.instance,
+            objectAnnotation.score,
+          )
+        }
+      }
+      this.commit('setObjectAnnotationListMap', objectAnnotationListMap)
+      /// regionAnnotationListMap
+      for (let frame in regionAnnotationListMap) {
+        const regionAnnotationList = regionAnnotationListMap[frame]
+        for (let i in regionAnnotationList) {
+          let regionAnnotation = regionAnnotationList[i]
+          regionAnnotationList[i] = new RegionAnnotation(
+            regionAnnotation.pointList,
+            regionAnnotation.labelId,
+            regionAnnotation.color,
+            regionAnnotation.instance,
+            regionAnnotation.score,
+          )
+        }
+      }
+      this.commit('setRegionAnnotationListMap', regionAnnotationListMap)
+      /// skeletonAnnotationListMap
+      for (let frame in skeletonAnnotationListMap) {
+        const skeletonAnnotationList = skeletonAnnotationListMap[frame]
+        for (let i in skeletonAnnotationList) {
+          let skeletonAnnotation = skeletonAnnotationList[i]
+          const newSkeletonAnnotation = new SkeletonAnnotation(
+            skeletonAnnotation.centerX,
+            skeletonAnnotation.centerY,
+            skeletonAnnotation.typeId,
+            skeletonAnnotation.color,
+            skeletonAnnotation.instance,
+            skeletonAnnotation.score,
+          )
+          newSkeletonAnnotation._ratio = skeletonAnnotation._ratio
+          newSkeletonAnnotation.pointList = skeletonAnnotation.pointList
+          skeletonAnnotationList[i] = newSkeletonAnnotation
+        }
+      }
+      this.commit('setSkeletonAnnotationListMap', skeletonAnnotationListMap)
+      /// actionAnnotationList
+      for (let i in actionAnnotationList) {
+        const actionAnnotation = actionAnnotationList[i]
+        actionAnnotationList[i] = new ActionAnnotation(
+          actionAnnotation.start,
+          actionAnnotation.end,
+          actionAnnotation.action,
+          actionAnnotation.object,
+          actionAnnotation.color,
+          actionAnnotation.description,
+        )
+      }
+      this.commit('setActionAnnotationList', actionAnnotationList)
     },
   },
   actions: {},
