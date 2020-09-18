@@ -51,6 +51,22 @@ export default {
     })
   },
   /**
+   * Read text file
+   * @param pathname
+   * @returns {Promise}
+   */
+  readFile: (pathname) => {
+    return new Promise(function (resolve, reject) {
+      fetch(pathname).then(res => {
+        return res.text()
+      }).then(text => {
+        resolve(text)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  /**
    * Import a json file
    * @returns {Promise}
    */

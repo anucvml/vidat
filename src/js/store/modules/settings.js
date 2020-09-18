@@ -348,7 +348,15 @@ export default {
     grayscale: JSON.parse(localStorage.getItem('grayscale')) || false,
     showPopup: JSON.parse(localStorage.getItem('showPopup')) || false,
   }),
-  getters: {},
+  getters: {
+    exportConfig (state) {
+      return {
+        objectLabelData: state.objectLabelData,
+        actionLabelData: state.actionLabelData,
+        skeletonTypeData: state.skeletonTypeData,
+      }
+    },
+  },
   mutations: {
     setObjectLabelData (state, value) {
       state.objectLabelData = value
@@ -400,6 +408,18 @@ export default {
     importSkeletonTypeData (state, json) {
       validateSkeletonTypeData(state, json)
       Vue.set(state, 'skeletonTypeData', json)
+    },
+    importConfig (state, json) {
+      const data = JSON.parse(json)
+      if (data.objectLabelData) {
+        this.commit('importObjectLabelData', data.objectLabelData)
+      }
+      if (data.actionLabelData) {
+        this.commit('importActionLabelData', data.actionLabelData)
+      }
+      if (data.skeletonTypeData) {
+        this.commit('importSkeletonTypeData', data.skeletonTypeData)
+      }
     },
   },
   actions: {},

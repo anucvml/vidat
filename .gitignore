@@ -2,4 +2,8 @@
 .idea
 .vscode
 .vs
-video
+
+# assets
+video/*
+config/*
+annotation/*

@@ -30,9 +30,7 @@ export default {
   },
   methods: {
     ...Vuex.mapMutations([
-      'importObjectLabelData',
-      'importActionLabelData',
-      'importSkeletonTypeData',
+      'importConfig',
     ]),
     handleLoad () {
       utils.confirm(
@@ -40,20 +38,11 @@ export default {
       ).onOk(() => {
         utils.importFile().then(file => {
           try {
-            const data = JSON.parse(file)
-            if (data.objectLabelData) {
-              this.importObjectLabelData(data.objectLabelData)
-            }
-            if (data.actionLabelData) {
-              this.importActionLabelData(data.actionLabelData)
-            }
-            if (data.skeletonTypeData) {
-              this.importSkeletonTypeData(data.skeletonTypeData)
-            }
+            this.importConfig(file)
+            utils.notify('Load successfully!')
           } catch (e) {
             utils.notify(e.toString())
           }
-          utils.notify('Load successfully!')
         })
       })
     },
@@ -61,12 +50,9 @@ export default {
       utils.prompt(
         'Save',
         'Enter configuration filename for saving',
-        'config').onOk(filename => {
-        const data = {
-          objectLabelData: this.$store.state.settings.objectLabelData,
-          actionLabelData: this.$store.state.settings.actionLabelData,
-          skeletonTypeData: this.$store.state.settings.skeletonTypeData,
-        }
+        'config',
+      ).onOk(filename => {
+        const data = this.$store.getters.exportConfig
         const file = new Blob([JSON.stringify(data)], { type: 'text/plain' })
         Quasar.utils.exportFile(filename + '.json', file)
       })

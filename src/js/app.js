@@ -28,6 +28,7 @@ import router from './router/router.js'
 import store from './store/store.js'
 import drawer from './components/drawer.js'
 import videoLoader from './components/videoLoader.js'
+import utils from './libs/utils.js'
 
 const app = new Vue({
   router,
@@ -90,6 +91,17 @@ const app = new Vue({
     const video = URLParameter['video']
     if (video) {
       this.setVideoSrc(`video/${video}`)
+    }
+    const configFile = URLParameter['config']
+    if (configFile) {
+      utils.readFile(`config/${configFile}`).then(res => {
+        try {
+          this.$store.commit('importConfig', res)
+          utils.notify('Config loaded successfully!')
+        } catch (e) {
+          utils.notify(e.toString())
+        }
+      })
     }
     const showObjects = URLParameter['showObjects']
     if (showObjects) {
