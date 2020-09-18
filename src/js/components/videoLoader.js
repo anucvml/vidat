@@ -8,6 +8,7 @@ const VIDEO_LOADER_TEMPLATE = `
     :src="video.src"
     @loadeddata="handleLoadeddata"
     @seeked="handleSeeked"
+    @error="handleError"
   >
     Sorry, your browser doesn't support embedded videos.
   </video>
@@ -32,6 +33,7 @@ export default {
       'setLeftCurrentFrame',
       'setRightCurrentFrame',
       'cacheFrame',
+      'closeVideo',
     ]),
     handleLoadeddata (event) {
       if (!this.video.duration) {
@@ -103,6 +105,10 @@ export default {
           videoElement.currentTime = utils.index2time(this.backendQueue.shift())
         }
       }
+    },
+    handleError (event) {
+      utils.confirm('Unable to load video!')
+      this.closeVideo()
     },
   },
   computed: {
