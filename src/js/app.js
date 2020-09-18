@@ -43,6 +43,7 @@ const app = new Vue({
   methods: {
     ...Vuex.mapMutations([
       'setMode',
+      'setVideoSrc',
       'setDefaultFps',
       'setShowObjects',
       'setShowRegions',
@@ -85,6 +86,10 @@ const app = new Vue({
       if (fps >= 1 && fps <= 60 && fps % 1 === 0) {
         this.setDefaultFps(fps)
       }
+    }
+    const video = URLParameter['video']
+    if (video) {
+      this.setVideoSrc(`video/${video}`)
     }
     const showObjects = URLParameter['showObjects']
     if (showObjects) {

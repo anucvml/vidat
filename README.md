@@ -30,17 +30,19 @@ Video tutorials will be posted on YouTube.
 
 ## URL Parameters
 
-|       key       |              value              |          description           |
-| :-------------: | :-----------------------------: | :----------------------------: |
-|     `mode`      | `objects`, `region`, `skeleton` |        set current mode        |
-|     `zoom`      |         `true`/`false`          |          zoom or not           |
-|  `showObjects`  |         `true`/`false`          |      show objects or not       |
-|  `showRegions`  |         `true`/`false`          |      show regions or not       |
-| `showSkeletons` |         `true`/`false`          |     show skeletons or not      |
-|  `showActions`  |         `true`/`false`          |      show actions or not       |
-|   `grayscale`   |         `true`/`false`          |        grayscale or not        |
-|   `showPopup`   |         `true`/`false`          |       show popup or not        |
-|     `debug`     |         `true`/`false`          | auto load a video and no cache |
+|       key       |              value              |             description              |
+| :-------------: | :-----------------------------: | :----------------------------------: |
+|  `defaultFps`   |          Integer >= 1           |           set default fps            |
+|     `video`     |          `example.mp4`          | set video src (under path `/video`)  |
+|     `mode`      | `objects`, `region`, `skeleton` |           set current mode           |
+|     `zoom`      |         `true`/`false`          |             zoom or not              |
+|  `showObjects`  |         `true`/`false`          |         show objects or not          |
+|  `showRegions`  |         `true`/`false`          |         show regions or not          |
+| `showSkeletons` |         `true`/`false`          |        show skeletons or not         |
+|  `showActions`  |         `true`/`false`          |         show actions or not          |
+|   `grayscale`   |         `true`/`false`          |           grayscale or not           |
+|   `showPopup`   |         `true`/`false`          |          show popup or not           |
+|     `debug`     |         `true`/`false`          |    auto load a video and no cache    |
 
 ### Examples
 
