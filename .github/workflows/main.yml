@@ -1,0 +1,62 @@
+name: Auto Release
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v1.4.3
+        with:
+          node-version: 12.x
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Zip
+        run: |
+          cd ${{ github.workspace }}/dist/spa/
+          zip -r ${{ github.workspace }}/vidat.zip .
+      - name: Get Tag
+        id: get_tag
+        env:
+          SHA: ${{ github.sha }}
+          WORKSAPCE: ${{ github.workspace }}
+        run: |
+          sudo apt install jq
+          echo "::set-output name=tag::$(jq -r .version $WORKSAPCE/package.json)-${SHA:0:7}"
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_tag.outputs.tag }}
+          release_name: Release ${{ steps.get_tag.outputs.tag }}
+          body: Auto Release
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/vidat.zip
+          asset_name: vidat.zip
+          asset_content_type: application/zip

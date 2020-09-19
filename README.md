@@ -24,7 +24,7 @@ Video tutorials will be posted on YouTube.
 
 ## Installation
 
-1. Copy all files from `src` into a single directory.
+1. Download compiled files from `Releases` and extract.
 2. Put all files behind a web server ([Nginx](http://nginx.org/), [Apache](http://httpd.apache.org/), etc.).
 3. Open in your favourite browser.
 
