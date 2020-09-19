@@ -3,7 +3,6 @@ const ACTION_TABLE_TEMPLATE = `
   dense
   flat
   :data="actionAnnotationList"
-  row-key="start"
   :columns="columnList"
   :pagination.sync="pagination"
 >
@@ -128,10 +127,18 @@ const columnList = [
     label: 'start',
     field: 'start',
     sortable: true,
-    sort: (a, b, rowA, rowB) => a !== b ? a - b : (rowA.end - rowA.start) - (rowB.end - rowB.start),
+    sort: (a, b, rowA, rowB) => a !== b ? a - b : rowA.end - rowB.end,
     style: 'width: 100px',
   },
-  { name: 'end', align: 'center', label: 'end', field: 'end', sortable: true, style: 'width: 100px' },
+  {
+    name: 'end',
+    align: 'center',
+    label: 'end',
+    field: 'end',
+    sortable: true,
+    sort: (a, b, rowA, rowB) => a !== b ? a - b : rowA.start - rowB.start,
+    style: 'width: 100px',
+  },
   { name: 'action', align: 'center', label: 'action', field: 'action', style: 'width: 250px' },
   { name: 'object', align: 'center', label: 'object', field: 'object', style: 'width: 250px' },
   { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 250px' },
