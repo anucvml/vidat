@@ -107,6 +107,7 @@ export default {
       }
     },
     handleError (event) {
+      utils.notify(event.target.error.message)
       utils.confirm('Unable to load video!')
       this.closeVideo()
     },
