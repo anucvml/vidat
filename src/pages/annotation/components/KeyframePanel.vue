@@ -18,6 +18,7 @@
       </q-item>
       <q-item class="col">
         <q-range
+          id="slider"
           ref="slider"
           :style="rangeStyle"
           class="custom-range"
@@ -30,6 +31,7 @@
           label-always
           drag-range
           snap
+          @input="handleInput"
         ></q-range>
       </q-item>
       <q-space></q-space>
@@ -80,6 +82,8 @@ export default {
       skeletonAnnotationRangeStyle: {},
       actionAnnotationRangeStyle: {},
       showEdit: false,
+      currentFocus: 'range', // 'left', 'right', 'range'
+      inputValue: null,
     }
   },
   methods: {
@@ -114,6 +118,20 @@ export default {
         this.playTimeInterval = null
       }
       this.leftCurrentFrame = 0
+    },
+    handleInput (value) {
+      if (this.inputValue) {
+        if (this.inputValue.min !== value.min && this.inputValue.max !== value.max) {
+          this.currentFocus = 'range'
+        } else if (this.inputValue.min !== value.min) {
+          this.currentFocus = 'left'
+        } else {
+          this.currentFocus = 'right'
+        }
+        this.inputValue = value
+      } else {
+        this.inputValue = value
+      }
     },
     nearestKeyframe (currentFrame) {
       let min = this.video.frames
@@ -189,16 +207,38 @@ export default {
         this.setRightCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 1])
       }
     },
-    moveRange (interval) {
-      if (interval < 0) {
-        if (Math.min(this.leftCurrentFrame, this.rightCurrentFrame) + interval >= 0) {
-          this.leftCurrentFrame += interval
-          this.rightCurrentFrame += interval
+    moveLeftFrame (delta) {
+      if (delta < 0) {
+        if (this.leftCurrentFrame + delta >= 0) {
+          this.leftCurrentFrame += delta
         }
-      } else {
-        if (Math.max(this.leftCurrentFrame, this.rightCurrentFrame) + interval <= this.video.frames) {
-          this.leftCurrentFrame += interval
-          this.rightCurrentFrame += interval
+      } else if (delta > 0) {
+        if (this.leftCurrentFrame + delta <= this.video.frames) {
+          this.leftCurrentFrame += delta
+        }
+      }
+    },
+    moveRightFrame (delta) {
+      if (delta < 0) {
+        if (this.rightCurrentFrame + delta >= 0) {
+          this.rightCurrentFrame += delta
+        }
+      } else if (delta > 0) {
+        if (this.rightCurrentFrame + delta <= this.video.frames) {
+          this.rightCurrentFrame += delta
+        }
+      }
+    },
+    moveRange (delta) {
+      if (delta < 0) {
+        if (Math.min(this.leftCurrentFrame, this.rightCurrentFrame) + delta >= 0) {
+          this.leftCurrentFrame += delta
+          this.rightCurrentFrame += delta
+        }
+      } else if (delta > 0) {
+        if (Math.max(this.leftCurrentFrame, this.rightCurrentFrame) + delta <= this.video.frames) {
+          this.leftCurrentFrame += delta
+          this.rightCurrentFrame += delta
         }
       }
     },
@@ -211,17 +251,46 @@ export default {
       }
     },
     handleKeydown (event) {
+      console.log('handleKeydown')
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
       }
       if (event.keyCode === 0x25) { // <-
-        this.moveRange(-1)
+        const delta = -1
+        if (this.currentFocus === 'range') {
+          this.moveRange(delta)
+        } else if (this.currentFocus === 'left') {
+          this.moveLeftFrame(delta)
+        } else if (this.currentFocus === 'right') {
+          this.moveRightFrame(delta)
+        }
       } else if (event.keyCode === 0x27) { // ->
-        this.moveRange(1)
+        const delta = 1
+        if (this.currentFocus === 'range') {
+          this.moveRange(delta)
+        } else if (this.currentFocus === 'left') {
+          this.moveLeftFrame(delta)
+        } else if (this.currentFocus === 'right') {
+          this.moveRightFrame(delta)
+        }
       } else if (event.keyCode === 0x21) { // page up
-        this.moveRange(Math.round(-0.1 * this.video.frames))
+        const delta = Math.round(-0.1 * this.video.frames)
+        if (this.currentFocus === 'range') {
+          this.moveRange(delta)
+        } else if (this.currentFocus === 'left') {
+          this.moveLeftFrame(delta)
+        } else if (this.currentFocus === 'right') {
+          this.moveRightFrame(delta)
+        }
       } else if (event.keyCode === 0x22) { // page down
-        this.moveRange(Math.round(0.1 * this.video.frames))
+        const delta = Math.round(0.1 * this.video.frames)
+        if (this.currentFocus === 'range') {
+          this.moveRange(delta)
+        } else if (this.currentFocus === 'left') {
+          this.moveLeftFrame(delta)
+        } else if (this.currentFocus === 'right') {
+          this.moveRightFrame(delta)
+        }
       } else if (event.keyCode === 0xBC) { // comma, <
         this.handlePreviousKeyframe()
       } else if (event.keyCode === 0xBE) { // period, >
@@ -434,6 +503,11 @@ export default {
     document.addEventListener('keyup', this.handleKeyup)
     document.addEventListener('keydown', this.handleKeydown)
     window.addEventListener('resize', this.handleOnresize)
+
+    const slider = document.getElementById('slider')
+    slider.childNodes[1].removeAttribute('tabindex')
+    slider.childNodes[2].removeAttribute('tabindex')
+
     const drawer = document.getElementById('drawer')
     drawer.addEventListener('transitionend', this.handleOnresize)
   },
