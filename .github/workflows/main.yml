@@ -3,8 +3,6 @@ name: Auto Release
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   build:
@@ -49,7 +47,7 @@ jobs:
           release_name: Release ${{ steps.get_tag.outputs.tag }}
           body: Auto Release
           draft: false
-          prerelease: false
+          prerelease: true
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1

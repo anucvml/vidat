@@ -104,9 +104,9 @@
 import Vuex from 'vuex'
 
 import filmStrip from './FilmStrip'
-import objectTable from './objectTable'
-import regionTable from './regionTable'
-import skeletonTable from './skeletonTable'
+import objectTable from './ObjectTable'
+import regionTable from './RegionTable'
+import skeletonTable from './SkeletonTable'
 import utils from 'src/libs/utils'
 import { ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from 'src/libs/annotationlib'
 

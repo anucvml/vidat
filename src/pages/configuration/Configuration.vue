@@ -21,7 +21,7 @@ import { exportFile } from 'quasar'
 import objectLabelTable from './components/ObjectLabelTable'
 import actionLabelTable from './components/ActionLabelTable'
 import skeletonTypeTable from './components/SkeletonTypeTable'
-import utils from '../../libs/utils'
+import utils from 'src/libs/utils'
 
 export default {
   name: 'configuration',

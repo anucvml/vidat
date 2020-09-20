@@ -69,7 +69,7 @@ import Vuex from 'vuex'
 import JSZip from 'jszip'
 import saveAs from 'file-saver'
 
-import utils from '../../../libs/utils.js'
+import utils from 'src/libs/utils.js'
 
 export default {
   name: 'KeyframeTable',

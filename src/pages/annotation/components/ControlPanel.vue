@@ -81,8 +81,8 @@
 <script>
 import Vuex from 'vuex'
 
-import utils from '../../../libs/utils.js'
-import { ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '../../../libs/annotationlib.js'
+import utils from 'src/libs/utils.js'
+import { ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from 'src/libs/annotationlib.js'
 
 export default {
   name: 'ControlPanel',

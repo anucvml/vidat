@@ -153,7 +153,7 @@
 <script>
 import Vuex from 'vuex'
 
-import utils from '../../../libs/utils.js'
+import utils from 'src/libs/utils.js'
 
 const columnList = [
   {
