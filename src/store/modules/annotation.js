@@ -167,10 +167,7 @@ export default {
       /// keyframeList
       this.commit('setKeyframeList', keyframeList)
       this.commit('setLeftCurrentFrame', 0)
-      // TODO: hack
-      setTimeout(() => {
-        this.commit('setRightCurrentFrame', keyframeList.length > 2 ? keyframeList[1] : keyframeList[0])
-      }, 500)
+      this.commit('setRightCurrentFrame', keyframeList.length > 2 ? keyframeList[1] : keyframeList[0])
       /// objectAnnotationListMap
       for (const frame in objectAnnotationListMap) {
         const objectAnnotationList = objectAnnotationListMap[frame]

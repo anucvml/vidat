@@ -80,7 +80,7 @@ export default {
       },
     },
   },
-  mounted: function () {
+  created: function () {
     // handle unsaved
     window.addEventListener('beforeunload', event => {
       if (!this.$store.state.debug &&

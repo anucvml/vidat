@@ -104,7 +104,11 @@ export default {
           })
         }
         // trigger next frame
-        if (this.priorityQueue.length !== 0) {
+        if (!this.cachedFrameList[this.leftCurrentFrame]) {
+          videoElement.currentTime = utils.index2time(this.leftCurrentFrame)
+        } else if (!this.cachedFrameList[this.rightCurrentFrame]) {
+          videoElement.currentTime = utils.index2time(this.rightCurrentFrame)
+        } else if (this.priorityQueue.length !== 0) {
           videoElement.currentTime = utils.index2time(this.priorityQueue.shift())
         } else if (this.backendQueue.length !== 0) {
           videoElement.currentTime = utils.index2time(this.backendQueue.shift())

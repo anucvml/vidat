@@ -251,7 +251,6 @@ export default {
       }
     },
     handleKeydown (event) {
-      console.log('handleKeydown')
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
       }
