@@ -239,7 +239,7 @@ export default {
       }
     },
     handleKeyup (event) {
-      if (event.target.nodeName.toLowerCase() === 'input') {
+      if (event.target.nodeName.toLowerCase() === 'input' || event.target.tabIndex === 0) {
         return false
       }
       if (event.keyCode === 0x50) { // p
