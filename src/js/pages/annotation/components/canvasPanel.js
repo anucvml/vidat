@@ -682,7 +682,7 @@ export default {
         for (let i = 0; i < this.annotationList.length; i++) {
           const objectAnnotation = this.annotationList[i]
           if (!found) {
-            let type = 'moving'
+            let type
             if (objectAnnotation.nearTopLeftAnchor(mouseX, mouseY) ||
               objectAnnotation.nearTopRightAnchor(mouseX, mouseY) ||
               objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY) ||
@@ -700,6 +700,9 @@ export default {
               found = true
             } else if (objectAnnotation.nearRightAnchor(mouseX, mouseY)) {
               type = 'rightSizing'
+              found = true
+            } else if (objectAnnotation.nearBoundary(mouseX, mouseY)) {
+              type = 'moving'
               found = true
             } else {
               objectAnnotation.highlight = false
