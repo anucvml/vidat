@@ -5,9 +5,9 @@ const HELP_TEMPLATE = `
     Click the top-left menu button (&#x2630;) to load and save data.
     Three annotation modes are supported:
     <ul>
-    <li><b>Object:</b> Click and drag on frame to add a new bounding box.
-    <li><b>Region:</b> Click on frame to add next point to polygon region. Double-click to end.
-    <li><b>Skeleton:</b> Click and drag on frame to add new default skeleton.
+    <li><b>Object:</b> Click and drag on frame to add a new bounding box.</li>
+    <li><b>Region:</b> Click on frame to add next point to polygon region. Double-click to end.</li>
+    <li><b>Skeleton:</b> Click and drag on frame to add new default skeleton.</li>
     </ul>
     Anchor points (&#x25a0; or &#x25cf;) can be dragged to reshape objects, regions and skeletons.
     Edges between anchors can be dragged to move annotations.
