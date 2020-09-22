@@ -202,11 +202,23 @@ export default {
       const rightAnnotationList = this.annotationListMap[this.rightCurrentFrame]
       let found = false
       for (let leftAnnotation of leftAnnotationList) {
-        let rightAnnotation = rightAnnotationList.find(
-          rightAnnotation => rightAnnotation.instance &&
-            leftAnnotation.instance &&
-            rightAnnotation.instance === leftAnnotation.instance,
-        )
+        let rightAnnotation
+        if (this.mode === 'object' || this.mode === 'region') {
+          rightAnnotation = rightAnnotationList.find(
+            rightAnnotation => rightAnnotation.instance !== null && leftAnnotation.instance !== null &&
+              rightAnnotation.instance === leftAnnotation.instance &&
+              rightAnnotation.labelId === leftAnnotation.labelId,
+          )
+        } else if (this.mode === 'skeleton') {
+          rightAnnotation = rightAnnotationList.find(
+            rightAnnotation => rightAnnotation.instance !== null && leftAnnotation.instance !== null &&
+              rightAnnotation.instance === leftAnnotation.instance &&
+              rightAnnotation.typeId === leftAnnotation.typeId,
+          )
+        } else {
+          utils.notify(this.mode + ' not support!')
+          return
+        }
         // decide whether to interpolate
         if (!rightAnnotation) {
           break
