@@ -631,7 +631,6 @@ export default {
         }
       } else if (this.mode === 'skeleton') {
         if (this.createContext) {
-          this.createContext = null
           if (this.showPopup) {
             this.popup = {
               x: event.offsetX,
@@ -809,7 +808,40 @@ export default {
           this.annotationList.push(regionAnnotation)
         }
       } else if (this.mode === 'skeleton') {
-
+        // drag
+        let found = false
+        for (const skeletonAnnotation of this.annotationList) {
+          for (const point of skeletonAnnotation.pointList) {
+            let nearPoint
+            if (SkeletonAnnotation.nearPoint(mouseX, mouseY, point)) {
+              found = true
+              nearPoint = point
+              skeletonAnnotation.highlight = true
+              this.dragContext = {
+                type: nearPoint && nearPoint.name !== 'center' ? 'sizing' : 'moving',
+                skeletonAnnotation: skeletonAnnotation,
+                nearPoint: nearPoint,
+                mousedownX: mouseX,
+                mousedownY: mouseY,
+              }
+              break
+            }
+          }
+          if (found) {
+            break
+          }
+        }
+        // creating a skeleton
+        if (!found && !this.createContext) {
+          const skeletonAnnotation = new SkeletonAnnotation(mouseX, mouseY, this.skeletonTypeId)
+          this.createContext = {
+            skeletonAnnotation: skeletonAnnotation,
+            mouseDownX: mouseX,
+            mouseDownY: mouseY,
+          }
+          skeletonAnnotation.highlight = true
+          this.annotationList.push(skeletonAnnotation)
+        }
       } else {
         throw 'Unknown mode: ' + this.mode
       }
@@ -919,7 +951,28 @@ export default {
           }
         }
       } else if (this.mode === 'skeleton') {
-
+        // create a skeleton
+        if (this.createContext) {
+          this.createContext.skeletonAnnotation.ratio =
+            Math.sqrt((mouseX - this.createContext.mouseDownX) ** 2 + (mouseY - this.createContext.mouseDownY) ** 2) /
+            10
+        }
+        if (this.dragContext) {
+          const skeletonAnnotation = this.dragContext.skeletonAnnotation
+          const deltaX = mouseX - this.dragContext.mousedownX
+          const deltaY = mouseY - this.dragContext.mousedownY
+          this.dragContext.mousedownX = mouseX
+          this.dragContext.mousedownY = mouseY
+          if (this.dragContext.type === 'moving') {
+            skeletonAnnotation.move(deltaX, deltaY)
+          } else if (this.dragContext.type === 'sizing') {
+            const point = this.dragContext.nearPoint
+            point.x = mouseX
+            point.y = mouseY
+          } else {
+            throw 'Unknown drag type'
+          }
+        }
       } else {
         throw 'Unknown mode: ' + this.mode
       }
@@ -951,7 +1004,15 @@ export default {
           this.dragContext = null
         }
       } else if (this.mode === 'skeleton') {
-
+        if (this.createContext) {
+          this.$refs.table.focusLast()
+          this.createContext.skeletonAnnotation.highlight = false
+          this.createContext = null
+        }
+        if (this.dragContext) {
+          this.dragContext.skeletonAnnotation.highlight = false
+          this.dragContext = null
+        }
       } else {
         throw 'Unknown mode: ' + this.mode
       }
