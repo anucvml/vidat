@@ -7,7 +7,7 @@ const ANNOTATION_TEMPLATE = `
   <q-card class="q-mb-md no-border-radius" v-if="video.src">
     <keyframes-panel></keyframes-panel>
     <div class="row justify-around">
-      <canvas-panel :class="[{'col-lg': !zoom}, {'col-md-10': !zoom}, {'col-sm-10': !zoom}, {'col': zoom}]" position="left"></canvas-panel>
+      <canvas-panel :class="[{'col-lg': !zoom}, {'col-md-10': !zoom}, {'col-sm-10': !zoom}, {'full-width': zoom}]" position="left"></canvas-panel>
       <control-panel class="col" v-show="!zoom"></control-panel>
       <canvas-panel class="col-lg col-md-10 col-sm-10" v-show="!zoom" position="right"></canvas-panel>
       <div class="col lg-hide xl-hide"></div>
