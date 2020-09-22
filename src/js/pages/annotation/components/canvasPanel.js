@@ -143,6 +143,7 @@ export default {
       if (this.isFirstLoad) {
         this.isFirstLoad = false
         this.$refs.canvas.height = this.CANVAS_WIDTH * this.video.height / this.video.width
+        this.draw()
       }
     },
     getMouseLocation (event) {
