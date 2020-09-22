@@ -139,11 +139,40 @@ const columnList = [
     sort: (a, b, rowA, rowB) => a !== b ? a - b : rowA.start - rowB.start,
     style: 'width: 100px',
   },
-  { name: 'action', align: 'center', label: 'action', field: 'action', style: 'width: 250px' },
-  { name: 'object', align: 'center', label: 'object', field: 'object', style: 'width: 250px' },
-  { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 250px' },
-  { name: 'description', align: 'center', label: 'description', field: 'description' },
-  { name: 'operation', align: 'center', label: 'operation', field: 'operation', style: 'width: 200px' },
+  {
+    name: 'action',
+    align: 'center',
+    label: 'action',
+    field: 'action',
+    style: 'width: 250px',
+  },
+  {
+    name: 'object',
+    align: 'center',
+    label: 'object',
+    field: 'object',
+    style: 'width: 250px',
+  },
+  {
+    name: 'color',
+    align: 'center',
+    label: 'color',
+    field: 'color',
+    style: 'width: 250px',
+  },
+  {
+    name: 'description',
+    align: 'center',
+    label: 'description',
+    field: 'description',
+  },
+  {
+    name: 'operation',
+    align: 'center',
+    label: 'operation',
+    field: 'operation',
+    style: 'width: 200px',
+  },
 ]
 
 import utils from '../../../libs/utils.js'

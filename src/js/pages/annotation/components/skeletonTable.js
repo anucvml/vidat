@@ -145,11 +145,37 @@ const SKELETON_TABLE_TEMPLATE = `
 import utils from '../../../libs/utils.js'
 
 const columnList = [
-  { name: 'type', align: 'center', label: 'type', field: 'type' },
-  { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 120px' },
-  { name: 'instance', align: 'center', label: 'instance', field: 'instance' },
-  { name: 'score', align: 'center', label: 'score', field: 'score' },
-  { name: 'operation', align: 'center', label: 'operation', field: 'operation' },
+  {
+    name: 'type',
+    align: 'center',
+    label: 'type',
+    field: 'type',
+  },
+  {
+    name: 'color',
+    align: 'center',
+    label: 'color',
+    field: 'color',
+    style: 'width: 120px',
+  },
+  {
+    name: 'instance',
+    align: 'center',
+    label: 'instance',
+    field: 'instance',
+  },
+  {
+    name: 'score',
+    align: 'center',
+    label: 'score',
+    field: 'score',
+  },
+  {
+    name: 'operation',
+    align: 'center',
+    label: 'operation',
+    field: 'operation',
+  },
 ]
 
 export default {

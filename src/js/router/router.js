@@ -11,12 +11,40 @@ import notfound from '../pages/notfound/notfound.js'
 
 export default new VueRouter({
   routes: [
-    { name: 'index', path: '/', redirect: '/annotation' },
-    { name: 'annotation', path: '/annotation', component: annotation },
-    { name: 'configuration', path: '/configuration', component: configuration },
-    { name: 'preference', path: '/preference', component: preference },
-    { name: 'help', path: '/help', component: help },
-    { name: 'about', path: '/about', component: about },
-    { name: 'notfound', path: '*', component: notfound },
+    {
+      name: 'index',
+      path: '/',
+      redirect: '/annotation',
+    },
+    {
+      name: 'annotation',
+      path: '/annotation',
+      component: annotation,
+    },
+    {
+      name: 'configuration',
+      path: '/configuration',
+      component: configuration,
+    },
+    {
+      name: 'preference',
+      path: '/preference',
+      component: preference,
+    },
+    {
+      name: 'help',
+      path: '/help',
+      component: help,
+    },
+    {
+      name: 'about',
+      path: '/about',
+      component: about,
+    },
+    {
+      name: 'notfound',
+      path: '*',
+      component: notfound,
+    },
   ],
 })

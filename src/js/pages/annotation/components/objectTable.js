@@ -125,15 +125,60 @@ const OBJECT_TABLE_TEMPLATE = `
 import utils from '../../../libs/utils.js'
 
 const columnList = [
-  { name: 'x', align: 'center', label: 'x', field: 'x' },
-  { name: 'y', align: 'center', label: 'y', field: 'y' },
-  { name: 'width', align: 'center', label: 'width', field: 'width' },
-  { name: 'height', align: 'center', label: 'height', field: 'height' },
-  { name: 'label', align: 'center', label: 'label', field: 'labelId' },
-  { name: 'color', align: 'center', label: 'color', field: 'color' },
-  { name: 'instance', align: 'center', label: 'instance', field: 'instance' },
-  { name: 'score', align: 'center', label: 'score', field: 'score' },
-  { name: 'operation', align: 'center', label: 'operation', field: 'operation' },
+  {
+    name: 'x',
+    align: 'center',
+    label: 'x',
+    field: 'x',
+  },
+  {
+    name: 'y',
+    align: 'center',
+    label: 'y',
+    field: 'y',
+  },
+  {
+    name: 'width',
+    align: 'center',
+    label: 'width',
+    field: 'width',
+  },
+  {
+    name: 'height',
+    align: 'center',
+    label: 'height',
+    field: 'height',
+  },
+  {
+    name: 'label',
+    align: 'center',
+    label: 'label',
+    field: 'labelId',
+  },
+  {
+    name: 'color',
+    align: 'center',
+    label: 'color',
+    field: 'color',
+  },
+  {
+    name: 'instance',
+    align: 'center',
+    label: 'instance',
+    field: 'instance',
+  },
+  {
+    name: 'score',
+    align: 'center',
+    label: 'score',
+    field: 'score',
+  },
+  {
+    name: 'operation',
+    align: 'center',
+    label: 'operation',
+    field: 'operation',
+  },
 ]
 
 export default {

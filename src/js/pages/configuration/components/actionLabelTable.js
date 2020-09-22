@@ -133,10 +133,31 @@ const ACTION_LABEL_TABLE_TEMPLATE = `
 `
 
 const columnList = [
-  { name: 'name', align: 'center', label: 'name', field: 'name' },
-  { name: 'nObjects', align: 'center', label: '#objects', field: 'nObjects' },
-  { name: 'color', align: 'center', label: 'color', field: 'color', style: 'width: 120px' },
-  { name: 'delete', align: 'center', label: 'delete', field: 'delete' },
+  {
+    name: 'name',
+    align: 'center',
+    label: 'name',
+    field: 'name',
+  },
+  {
+    name: 'nObjects',
+    align: 'center',
+    label: '#objects',
+    field: 'nObjects',
+  },
+  {
+    name: 'color',
+    align: 'center',
+    label: 'color',
+    field: 'color',
+    style: 'width: 120px',
+  },
+  {
+    name: 'delete',
+    align: 'center',
+    label: 'delete',
+    field: 'delete',
+  },
 ]
 
 import utils from '../../../libs/utils.js'

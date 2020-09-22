@@ -325,19 +325,31 @@ class ObjectAnnotation extends Annotation {
   oppositeAnchor (mouseX, mouseY) {
     // top left anchor => bottom right anchor
     if (this.nearTopLeftAnchor(mouseX, mouseY)) {
-      return { x: this.x + this.width, y: this.y + this.height }
+      return {
+        x: this.x + this.width,
+        y: this.y + this.height,
+      }
     }
     // top right anchor => bottom left anchor
     if (this.nearTopRightAnchor(mouseX, mouseY)) {
-      return { x: this.x, y: this.y + this.height }
+      return {
+        x: this.x,
+        y: this.y + this.height,
+      }
     }
     // bottom left anchor => top right anchor
     if (this.nearBottomLeftAnchor(mouseX, mouseY)) {
-      return { x: this.x + this.width, y: this.y }
+      return {
+        x: this.x + this.width,
+        y: this.y,
+      }
     }
     // bottom right anchor => top left anchor
     if (this.nearBottomRightAnchor(mouseX, mouseY)) {
-      return { x: this.x, y: this.y }
+      return {
+        x: this.x,
+        y: this.y,
+      }
     }
     return null
   }

@@ -121,7 +121,10 @@ export default {
       dragContext: null,
       activeContext: null,
       playTimeInterval: null,
-      popup: { x: 0, y: 0 },
+      popup: {
+        x: 0,
+        y: 0,
+      },
       shiftDown: false,
       backspaceDown: false,
       altDown: false,
@@ -507,7 +510,11 @@ export default {
         }
         // creating a region
         if (!found && !this.createContext) {
-          const regionAnnotation = new RegionAnnotation([{ x: mouseX, y: mouseY }])
+          const regionAnnotation = new RegionAnnotation([
+            {
+              x: mouseX,
+              y: mouseY,
+            }])
           this.createContext = {
             regionAnnotation: regionAnnotation,
           }
