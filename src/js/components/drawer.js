@@ -79,7 +79,6 @@ const DRAWER_TEMPLATE = `
 `
 
 import utils from '../libs/utils.js'
-import { ActionAnnotation, ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '../libs/annotationlib.js'
 
 export default {
   data: () => {
