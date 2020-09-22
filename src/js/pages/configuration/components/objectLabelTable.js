@@ -10,7 +10,7 @@ const OBJECT_LABEL_TABLE_TEMPLATE = `
       </q-btn-group>
       <q-input
         class="full-width"
-        style="font-family: console;"
+        style="font-family: console, monospace;"
         v-model="json"
         borderless
         autogrow
