@@ -31,6 +31,9 @@ const VIDEO_PANEL_TEMPLATE = `
         @mousedown="handleMousedown"
         @mouseup="handleMouseupAndMouseout"
         @mouseenter="handleMouseenter"
+        @touchstart="handleTouchstart"
+        @touchmove="handleTouchmove"
+        @touchend="handleTouchend"
       ></canvas>
       <q-btn
         v-if="position === 'left'"
@@ -655,6 +658,197 @@ export default {
       // if left button of mouse is not pressed when entering the canvas, drag stops
       if (event.buttons !== 1 && this.dragContext) {
         this.dragContext = null
+      }
+    },
+    getTouchLocation (event) {
+      let currentTarget = this.$refs.canvas
+      let top = 0
+      let left = 0
+      while (currentTarget !== null) {
+        top += currentTarget.offsetTop
+        left += currentTarget.offsetLeft
+        currentTarget = currentTarget.offsetParent
+      }
+      const mouseX = (event.touches[0].pageX - left) / this.$refs.canvas.clientWidth * this.video.width
+      const mouseY = (event.touches[0].pageY - top) / this.$refs.canvas.clientHeight * this.video.height
+      return [mouseX, mouseY]
+    },
+    handleTouchstart (event) {
+      event.preventDefault()
+      const [mouseX, mouseY] = this.getTouchLocation(event)
+      if (this.mode === 'object') {
+        // highlight the object
+        let found = false
+        for (let i = 0; i < this.annotationList.length; i++) {
+          const objectAnnotation = this.annotationList[i]
+          if (!found) {
+            let type = 'moving'
+            if (objectAnnotation.nearTopLeftAnchor(mouseX, mouseY) ||
+              objectAnnotation.nearTopRightAnchor(mouseX, mouseY) ||
+              objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY) ||
+              objectAnnotation.nearBottomRightAnchor(mouseX, mouseY)) {
+              type = 'cornerSizing'
+              found = true
+            } else if (objectAnnotation.nearTopAnchor(mouseX, mouseY)) {
+              type = 'topSizing'
+              found = true
+            } else if (objectAnnotation.nearBottomAnchor(mouseX, mouseY)) {
+              type = 'bottomSizing'
+              found = true
+            } else if (objectAnnotation.nearLeftAnchor(mouseX, mouseY)) {
+              type = 'leftSizing'
+              found = true
+            } else if (objectAnnotation.nearRightAnchor(mouseX, mouseY)) {
+              type = 'rightSizing'
+              found = true
+            } else {
+              objectAnnotation.highlight = false
+            }
+            if (found) {
+              objectAnnotation.highlight = true
+              this.dragContext = {
+                index: i,
+                type: type,
+                x: objectAnnotation.x,
+                y: objectAnnotation.y,
+                width: objectAnnotation.width,
+                height: objectAnnotation.height,
+                mousedownX: mouseX,
+                mousedownY: mouseY,
+                oppositeAnchor: type === 'cornerSizing' ? objectAnnotation.oppositeAnchor(mouseX, mouseY) : null,
+              }
+
+            }
+
+          } else {
+            objectAnnotation.highlight = false
+          }
+        }
+        // creating an object
+        if (!found && !this.createContext) {
+          const objectAnnotation = new ObjectAnnotation(mouseX, mouseY, 0, 0)
+          this.createContext = {
+            index: this.annotationList.length,
+            x: objectAnnotation.x,
+            y: objectAnnotation.y,
+            mousedownX: mouseX,
+            mousedownY: mouseY,
+          }
+          objectAnnotation.highlight = true
+          this.annotationList.push(objectAnnotation)
+        }
+      }
+    },
+    handleTouchmove (event) {
+      event.preventDefault()
+      const [mouseX, mouseY] = this.getTouchLocation(event)
+      // status
+      if (this.status) {
+        this.status.x = mouseX
+        this.status.y = mouseY
+      } else {
+        this.status = {
+          x: mouseX,
+          y: mouseY,
+        }
+      }
+      const statusBaseStyle = {
+        position: 'absolute',
+        opacity: 0.6,
+      }
+      if (mouseX > this.video.width / 2 && mouseY > this.video.height / 2) {
+        this.statusStyle = {
+          ...statusBaseStyle,
+          top: '1px',
+          left: '1px',
+        }
+      } else {
+        this.statusStyle = {
+          ...statusBaseStyle,
+          bottom: '1px',
+          right: '1px',
+        }
+      }
+      if (this.mode === 'object') {
+        // creating an object
+        if (this.createContext) {
+          const activeAnnotation = this.annotationList[this.createContext.index]
+          const deltaX = mouseX - this.createContext.mousedownX
+          const deltaY = mouseY - this.createContext.mousedownY
+          activeAnnotation.resize(
+            this.createContext.x,
+            this.createContext.y,
+            deltaX,
+            deltaY,
+          )
+        }
+        // drag the object
+        if (this.dragContext) {
+          const activeAnnotation = this.annotationList[this.dragContext.index]
+          const deltaX = mouseX - this.dragContext.mousedownX
+          const deltaY = mouseY - this.dragContext.mousedownY
+          if (this.dragContext.type === 'moving') {
+            activeAnnotation.resize(
+              this.dragContext.x + deltaX,
+              this.dragContext.y + deltaY,
+            )
+          } else if (this.dragContext.type === 'cornerSizing') {
+            const oppositeAnchor = this.dragContext.oppositeAnchor
+            activeAnnotation.resize(
+              oppositeAnchor.x,
+              oppositeAnchor.y,
+              (oppositeAnchor.x > this.dragContext.x ? -this.dragContext.width : this.dragContext.width) + deltaX,
+              (oppositeAnchor.y > this.dragContext.y ? -this.dragContext.height : this.dragContext.height) + deltaY,
+            )
+          } else if (this.dragContext.type === 'topSizing') {
+            activeAnnotation.resize(
+              undefined,
+              mouseY,
+              undefined,
+              this.dragContext.height - deltaY)
+          } else if (this.dragContext.type === 'bottomSizing') {
+            activeAnnotation.resize(
+              undefined,
+              mouseY > this.dragContext.y ? undefined : mouseY,
+              undefined,
+              mouseY > this.dragContext.y ? this.dragContext.height + deltaY : this.dragContext.y - mouseY)
+          } else if (this.dragContext.type === 'leftSizing') {
+            activeAnnotation.resize(
+              mouseX,
+              undefined,
+              this.dragContext.width - deltaX)
+          } else if (this.dragContext.type === 'rightSizing') {
+            activeAnnotation.resize(
+              mouseX > this.dragContext.x ? undefined : mouseX,
+              undefined,
+              mouseX > this.dragContext.x ? this.dragContext.width + deltaX : this.dragContext.x - mouseX)
+          } else {
+            throw 'Unknown drag type'
+          }
+        }
+      }
+    },
+    handleTouchend (event) {
+      event.preventDefault()
+      // status
+      this.status = null
+      if (this.mode === 'object') {
+        if (this.createContext) {
+          const activeAnnotation = this.annotationList[this.createContext.index]
+          activeAnnotation.highlight = false
+          if (activeAnnotation.width < 8 || activeAnnotation.height < 8) {
+            utils.notify('The object is too small. At least 8x8.')
+            this.annotationList.splice(this.createContext.index, 1)
+          } else {
+            this.createContext = null
+            this.$refs.table.focusLast()
+          }
+          this.createContext = null
+        }
+        if (this.dragContext) {
+          this.annotationList[this.dragContext.index].highlight = false
+          this.dragContext = null
+        }
       }
     },
     handleSelectInput (value) {
