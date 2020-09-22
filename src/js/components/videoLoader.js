@@ -5,10 +5,12 @@ const VIDEO_LOADER_TEMPLATE = `
     ref="video"
     preload="auto"
     style="display: none"
+    controls
     :src="video.src"
     @loadeddata="handleLoadeddata"
     @seeked="handleSeeked"
     @error="handleError"
+    v-show="($q.platform.is.safari || $q.platform.is.ios) && video.src && cachedFrameList.length === 0"
   >
     Sorry, your browser doesn't support embedded videos.
   </video>
