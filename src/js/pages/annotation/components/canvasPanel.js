@@ -720,9 +720,7 @@ export default {
                 mousedownY: mouseY,
                 oppositeAnchor: type === 'cornerSizing' ? objectAnnotation.oppositeAnchor(mouseX, mouseY) : null,
               }
-
             }
-
           } else {
             objectAnnotation.highlight = false
           }
@@ -740,6 +738,80 @@ export default {
           objectAnnotation.highlight = true
           this.annotationList.push(objectAnnotation)
         }
+      } else if (this.mode === 'region') {
+        // add point when creating
+        if (this.createContext) {
+          const pointList = this.createContext.regionAnnotation.pointList
+          // finish
+          if (pointList.length >= 3 &&
+            (RegionAnnotation.nearPoint(mouseX, mouseY, pointList[0]) ||
+              RegionAnnotation.nearPoint(mouseX, mouseY, pointList[pointList.length - 1])
+            )) {
+            this.$refs.table.focusLast()
+            this.createContext.regionAnnotation.highlight = false
+            this.createContext = null
+          } else {
+            // add new point
+            pointList.push({
+              x: mouseX,
+              y: mouseY,
+            })
+          }
+          return
+        }
+        let found = false
+        for (let i = 0; i < this.annotationList.length; i++) {
+          const regionAnnotation = this.annotationList[i]
+          if (!found) {
+            let type
+            let nearPoint
+            for (const point of regionAnnotation.pointList) {
+              if (RegionAnnotation.nearPoint(mouseX, mouseY, point)) {
+                nearPoint = point
+                type = 'sizing'
+                found = true
+                break
+              }
+            }
+            if (!found && regionAnnotation.nearBoundary(mouseX, mouseY)) {
+              type = 'moving'
+              found = true
+            } else {
+              regionAnnotation.highlight = false
+            }
+            if (found) {
+              regionAnnotation.highlight = true
+              this.dragContext = {
+                type: type,
+                regionAnnotation: regionAnnotation,
+                nearPoint: nearPoint,
+                mousedownX: mouseX,
+                mousedownY: mouseY,
+              }
+            }
+          } else {
+            regionAnnotation.highlight = false
+          }
+        }
+        // creating a region
+        if (!found && !this.createContext) {
+          const regionAnnotation = new RegionAnnotation([
+              {
+                x: mouseX,
+                y: mouseY,
+              },
+            ],
+          )
+          this.createContext = {
+            regionAnnotation: regionAnnotation,
+          }
+          regionAnnotation.highlight = true
+          this.annotationList.push(regionAnnotation)
+        }
+      } else if (this.mode === 'skeleton') {
+
+      } else {
+        throw 'Unknown mode: ' + this.mode
       }
     },
     handleTouchmove (event) {
@@ -829,6 +901,27 @@ export default {
             throw 'Unknown drag type'
           }
         }
+      } else if (this.mode === 'region') {
+        if (this.dragContext) {
+          const activeAnnotation = this.dragContext.regionAnnotation
+          const deltaX = mouseX - this.dragContext.mousedownX
+          const deltaY = mouseY - this.dragContext.mousedownY
+          this.dragContext.mousedownX = mouseX
+          this.dragContext.mousedownY = mouseY
+          if (this.dragContext.type === 'moving') {
+            activeAnnotation.move(deltaX, deltaY)
+          } else if (this.dragContext.type === 'sizing') {
+            const point = this.dragContext.nearPoint
+            point.x = mouseX
+            point.y = mouseY
+          } else {
+            throw 'Unknown drag type'
+          }
+        }
+      } else if (this.mode === 'skeleton') {
+
+      } else {
+        throw 'Unknown mode: ' + this.mode
       }
     },
     handleTouchend (event) {
@@ -852,6 +945,15 @@ export default {
           this.annotationList[this.dragContext.index].highlight = false
           this.dragContext = null
         }
+      } else if (this.mode === 'region') {
+        if (this.dragContext) {
+          this.dragContext.regionAnnotation.highlight = false
+          this.dragContext = null
+        }
+      } else if (this.mode === 'skeleton') {
+
+      } else {
+        throw 'Unknown mode: ' + this.mode
       }
     },
     handleSelectInput (value) {
