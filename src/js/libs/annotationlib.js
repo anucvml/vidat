@@ -5,7 +5,7 @@
 import store from '../store/store.js'
 import utils from './utils.js'
 
-const PROXIMITY = 5 // proximity in pixels for active object / key point
+const PROXIMITY = Quasar.Platform.is.mobile ? 20 : 5 // proximity in pixels for active object / key point
 
 class Annotation {
   constructor (instance = null, score = null) {
