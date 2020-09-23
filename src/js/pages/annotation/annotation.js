@@ -39,11 +39,13 @@ export default {
     ...Vuex.mapMutations([
       'setVideoSrc',
       'setVideoFPS',
+      'setDrawer',
     ]),
     handleOpenWithFPS () {
       this.setVideoFPS(this.$store.state.settings.preferenceData.defaultFps)
       utils.importVideo().then(videoSrc => {
         this.setVideoSrc(videoSrc)
+        this.setDrawer(false)
       })
     },
     handleOpen () {

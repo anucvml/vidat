@@ -126,6 +126,7 @@ export default {
       this.setVideoFPS(this.$store.state.settings.preferenceData.defaultFps)
       utils.importVideo().then(videoSrc => {
         this.setVideoSrc(videoSrc)
+        this.drawer = false
       })
     },
     handleOpen () {
@@ -141,6 +142,7 @@ export default {
     handleClose () {
       utils.confirm('Are you sure to close? You will LOSE all data!').onOk(() => {
         this.closeVideo()
+        this.drawer = false
       })
     },
     handleLoad () {
@@ -163,6 +165,7 @@ export default {
             // config
             this.importConfig(config)
             utils.notify('Load successfully!')
+            this.drawer = false
           } catch (e) {
             utils.notify(e.toString())
             throw e
@@ -186,6 +189,7 @@ export default {
           { type: 'text/plain' },
         )
         this.setIsSaved(true)
+        this.drawer = false
       })
     },
   },
