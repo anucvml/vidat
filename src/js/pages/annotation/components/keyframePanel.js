@@ -8,7 +8,8 @@ const KEYFRAMES_PANEL_TEMPLATE = `
             <q-tooltip>{{ playTimeInterval ? 'pause (p)' : 'play (p)' }}</q-tooltip>
           </q-btn>
           <q-btn @click="handleStop" icon="stop" :disabled="!playTimeInterval">
-            <q-tooltip>stop</q-tooltip>
+            <!--See: https://github.com/quasarframework/quasar/issues/7096-->
+            <q-tooltip v-if="playTimeInterval">stop</q-tooltip>
           </q-btn>
           <q-btn @click="showEdit = !showEdit" :icon="showEdit ? 'done' : 'edit'">
             <q-tooltip>{{ showEdit ? 'done' : 'edit' }}</q-tooltip>
