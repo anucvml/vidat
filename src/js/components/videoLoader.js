@@ -14,6 +14,13 @@ const VIDEO_LOADER_TEMPLATE = `
   >
     Sorry, your browser doesn't support embedded videos.
   </video>
+  <q-circular-progress
+    style="position: absolute; top: 5px; right: 5px"
+    track-color="grey-3"
+    indeterminate
+    v-show="loading"
+  >
+  </q-circular-progress>
 </div>
 `
 
@@ -24,6 +31,7 @@ export default {
     return {
       priorityQueue: [], // index of priority frame that needs to process now
       backendQueue: [], // index of frame for backend processing
+      loading: false,
     }
   },
   methods: {
@@ -88,7 +96,7 @@ export default {
         const currentTime = videoElement.currentTime
         const currentIndex = utils.time2index(currentTime)
         if (!this.cachedFrameList[currentIndex]) {
-          console.log('currentIndex: ', currentIndex, 'currentTime: ' + currentTime)
+          this.loading = true
           // get the image
           const canvas = document.createElement('canvas')
           canvas.width = this.video.width
@@ -109,6 +117,8 @@ export default {
           videoElement.currentTime = utils.index2time(this.priorityQueue.shift())
         } else if (this.backendQueue.length !== 0) {
           videoElement.currentTime = utils.index2time(this.backendQueue.shift())
+        } else {
+          this.loading = false
         }
       }
     },
