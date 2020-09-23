@@ -200,31 +200,44 @@ export default {
     handleInterpolate () {
       const leftAnnotationList = this.annotationListMap[this.leftCurrentFrame]
       const rightAnnotationList = this.annotationListMap[this.rightCurrentFrame]
-      let found = false
-      for (let leftAnnotation of leftAnnotationList) {
-        let rightAnnotation
-        if (this.mode === 'object' || this.mode === 'region') {
-          rightAnnotation = rightAnnotationList.find(
-            rightAnnotation => rightAnnotation.instance !== null && leftAnnotation.instance !== null &&
-              rightAnnotation.instance === leftAnnotation.instance &&
-              rightAnnotation.labelId === leftAnnotation.labelId,
-          )
-        } else if (this.mode === 'skeleton') {
-          rightAnnotation = rightAnnotationList.find(
-            rightAnnotation => rightAnnotation.instance !== null && leftAnnotation.instance !== null &&
-              rightAnnotation.instance === leftAnnotation.instance &&
-              rightAnnotation.typeId === leftAnnotation.typeId,
-          )
-        } else {
-          utils.notify(this.mode + ' not support!')
-          return
+      const interpolateList = []
+      for (const leftAnnotation of leftAnnotationList) {
+        let cnt = 0
+        for (const rightAnnotation of rightAnnotationList) {
+          if (
+            rightAnnotation.instance !== null &&
+            leftAnnotation.instance !== null &&
+            rightAnnotation.instance === leftAnnotation.instance &&
+            ((this.mode === 'object' || this.mode === 'region') && rightAnnotation.labelId ===
+              leftAnnotation.labelId) ||
+            (this.mode === 'skeleton' && rightAnnotation.typeId === leftAnnotation.typeId)
+          ) {
+            // same number of points only
+            if (this.mode === 'region') {
+              if (leftAnnotation.pointList.length !== rightAnnotation.pointList.length) {
+                utils.notify('Interpolating between different #points regions is not supported!')
+                continue
+              }
+            }
+            cnt += 1
+            if (cnt > 1) {
+              utils.notify('Can not interpolate from one to many.')
+              continue
+            }
+            interpolateList.push({
+              leftAnnotation,
+              rightAnnotation,
+            })
+          }
         }
-        // decide whether to interpolate
-        if (!rightAnnotation) {
-          break
-        } else {
-          found = true
-        }
+      }
+      if (interpolateList.length === 0) {
+        utils.notify('There is nothing to interpolate.')
+        return
+      }
+      for (const interpolate of interpolateList) {
+        const leftAnnotation = interpolate.leftAnnotation
+        const rightAnnotation = interpolate.rightAnnotation
         let i = 1
         const nFrames = this.rightCurrentFrame - this.leftCurrentFrame - 1
         for (let frame = this.leftCurrentFrame + 1; frame < this.rightCurrentFrame; frame++) {
@@ -233,7 +246,20 @@ export default {
           const originalAnnotationList = this.annotationListMap[frame] || []
           // remove archive interpolations
           for (let k = 0; k < originalAnnotationList.length; k++) {
-            if (originalAnnotationList[k].instance === leftAnnotation.instance) {
+            if (
+              originalAnnotationList[k].instance === leftAnnotation.instance &&
+              (
+                (
+                  (this.mode === 'object' || this.mode === 'region') &&
+                  originalAnnotationList[k].labelId === leftAnnotation.labelId
+                )
+                ||
+                (
+                  this.mode === 'skeleton' &&
+                  originalAnnotationList[k].typeId === leftAnnotation.typeId
+                )
+              )
+            ) {
               originalAnnotationList.splice(k, 1)
             }
           }
@@ -250,12 +276,7 @@ export default {
               leftAnnotation.score,
             ))
           } else if (this.mode === 'region') {
-            // same number of points only
-            if (leftAnnotation.pointList.length !== rightAnnotation.pointList.length) {
-              utils.notify('Interpolate between different #points regions not supported!')
-              return
-            }
-            let newPointList = []
+            const newPointList = []
             for (let k = 0; k < leftAnnotation.pointList.length; k++) {
               const leftPoint = leftAnnotation.pointList[k]
               const rightPoint = rightAnnotation.pointList[k]
@@ -272,11 +293,7 @@ export default {
               leftAnnotation.score,
             ))
           } else if (this.mode === 'skeleton') {
-            if (leftAnnotation.typeId !== rightAnnotation.typeId) {
-              utils.notify('Interpolate between different types of skeletons not supported!')
-              return
-            }
-            let newPointList = []
+            const newPointList = []
             for (let k = 0; k < leftAnnotation.pointList.length; k++) {
               const leftPoint = leftAnnotation.pointList[k]
               const rightPoint = rightAnnotation.pointList[k]
@@ -298,9 +315,6 @@ export default {
             newSkeletonAnnotation.ratio = leftAnnotation.ratio * (1 - ratio) + rightAnnotation.ratio * ratio
             newSkeletonAnnotation.pointList = newPointList
             originalAnnotationList.push(newSkeletonAnnotation)
-          } else {
-            utils.notify(this.mode + ' not support!')
-            return
           }
           this.setAnnotationList({
             mode: this.mode,
@@ -309,11 +323,7 @@ export default {
           })
         }
       }
-      if (found) {
-        utils.notify('Interpolated successfully.')
-      } else {
-        utils.notify('There is nothing to interpolate.')
-      }
+      utils.notify('Interpolate successfully.')
     },
   },
   computed: {
