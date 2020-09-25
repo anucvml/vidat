@@ -38,19 +38,13 @@ There is no building or compiling. Just put all files behind a web server ([Ngin
 │ │     ├── help.md
 │ │     ├── notfound.md
 │ │     └── preference.md
-│ ├── feedback.md
 │ └── img
 │     └── prototype.png
 ├── LICENSE
 ├── README.md
 └── src
-    ├── archive # prototype
-    │ ├── anno.js
-    │ ├── anucvml.css
-    │ ├── anuvidlib.js
-    │ ├── design_notes.md
-    │ └── main.js
-    ├── archive.html # prototype index
+    ├── annotation # directory for retrieving annotations via url parameters
+    ├── config # directory for retrieving configuration via url parameters    
     ├── css
     │ └── main.css
     ├── font
@@ -60,53 +54,54 @@ There is no building or compiling. Just put all files behind a web server ([Ngin
     │ ├── filmstrip.png
     │ └── logo.png
     ├── index.html # index
-    └── js
-      ├── app.js # main entry
-      ├── components # components for app.js
-      │ ├── drawer.js
-      │ └── videoLoader.js
-      ├── libs
-      │ ├── annotationlib.js
-      │ └── utils.js
-      ├── pages # each page contains its main entry and all related components
-      │ ├── about
-      │ │ ├── about.js
-      │ │ └── components
-      │ │     └── contributorCard.js
-      │ ├── annotation
-      │ │ ├── annotation.js
-      │ │ └── components
-      │ │     ├── actionTable.js
-      │ │     ├── annotationSkeleton.js
-      │ │     ├── canvasPanel.js
-      │ │     ├── controlPanel.js
-      │ │     ├── filmStrip.js
-      │ │     ├── keyframePanel.js
-      │ │     ├── keyframeTable.js
-      │ │     ├── objectTable.js
-      │ │     ├── regionTable.js
-      │ │     └── skeletonTable.js
-      │ ├── configuration
-      │ │ ├── components
-      │ │ │ ├── actionLabelTable.js
-      │ │ │ ├── objectLabelTable.js
-      │ │ │ ├── skeletonTypePreview.js
-      │ │ │ └── skeletonTypeTable.js
-      │ │ └── configuration.js
-      │ ├── help
-      │ │ ├── components
-      │ │ └── help.js
-      │ ├── notfound
-      │ │ ├── components
-      │ │ └── notfound.js
-      │ └── preference
-      │     └── preference.js
-      ├── router
-      │ └── router.js
-      └── store
-          ├── modules
-          │ ├── annotation.js
-          │ └── settings.js
-          ├── store.js
-          └── validation.js
+    ├── js
+    │ ├── app.js # main entry
+    │ ├── components # components for app.js
+    │ │ ├── drawer.js
+    │ │ └── videoLoader.js
+    │ ├── libs
+    │ │ ├── annotationlib.js
+    │ │ └── utils.js
+    │ ├── pages # each page contains its main entry and all related components
+    │ │ ├── about
+    │ │ │ ├── about.js
+    │ │ │ └── components
+    │ │ │     └── contributorCard.js
+    │ │ ├── annotation
+    │ │ │ ├── annotation.js
+    │ │ │ └── components
+    │ │ │     ├── actionTable.js
+    │ │ │     ├── annotationSkeleton.js
+    │ │ │     ├── canvasPanel.js
+    │ │ │     ├── controlPanel.js
+    │ │ │     ├── filmStrip.js
+    │ │ │     ├── keyframePanel.js
+    │ │ │     ├── keyframeTable.js
+    │ │ │     ├── objectTable.js
+    │ │ │     ├── regionTable.js
+    │ │ │     └── skeletonTable.js
+    │ │ ├── configuration
+    │ │ │ ├── components
+    │ │ │ │ ├── actionLabelTable.js
+    │ │ │ │ ├── objectLabelTable.js
+    │ │ │ │ ├── skeletonTypePreview.js
+    │ │ │ │ └── skeletonTypeTable.js
+    │ │ │ └── configuration.js
+    │ │ ├── help
+    │ │ │ ├── components
+    │ │ │ └── help.js
+    │ │ ├── notfound
+    │ │ │ ├── components
+    │ │ │ └── notfound.js
+    │ │ └── preference
+    │ │     └── preference.js
+    │ ├── router
+    │ │ └── router.js
+    │ └── store
+    │     ├── modules
+    │     │ ├── annotation.js
+    │     │ └── settings.js
+    │     ├── store.js
+    │     └── validation.js
+    └── video # directory for retrieving videos via url parameters 
 ```
