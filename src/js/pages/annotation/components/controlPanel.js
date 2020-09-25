@@ -67,6 +67,16 @@ const CONTROL_PANEL_TEMPLATE = `
     </q-item-section>
   </q-item>
   <q-item dense>
+    <q-item-section class="text-center">Operation</q-item-section>
+  </q-item>
+  <q-item>
+    <q-item-section>
+      <q-btn @click="handleBulkClear" label="bulk clear">
+        <q-tooltip>Clear all annotations between left and right frame</q-tooltip>
+      </q-btn>
+    </q-item-section>
+  </q-item>
+  <q-item dense>
     <q-item-section class="text-center">Options</q-item-section>
   </q-item>
   <q-item>
@@ -324,6 +334,20 @@ export default {
         }
       }
       utils.notify('Interpolate successfully.')
+    },
+    handleBulkClear () {
+      utils.confirm(
+        `Are you sure to REMOVE ALL ${this.mode} annotations between frame ${this.leftCurrentFrame} to ${this.rightCurrentFrame}?`)
+        .onOk(() => {
+          for (let frame = this.leftCurrentFrame; frame <= this.rightCurrentFrame; frame += 1) {
+            this.setAnnotationList({
+              mode: this.mode,
+              index: frame,
+              annotationList: [],
+            })
+          }
+          utils.notify('Bulk clear successful!')
+        })
     },
   },
   computed: {
