@@ -15,36 +15,60 @@ const OBJECT_TABLE_TEMPLATE = `
   <template v-slot:body="props">
     <q-tr :props="props">
       <q-td key="x" :props="props">
-        <q-input
+        {{ toFixed2(props.row.x) }}
+        <q-popup-edit
+          auto-save
           v-model.number="props.row.x"
-          dense
-          borderless
-          type="number"
-        ></q-input>
+          title="Edit the x"
+        >
+          <q-input
+            v-model.number="props.row.x"
+            dense
+            type="number"
+          ></q-input>
+        </q-popup-edit>
       </q-td>
       <q-td key="y" :props="props">
-        <q-input
+        {{ toFixed2(props.row.y) }}
+        <q-popup-edit
+          auto-save
           v-model.number="props.row.y"
-          dense
-          borderless
-          type="number"
-        ></q-input>
+          title="Edit the y"
+        >
+          <q-input
+            v-model.number="props.row.y"
+            dense
+            type="number"
+          ></q-input>
+        </q-popup-edit>
       </q-td>
       <q-td key="width" :props="props">
-        <q-input
+        {{ toFixed2(props.row.width) }}
+        <q-popup-edit
+          auto-save
           v-model.number="props.row.width"
-          dense
-          borderless
-          type="number"
-        ></q-input>
+          title="Edit the width"
+        >
+          <q-input
+            v-model.number="props.row.width"
+            dense
+            type="number"
+          ></q-input>
+        </q-popup-edit>
       </q-td>
       <q-td key="height" :props="props">
-        <q-input
+        {{ toFixed2(props.row.height) }}
+        <q-popup-edit
+          auto-save
           v-model.number="props.row.height"
-          dense
-          borderless
-          type="number"
-        ></q-input>
+          title="Edit the height"
+        >
+          <q-input
+            v-model.number="props.row.height"
+            dense
+            type="number"
+          ></q-input>
+        </q-popup-edit>
       </q-td>
       <q-td key="label" :props="props">
         <q-select
@@ -189,6 +213,7 @@ export default {
     return {
       columnList,
       pagination: { rowsPerPage: 0 },
+      toFixed2: utils.toFixed2,
     }
   },
   methods: {
