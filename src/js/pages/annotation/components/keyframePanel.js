@@ -301,29 +301,31 @@ export default {
       this.updateActionAnnotationRangeStyle(this.actionAnnotationList)
     },
     updateKeyframeRangeStyle (keyframeList) {
-      const ticksBg = []
-      const ticksBgPos = []
-      const ticksBgSize = []
-      const sliderWidth = this.$refs.slider ? this.$refs.slider.$el.clientWidth : 0
-      // keyframe
-      for (const frame of keyframeList) {
-        const color = 'black'
-        const size = {
-          width: sliderWidth / this.video.frames,
-          height: 2,
+      if (this.video.frames) {
+        const ticksBg = []
+        const ticksBgPos = []
+        const ticksBgSize = []
+        const sliderWidth = this.$refs.slider ? this.$refs.slider.$el.clientWidth : 0
+        // keyframe
+        for (const frame of keyframeList) {
+          const color = 'black'
+          const size = {
+            width: sliderWidth / this.video.frames,
+            height: 2,
+          }
+          const position = {
+            x: frame / this.video.frames * sliderWidth - size.width / 2,
+            y: 9,
+          }
+          ticksBg.push(`linear-gradient(to right, ${color} 0, ${color} 100%)`)
+          ticksBgPos.push(`${position.x}px ${position.y}px`)
+          ticksBgSize.push(`${size.width}px ${size.height}px`)
         }
-        const position = {
-          x: frame / this.video.frames * sliderWidth - size.width / 2,
-          y: 9,
+        this.keyframeRangeStyle = {
+          '--tick-bg': ticksBg.join(', '),
+          '--tick-bg-pos': ticksBgPos.join(', '),
+          '--tick-bg-size': ticksBgSize.join(', '),
         }
-        ticksBg.push(`linear-gradient(to right, ${color} 0, ${color} 100%)`)
-        ticksBgPos.push(`${position.x}px ${position.y}px`)
-        ticksBgSize.push(`${size.width}px ${size.height}px`)
-      }
-      this.keyframeRangeStyle = {
-        '--tick-bg': ticksBg.join(', '),
-        '--tick-bg-pos': ticksBgPos.join(', '),
-        '--tick-bg-size': ticksBgSize.join(', '),
       }
     },
     getAnnotationRangeStyle (annotationListMap, color, positionY) {
@@ -353,22 +355,22 @@ export default {
       }
     },
     updateObjectAnnotationRangeStyle (objectAnnotationListMap) {
-      if (objectAnnotationListMap) {
+      if (objectAnnotationListMap && this.video.frames) {
         this.objectAnnotationRangeStyle = this.getAnnotationRangeStyle(objectAnnotationListMap, 'blue', 20)
       }
     },
     updateRegionAnnotationRangeStyle (regionAnnotationListMap) {
-      if (regionAnnotationListMap) {
+      if (regionAnnotationListMap && this.video.frames) {
         this.regionAnnotationRangeStyle = this.getAnnotationRangeStyle(regionAnnotationListMap, 'red', 27)
       }
     },
     updateSkeletonAnnotationRangeStyle (skeletonAnnotationListMap) {
-      if (skeletonAnnotationListMap) {
+      if (skeletonAnnotationListMap && this.video.frames) {
         this.skeletonAnnotationRangeStyle = this.getAnnotationRangeStyle(skeletonAnnotationListMap, 'green', 34)
       }
     },
     updateActionAnnotationRangeStyle (actionAnnotationList) {
-      if (actionAnnotationList) {
+      if (actionAnnotationList && this.video.frames) {
         const ticksBg = []
         const ticksBgPos = []
         const ticksBgSize = []
@@ -492,6 +494,12 @@ export default {
       },
       immediate: true,
       deep: true,
+    },
+    '$store.state.annotation.video.frames': {
+      handler () {
+        this.handleOnresize()
+      },
+      immediate: true,
     },
   },
   mounted () {
