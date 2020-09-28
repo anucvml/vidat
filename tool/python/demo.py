@@ -72,5 +72,9 @@ if __name__ == "__main__":
     print(actions)
 
     # 3.6.1 query
-    result = actions.query(start=1)
+    result = actions.query(start=0)
     print(result)
+
+    # 3.6.2 show
+    if len(result) != 0:
+        result[0].show()

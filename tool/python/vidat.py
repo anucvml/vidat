@@ -321,6 +321,7 @@ class _ActionAnnotation:
         self._raw_annotation = raw_annotation
         self.__video = video
         self.__config = config
+        self.__cap = cap
 
         self._start = raw_annotation["start"]
         self._end = raw_annotation["end"]
@@ -330,6 +331,22 @@ class _ActionAnnotation:
         self._object = config.get_object_label_by_id(self._object_id)
         self._color = raw_annotation["color"]
         self._description = raw_annotation["description"]
+
+    def show(self):
+        if not self.__cap:
+            raise Exception('Need to specify video_pathname!')
+        time_interval = int(1000 / self.__video.fps)
+        for current_time in range(int(self._start * 1000), int(self._end * 1000) + time_interval, time_interval):
+            self.__cap.set(cv2.CAP_PROP_POS_MSEC, current_time)
+            ret, img = self.__cap.read()
+            if not ret:
+                raise Exception('Cannot read!')
+            cv2.imshow(
+                f"Vidat - {datetime.timedelta(seconds=self._start)}-{datetime.timedelta(seconds=self.end)} - {self._object['name']} - {self._action['name']} - {self._description}",
+                img)
+            # press any key to exit
+            if cv2.waitKey(time_interval) != -1:
+                break
 
     @property
     def raw_annotation(self):
