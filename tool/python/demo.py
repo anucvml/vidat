@@ -60,7 +60,7 @@ if __name__ == "__main__":
     print(skeletons)
 
     # 3.5.1 query
-    result = skeletons.query(type_id=1)
+    result = skeletons.query(type_id=0)
     print(result)
 
     # 3.5.2 show

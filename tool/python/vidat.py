@@ -183,6 +183,14 @@ class _RegionAnnotation(_AnnotationBase):
             color,
             2
         )
+        for point in points:
+            cv2.circle(
+                img,
+                tuple(point),
+                4,
+                color,
+                -1
+            )
         cv2.imshow(f"Vidat - {self.label['name']} {self.instance if self.instance else ''}", img)
         cv2.waitKey(0)
 
@@ -237,6 +245,14 @@ class _SkeletonAnnotation(_AnnotationBase):
     def show(self):
         img = self._get_img()
         color = hex2rgb(self.color)
+        for point in [(int(point['x']), int(point['y'])) for point in self._point_list]:
+            cv2.circle(
+                img,
+                point,
+                4,
+                color,
+                -1
+            )
         for edge in self._edge_list:
             from_id = edge['from']
             to_id = edge['to']
