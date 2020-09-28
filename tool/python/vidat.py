@@ -1,6 +1,7 @@
 import json
 import cv2
 import numpy as np
+import datetime
 
 
 def hex2rgb(hex):
@@ -59,6 +60,7 @@ class _Video:
 class _AnnotationBase:
     def __init__(self, frame, raw_annotation, video, config, cap):
         self._frame = frame
+        self._time = int(frame / video.fps)
         self._raw_annotation = raw_annotation
         self._instance = raw_annotation["instance"]
         self._score = raw_annotation["score"]
@@ -69,7 +71,7 @@ class _AnnotationBase:
     def _get_img(self):
         if not self._cap:
             raise Exception('Need to specify video_pathname!')
-        self._cap.set(cv2.CAP_PROP_POS_MSEC, int(self.frame / self._video.fps * 1000))
+        self._cap.set(cv2.CAP_PROP_POS_MSEC, self._time * 1000)
         ret, img = self._cap.read()
         if not ret:
             raise Exception('Cannot read!')
@@ -109,7 +111,7 @@ class _ObjectAnnotation(_AnnotationBase):
 
     def show(self):
         img = self._get_img()
-        color = hex2rgb(self.color)
+        color = hex2rgb(self.color);
         cv2.rectangle(
             img,
             (int(self.x), int(self.y)),
@@ -117,7 +119,9 @@ class _ObjectAnnotation(_AnnotationBase):
             color,
             2
         )
-        cv2.imshow(f"Vidat - {self.label['name']} {self.instance if self.instance else ''}", img)
+        cv2.imshow(
+            f"Vidat - {datetime.timedelta(seconds=self._time)} - {self.label['name']} {self.instance if self.instance else ''}",
+            img)
         cv2.waitKey(0)
 
     @property
@@ -191,7 +195,9 @@ class _RegionAnnotation(_AnnotationBase):
                 color,
                 -1
             )
-        cv2.imshow(f"Vidat - {self.label['name']} {self.instance if self.instance else ''}", img)
+        cv2.imshow(
+            f"Vidat - {datetime.timedelta(seconds=self._time)} - {self.label['name']} {self.instance if self.instance else ''}",
+            img)
         cv2.waitKey(0)
 
     @property
@@ -265,7 +271,9 @@ class _SkeletonAnnotation(_AnnotationBase):
                 color,
                 2
             )
-        cv2.imshow(f"Vidat - {self.type['name']} {self.instance if self.instance else ''}", img)
+        cv2.imshow(
+            f"Vidat - {datetime.timedelta(seconds=self._time)} - {self.type['name']} {self.instance if self.instance else ''}",
+            img)
         cv2.waitKey(0)
 
     @property
