@@ -5,6 +5,11 @@ import datetime
 
 
 def hex2rgb(hex):
+    """
+    convert color from hex to rgb
+    :param hex: string like "#010101"
+    :return: tuple of rgb
+    """
     if len(hex) == 7:
         hex = hex[1:]
     r = int(f'0x{hex[:2]}', 16)
@@ -14,6 +19,10 @@ def hex2rgb(hex):
 
 
 class _Video:
+    """
+    video of annotation file
+    """
+
     def __init__(self, raw_video):
         self.__raw_video = raw_video
 
@@ -58,6 +67,10 @@ class _Video:
 
 
 class _AnnotationBase:
+    """
+    base class for each individual annotation (object, region, skeleton)
+    """
+
     def __init__(self, frame, raw_annotation, video, config, cap):
         self._frame = frame
         self._time = int(frame / video.fps)
@@ -69,6 +82,10 @@ class _AnnotationBase:
         self._cap = cap
 
     def _get_img(self):
+        """
+        read frame and return img using cv2
+        :return: img mat
+        """
         if not self._cap:
             raise Exception('Need to specify video_pathname!')
         self._cap.set(cv2.CAP_PROP_POS_MSEC, self._time * 1000)
@@ -78,6 +95,10 @@ class _AnnotationBase:
         return img
 
     def show(self):
+        """
+        interface for showing the annotation with the frame rendered
+        :return: None
+        """
         raise NotImplemented
 
     @property
@@ -398,6 +419,10 @@ class _ActionAnnotation:
 
 
 class _AnnotationsBase:
+    """
+    base class for annotation collection / list
+    """
+
     def __init__(self, raw_annotations, video, config, cap):
         self.__raw_annotations = raw_annotations
         self._video = video
@@ -408,6 +433,13 @@ class _AnnotationsBase:
         self._annotation_list = []
 
     def _get_annotation_list(self, frame_eq, frame_start, frame_end):
+        """
+        get annotation list with specified frame range
+        :param frame_eq:
+        :param frame_start:
+        :param frame_end:
+        :return: result annotation list
+        """
         annotation_list = []
         if frame_eq is not None and (frame_start is not None or frame_end is not None):
             raise LookupError("Cannot query with both 'frame_eq' and one of ['frame_start', 'frame_end']")
@@ -430,10 +462,11 @@ class _AnnotationsBase:
         return annotation_list
 
     def query(self):
+        """
+        interface for querying annotations
+        :return: a new _AnnotationsBase object contains results
+        """
         raise NotImplemented
-
-    def show(self):
-        pass
 
     @property
     def frame_list(self):
@@ -614,6 +647,10 @@ class _SkeletonAnnotations(_AnnotationsBase):
 
 
 class _ActionAnnotations:
+    """
+    class for action annotation list
+    """
+
     def __init__(self, raw_annotations, video, config, cap):
         self.__raw_annotations = raw_annotations
         self.__video = video
@@ -624,6 +661,16 @@ class _ActionAnnotations:
             self._action_annotation_list.append(_ActionAnnotation(action_annotation, self.__video, self.__config, cap))
 
     def query(self, start=None, end=None, action_id=None, object_id=None, color=None, description=None):
+        """
+
+        :param start:
+        :param end:
+        :param action_id:
+        :param object_id:
+        :param color:
+        :param description:
+        :return: a new _ActionAnnotations object contains results
+        """
         result = []
         for action_annotation in self._action_annotation_list:
             if (start is None or action_annotation.start >= start) and (
@@ -655,6 +702,10 @@ class _ActionAnnotations:
 
 
 class _Annotation:
+    """
+    annotation of annotation file
+    """
+
     def __init__(self, raw_annotation, config, cap):
         self.__raw_annotation = raw_annotation
 
@@ -704,6 +755,10 @@ class _Annotation:
 
 
 class _Config:
+    """
+    config of annotation file
+    """
+
     def __init__(self, raw_config):
         self.__raw_config = raw_config
 
@@ -743,6 +798,10 @@ class _Config:
 
 
 class Vidat:
+    """
+    main class for annotation file
+    """
+
     def __init__(self, config_pathname, video_pathname=None):
         with open(config_pathname, "r", encoding="utf-8") as f:
             self.__raw_json = f.read()
