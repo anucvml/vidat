@@ -141,7 +141,7 @@ class _ObjectAnnotation(_AnnotationBase):
             2
         )
         cv2.imshow(
-            f"Vidat - {datetime.timedelta(seconds=self._time)} - {self.label['name']} {self.instance if self.instance else ''}",
+            f"Vidat - Object - {datetime.timedelta(seconds=self._time)} - {self.label['name']} {self.instance if self.instance else ''}",
             img)
         cv2.waitKey(0)
 
@@ -217,7 +217,7 @@ class _RegionAnnotation(_AnnotationBase):
                 -1
             )
         cv2.imshow(
-            f"Vidat - {datetime.timedelta(seconds=self._time)} - {self.label['name']} {self.instance if self.instance else ''}",
+            f"Vidat - Region - {datetime.timedelta(seconds=self._time)} - {self.label['name']} {self.instance if self.instance else ''}",
             img)
         cv2.waitKey(0)
 
@@ -293,7 +293,7 @@ class _SkeletonAnnotation(_AnnotationBase):
                 2
             )
         cv2.imshow(
-            f"Vidat - {datetime.timedelta(seconds=self._time)} - {self.type['name']} {self.instance if self.instance else ''}",
+            f"Vidat - Skeleton - {datetime.timedelta(seconds=self._time)} - {self.type['name']} {self.instance if self.instance else ''}",
             img)
         cv2.waitKey(0)
 
@@ -363,7 +363,7 @@ class _ActionAnnotation:
             if not ret:
                 raise Exception('Cannot read!')
             cv2.imshow(
-                f"Vidat - {datetime.timedelta(seconds=self._start)}-{datetime.timedelta(seconds=self.end)} - {self._object['name']} - {self._action['name']} - {self._description}",
+                f"Vidat - Action - {datetime.timedelta(seconds=self._start)}-{datetime.timedelta(seconds=self.end)} - {self._object['name']} - {self._action['name']} - {self._description}",
                 img)
             # press any key to exit
             if cv2.waitKey(time_interval) != -1:
