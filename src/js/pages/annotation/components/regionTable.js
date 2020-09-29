@@ -25,7 +25,12 @@ const REGION_TABLE_TEMPLATE = `
     </q-tr>
   </template>
   <template v-slot:body="props">
-    <q-tr :props="props">
+    <q-tr
+      :props="props"
+      :class="{'highlighted' : props.row.highlight}"
+      @mouseenter="props.row.highlight = true"
+      @mouseleave="props.row.highlight = false"
+    >
       <q-td auto-width>
         <q-btn
           size="sm"

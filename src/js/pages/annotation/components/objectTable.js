@@ -13,7 +13,12 @@ const OBJECT_TABLE_TEMPLATE = `
     <q-btn icon="clear_all" @click="handleClearAll" label="clear"></q-btn>
   </template>
   <template v-slot:body="props">
-    <q-tr :props="props">
+    <q-tr
+      :props="props"
+      :class="{'highlighted' : props.row.highlight}"
+      @mouseenter="props.row.highlight = true"
+      @mouseleave="props.row.highlight = false"
+    >
       <q-td key="x" :props="props">
         <q-input
           v-model.number="props.row.x"

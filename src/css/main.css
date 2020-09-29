@@ -104,3 +104,7 @@ input[type="number"] {
   border-width: 3px;
   transition: border-width 0.28s;
 }
+
+table tbody tr.highlighted {
+  background-color: rgba(0, 0, 0, 0.03)
+}
