@@ -71,7 +71,7 @@ const CONTROL_PANEL_TEMPLATE = `
   </q-item>
   <q-item>
     <q-item-section>
-      <q-btn @click="handleBulkClear" label="bulk clear">
+      <q-btn @click="handleBulkClear" label="bulk" icon="delete_forever">
         <q-tooltip>Clear all annotations between left and right frame</q-tooltip>
       </q-btn>
     </q-item-section>

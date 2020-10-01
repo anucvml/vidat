@@ -311,11 +311,11 @@ export default {
           const color = 'black'
           const size = {
             width: sliderWidth / this.video.frames,
-            height: 2,
+            height: 4,
           }
           const position = {
             x: frame / this.video.frames * sliderWidth - size.width / 2,
-            y: 9,
+            y: 8,
           }
           ticksBg.push(`linear-gradient(to right, ${color} 0, ${color} 100%)`)
           ticksBgPos.push(`${position.x}px ${position.y}px`)
@@ -337,11 +337,11 @@ export default {
         if (annotationListMap[frame].length !== 0) {
           const size = {
             width: sliderWidth / this.video.frames,
-            height: 2,
+            height: 4,
           }
           const position = {
             x: frame / this.video.frames * sliderWidth - size.width / 2,
-            y: positionY,
+            y: positionY - 1,
           }
           ticksBg.push(`linear-gradient(to right, ${color} 0, ${color} 100%)`)
           ticksBgPos.push(`${position.x}px ${position.y}px`)
@@ -382,11 +382,11 @@ export default {
             const color = 'purple'
             const position = {
               x: startFrame / this.video.frames * sliderWidth - sliderWidth / this.video.frames / 2,
-              y: 41,
+              y: 40,
             }
             const size = {
               width: (endFrame - startFrame + 1) / this.video.frames * sliderWidth,
-              height: 2,
+              height: 4,
             }
             ticksBg.push(`linear-gradient(to right, ${color} 0, ${color} 100%)`)
             ticksBgPos.push(`${position.x}px ${position.y}px`)
