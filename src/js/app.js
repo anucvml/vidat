@@ -46,6 +46,7 @@ const app = new Vue({
       'setMode',
       'setVideoSrc',
       'setDefaultFps',
+      'setDefaultFpk',
       'setShowObjects',
       'setShowRegions',
       'setShowSkeletons',
@@ -77,29 +78,37 @@ const app = new Vue({
     // get parameters from url
     const URLParameter = {}
     for (const pair of window.location.search.replace('?', '').split('&')) {
-      const [key, value] = pair.split('=')
+      let [key, value] = pair.split('=')
+      key = key.toLowerCase()
       URLParameter[key] = value
     }
     const {
-      defaultFps,
+      defaultfps: defaultFps,
+      defaultfpk: defaultFpk,
       video,
       annotation,
       config,
-      showObjects,
-      showRegions,
-      showSkeletons,
-      showActions,
+      showobjects: showObjects,
+      showregions: showRegions,
+      showskeletons: showSkeletons,
+      showactions: showActions,
       grayscale,
-      showPopup,
+      showpopup: showPopup,
       zoom,
       mode,
       debug,
     } = URLParameter
     // set options in silence
-    if (defaultFps) {
+    if (!annotation && defaultFps) {
       const fps = parseInt(defaultFps, 10)
       if (fps >= 1 && fps <= 60 && fps % 1 === 0) {
         this.setDefaultFps(fps)
+      }
+    }
+    if (!annotation && defaultFpk) {
+      const fpk = parseInt(defaultFpk, 10)
+      if (fpk >= 1 && fpk % 1 === 0) {
+        this.setDefaultFpk(fpk)
       }
     }
     if (video) {

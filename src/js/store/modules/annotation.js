@@ -167,7 +167,7 @@ export default {
       this.commit('setLeftCurrentFrame', 0)
       // TODO: hack
       setTimeout(() => {
-        this.commit('setRightCurrentFrame', keyframeList.length > 2 ? keyframeList[1] : keyframeList[0])
+        this.commit('setRightCurrentFrame', keyframeList.length >= 2 ? keyframeList[1] : keyframeList[0])
       }, 500)
       /// objectAnnotationListMap
       for (let frame in objectAnnotationListMap) {

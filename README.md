@@ -32,7 +32,8 @@ Video tutorials will be posted on YouTube.
 
 |       key       |              value              |                  description                  |
 | :-------------: | :-----------------------------: | :-------------------------------------------: |
-|  `defaultFps`   |          Integer >= 1           |                set default fps                |
+|  `defaultFPS`   |       1 <= Integer <= 60        |                set default fps                |
+|  `defaultFPK`   |          Integer >= 1           |        set default frames per keyframe        |
 |     `video`     |          `example.mp4`          |      set video src (under path `/video`)      |
 |    `config`     |          `config.json`          |     set config src (under path `/config`)     |
 |  `annotation`   |        `annotation.json`        | set annotation src (under path `/annotation`) |
@@ -48,8 +49,9 @@ Video tutorials will be posted on YouTube.
 
 notes:
 
-1. `annotation` will overwrite `config`
-2. `video` or `debug` is the precondition of `annotation`
+1. `annotation` will overwrite `config`.
+2. `video` or `debug` is the precondition of `annotation`.
+3. No `annotation` is the precondition of `defaultFPS` and `defaultFPK`.
 
 ### Examples
 
