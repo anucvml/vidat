@@ -7,7 +7,11 @@
 
   _An in-browser video annotation tool developed by [ANU CVML](https://github.com/anucvml)._
 
-  _[Host1](http://users.cecs.anu.edu.au/~sgould/vidat/)_ | _[Host2](https://vidat.davidz.cn)_ | _[Prototype](http://users.cecs.anu.edu.au/~sgould/vidatproto/)_ | _[Demo](http://users.cecs.anu.edu.au/~sgould/vidat/?video=needinput.mp4&config=needinputconfig.json)_
+  _[Host1](http://users.cecs.anu.edu.au/~sgould/vidat/)_
+  | _[Host2](https://vidat.davidz.cn)_
+  | _[Demo1](http://users.cecs.anu.edu.au/~sgould/vidat/?video=needinput.mp4&config=needinputconfig.json)_
+  | _[Demo2](https://vidat.davidz.cn/?video=needinput.mp4&annotation=needinput.json#/annotation)_
+  | _[Prototype](http://users.cecs.anu.edu.au/~sgould/vidatproto/)_
 
 </div>
 
