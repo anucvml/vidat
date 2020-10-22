@@ -7,7 +7,7 @@ const KEYFRAMES_PANEL_TEMPLATE = `
           <q-btn @click="handlePlayPause" :icon="playTimeInterval ? 'pause' : 'play_arrow'">
             <q-tooltip>{{ playTimeInterval ? 'pause (p)' : 'play (p)' }}</q-tooltip>
           </q-btn>
-          <q-btn @click="handleStop" icon="stop" :disabled="!playTimeInterval">
+          <q-btn @click="handleStop" icon="stop" :disabled="lastLeftCurrentFrame === -1">
             <!--See: https://github.com/quasarframework/quasar/issues/7096-->
             <q-tooltip v-if="playTimeInterval">stop</q-tooltip>
           </q-btn>
@@ -33,6 +33,7 @@ const KEYFRAMES_PANEL_TEMPLATE = `
         drag-range
         snap
         @input="handleInput"
+        :readonly="lastLeftCurrentFrame !== -1"
       ></q-range>
     </q-item>
     <q-space></q-space>
