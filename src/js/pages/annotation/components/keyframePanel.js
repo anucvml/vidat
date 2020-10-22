@@ -40,7 +40,7 @@ const KEYFRAMES_PANEL_TEMPLATE = `
       <q-item-section class="text-center">
         <q-btn-group>
           <q-btn @click="handlePreviousKeyframe" icon="keyboard_arrow_left">
-            <q-tooltip>preview keyframe (<)</q-tooltip>
+            <q-tooltip>previous keyframe (<)</q-tooltip>
           </q-btn>
           <q-btn @click="handleNearestKeyframe" icon="gps_fixed">
             <q-tooltip>locate nearest keyframe</q-tooltip>
