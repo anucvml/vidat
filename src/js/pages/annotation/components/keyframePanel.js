@@ -68,6 +68,7 @@ export default {
       index2time: utils.index2time,
       toFixed2: utils.toFixed2,
       playTimeInterval: null,
+      lastLeftCurrentFrame: -1,
       keyframeList: null,
       objectAnnotationListMap: null,
       regionAnnotationListMap: null,
@@ -90,14 +91,16 @@ export default {
     ]),
     handlePlayPause () {
       if (!this.playTimeInterval) {
-        if (this.leftCurrentFrame === this.video.frames) {
-          this.leftCurrentFrame = 0
+        if (this.lastLeftCurrentFrame === -1) {
+          this.lastLeftCurrentFrame = this.leftCurrentFrame
         }
         this.playTimeInterval = setInterval(
           () => {
-            if (this.leftCurrentFrame === this.video.frames) {
+            if (this.leftCurrentFrame === this.rightCurrentFrame) {
               clearInterval(this.playTimeInterval)
               this.playTimeInterval = null
+              this.leftCurrentFrame = this.lastLeftCurrentFrame
+              this.lastLeftCurrentFrame = -1
             } else {
               this.leftCurrentFrame = this.leftCurrentFrame + 1
             }
@@ -110,11 +113,10 @@ export default {
       }
     },
     handleStop () {
-      if (this.playTimeInterval) {
-        clearInterval(this.playTimeInterval)
-        this.playTimeInterval = null
-      }
-      this.leftCurrentFrame = 0
+      clearInterval(this.playTimeInterval)
+      this.playTimeInterval = null
+      this.leftCurrentFrame = this.lastLeftCurrentFrame
+      this.lastLeftCurrentFrame = -1
     },
     handleInput (value) {
       if (this.inputValue) {
@@ -424,8 +426,8 @@ export default {
     CurrentFrameRange: {
       get () {
         return {
-          min: Math.min(this.leftCurrentFrame, this.rightCurrentFrame),
-          max: Math.max(this.leftCurrentFrame, this.rightCurrentFrame),
+          min: this.leftCurrentFrame,
+          max: this.rightCurrentFrame,
         }
       },
       set (value) {
