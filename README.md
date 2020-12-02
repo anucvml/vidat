@@ -24,7 +24,7 @@ The aim of this project is to develop a high-quality video annotation tool for c
 5. Compatible with all (most) modern browsers and operating systems including tablets.
 6. Open-source.
 
-Video tutorials will be posted on YouTube.
+Video tutorials will be posted on [YouTube](https://www.youtube.com/playlist?list=PLD-7XrNHCcFLv938DO4yYcTrgaff9BJjN).
 
 ## Installation
 
