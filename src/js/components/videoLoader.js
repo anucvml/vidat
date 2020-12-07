@@ -15,6 +15,7 @@ const VIDEO_LOADER_TEMPLATE = `
     Sorry, your browser doesn't support embedded videos.
   </video>
   <q-circular-progress
+    title="Loading"
     style="position: absolute; top: 5px; right: 5px"
     track-color="grey-3"
     indeterminate
