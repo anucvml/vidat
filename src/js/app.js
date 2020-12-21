@@ -197,11 +197,27 @@ const app = new Vue({
         this.setZoom(false)
       }
     }
+    const mode_dict = {
+      'object': showObjects,
+      'region': showRegions,
+      'skeleton': showSkeletons,
+    }
     if (mode) {
-      if (mode === 'object' || mode === 'region' || mode === 'skeleton') {
-        this.setMode(mode)
+      if (mode in mode_dict) {
+        if (mode_dict[mode] === 'false') {
+          utils.notify(`Not a valid URL, the UI for ${mode} mode is not shown.`)
+        } else {
+          this.setMode(mode)
+        }
+      } else {
+        utils.notify(`Not a valid URL, the mode ${mode} is unknown.`)
+      }
+    } else {
+      if (showObjects === 'false') {
+        utils.notify('Not a valid URL, the UI for Object mode is not shown.')
       }
     }
+
     if (debug) {
       if (debug.toLowerCase() === 'true') {
         this.$store.commit('setDebug', true)

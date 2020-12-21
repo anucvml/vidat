@@ -44,6 +44,7 @@ const CONTROL_PANEL_TEMPLATE = `
   <q-item>
     <q-item-section>
       <q-select
+        :disabled="modeOptions.length === 1"
         v-model="mode"
         outlined
         stack-label
