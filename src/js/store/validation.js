@@ -55,9 +55,6 @@ function validateActionLabelData (state, json) {
     if (!action.objects.length) {
       throw 'At least one action!'
     }
-    if (action.objects[0] !== 0) {
-      throw 'The first action must be default'
-    }
     const objectIdList = []
     for (const objectId of action.objects) {
       if (typeof (objectId) !== 'number') {
