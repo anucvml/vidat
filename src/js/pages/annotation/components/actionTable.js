@@ -79,7 +79,6 @@ const ACTION_TABLE_TEMPLATE = `
           dense
           borderless
           type="text"
-          autofocus
         ></q-input>
       </q-td>
       <q-td key="operation" :props="props">
