@@ -34,6 +34,9 @@ const ACTION_TABLE_TEMPLATE = `
           type="number"
         ></q-input>
       </q-td>
+      <q-td key="duration" :props="props">
+        {{ props.row.end - props.row.start }}
+      </q-td>
       <q-td key="action" :props="props">
         <q-select
           v-model="props.row.action"
@@ -136,6 +139,12 @@ const columnList = [
     field: 'end',
     sortable: true,
     sort: (a, b, rowA, rowB) => a !== b ? a - b : rowA.start - rowB.start,
+    style: 'width: 100px',
+  },
+  {
+    name: 'duration',
+    align: 'center',
+    label: 'duration',
     style: 'width: 100px',
   },
   {
