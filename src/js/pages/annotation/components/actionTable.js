@@ -35,7 +35,7 @@ const ACTION_TABLE_TEMPLATE = `
         ></q-input>
       </q-td>
       <q-td key="duration" :props="props">
-        {{ props.row.end - props.row.start }}
+        {{ toFixed2(props.row.end - props.row.start) }}
       </q-td>
       <q-td key="action" :props="props">
         <q-select
@@ -191,6 +191,7 @@ export default {
     return {
       columnList,
       pagination: { rowsPerPage: 0 },
+      toFixed2: utils.toFixed2,
     }
   },
   methods: {
