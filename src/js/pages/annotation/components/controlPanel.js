@@ -44,7 +44,8 @@ const CONTROL_PANEL_TEMPLATE = `
   <q-item>
     <q-item-section>
       <q-select
-        :disabled="modeOptions.length === 1"
+        ref="modeSelect"
+        :readonly="modeOptions.length === 1"
         v-model="mode"
         outlined
         stack-label
@@ -96,6 +97,16 @@ export default {
   data: () => {
     return {
       utils,
+    }
+  },
+  mounted () {
+    const modeMap = {
+      'object': this.preference.objects,
+      'region': this.preference.regions,
+      'skeleton': this.preference.skeletons,
+    }
+    if (!modeMap[this.mode]) {
+      this.$refs['modeSelect'].showPopup()
     }
   },
   methods: {

@@ -183,7 +183,7 @@ export default {
           right: '1px',
         }
       }
-      if (this.mode === 'object') {
+      if (this.mode === 'object' && this.preference.objects) {
         // creating an object
         if (this.createContext) {
           const activeAnnotation = this.annotationList[this.createContext.index]
@@ -292,7 +292,7 @@ export default {
           this.activeContext = null
           this.cursor = 'crosshair'
         }
-      } else if (this.mode === 'region') {
+      } else if (this.mode === 'region' && this.preference.regions) {
         // creating a region
         if (this.createContext) {
           const activeAnnotation = this.createContext.regionAnnotation
@@ -341,7 +341,7 @@ export default {
           this.activeContext = null
           this.cursor = 'crosshair'
         }
-      } else if (this.mode === 'skeleton') {
+      } else if (this.mode === 'skeleton' && this.preference.skeletons) {
         // create a skeleton
         if (this.createContext) {
           this.createContext.skeletonAnnotation.ratio =
@@ -398,14 +398,12 @@ export default {
           this.activeContext = null
           this.cursor = 'crosshair'
         }
-      } else {
-        throw 'Unknown mode: ' + this.mode
       }
     },
     handleMousedown (event) {
       event.preventDefault()
       const [mouseX, mouseY] = this.getMouseLocation(event)
-      if (this.mode === 'object') {
+      if (this.mode === 'object' && this.preference.objects) {
         // drag
         let found = false
         for (let i = 0; i < this.annotationList.length; i++) {
@@ -457,7 +455,7 @@ export default {
           }
           this.annotationList.push(objectAnnotation)
         }
-      } else if (this.mode === 'region') {
+      } else if (this.mode === 'region' && this.preference.regions) {
         // drag
         let found = false
         for (let regionAnnotation of this.annotationList) {
@@ -524,7 +522,7 @@ export default {
           }
           this.annotationList.push(regionAnnotation)
         }
-      } else if (this.mode === 'skeleton') {
+      } else if (this.mode === 'skeleton' && this.preference.skeletons) {
         // drag
         let found = false
         for (let skeletonAnnotation of this.annotationList) {
@@ -565,8 +563,6 @@ export default {
           }
           this.annotationList.push(skeletonAnnotation)
         }
-      } else {
-        throw 'Unknown mode: ' + this.mode
       }
     },
     handleMouseupAndMouseout (event) {
@@ -575,7 +571,7 @@ export default {
       if (event.type === 'mouseout') {
         this.status = null
       }
-      if (this.mode === 'object') {
+      if (this.mode === 'object' && this.preference.objects) {
         if (this.createContext) {
           const activeAnnotation = this.annotationList[this.createContext.index]
           if (activeAnnotation.width < 8 || activeAnnotation.height < 8) {
@@ -596,7 +592,7 @@ export default {
         if (this.dragContext && event.type === 'mouseup') {
           this.dragContext = null
         }
-      } else if (this.mode === 'region') {
+      } else if (this.mode === 'region' && this.preference.regions) {
         if (this.createContext) {
           // handle mouseout
           if (event.type === 'mouseout') {
@@ -629,7 +625,7 @@ export default {
         if (this.dragContext && event.type === 'mouseup') {
           this.dragContext = null
         }
-      } else if (this.mode === 'skeleton') {
+      } else if (this.mode === 'skeleton' && this.preference.skeletons) {
         if (this.createContext) {
           if (this.showPopup) {
             this.popup = {
@@ -643,8 +639,6 @@ export default {
         if (this.dragContext && event.type === 'mouseup') {
           this.dragContext = null
         }
-      } else {
-        throw 'Unknown mode: ' + this.mode
       }
     },
     handleMouseenter (event) {
@@ -675,7 +669,7 @@ export default {
     handleTouchstart (event) {
       event.preventDefault()
       const [mouseX, mouseY] = this.getTouchLocation(event)
-      if (this.mode === 'object') {
+      if (this.mode === 'object' && this.preference.objects) {
         // highlight the object
         let found = false
         for (let i = 0; i < this.annotationList.length; i++) {
@@ -737,7 +731,7 @@ export default {
           objectAnnotation.highlight = true
           this.annotationList.push(objectAnnotation)
         }
-      } else if (this.mode === 'region') {
+      } else if (this.mode === 'region' && this.preference.regions) {
         // add point when creating
         if (this.createContext) {
           const pointList = this.createContext.regionAnnotation.pointList
@@ -807,7 +801,7 @@ export default {
           regionAnnotation.highlight = true
           this.annotationList.push(regionAnnotation)
         }
-      } else if (this.mode === 'skeleton') {
+      } else if (this.mode === 'skeleton' && this.preference.skeletons) {
         // drag
         let found = false
         for (const skeletonAnnotation of this.annotationList) {
@@ -842,8 +836,6 @@ export default {
           skeletonAnnotation.highlight = true
           this.annotationList.push(skeletonAnnotation)
         }
-      } else {
-        throw 'Unknown mode: ' + this.mode
       }
     },
     handleTouchmove (event) {
@@ -876,7 +868,7 @@ export default {
           right: '1px',
         }
       }
-      if (this.mode === 'object') {
+      if (this.mode === 'object' && this.preference.objects) {
         // creating an object
         if (this.createContext) {
           const activeAnnotation = this.annotationList[this.createContext.index]
@@ -933,7 +925,7 @@ export default {
             throw 'Unknown drag type'
           }
         }
-      } else if (this.mode === 'region') {
+      } else if (this.mode === 'region' && this.preference.regions) {
         if (this.dragContext) {
           const activeAnnotation = this.dragContext.regionAnnotation
           const deltaX = mouseX - this.dragContext.mousedownX
@@ -950,7 +942,7 @@ export default {
             throw 'Unknown drag type'
           }
         }
-      } else if (this.mode === 'skeleton') {
+      } else if (this.mode === 'skeleton' && this.preference.skeletons) {
         // create a skeleton
         if (this.createContext) {
           this.createContext.skeletonAnnotation.ratio =
@@ -973,15 +965,13 @@ export default {
             throw 'Unknown drag type'
           }
         }
-      } else {
-        throw 'Unknown mode: ' + this.mode
       }
     },
     handleTouchend (event) {
       event.preventDefault()
       // status
       this.status = null
-      if (this.mode === 'object') {
+      if (this.mode === 'object' && this.preference.objects) {
         if (this.createContext) {
           const activeAnnotation = this.annotationList[this.createContext.index]
           activeAnnotation.highlight = false
@@ -998,12 +988,12 @@ export default {
           this.annotationList[this.dragContext.index].highlight = false
           this.dragContext = null
         }
-      } else if (this.mode === 'region') {
+      } else if (this.mode === 'region' && this.preference.objects) {
         if (this.dragContext) {
           this.dragContext.regionAnnotation.highlight = false
           this.dragContext = null
         }
-      } else if (this.mode === 'skeleton') {
+      } else if (this.mode === 'skeleton' && this.preference.objects) {
         if (this.createContext) {
           this.$refs.table.focusLast()
           this.createContext.skeletonAnnotation.highlight = false
@@ -1013,8 +1003,6 @@ export default {
           this.dragContext.skeletonAnnotation.highlight = false
           this.dragContext = null
         }
-      } else {
-        throw 'Unknown mode: ' + this.mode
       }
     },
     handleSelectInput (value) {
