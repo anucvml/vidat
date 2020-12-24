@@ -1109,12 +1109,12 @@ export default {
         deep: true,
       },
     )
-    document.addEventListener('keyup', this.handleKeyup)
-    document.addEventListener('keydown', this.handleKeydown)
+    window.addEventListener('keyup', this.handleKeyup)
+    window.addEventListener('keydown', this.handleKeydown)
   },
   destroyed () {
-    document.removeEventListener('keyup', this.handleKeyup)
-    document.removeEventListener('keydown', this.handleKeydown)
+    window.removeEventListener('keyup', this.handleKeyup)
+    window.removeEventListener('keydown', this.handleKeydown)
   },
   computed: {
     zoom () {

@@ -329,10 +329,10 @@ export default {
     },
   },
   mounted () {
-    document.addEventListener('keyup', this.handleKeyup)
+    window.addEventListener('keyup', this.handleKeyup)
   },
   destroyed () {
-    document.removeEventListener('keyup', this.handleKeyup)
+    window.removeEventListener('keyup', this.handleKeyup)
   },
   template: ACTION_TABLE_TEMPLATE,
 }

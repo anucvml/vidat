@@ -208,25 +208,15 @@ export default {
       }
     },
     moveLeftFrame (delta) {
-      if (delta < 0) {
-        if (this.leftCurrentFrame + delta >= 0) {
-          this.leftCurrentFrame += delta
-        }
-      } else if (delta > 0) {
-        if (this.leftCurrentFrame + delta <= this.video.frames) {
-          this.leftCurrentFrame += delta
-        }
+      if (this.leftCurrentFrame + delta >= 0 && this.leftCurrentFrame + delta <= this.video.frames) {
+        // this.leftCurrentFrame += delta // Black magic: do not know why this line does not work
+        this.setLeftCurrentFrame(this.$store.state.annotation.leftCurrentFrame + delta)
       }
     },
     moveRightFrame (delta) {
-      if (delta < 0) {
-        if (this.rightCurrentFrame + delta >= 0) {
-          this.rightCurrentFrame += delta
-        }
-      } else if (delta > 0) {
-        if (this.rightCurrentFrame + delta <= this.video.frames) {
-          this.rightCurrentFrame += delta
-        }
+      if (this.rightCurrentFrame + delta >= 0 && this.rightCurrentFrame + delta <= this.video.frames) {
+        // this.rightCurrentFrame += delta // Black magic: do not know why this line does not work
+        this.setRightCurrentFrame(this.$store.state.annotation.rightCurrentFrame + delta)
       }
     },
     moveRange (interval) {
@@ -506,8 +496,8 @@ export default {
     },
   },
   mounted () {
-    document.addEventListener('keyup', this.handleKeyup)
-    document.addEventListener('keydown', this.handleKeydown)
+    window.addEventListener('keyup', this.handleKeyup)
+    window.addEventListener('keydown', this.handleKeydown)
     window.addEventListener('resize', this.handleOnresize)
 
     const slider = document.getElementById('slider')
@@ -518,8 +508,8 @@ export default {
     drawer.addEventListener('transitionend', this.handleOnresize)
   },
   destroyed () {
-    document.removeEventListener('keyup', this.handleKeyup)
-    document.removeEventListener('keydown', this.handleKeydown)
+    window.removeEventListener('keyup', this.handleKeyup)
+    window.removeEventListener('keydown', this.handleKeydown)
     window.removeEventListener('resize', this.handleOnresize)
     const drawer = document.getElementById('drawer')
     drawer.removeEventListener('transitionend', this.handleOnresize)
