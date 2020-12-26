@@ -5,6 +5,34 @@
 import utils from '../../libs/utils.js'
 import { ActionAnnotation, ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '../../libs/annotationlib.js'
 
+function debounce (func, wait, immediate) {
+
+  let timeout, result
+
+  return function () {
+    let context = this
+    let args = arguments
+
+    if (timeout) clearTimeout(timeout)
+    if (immediate) {
+      let callNow = !timeout
+      timeout = setTimeout(function () {
+        timeout = null
+      }, wait)
+      if (callNow) result = func.apply(context, args)
+    } else {
+      timeout = setTimeout(function () {
+        func.apply(context, args)
+      }, wait)
+    }
+    return result
+  }
+}
+
+const setCurrentFrameDebounce = debounce(function (value) {
+  document.getElementById('video').currentTime = utils.index2time(value)
+}, 100)
+
 export default {
   state: () => ({
     debug: false,
@@ -95,13 +123,13 @@ export default {
     setLeftCurrentFrame (state, value) {
       Vue.set(state, 'leftCurrentFrame', value)
       if (!state.cachedFrameList[value]) {
-        document.getElementById('video').currentTime = utils.index2time(value)
+        setCurrentFrameDebounce(value)
       }
     },
     setRightCurrentFrame (state, value) {
       Vue.set(state, 'rightCurrentFrame', value)
       if (!state.cachedFrameList[value]) {
-        document.getElementById('video').currentTime = utils.index2time(value)
+        setCurrentFrameDebounce(value)
       }
     },
     cacheFrame (state, value) {
