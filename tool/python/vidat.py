@@ -378,8 +378,16 @@ class _ActionAnnotation:
         return self._start
 
     @property
+    def start_frame(self):
+        return int(self._start * self.__video.fps)
+
+    @property
     def end(self):
         return self._end
+
+    @property
+    def end_frame(self):
+        return int(self._end * self.__video.fps)
 
     @property
     def action_id(self):
