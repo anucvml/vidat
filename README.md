@@ -27,6 +27,8 @@ Video tutorials will be posted on [YouTube](https://www.youtube.com/playlist?lis
 
 ## Installation
 
+> Note that this is only necessary if you want to do development or host your own version of the tool. If you just want to label videos then you can use one of the host servers linked to above.
+
 1. Copy all files from `src` into a single directory.
 2. Put all files behind a web server ([Nginx](http://nginx.org/), [Apache](http://httpd.apache.org/), etc.).
 3. Open in your favourite browser.
