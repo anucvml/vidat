@@ -214,7 +214,7 @@ export default {
       this.saveTableData()
     },
     handleClearAll (row) {
-      row.objects = []
+      row.objects = [0]
       this.saveTableData()
     },
     handleSave () {

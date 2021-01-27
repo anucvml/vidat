@@ -5,16 +5,44 @@ const ACTION_TABLE_TEMPLATE = `
   :data="actionAnnotationList"
   :columns="columnList"
   :pagination.sync="pagination"
+  :filter="{ value: actionFilterList }"
+  :filter-method="actionFilter"
 >
   <template v-slot:top="props">
     <div class="col-6 q-table__title">Actions / Video Segments</div>
     <q-space></q-space>
     <q-btn-group>
+      <q-btn :icon="filter ? 'expand_more' : 'expand_less'" @click="filter = !filter" label="filter"></q-btn>
       <q-btn icon="add" @click="handleAdd" label="add">
         <q-tooltip>add current range (+)</q-tooltip>
       </q-btn>
       <q-btn icon="clear_all" @click="handleClearAll" label="clear"></q-btn>
     </q-btn-group>
+    <div class="" v-if="filter">
+      <div class="q-mb-sm">
+        <q-btn-group dense flat>
+          <q-btn icon="apps" @click="handleSelectAll">
+            <q-tooltip>select all actions</q-tooltip>
+          </q-btn>
+          <q-btn icon="clear_all" @click="handleClearSelectedAll">
+            <q-tooltip>clear all actions</q-tooltip>
+          </q-btn>
+        </q-btn-group>
+      </div>
+      <div class="q-gutter-xs row truncate-chip-labels">
+        <q-chip
+          v-for="action in actionLabelData"
+          :key="action.id"
+          :selected.sync="actionFilterList[action.id]"
+          :label="action.name"
+          style="max-width: 150px"
+          color="primary"
+          text-color="white"
+        >
+          <q-tooltip>{{ action.name }}</q-tooltip>
+        </q-chip>
+      </div>
+    </div>
   </template>
   <template v-slot:body="props">
     <q-tr :props="props">
@@ -192,6 +220,8 @@ export default {
       columnList,
       pagination: { rowsPerPage: 0 },
       toFixed2: utils.toFixed2,
+      actionFilterList: [],
+      filter: false,
     }
   },
   methods: {
@@ -274,6 +304,26 @@ export default {
         this.handleAdd()
       }
     },
+    handleSelectAll () {
+      for (const action of this.actionLabelData) {
+        Vue.set(this.actionFilterList, action.id, true)
+      }
+    },
+    handleClearSelectedAll () {
+      for (const action of this.actionLabelData) {
+        Vue.set(this.actionFilterList, action.id, false)
+      }
+      Vue.set(this.actionFilterList, 0, true)
+    },
+    actionFilter (rows, filter) {
+      const ret = []
+      for (const row of rows) {
+        if (this.actionFilterList[row.action]) {
+          ret.push(row)
+        }
+      }
+      return ret
+    },
   },
   computed: {
     video () {
@@ -330,6 +380,9 @@ export default {
   },
   mounted () {
     window.addEventListener('keyup', this.handleKeyup)
+    for (const action of this.actionLabelData) {
+      this.actionFilterList[action.id] = true
+    }
   },
   destroyed () {
     window.removeEventListener('keyup', this.handleKeyup)
