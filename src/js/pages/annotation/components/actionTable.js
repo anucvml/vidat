@@ -52,6 +52,7 @@ const ACTION_TABLE_TEMPLATE = `
           dense
           borderless
           type="number"
+          :debounce="1500"
         ></q-input>
       </q-td>
       <q-td key="end" :props="props">
@@ -60,6 +61,7 @@ const ACTION_TABLE_TEMPLATE = `
           dense
           borderless
           type="number"
+          :debounce="1500"
         ></q-input>
       </q-td>
       <q-td key="duration" :props="props">
