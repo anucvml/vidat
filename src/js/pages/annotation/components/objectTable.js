@@ -25,6 +25,7 @@ const OBJECT_TABLE_TEMPLATE = `
           dense
           borderless
           type="number"
+          :debounce="1500"
         ></q-input>
       </q-td>
       <q-td key="y" :props="props">
@@ -33,6 +34,7 @@ const OBJECT_TABLE_TEMPLATE = `
           dense
           borderless
           type="number"
+          :debounce="1500"
         ></q-input>
       </q-td>
       <q-td key="width" :props="props">
@@ -41,6 +43,7 @@ const OBJECT_TABLE_TEMPLATE = `
           dense
           borderless
           type="number"
+          :debounce="1500"
         ></q-input>
       </q-td>
       <q-td key="height" :props="props">
@@ -49,6 +52,7 @@ const OBJECT_TABLE_TEMPLATE = `
           dense
           borderless
           type="number"
+          :debounce="1500"
         ></q-input>
       </q-td>
       <q-td key="label" :props="props">

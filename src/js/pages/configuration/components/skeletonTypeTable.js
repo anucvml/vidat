@@ -169,6 +169,7 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
                     borderless
                     dense
                     @input="saveTableData"
+                    :debounce="1500"
                   ></q-input>
                 </q-td>
                 <q-td key="y" :props="pointProps" style="font-size: 14px">
@@ -177,6 +178,7 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
                     borderless
                     dense
                     @input="saveTableData"
+                    :debounce="1500"
                   ></q-input>
                 </q-td>
                 <q-td key="delete" :props="pointProps">

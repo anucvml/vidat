@@ -136,6 +136,7 @@ const REGION_TABLE_TEMPLATE = `
                 dense
                 borderless
                 type="number"
+                :debounce="1500"
               ></q-input>
             </q-td>
             <q-td key="y" :props="props">
@@ -144,6 +145,7 @@ const REGION_TABLE_TEMPLATE = `
                 dense
                 borderless
                 type="number"
+                :debounce="1500"
               ></q-input>
             </q-td>
           </q-tr>
