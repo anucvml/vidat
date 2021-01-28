@@ -5,7 +5,7 @@ const SKELETON_TABLE_TEMPLATE = `
   :data="skeletonAnnotationList"
   row-key="pointList"
   :columns="columnList"
-  :pagination.sync="pagination"
+  :pagination="pagination"
 >
   <template v-slot:top="props">
     <div class="col-6 q-table__title">Skeleton</div>
@@ -115,7 +115,7 @@ const SKELETON_TABLE_TEMPLATE = `
             { name: 'x', align: 'left', label: 'x', field: 'x' },
             { name: 'y', align: 'left', label: 'y', field: 'y' },
           ]"
-          :pagination.sync="pagination"
+          :pagination="pagination"
         >
         <template v-slot:body="props">
           <q-tr :props="props">

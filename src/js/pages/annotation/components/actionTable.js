@@ -4,7 +4,7 @@ const ACTION_TABLE_TEMPLATE = `
   flat
   :data="actionAnnotationList"
   :columns="columnList"
-  :pagination.sync="pagination"
+  :pagination="pagination"
   :filter="{ value: actionFilterList }"
   :filter-method="actionFilter"
 >

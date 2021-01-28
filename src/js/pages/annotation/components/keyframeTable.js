@@ -4,7 +4,7 @@ const KEYFRAME_TABLE_TEMPLATE = `
   dense
   flat
   :data="keyframeList"
-  :pagination.sync="pagination"
+  :pagination="pagination"
   :columns="[
     { name: 'frame', align: 'center', label: 'frame' },
     { name: 'time', align: 'center', label: 'time' },

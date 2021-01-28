@@ -22,7 +22,7 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
     v-show="!showEdit"
     :data="tableData"
     :columns="columnList"
-    :pagination.sync="pagination"
+    :pagination="pagination"
     row-key="id"
   >
     <template v-slot:top="props">
@@ -136,7 +136,7 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
               { name: 'y', align: 'left', label: 'y', field: 'y' },
               { name: 'delete', align: 'center', label: 'delete', field: 'delete' },
             ]"
-            :pagination.sync="pagination"
+            :pagination="pagination"
             row-key="id"
           >
             <template v-slot:top="pointProps">
@@ -201,7 +201,7 @@ const SKELETON_TYPE_TABLE_TEMPLATE = `
               { name: 'to', align: 'left', label: 'to', field: 'to' },
               { name: 'delete', align: 'center', label: 'delete', field: 'delete' },
             ]"
-            :pagination.sync="pagination"
+            :pagination="pagination"
             row-key="id"
           >
             <template v-slot:top="edgeProps">

@@ -5,7 +5,7 @@ const OBJECT_TABLE_TEMPLATE = `
   :data="objectAnnotationList"
   row-key="x"
   :columns="columnList"
-  :pagination.sync="pagination"
+  :pagination="pagination"
 >
   <template v-slot:top="props">
     <div class="col-6 q-table__title">Objects</div>

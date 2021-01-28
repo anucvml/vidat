@@ -22,7 +22,7 @@ const ACTION_LABEL_TABLE_TEMPLATE = `
     v-show="!showEdit"
     :data="tableData"
     :columns="columnList"
-    :pagination.sync="pagination"
+    :pagination="pagination"
     row-key="id"
   >
     <template v-slot:top="props">

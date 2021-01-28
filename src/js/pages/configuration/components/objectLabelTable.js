@@ -23,7 +23,7 @@ const OBJECT_LABEL_TABLE_TEMPLATE = `
     :data="tableData"
     :columns="columnList"
     row-key="id"
-    :pagination.sync="pagination"
+    :pagination="pagination"
   >
     <template v-slot:top="props">
       <div class="col-6 q-table__title">Object Labels</div>
