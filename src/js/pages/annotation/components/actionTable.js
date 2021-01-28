@@ -45,7 +45,7 @@ const ACTION_TABLE_TEMPLATE = `
     </div>
   </template>
   <template v-slot:body="props">
-    <q-tr :props="props">
+    <q-tr :props="props" :class="{ 'bg-warning': props.row.end - props.row.start <= 0}">
       <q-td key="start" :props="props">
         <q-input
           v-model.number="props.row.start"
