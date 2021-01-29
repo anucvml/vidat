@@ -53,6 +53,7 @@ const ACTION_TABLE_TEMPLATE = `
           borderless
           type="number"
           :debounce="1500"
+          @mousewheel.prevent
         ></q-input>
       </q-td>
       <q-td key="end" :props="props">
@@ -62,6 +63,7 @@ const ACTION_TABLE_TEMPLATE = `
           borderless
           type="number"
           :debounce="1500"
+          @mousewheel.prevent
         ></q-input>
       </q-td>
       <q-td key="duration" :props="props">
@@ -108,7 +110,7 @@ const ACTION_TABLE_TEMPLATE = `
       </q-td>
       <q-td key="description" :props="props">
         <q-input
-          v-model.number="props.row.description"
+          v-model="props.row.description"
           dense
           borderless
           type="text"

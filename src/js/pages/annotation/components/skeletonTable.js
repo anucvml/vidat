@@ -66,6 +66,7 @@ const SKELETON_TABLE_TEMPLATE = `
           dense
           borderless
           type="number"
+          @mousewheel.prevent
         ></q-input>
       </q-td>
       <q-td key="score" :props="props">
@@ -74,6 +75,7 @@ const SKELETON_TABLE_TEMPLATE = `
           dense
           borderless
           type="number"
+          @mousewheel.prevent
         ></q-input>
       </q-td>
       <q-td key="operation" :props="props">
@@ -129,6 +131,7 @@ const SKELETON_TABLE_TEMPLATE = `
                 borderless
                 type="number"
                 :debounce="1500"
+                @mousewheel.prevent
               ></q-input>
             </q-td>
             <q-td key="y" :props="props">
@@ -138,6 +141,7 @@ const SKELETON_TABLE_TEMPLATE = `
                 borderless
                 type="number"
                 :debounce="1500"
+                @mousewheel.prevent
               ></q-input>
             </q-td>
           </q-tr>

@@ -18,6 +18,7 @@ const PREFERENCE_TEMPLATE = `
           type="number"
           @input="handleSavePreference"
           :rules="[fps => fps >= 1 && fps <= 60 && fps % 1 === 0 || 'Integer between 1 and 60.']"
+          @mousewheel.prevent
         ></q-input>
       </q-item-section>
     </q-item>
@@ -33,6 +34,7 @@ const PREFERENCE_TEMPLATE = `
           type="number"
           @input="handleSavePreference"
           :rules="[fpk => fpk >= 1 && fpk % 1 === 0 || 'Integer greater than 1.']"
+          @mousewheel.prevent
         ></q-input>
       </q-item-section>
     </q-item>
