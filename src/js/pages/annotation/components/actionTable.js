@@ -121,20 +121,6 @@ const ACTION_TABLE_TEMPLATE = `
           <q-btn
             flat
             dense
-            icon="keyboard_arrow_up"
-            style="width: 100%"
-            @click="handleUp(props.row)"
-          ></q-btn>
-          <q-btn
-            flat
-            dense
-            icon="keyboard_arrow_down"
-            style="width: 100%"
-            @click="handleDown(props.row)"
-          ></q-btn>
-          <q-btn
-            flat
-            dense
             icon="gps_fixed"
             style="width: 100%"
             @click="handleGoto(props.row)"
@@ -262,26 +248,6 @@ export default {
       row.object = this.actionOptionList[row.action].objects[0] || this.actionOptionList[row.action].objects[0] === 0
         ? this.actionOptionList[row.action].objects[0]
         : null
-    },
-    handleUp (row) {
-      for (let i = 0; i < this.actionAnnotationList.length; i++) {
-        if (this.actionAnnotationList[i] === row) {
-          if (i - 1 >= 0) {
-            this.actionAnnotationList[i] = this.actionAnnotationList.splice(i - 1, 1, this.actionAnnotationList[i])[0]
-          }
-          break
-        }
-      }
-    },
-    handleDown (row) {
-      for (let i = 0; i < this.actionAnnotationList.length; i++) {
-        if (this.actionAnnotationList[i] === row) {
-          if (i + 2 <= this.actionAnnotationList.length) {
-            this.actionAnnotationList[i] = this.actionAnnotationList.splice(i + 1, 1, this.actionAnnotationList[i])[0]
-          }
-          break
-        }
-      }
     },
     handleGoto (row) {
       if (typeof (row.start) === 'number') {
