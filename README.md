@@ -54,7 +54,7 @@ Video tutorials will be posted on [YouTube](https://www.youtube.com/playlist?lis
 |   `grayscale`   |                `true`/`false`                 |               grayscale or not                |
 |   `showPopup`   |                `true`/`false`                 |               show popup or not               |
 |     `debug`     |                `true`/`false`                 |        auto load a video and no cache         |
-|   `submitURL`   | http%3A%2F%2Flocalhost%3FsubmitToken%3D123456 |                URL for submit                 |
+|   `submitURL`   |`http%3A%2F%2Flocalhost%3FsubmitToken%3D123456`|                URL for submit                 |
 
 notes:
 
