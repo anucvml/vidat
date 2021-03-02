@@ -9,6 +9,7 @@ export default new Vuex.Store({
   state: () => ({
     drawer: false,
     debug: false,
+    submitURL: null,
   }),
   mutations: {
     setDrawer (state, value) {
@@ -16,6 +17,9 @@ export default new Vuex.Store({
     },
     setDebug (state, value) {
       Vue.set(state, 'debug', value)
+    },
+    setSubmitURL (state, value) {
+      Vue.set(state, 'submitURL', value)
     },
   },
   modules: {

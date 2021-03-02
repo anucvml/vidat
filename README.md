@@ -3,22 +3,25 @@
     <img src="src/img/logo.png" alt="ANU logo">
   </a> -->
 
-  # Vidat
+# Vidat
 
-  _An in-browser video annotation tool developed by [ANU CVML](https://github.com/anucvml)._
+_An in-browser video annotation tool developed by [ANU CVML](https://github.com/anucvml)._
 
-  _[Host1](http://users.cecs.anu.edu.au/~sgould/vidat/)_
-  | _[Host2](https://vidat.davidz.cn)_
-  | _[Demo1](http://users.cecs.anu.edu.au/~sgould/vidat/?video=needinput.mp4&config=needinputconfig.json)_
-  | _[Demo2](https://vidat.davidz.cn/?video=needinput.mp4&annotation=needinput.json#/annotation)_
+_[Host1](http://users.cecs.anu.edu.au/~sgould/vidat/)_
+| _[Host2](https://vidat.davidz.cn)_
+| _[Demo1](http://users.cecs.anu.edu.au/~sgould/vidat/?video=needinput.mp4&config=needinputconfig.json)_
+| _[Demo2](https://vidat.davidz.cn/?video=needinput.mp4&annotation=needinput.json#/annotation)_
 
 </div>
 
-The aim of this project is to develop a high-quality video annotation tool for computer vision and machine learning applications with the following desiradata:
+The aim of this project is to develop a high-quality video annotation tool for computer vision and machine learning
+applications with the following desiradata:
 
 1. Simple and efficient to use for a non-expert.
-2. Supports multiple annotation types including temporal segments, object bounding boxes, semantic and instance regions, tracklets, and human pose (skeleton).
-3. Runs in a browser without external libraries or need for server-side processing. But easy to plug-in a back-end for heavy "in-the-loop" processing (e.g., segments from bounding boxes or frame completion from partial labels).
+2. Supports multiple annotation types including temporal segments, object bounding boxes, semantic and instance regions,
+   tracklets, and human pose (skeleton).
+3. Runs in a browser without external libraries or need for server-side processing. But easy to plug-in a back-end for
+   heavy "in-the-loop" processing (e.g., segments from bounding boxes or frame completion from partial labels).
 4. Integrates easily with crowd-sourced annotation services (e.g., Amazon Mechanical Turk).
 5. Compatible with all (most) modern browsers and operating systems including tablets.
 6. Open-source.
@@ -51,12 +54,14 @@ Video tutorials will be posted on [YouTube](https://www.youtube.com/playlist?lis
 |   `grayscale`   |         `true`/`false`          |               grayscale or not                |
 |   `showPopup`   |         `true`/`false`          |               show popup or not               |
 |     `debug`     |         `true`/`false`          |        auto load a video and no cache         |
+|   `submitURL`   |        http://localhost         |                URL for submit                 |
 
 notes:
 
 1. `annotation` will overwrite `config`.
 2. `video` or `debug` is the precondition of `annotation`.
 3. No `annotation` is the precondition of `defaultFPS` and `defaultFPK`.
+4. `submitURL` will `POST` the annotation file to the given URL in json format.
 
 ### Examples
 
@@ -64,7 +69,16 @@ notes:
 http://localhost/index.html?mode=skeleton&showPopup=false
 ```
 
-will set the current mode to skeleton and disable popup window.
+This will set the current mode to skeleton and disable popup window.
+
+```
+http://localhost/index.html?submitURL=http%3A%2F%2Flocalhost%3FsubmitToken%3D123456
+```
+
+There will be a button shown in the side menu which will `POST` the annotation file to
+`http://localhost?submitToken=123456`.
+
+Note that the submission url needs to be URL encoded.
 
 ## Development
 

@@ -41,14 +41,26 @@ const DRAWER_TEMPLATE = `
         <q-item-section>
           <q-btn-group spread dense flat style="height: 36px">
             <q-btn
-              icon="cloud_upload"
+              icon="file_upload"
               @click="handleLoad"
               label="load"
             ></q-btn>
             <q-btn
-              icon="cloud_download"
+              icon="file_download"
               @click="handleSave"
               label="save"
+            ></q-btn>
+          </q-btn-group>
+        </q-item-section>
+      </q-item>
+      <q-item dense v-if="video.src && submitURL">
+        <q-item-section>
+          <q-btn-group spread dense flat style="height: 36px">
+            <q-btn
+              icon="cloud_upload"
+              label="submit"
+              :loading="submitLoading"
+              @click="handleSubmit"
             ></q-btn>
           </q-btn-group>
         </q-item-section>
@@ -111,6 +123,7 @@ export default {
           path: '/about',
         },
       ],
+      submitLoading: false,
     }
   },
   methods: {
@@ -192,6 +205,33 @@ export default {
         this.drawer = false
       })
     },
+    handleSubmit () {
+      this.submitLoading = true
+      const data = {
+        version: VERSION,
+        annotation: this.$store.getters.exportAnnotation,
+        config: this.$store.getters.exportConfig,
+      }
+      console.log('Submitting to: ' + this.submitURL)
+      fetch(this.submitURL, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }).then(res => {
+        this.submitLoading = false
+        console.log('Success', res)
+        res.text().then(text => {
+          utils.notify('Success: ' + text)
+        })
+        this.setIsSaved(true)
+      }).catch(err => {
+        this.submitLoading = false
+        console.log('Failed', err)
+        utils.notify('Failed: ' + err, 'negative')
+      })
+    },
   },
   computed: {
     drawer: {
@@ -201,6 +241,9 @@ export default {
       set (value) {
         this.$store.commit('setDrawer', value)
       },
+    },
+    submitURL () {
+      return this.$store.state.submitURL
     },
     video () {
       return this.$store.state.annotation.video

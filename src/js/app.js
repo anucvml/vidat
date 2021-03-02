@@ -54,6 +54,7 @@ const app = new Vue({
       'setGrayscale',
       'setShowPopup',
       'setZoom',
+      'setSubmitURL',
     ]),
   },
   computed: {
@@ -97,6 +98,7 @@ const app = new Vue({
       zoom,
       mode,
       debug,
+      submiturl: submitURL,
     } = URLParameter
     // set options in silence
     if (!annotation && defaultFps) {
@@ -217,7 +219,6 @@ const app = new Vue({
         utils.notify('Not a valid URL, the UI for Object mode is not shown.')
       }
     }
-
     if (debug) {
       if (debug.toLowerCase() === 'true') {
         this.$store.commit('setDebug', true)
@@ -226,6 +227,9 @@ const app = new Vue({
       } else if (debug.toLowerCase() === 'false') {
         this.$store.commit('setDebug', false)
       }
+    }
+    if (submitURL) {
+      this.setSubmitURL(decodeURIComponent(submitURL))
     }
   },
   template: APP_TEMPLATE,

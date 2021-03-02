@@ -21,12 +21,13 @@ export default {
   /**
    * Notify popup
    * @param message
+   * @param color
    * @returns {Promise}
    */
-  notify (message) {
+  notify (message, color = 'primary') {
     return Quasar.Notify.create({
       message: message,
-      color: 'primary',
+      color: color,
       position: 'bottom-right',
     })
   },
