@@ -14,7 +14,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# set submitToken to bind this submission to its corresponding task
+# Set submitToken to bind this submission to its corresponding task
 @app.post("/")
 def demo(submitToken: str, annotation: dict = Body(...)):
     print("annotation:", json.dumps(annotation, sort_keys=True, indent=4, separators=(",", ":")))
