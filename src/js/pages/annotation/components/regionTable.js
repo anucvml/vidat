@@ -258,7 +258,8 @@ export default {
             annotationList: [],
           })
         })
-      } else {
+      }
+      else {
         utils.notify('There are no regions!')
       }
     },

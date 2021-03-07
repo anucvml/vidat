@@ -40,7 +40,8 @@ class ObjectAnnotation extends Annotation {
     this.labelId = labelId
     if (!color) {
       this.color = store.state.settings.objectLabelData[this.labelId].color
-    } else {
+    }
+    else {
       this.color = color
     }
     this.x = x
@@ -144,7 +145,8 @@ class ObjectAnnotation extends Annotation {
     if (width < 0) {
       this.x = x + width
       this.width = -width
-    } else {
+    }
+    else {
       this.x = x
       this.width = width
     }
@@ -152,7 +154,8 @@ class ObjectAnnotation extends Annotation {
     if (height < 0) {
       this.y = y + height
       this.height = -height
-    } else {
+    }
+    else {
       this.y = y
       this.height = height
     }
@@ -370,7 +373,8 @@ class RegionAnnotation extends Annotation {
     this.labelId = labelId
     if (!color) {
       this.color = store.state.settings.objectLabelData[this.labelId].color
-    } else {
+    }
+    else {
       this.color = color
     }
     this.pointList = pointList
@@ -476,9 +480,11 @@ class RegionAnnotation extends Annotation {
       let distance
       if (Math.abs(p2.x - p1.x) <= 1) { // vertical
         distance = Math.abs(mouseX - (p1.x + p2.x) / 2)
-      } else if (Math.abs(p2.y - p1.y) <= 1) { // horizontal
+      }
+      else if (Math.abs(p2.y - p1.y) <= 1) { // horizontal
         distance = Math.abs(mouseY - (p1.y + p2.y) / 2)
-      } else { // others
+      }
+      else { // others
         const a = 1 / (p2.x - p1.x)
         const b = 1 / (p1.y - p2.y)
         const c = -p1.y * b - p1.x * a
@@ -540,7 +546,8 @@ class SkeletonAnnotation extends Annotation {
     this.type = store.state.settings.skeletonTypeData.find(type => type.id === typeId)
     if (!color) {
       this.color = this.type.color
-    } else {
+    }
+    else {
       this.color = color
     }
     this._ratio = 1
@@ -626,7 +633,8 @@ class SkeletonAnnotation extends Annotation {
         ctx.fillStyle = this.color
         ctx.fillRect(x - size + unitLineWidth, y - size + unitLineWidth, size * 2 - 2 * unitLineWidth,
           size * 2 - 2 * unitLineWidth)
-      } else {
+      }
+      else {
         ctx.beginPath()
         ctx.arc(x, y, size + unitLineWidth, 0, Math.PI * 2, false)
         ctx.fill()

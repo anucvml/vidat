@@ -148,7 +148,8 @@ export default {
           this.closeVideo()
           this.handleOpenWithFPS()
         })
-      } else {
+      }
+      else {
         this.handleOpenWithFPS()
       }
     },

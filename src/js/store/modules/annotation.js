@@ -20,7 +20,8 @@ function debounce (func, wait, immediate) {
         timeout = null
       }, wait)
       if (callNow) result = func.apply(context, args)
-    } else {
+    }
+    else {
       timeout = setTimeout(function () {
         func.apply(context, args)
       }, wait)
@@ -159,11 +160,14 @@ export default {
     setAnnotationList (state, value) {
       if (value.mode === 'object') {
         Vue.set(state.objectAnnotationListMap, value.index, value.annotationList)
-      } else if (value.mode === 'region') {
+      }
+      else if (value.mode === 'region') {
         Vue.set(state.regionAnnotationListMap, value.index, value.annotationList)
-      } else if (value.mode === 'skeleton') {
+      }
+      else if (value.mode === 'skeleton') {
         Vue.set(state.skeletonAnnotationListMap, value.index, value.annotationList)
-      } else {
+      }
+      else {
         throw 'Unknown mode: ' + value.mode
       }
       Vue.set(state, 'isSaved', false)

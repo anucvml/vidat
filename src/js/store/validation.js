@@ -16,7 +16,8 @@ function validateObjectLabelData (state, json) {
     }
     if (idList.indexOf(object.id) !== -1) {
       throw 'Duplicated id'
-    } else {
+    }
+    else {
       idList.push(object.id)
     }
     if (typeof (object.name) !== 'string') {
@@ -43,7 +44,8 @@ function validateActionLabelData (state, json) {
     }
     if (idList.indexOf(action.id) !== -1) {
       throw 'Duplicated id'
-    } else {
+    }
+    else {
       idList.push(action.id)
     }
     if (typeof (action.name) !== 'string') {
@@ -62,7 +64,8 @@ function validateActionLabelData (state, json) {
       }
       if (objectIdList.indexOf(objectId) !== -1) {
         throw 'Duplicated object id'
-      } else {
+      }
+      else {
         objectIdList.push(objectId)
       }
       if (objectIdList.indexOf(objectId) === -1) {
@@ -80,7 +83,8 @@ function validateSkeletonTypeData (state, json) {
     }
     if (idList.indexOf(type.id) !== -1) {
       throw 'Duplicated id'
-    } else {
+    }
+    else {
       idList.push(type.id)
     }
     if (typeof (type.name) !== 'string') {
@@ -100,7 +104,8 @@ function validateSkeletonTypeData (state, json) {
       }
       if (pointIdList.indexOf(point.id) !== -1) {
         throw 'Duplicated point id'
-      } else {
+      }
+      else {
         pointIdList.push(point.id)
       }
       if (typeof (point.name) !== 'string') {
@@ -121,7 +126,8 @@ function validateSkeletonTypeData (state, json) {
       }
       if (edgeIdList.indexOf(edge.id) !== -1) {
         throw 'Duplicated edge id'
-      } else {
+      }
+      else {
         edgeIdList.push(edge.id)
       }
       if (typeof (edge.to) !== 'number') {

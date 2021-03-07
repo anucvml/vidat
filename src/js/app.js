@@ -153,49 +153,56 @@ const app = new Vue({
     if (showObjects) {
       if (showObjects.toLowerCase() === 'true') {
         this.setShowObjects(true)
-      } else if (showObjects.toLowerCase() === 'false') {
+      }
+      else if (showObjects.toLowerCase() === 'false') {
         this.setShowObjects(false)
       }
     }
     if (showRegions) {
       if (showRegions.toLowerCase() === 'true') {
         this.setShowRegions(true)
-      } else if (showRegions.toLowerCase() === 'false') {
+      }
+      else if (showRegions.toLowerCase() === 'false') {
         this.setShowRegions(false)
       }
     }
     if (showSkeletons) {
       if (showSkeletons.toLowerCase() === 'true') {
         this.setShowSkeletons(true)
-      } else if (showSkeletons.toLowerCase() === 'false') {
+      }
+      else if (showSkeletons.toLowerCase() === 'false') {
         this.setShowSkeletons(false)
       }
     }
     if (showActions) {
       if (showActions.toLowerCase() === 'true') {
         this.setShowActions(true)
-      } else if (showActions.toLowerCase() === 'false') {
+      }
+      else if (showActions.toLowerCase() === 'false') {
         this.setShowActions(false)
       }
     }
     if (grayscale) {
       if (grayscale.toLowerCase() === 'true') {
         this.setGrayscale(true)
-      } else if (grayscale.toLowerCase() === 'false') {
+      }
+      else if (grayscale.toLowerCase() === 'false') {
         this.setGrayscale(false)
       }
     }
     if (showPopup) {
       if (showPopup.toLowerCase() === 'true') {
         this.setShowPopup(true)
-      } else if (showPopup.toLowerCase() === 'false') {
+      }
+      else if (showPopup.toLowerCase() === 'false') {
         this.setShowPopup(false)
       }
     }
     if (zoom) {
       if (zoom.toLowerCase() === 'true') {
         this.setZoom(true)
-      } else if (zoom.toLowerCase() === 'false') {
+      }
+      else if (zoom.toLowerCase() === 'false') {
         this.setZoom(false)
       }
     }
@@ -208,13 +215,16 @@ const app = new Vue({
       if (mode in mode_dict) {
         if (mode_dict[mode] === 'false') {
           utils.notify(`Not a valid URL, the UI for ${mode} mode is not shown.`)
-        } else {
+        }
+        else {
           this.setMode(mode)
         }
-      } else {
+      }
+      else {
         utils.notify(`Not a valid URL, the mode ${mode} is unknown.`)
       }
-    } else {
+    }
+    else {
       if (showObjects === 'false') {
         utils.notify('Not a valid URL, the UI for Object mode is not shown.')
       }
@@ -224,7 +234,8 @@ const app = new Vue({
         this.$store.commit('setDebug', true)
         this.$store.commit('setVideoFPS', 10)
         this.$store.commit('setVideoSrc', 'video/Ikea_dataset_teaser_vid.webm')
-      } else if (debug.toLowerCase() === 'false') {
+      }
+      else if (debug.toLowerCase() === 'false') {
         this.$store.commit('setDebug', false)
       }
     }

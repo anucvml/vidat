@@ -394,7 +394,8 @@ export default {
           utils.notify(e.toString())
           throw e
         }
-      } else {
+      }
+      else {
         this.showEdit = !this.showEdit
       }
     },
@@ -404,7 +405,8 @@ export default {
           this.json = this.jsonData
           this.showEdit = !this.showEdit
         })
-      } else {
+      }
+      else {
         this.showEdit = !this.showEdit
       }
     },

@@ -92,7 +92,8 @@ export default {
         }
         this.keyframeList.push(currentFrame)
         utils.notify(`Frame ${currentFrame} is added successfully!`)
-      } else {
+      }
+      else {
         utils.notify(`Frame ${currentFrame} is already a keyframe!`)
       }
     },
@@ -112,7 +113,8 @@ export default {
         frame = parseInt(frame)
         if (frame >= 0 && frame % 1 === 0 && frame <= this.video.frames) {
           this.handleAddCurrentFrame(frame)
-        } else {
+        }
+        else {
           utils.notify(`Please enter an integer bigger than 0 and less than ${this.video.frames}`)
         }
       })
@@ -133,7 +135,8 @@ export default {
           this.setKeyframeList(keyframeList)
           this.setLeftCurrentFrame(keyframeList[0])
           this.setRightCurrentFrame(keyframeList[1] || keyframeList[0])
-        } else {
+        }
+        else {
           utils.notify('Please enter an integer bigger than 1.')
         }
       })
@@ -165,7 +168,8 @@ export default {
           zip.generateAsync({ type: 'blob' }).then(content => {
             saveAs(content, filename + '-' + this.video.fps + '-fps.zip')
           })
-        } else {
+        }
+        else {
           utils.notify('Please wait for caching!')
         }
       })

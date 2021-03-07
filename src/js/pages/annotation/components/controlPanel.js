@@ -193,7 +193,8 @@ export default {
             ...this.clone(this.annotationListMap[this.rightCurrentFrame]),
           ],
         })
-      } else {
+      }
+      else {
         utils.confirm('Are you sure to replace? This would remove ALL annotations in the LEFT panel!').onOk(() => {
           this.setAnnotationList({
             index: this.leftCurrentFrame,
@@ -221,7 +222,8 @@ export default {
             ...this.clone(this.annotationListMap[this.leftCurrentFrame]),
           ],
         })
-      } else {
+      }
+      else {
         utils.confirm('Are you sure to replace? This would remove ALL annotations in the RIGHT panel!').onOk(() => {
           this.setAnnotationList({
             index: this.rightCurrentFrame,
@@ -311,7 +313,8 @@ export default {
               leftAnnotation.instance,
               leftAnnotation.score,
             ))
-          } else if (this.mode === 'region') {
+          }
+          else if (this.mode === 'region') {
             const newPointList = []
             for (let k = 0; k < leftAnnotation.pointList.length; k++) {
               const leftPoint = leftAnnotation.pointList[k]
@@ -328,7 +331,8 @@ export default {
               leftAnnotation.instance,
               leftAnnotation.score,
             ))
-          } else if (this.mode === 'skeleton') {
+          }
+          else if (this.mode === 'skeleton') {
             const newPointList = []
             for (let k = 0; k < leftAnnotation.pointList.length; k++) {
               const leftPoint = leftAnnotation.pointList[k]

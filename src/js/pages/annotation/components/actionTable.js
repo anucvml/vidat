@@ -239,7 +239,8 @@ export default {
         utils.confirm('Are you sure to delete ALL actions?').onOk(() => {
           this.actionAnnotationList = []
         })
-      } else {
+      }
+      else {
         utils.notify('There are no actions!')
       }
     },

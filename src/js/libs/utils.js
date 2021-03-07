@@ -125,7 +125,8 @@ export default {
   toFixed2 (value) {
     if (value) {
       return value.toFixed(2)
-    } else {
+    }
+    else {
       return '0.00'
     }
   },

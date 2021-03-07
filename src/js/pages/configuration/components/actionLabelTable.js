@@ -204,7 +204,8 @@ export default {
       if (action.objects.indexOf(objectID) === -1) {
         action.objects.push(objectID)
         action.objects.sort((a, b) => a - b)
-      } else {
+      }
+      else {
         action.objects.splice(action.objects.indexOf(objectID), 1)
       }
       this.saveTableData()
@@ -226,7 +227,8 @@ export default {
           utils.notify(e.toString())
           throw e
         }
-      } else {
+      }
+      else {
         this.showEdit = !this.showEdit
       }
     },
@@ -236,7 +238,8 @@ export default {
           this.json = this.jsonData
           this.showEdit = !this.showEdit
         })
-      } else {
+      }
+      else {
         this.showEdit = !this.showEdit
       }
     },

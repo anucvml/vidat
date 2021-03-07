@@ -102,13 +102,15 @@ export default {
               this.playTimeInterval = null
               this.leftCurrentFrame = this.lastLeftCurrentFrame
               this.lastLeftCurrentFrame = -1
-            } else {
+            }
+            else {
               this.leftCurrentFrame = this.leftCurrentFrame + 1
             }
           },
           1000 / this.video.fps,
         )
-      } else {
+      }
+      else {
         clearInterval(this.playTimeInterval)
         this.playTimeInterval = null
       }
@@ -123,13 +125,16 @@ export default {
       if (this.inputValue) {
         if (this.inputValue.min !== value.min && this.inputValue.max !== value.max) {
           this.currentFocus = 'range'
-        } else if (this.inputValue.min !== value.min) {
+        }
+        else if (this.inputValue.min !== value.min) {
           this.currentFocus = 'left'
-        } else {
+        }
+        else {
           this.currentFocus = 'right'
         }
         this.inputValue = value
-      } else {
+      }
+      else {
         this.inputValue = value
       }
     },
@@ -153,18 +158,22 @@ export default {
       if (leftCurrentKeyFrameIndex <= 0 || rightCurrentKeyFrameIndex <= 0) {
         this.setLeftCurrentFrame(0)
         this.setRightCurrentFrame(this.keyframeList[1] || 0)
-      } else if (leftCurrentKeyFrameIndex === rightCurrentKeyFrameIndex) {
+      }
+      else if (leftCurrentKeyFrameIndex === rightCurrentKeyFrameIndex) {
         this.setLeftCurrentFrame(this.keyframeList[rightCurrentKeyFrameIndex - 1])
         this.setRightCurrentFrame(rightCurrentKeyFrame)
-      } else if (leftCurrentKeyFrameIndex < rightCurrentKeyFrameIndex) {
+      }
+      else if (leftCurrentKeyFrameIndex < rightCurrentKeyFrameIndex) {
         if (rightCurrentKeyFrameIndex - 2 < 0) {
           this.setLeftCurrentFrame(0)
           this.setRightCurrentFrame(this.keyframeList[1] || 0)
-        } else {
+        }
+        else {
           this.setLeftCurrentFrame(this.keyframeList[rightCurrentKeyFrameIndex - 2])
           this.setRightCurrentFrame(this.keyframeList[rightCurrentKeyFrameIndex - 1])
         }
-      } else {
+      }
+      else {
         this.setLeftCurrentFrame(rightCurrentKeyFrame)
         this.setRightCurrentFrame(leftCurrentKeyFrame)
       }
@@ -177,7 +186,8 @@ export default {
       if (rightCurrentKeyFrameIndex - leftCurrentKeyFrameIndex === 1) {
         this.setLeftCurrentFrame(leftCurrentKeyFrame)
         this.setRightCurrentFrame(rightCurrentKeyFrame)
-      } else {
+      }
+      else {
         this.setLeftCurrentFrame(leftCurrentKeyFrame)
         this.setRightCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 1] || leftCurrentKeyFrame)
       }
@@ -191,18 +201,22 @@ export default {
       if (leftCurrentKeyFrameIndex >= lastIndex || rightCurrentKeyFrameIndex >= lastIndex) {
         this.setLeftCurrentFrame(this.keyframeList[lastIndex - 1] || this.keyframeList[lastIndex])
         this.setRightCurrentFrame(this.keyframeList[lastIndex])
-      } else if (leftCurrentKeyFrameIndex === rightCurrentKeyFrameIndex) {
+      }
+      else if (leftCurrentKeyFrameIndex === rightCurrentKeyFrameIndex) {
         this.setLeftCurrentFrame(leftCurrentKeyFrame)
         this.setRightCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 1])
-      } else if (leftCurrentKeyFrameIndex < rightCurrentKeyFrameIndex) {
+      }
+      else if (leftCurrentKeyFrameIndex < rightCurrentKeyFrameIndex) {
         if (leftCurrentKeyFrameIndex + 2 > lastIndex) {
           this.setLeftCurrentFrame(this.keyframeList[lastIndex - 1] || this.keyframeList[lastIndex])
           this.setRightCurrentFrame(this.keyframeList[lastIndex])
-        } else {
+        }
+        else {
           this.setLeftCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 1])
           this.setRightCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 2])
         }
-      } else {
+      }
+      else {
         this.setLeftCurrentFrame(leftCurrentKeyFrame)
         this.setRightCurrentFrame(this.keyframeList[leftCurrentKeyFrameIndex + 1])
       }
@@ -225,7 +239,8 @@ export default {
           this.leftCurrentFrame += interval
           this.rightCurrentFrame += interval
         }
-      } else {
+      }
+      else {
         if (Math.max(this.leftCurrentFrame, this.rightCurrentFrame) + interval <= this.video.frames) {
           this.leftCurrentFrame += interval
           this.rightCurrentFrame += interval
@@ -248,41 +263,54 @@ export default {
         const delta = -1
         if (this.currentFocus === 'range') {
           this.moveRange(delta)
-        } else if (this.currentFocus === 'left') {
+        }
+        else if (this.currentFocus === 'left') {
           this.moveLeftFrame(delta)
-        } else if (this.currentFocus === 'right') {
+        }
+        else if (this.currentFocus === 'right') {
           this.moveRightFrame(delta)
         }
-      } else if (event.keyCode === 0x27) { // ->
+      }
+      else if (event.keyCode === 0x27) { // ->
         const delta = 1
         if (this.currentFocus === 'range') {
           this.moveRange(delta)
-        } else if (this.currentFocus === 'left') {
+        }
+        else if (this.currentFocus === 'left') {
           this.moveLeftFrame(delta)
-        } else if (this.currentFocus === 'right') {
+        }
+        else if (this.currentFocus === 'right') {
           this.moveRightFrame(delta)
         }
-      } else if (event.keyCode === 0x21) { // page up
+      }
+      else if (event.keyCode === 0x21) { // page up
         const delta = Math.round(-0.1 * this.video.frames)
         if (this.currentFocus === 'range') {
           this.moveRange(delta)
-        } else if (this.currentFocus === 'left') {
+        }
+        else if (this.currentFocus === 'left') {
           this.moveLeftFrame(delta)
-        } else if (this.currentFocus === 'right') {
+        }
+        else if (this.currentFocus === 'right') {
           this.moveRightFrame(delta)
         }
-      } else if (event.keyCode === 0x22) { // page down
+      }
+      else if (event.keyCode === 0x22) { // page down
         const delta = Math.round(0.1 * this.video.frames)
         if (this.currentFocus === 'range') {
           this.moveRange(delta)
-        } else if (this.currentFocus === 'left') {
+        }
+        else if (this.currentFocus === 'left') {
           this.moveLeftFrame(delta)
-        } else if (this.currentFocus === 'right') {
+        }
+        else if (this.currentFocus === 'right') {
           this.moveRightFrame(delta)
         }
-      } else if (event.keyCode === 0xBC) { // comma, <
+      }
+      else if (event.keyCode === 0xBC) { // comma, <
         this.handlePreviousKeyframe()
-      } else if (event.keyCode === 0xBE) { // period, >
+      }
+      else if (event.keyCode === 0xBE) { // period, >
         this.handleNextKeyframe()
       }
     },
