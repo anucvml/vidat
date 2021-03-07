@@ -154,13 +154,131 @@ export default {
       const mouseY = event.offsetY / this.$refs.canvas.clientHeight * this.video.height
       return [mouseX, mouseY]
     },
+    getCurrentObjectAnnotation (mouseX, mouseY) {
+      let currentObjectAnnotation
+      let index
+      let type
+      for (let i = 0; i < this.annotationList.length; i++) {
+        let objectAnnotation = this.annotationList[i]
+        if (!currentObjectAnnotation) {
+          if (objectAnnotation.nearTopLeftAnchor(mouseX, mouseY) ||
+            objectAnnotation.nearTopRightAnchor(mouseX, mouseY) ||
+            objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY) ||
+            objectAnnotation.nearBottomRightAnchor(mouseX, mouseY)) {
+            type = 'cornerSizing'
+            currentObjectAnnotation = objectAnnotation
+            index = i
+            objectAnnotation.highlight = true
+          }
+          else if (objectAnnotation.nearTopAnchor(mouseX, mouseY)) {
+            type = 'topSizing'
+            currentObjectAnnotation = objectAnnotation
+            index = i
+            objectAnnotation.highlight = true
+          }
+          else if (objectAnnotation.nearBottomAnchor(mouseX, mouseY)) {
+            type = 'bottomSizing'
+            currentObjectAnnotation = objectAnnotation
+            index = i
+            objectAnnotation.highlight = true
+          }
+          else if (objectAnnotation.nearLeftAnchor(mouseX, mouseY)) {
+            type = 'leftSizing'
+            currentObjectAnnotation = objectAnnotation
+            index = i
+            objectAnnotation.highlight = true
+          }
+          else if (objectAnnotation.nearRightAnchor(mouseX, mouseY)) {
+            type = 'rightSizing'
+            currentObjectAnnotation = objectAnnotation
+            index = i
+            objectAnnotation.highlight = true
+          }
+          else if (objectAnnotation.nearBoundary(mouseX, mouseY)) {
+            type = 'moving'
+            currentObjectAnnotation = objectAnnotation
+            index = i
+            objectAnnotation.highlight = true
+          }
+          else {
+            objectAnnotation.highlight = false
+          }
+        }
+        else {
+          objectAnnotation.highlight = false
+        }
+      }
+      return [currentObjectAnnotation, index, type]
+    },
+    getCurrentRegionAnnotation (mouseX, mouseY) {
+      let currentRegionAnnotation
+      let index
+      let type
+      let nearPoint
+      let nearPointIndex
+      for (let i = 0; i < this.annotationList.length; i++) {
+        const regionAnnotation = this.annotationList[i]
+        if (!currentRegionAnnotation) {
+          for (let j = 0; j < regionAnnotation.pointList.length; j++) {
+            const point = regionAnnotation.pointList[j]
+            if (RegionAnnotation.nearPoint(mouseX, mouseY, point)) {
+              nearPoint = point
+              type = 'sizing'
+              currentRegionAnnotation = regionAnnotation
+              index = i
+              nearPointIndex = j
+              regionAnnotation.highlight = true
+              break
+            }
+          }
+          if (!currentRegionAnnotation && regionAnnotation.nearBoundary(mouseX, mouseY)) {
+            type = 'moving'
+            currentRegionAnnotation = regionAnnotation
+            index = i
+            regionAnnotation.highlight = true
+          }
+          else {
+            regionAnnotation.highlight = false
+          }
+        }
+        else {
+          regionAnnotation.highlight = false
+        }
+      }
+      return [currentRegionAnnotation, index, nearPoint, nearPointIndex, type]
+    },
+    getCurrentSkeletonAnnotation (mouseX, mouseY) {
+      let currentSkeletonAnnotation
+      let index
+      let nearPoint
+      let type
+      for (let i = 0; i < this.annotationList.length; i++) {
+        let skeletonAnnotation = this.annotationList[i]
+        if (!currentSkeletonAnnotation) {
+          for (const point of skeletonAnnotation.pointList) {
+            if (SkeletonAnnotation.nearPoint(mouseX, mouseY, point)) {
+              currentSkeletonAnnotation = skeletonAnnotation
+              index = i
+              nearPoint = point
+              type = nearPoint && nearPoint.name !== 'center' ? 'sizing' : 'moving'
+              skeletonAnnotation.highlight = true
+            }
+          }
+        }
+        else {
+          skeletonAnnotation.highlight = false
+        }
+      }
+      return [currentSkeletonAnnotation, index, nearPoint, type]
+    },
     handleMousemove (event) {
       event.preventDefault()
       const [mouseX, mouseY] = this.getMouseLocation(event)
       if (this.status) {
         this.status.x = mouseX
         this.status.y = mouseY
-      } else {
+      }
+      else {
         this.status = {
           x: mouseX,
           y: mouseY,
@@ -176,7 +294,8 @@ export default {
           top: '1px',
           left: '1px',
         }
-      } else {
+      }
+      else {
         this.statusStyle = {
           ...statusBaseStyle,
           bottom: '1px',
@@ -206,7 +325,8 @@ export default {
               this.dragContext.x + deltaX,
               this.dragContext.y + deltaY,
             )
-          } else if (this.dragContext.type === 'cornerSizing') {
+          }
+          else if (this.dragContext.type === 'cornerSizing') {
             const oppositeAnchor = this.dragContext.oppositeAnchor
             activeAnnotation.resize(
               oppositeAnchor.x,
@@ -214,30 +334,32 @@ export default {
               (oppositeAnchor.x > this.dragContext.x ? -this.dragContext.width : this.dragContext.width) + deltaX,
               (oppositeAnchor.y > this.dragContext.y ? -this.dragContext.height : this.dragContext.height) + deltaY,
             )
-          } else if (this.dragContext.type === 'topSizing') {
+          }
+          else if (this.dragContext.type === 'topSizing') {
             activeAnnotation.resize(
               undefined,
               mouseY,
               undefined,
               this.dragContext.height - deltaY)
-          } else if (this.dragContext.type === 'bottomSizing') {
+          }
+          else if (this.dragContext.type === 'bottomSizing') {
             activeAnnotation.resize(
               undefined,
               mouseY > this.dragContext.y ? undefined : mouseY,
               undefined,
               mouseY > this.dragContext.y ? this.dragContext.height + deltaY : this.dragContext.y - mouseY)
-          } else if (this.dragContext.type === 'leftSizing') {
+          }
+          else if (this.dragContext.type === 'leftSizing') {
             activeAnnotation.resize(
               mouseX,
               undefined,
               this.dragContext.width - deltaX)
-          } else if (this.dragContext.type === 'rightSizing') {
+          }
+          else if (this.dragContext.type === 'rightSizing') {
             activeAnnotation.resize(
               mouseX > this.dragContext.x ? undefined : mouseX,
               undefined,
               mouseX > this.dragContext.x ? this.dragContext.width + deltaX : this.dragContext.x - mouseX)
-          } else {
-            throw 'Unknown drag type'
           }
         }
         // highlight the object
@@ -248,39 +370,48 @@ export default {
             if (!this.dragContext) this.cursor = 'nw-resize'
             objectAnnotation.highlight = true
             found = i
-          } else if (!found && objectAnnotation.nearTopAnchor(mouseX, mouseY)) {
+          }
+          else if (!found && objectAnnotation.nearTopAnchor(mouseX, mouseY)) {
             if (!this.dragContext) this.cursor = 'n-resize'
             objectAnnotation.highlight = true
             found = i
-          } else if (!found && objectAnnotation.nearTopRightAnchor(mouseX, mouseY)) {
+          }
+          else if (!found && objectAnnotation.nearTopRightAnchor(mouseX, mouseY)) {
             if (!this.dragContext) this.cursor = 'ne-resize'
             objectAnnotation.highlight = true
             found = i
-          } else if (!found && objectAnnotation.nearLeftAnchor(mouseX, mouseY)) {
+          }
+          else if (!found && objectAnnotation.nearLeftAnchor(mouseX, mouseY)) {
             if (!this.dragContext) this.cursor = 'w-resize'
             objectAnnotation.highlight = true
             found = i
-          } else if (!found && objectAnnotation.nearRightAnchor(mouseX, mouseY)) {
+          }
+          else if (!found && objectAnnotation.nearRightAnchor(mouseX, mouseY)) {
             if (!this.dragContext) this.cursor = 'e-resize'
             objectAnnotation.highlight = true
             found = i
-          } else if (!found && objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY)) {
+          }
+          else if (!found && objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY)) {
             if (!this.dragContext) this.cursor = 'sw-resize'
             objectAnnotation.highlight = true
             found = i
-          } else if (!found && objectAnnotation.nearBottomAnchor(mouseX, mouseY)) {
+          }
+          else if (!found && objectAnnotation.nearBottomAnchor(mouseX, mouseY)) {
             if (!this.dragContext) this.cursor = 's-resize'
             objectAnnotation.highlight = true
             found = i
-          } else if (!found && objectAnnotation.nearBottomRightAnchor(mouseX, mouseY)) {
+          }
+          else if (!found && objectAnnotation.nearBottomRightAnchor(mouseX, mouseY)) {
             if (!this.dragContext) this.cursor = 'se-resize'
             objectAnnotation.highlight = true
             found = i
-          } else if (!found && objectAnnotation.nearBoundary(mouseX, mouseY)) {
+          }
+          else if (!found && objectAnnotation.nearBoundary(mouseX, mouseY)) {
             if (!this.dragContext) this.cursor = 'grab'
             objectAnnotation.highlight = true
             found = i
-          } else {
+          }
+          else {
             objectAnnotation.highlight = false
           }
         }
@@ -288,11 +419,13 @@ export default {
           this.activeContext = {
             index: found,
           }
-        } else {
+        }
+        else {
           this.activeContext = null
           this.cursor = 'crosshair'
         }
-      } else if (this.mode === 'region' && this.preference.regions) {
+      }
+      else if (this.mode === 'region' && this.preference.regions) {
         // creating a region
         if (this.createContext) {
           const activeAnnotation = this.createContext.regionAnnotation
@@ -309,12 +442,11 @@ export default {
           this.dragContext.mousedownY = mouseY
           if (this.dragContext.type === 'moving') {
             activeAnnotation.move(deltaX, deltaY)
-          } else if (this.dragContext.type === 'sizing') {
+          }
+          else if (this.dragContext.type === 'sizing') {
             const point = this.dragContext.nearPoint
             point.x = mouseX
             point.y = mouseY
-          } else {
-            throw 'Unknown drag type'
           }
         }
         // highlight the region
@@ -325,11 +457,13 @@ export default {
             this.cursor = 'move'
             regionAnnotation.highlight = true
             found = i
-          } else if (!found && regionAnnotation.nearBoundary(mouseX, mouseY)) {
+          }
+          else if (!found && regionAnnotation.nearBoundary(mouseX, mouseY)) {
             this.cursor = 'grab'
             regionAnnotation.highlight = true
             found = i
-          } else {
+          }
+          else {
             regionAnnotation.highlight = false
           }
         }
@@ -337,11 +471,13 @@ export default {
           this.activeContext = {
             index: found,
           }
-        } else {
+        }
+        else {
           this.activeContext = null
           this.cursor = 'crosshair'
         }
-      } else if (this.mode === 'skeleton' && this.preference.skeletons) {
+      }
+      else if (this.mode === 'skeleton' && this.preference.skeletons) {
         // create a skeleton
         if (this.createContext) {
           this.createContext.skeletonAnnotation.ratio =
@@ -357,12 +493,11 @@ export default {
           this.dragContext.mousedownY = mouseY
           if (this.dragContext.type === 'moving') {
             skeletonAnnotation.move(deltaX, deltaY)
-          } else if (this.dragContext.type === 'sizing') {
+          }
+          else if (this.dragContext.type === 'sizing') {
             const point = this.dragContext.nearPoint
             point.x = mouseX
             point.y = mouseY
-          } else {
-            throw 'Unknown drag type'
           }
         }
         // highlight the skeleton
@@ -380,12 +515,14 @@ export default {
           if (!found && nearPoint) {
             if (nearPoint.name === 'center') {
               this.cursor = 'grab'
-            } else {
+            }
+            else {
               this.cursor = 'move'
             }
             skeletonAnnotation.highlight = true
             found = i
-          } else {
+          }
+          else {
             skeletonAnnotation.highlight = false
           }
         }
@@ -393,7 +530,8 @@ export default {
           this.activeContext = {
             index: found,
           }
-        } else {
+        }
+        else {
           this.status.message = ''
           this.activeContext = null
           this.cursor = 'crosshair'
@@ -420,13 +558,17 @@ export default {
               objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY) ||
               objectAnnotation.nearBottomRightAnchor(mouseX, mouseY)) {
               type = 'cornerSizing'
-            } else if (objectAnnotation.nearTopAnchor(mouseX, mouseY)) {
+            }
+            else if (objectAnnotation.nearTopAnchor(mouseX, mouseY)) {
               type = 'topSizing'
-            } else if (objectAnnotation.nearBottomAnchor(mouseX, mouseY)) {
+            }
+            else if (objectAnnotation.nearBottomAnchor(mouseX, mouseY)) {
               type = 'bottomSizing'
-            } else if (objectAnnotation.nearLeftAnchor(mouseX, mouseY)) {
+            }
+            else if (objectAnnotation.nearLeftAnchor(mouseX, mouseY)) {
               type = 'leftSizing'
-            } else if (objectAnnotation.nearRightAnchor(mouseX, mouseY)) {
+            }
+            else if (objectAnnotation.nearRightAnchor(mouseX, mouseY)) {
               type = 'rightSizing'
             }
             this.dragContext = {
@@ -455,7 +597,8 @@ export default {
           }
           this.annotationList.push(objectAnnotation)
         }
-      } else if (this.mode === 'region' && this.preference.regions) {
+      }
+      else if (this.mode === 'region' && this.preference.regions) {
         // drag
         let found = false
         for (let regionAnnotation of this.annotationList) {
@@ -471,10 +614,12 @@ export default {
             if (this.backspaceDown && nearPoint) {
               if (regionAnnotation.pointList.length <= 3) {
                 utils.notify('At least 3 points.')
-              } else {
+              }
+              else {
                 regionAnnotation.pointList.splice(regionAnnotation.pointList.indexOf(nearPoint), 1)
               }
-            } else if (this.altDown && !nearPoint) {
+            }
+            else if (this.altDown && !nearPoint) {
               let pointIndexList = regionAnnotation.getPointIndexListOfBoundary(mouseX, mouseY)
               const minIndex = Math.min(...pointIndexList)
               const maxIndex = Math.max(...pointIndexList)
@@ -484,7 +629,8 @@ export default {
               }
               if (minIndex === 0 && maxIndex === regionAnnotation.pointList.length - 1) {
                 regionAnnotation.pointList.push(newPoint)
-              } else {
+              }
+              else {
                 regionAnnotation.pointList.splice(minIndex + 1, 0, newPoint)
               }
               this.dragContext = {
@@ -494,7 +640,8 @@ export default {
                 mousedownX: mouseX,
                 mousedownY: mouseY,
               }
-            } else {
+            }
+            else {
               if (this.shiftDown && !nearPoint) {
                 regionAnnotation = regionAnnotation.clone()
                 this.annotationList.push(regionAnnotation)
@@ -522,7 +669,8 @@ export default {
           }
           this.annotationList.push(regionAnnotation)
         }
-      } else if (this.mode === 'skeleton' && this.preference.skeletons) {
+      }
+      else if (this.mode === 'skeleton' && this.preference.skeletons) {
         // drag
         let found = false
         for (let skeletonAnnotation of this.annotationList) {
@@ -577,7 +725,8 @@ export default {
           if (activeAnnotation.width < 8 || activeAnnotation.height < 8) {
             utils.notify('The object is too small. At least 8x8.')
             this.annotationList.splice(this.createContext.index, 1)
-          } else {
+          }
+          else {
             this.createContext = null
             if (this.showPopup) {
               this.popup = {
@@ -592,7 +741,8 @@ export default {
         if (this.dragContext && event.type === 'mouseup') {
           this.dragContext = null
         }
-      } else if (this.mode === 'region' && this.preference.regions) {
+      }
+      else if (this.mode === 'region' && this.preference.regions) {
         if (this.createContext) {
           // handle mouseout
           if (event.type === 'mouseout') {
@@ -614,7 +764,8 @@ export default {
             }
             this.autoFocus()
             this.createContext = null
-          } else {
+          }
+          else {
             // add new point
             pointList.push({
               x: mouseX,
@@ -625,7 +776,8 @@ export default {
         if (this.dragContext && event.type === 'mouseup') {
           this.dragContext = null
         }
-      } else if (this.mode === 'skeleton' && this.preference.skeletons) {
+      }
+      else if (this.mode === 'skeleton' && this.preference.skeletons) {
         if (this.createContext) {
           if (this.showPopup) {
             this.popup = {
@@ -670,56 +822,30 @@ export default {
       event.preventDefault()
       const [mouseX, mouseY] = this.getTouchLocation(event)
       if (this.mode === 'object' && this.preference.objects) {
-        // highlight the object
-        let found = false
-        for (let i = 0; i < this.annotationList.length; i++) {
-          const objectAnnotation = this.annotationList[i]
-          if (!found) {
-            let type
-            if (objectAnnotation.nearTopLeftAnchor(mouseX, mouseY) ||
-              objectAnnotation.nearTopRightAnchor(mouseX, mouseY) ||
-              objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY) ||
-              objectAnnotation.nearBottomRightAnchor(mouseX, mouseY)) {
-              type = 'cornerSizing'
-              found = true
-            } else if (objectAnnotation.nearTopAnchor(mouseX, mouseY)) {
-              type = 'topSizing'
-              found = true
-            } else if (objectAnnotation.nearBottomAnchor(mouseX, mouseY)) {
-              type = 'bottomSizing'
-              found = true
-            } else if (objectAnnotation.nearLeftAnchor(mouseX, mouseY)) {
-              type = 'leftSizing'
-              found = true
-            } else if (objectAnnotation.nearRightAnchor(mouseX, mouseY)) {
-              type = 'rightSizing'
-              found = true
-            } else if (objectAnnotation.nearBoundary(mouseX, mouseY)) {
+        let [objectAnnotation, index, type] = this.getCurrentObjectAnnotation(mouseX, mouseY)
+        if (objectAnnotation) {
+          if (this.delMode) {
+            this.annotationList.splice(index, 1)
+          }
+          else {
+            if (this.copyMode) {
+              this.annotationList.push(objectAnnotation.clone())
               type = 'moving'
-              found = true
-            } else {
-              objectAnnotation.highlight = false
             }
-            if (found) {
-              objectAnnotation.highlight = true
-              this.dragContext = {
-                index: i,
-                type: type,
-                x: objectAnnotation.x,
-                y: objectAnnotation.y,
-                width: objectAnnotation.width,
-                height: objectAnnotation.height,
-                mousedownX: mouseX,
-                mousedownY: mouseY,
-                oppositeAnchor: type === 'cornerSizing' ? objectAnnotation.oppositeAnchor(mouseX, mouseY) : null,
-              }
+            this.dragContext = {
+              index: index,
+              type: type,
+              x: objectAnnotation.x,
+              y: objectAnnotation.y,
+              width: objectAnnotation.width,
+              height: objectAnnotation.height,
+              mousedownX: mouseX,
+              mousedownY: mouseY,
+              oppositeAnchor: type === 'cornerSizing' ? objectAnnotation.oppositeAnchor(mouseX, mouseY) : null,
             }
-          } else {
-            objectAnnotation.highlight = false
           }
         }
-        // creating an object
-        if (!found && !this.createContext) {
+        else if (!this.createContext && !this.delMode && !this.copyMode) {
           const objectAnnotation = new ObjectAnnotation(mouseX, mouseY, 0, 0)
           this.createContext = {
             index: this.annotationList.length,
@@ -731,7 +857,8 @@ export default {
           objectAnnotation.highlight = true
           this.annotationList.push(objectAnnotation)
         }
-      } else if (this.mode === 'region' && this.preference.regions) {
+      }
+      else if (this.mode === 'region' && this.preference.regions) {
         // add point when creating
         if (this.createContext) {
           const pointList = this.createContext.regionAnnotation.pointList
@@ -743,7 +870,8 @@ export default {
             this.$refs.table.focusLast()
             this.createContext.regionAnnotation.highlight = false
             this.createContext = null
-          } else {
+          }
+          else {
             // add new point
             pointList.push({
               x: mouseX,
@@ -752,42 +880,51 @@ export default {
           }
           return
         }
-        let found = false
-        for (let i = 0; i < this.annotationList.length; i++) {
-          const regionAnnotation = this.annotationList[i]
-          if (!found) {
-            let type
-            let nearPoint
-            for (const point of regionAnnotation.pointList) {
-              if (RegionAnnotation.nearPoint(mouseX, mouseY, point)) {
-                nearPoint = point
-                type = 'sizing'
-                found = true
-                break
-              }
+        let [regionAnnotation, index, nearPoint, nearPointIndex, type] = this.getCurrentRegionAnnotation(mouseX, mouseY)
+        if (regionAnnotation) {
+          if (this.delMode) {
+            this.annotationList.splice(index, 1)
+          }
+          else if (this.delPointMode) {
+            if (regionAnnotation.pointList.length <= 3) {
+              utils.notify('At least 3 points.')
             }
-            if (!found && regionAnnotation.nearBoundary(mouseX, mouseY)) {
+            else {
+              regionAnnotation.pointList.splice(nearPointIndex, 1)
+            }
+          }
+          else {
+            if (this.copyMode) {
+              this.annotationList.push(regionAnnotation.clone())
               type = 'moving'
-              found = true
-            } else {
-              regionAnnotation.highlight = false
             }
-            if (found) {
-              regionAnnotation.highlight = true
-              this.dragContext = {
-                type: type,
-                regionAnnotation: regionAnnotation,
-                nearPoint: nearPoint,
-                mousedownX: mouseX,
-                mousedownY: mouseY,
+            else if (this.addPointMode) {
+              let pointIndexList = regionAnnotation.getPointIndexListOfBoundary(mouseX, mouseY)
+              const minIndex = Math.min(...pointIndexList)
+              const maxIndex = Math.max(...pointIndexList)
+              nearPoint = {
+                x: mouseX,
+                y: mouseY,
               }
+              if (minIndex === 0 && maxIndex === regionAnnotation.pointList.length - 1) {
+                regionAnnotation.pointList.push(nearPoint)
+              }
+              else {
+                regionAnnotation.pointList.splice(minIndex + 1, 0, nearPoint)
+              }
+              type = 'sizing'
             }
-          } else {
-            regionAnnotation.highlight = false
+            this.dragContext = {
+              type: type,
+              regionAnnotation: regionAnnotation,
+              nearPoint: nearPoint,
+              mousedownX: mouseX,
+              mousedownY: mouseY,
+            }
           }
         }
         // creating a region
-        if (!found && !this.createContext) {
+        else if (!this.createContext && !this.delMode && !this.copyMode && !this.addPointMode && !this.delPointMode) {
           const regionAnnotation = new RegionAnnotation([
               {
                 x: mouseX,
@@ -801,32 +938,43 @@ export default {
           regionAnnotation.highlight = true
           this.annotationList.push(regionAnnotation)
         }
-      } else if (this.mode === 'skeleton' && this.preference.skeletons) {
-        // drag
-        let found = false
-        for (const skeletonAnnotation of this.annotationList) {
-          for (const point of skeletonAnnotation.pointList) {
-            let nearPoint
-            if (SkeletonAnnotation.nearPoint(mouseX, mouseY, point)) {
-              found = true
-              nearPoint = point
-              skeletonAnnotation.highlight = true
-              this.dragContext = {
-                type: nearPoint && nearPoint.name !== 'center' ? 'sizing' : 'moving',
-                skeletonAnnotation: skeletonAnnotation,
-                nearPoint: nearPoint,
-                mousedownX: mouseX,
-                mousedownY: mouseY,
-              }
-              break
+      }
+      else if (this.mode === 'skeleton' && this.preference.skeletons) {
+        let [skeletonAnnotation, index, nearPoint, type] = this.getCurrentSkeletonAnnotation(mouseX, mouseY)
+        if (skeletonAnnotation) {
+          if (this.delMode) {
+            this.annotationList.splice(index, 1)
+          }
+          else if (this.indicatingMode) {
+            this.status = {
+              message: nearPoint.name,
+              x: mouseX,
+              y: mouseY,
             }
           }
-          if (found) {
-            break
+          else if (this.copyMode && nearPoint && nearPoint.name === 'center') {
+            skeletonAnnotation.highlight = false
+            skeletonAnnotation = skeletonAnnotation.clone()
+            skeletonAnnotation.highlight = true
+            this.annotationList.push(skeletonAnnotation)
+          }
+          if (!(this.copyMode || this.delMode || this.indicatingMode) || nearPoint.name === 'center') {
+            this.dragContext = {
+              type: type,
+              skeletonAnnotation: skeletonAnnotation,
+              nearPoint: nearPoint,
+              mousedownX: mouseX,
+              mousedownY: mouseY,
+            }
+            if (nearPoint && nearPoint.name !== 'center') {
+              this.status = {
+                message: nearPoint.name,
+              }
+            }
           }
         }
         // creating a skeleton
-        if (!found && !this.createContext) {
+        else if (!this.createContext && !this.copyMode && !this.delMode && !this.indicatingMode) {
           const skeletonAnnotation = new SkeletonAnnotation(mouseX, mouseY, this.skeletonTypeId)
           this.createContext = {
             skeletonAnnotation: skeletonAnnotation,
@@ -845,7 +993,8 @@ export default {
       if (this.status) {
         this.status.x = mouseX
         this.status.y = mouseY
-      } else {
+      }
+      else {
         this.status = {
           x: mouseX,
           y: mouseY,
@@ -861,7 +1010,8 @@ export default {
           top: '1px',
           left: '1px',
         }
-      } else {
+      }
+      else {
         this.statusStyle = {
           ...statusBaseStyle,
           bottom: '1px',
@@ -891,7 +1041,8 @@ export default {
               this.dragContext.x + deltaX,
               this.dragContext.y + deltaY,
             )
-          } else if (this.dragContext.type === 'cornerSizing') {
+          }
+          else if (this.dragContext.type === 'cornerSizing') {
             const oppositeAnchor = this.dragContext.oppositeAnchor
             activeAnnotation.resize(
               oppositeAnchor.x,
@@ -899,33 +1050,36 @@ export default {
               (oppositeAnchor.x > this.dragContext.x ? -this.dragContext.width : this.dragContext.width) + deltaX,
               (oppositeAnchor.y > this.dragContext.y ? -this.dragContext.height : this.dragContext.height) + deltaY,
             )
-          } else if (this.dragContext.type === 'topSizing') {
+          }
+          else if (this.dragContext.type === 'topSizing') {
             activeAnnotation.resize(
               undefined,
               mouseY,
               undefined,
               this.dragContext.height - deltaY)
-          } else if (this.dragContext.type === 'bottomSizing') {
+          }
+          else if (this.dragContext.type === 'bottomSizing') {
             activeAnnotation.resize(
               undefined,
               mouseY > this.dragContext.y ? undefined : mouseY,
               undefined,
               mouseY > this.dragContext.y ? this.dragContext.height + deltaY : this.dragContext.y - mouseY)
-          } else if (this.dragContext.type === 'leftSizing') {
+          }
+          else if (this.dragContext.type === 'leftSizing') {
             activeAnnotation.resize(
               mouseX,
               undefined,
               this.dragContext.width - deltaX)
-          } else if (this.dragContext.type === 'rightSizing') {
+          }
+          else if (this.dragContext.type === 'rightSizing') {
             activeAnnotation.resize(
               mouseX > this.dragContext.x ? undefined : mouseX,
               undefined,
               mouseX > this.dragContext.x ? this.dragContext.width + deltaX : this.dragContext.x - mouseX)
-          } else {
-            throw 'Unknown drag type'
           }
         }
-      } else if (this.mode === 'region' && this.preference.regions) {
+      }
+      else if (this.mode === 'region' && this.preference.regions) {
         if (this.dragContext) {
           const activeAnnotation = this.dragContext.regionAnnotation
           const deltaX = mouseX - this.dragContext.mousedownX
@@ -934,15 +1088,15 @@ export default {
           this.dragContext.mousedownY = mouseY
           if (this.dragContext.type === 'moving') {
             activeAnnotation.move(deltaX, deltaY)
-          } else if (this.dragContext.type === 'sizing') {
+          }
+          else if (this.dragContext.type === 'sizing') {
             const point = this.dragContext.nearPoint
             point.x = mouseX
             point.y = mouseY
-          } else {
-            throw 'Unknown drag type'
           }
         }
-      } else if (this.mode === 'skeleton' && this.preference.skeletons) {
+      }
+      else if (this.mode === 'skeleton' && this.preference.skeletons) {
         // create a skeleton
         if (this.createContext) {
           this.createContext.skeletonAnnotation.ratio =
@@ -957,12 +1111,11 @@ export default {
           this.dragContext.mousedownY = mouseY
           if (this.dragContext.type === 'moving') {
             skeletonAnnotation.move(deltaX, deltaY)
-          } else if (this.dragContext.type === 'sizing') {
+          }
+          else if (this.dragContext.type === 'sizing') {
             const point = this.dragContext.nearPoint
             point.x = mouseX
             point.y = mouseY
-          } else {
-            throw 'Unknown drag type'
           }
         }
       }
@@ -978,7 +1131,8 @@ export default {
           if (activeAnnotation.width < 8 || activeAnnotation.height < 8) {
             utils.notify('The object is too small. At least 8x8.')
             this.annotationList.splice(this.createContext.index, 1)
-          } else {
+          }
+          else {
             this.createContext = null
             this.$refs.table.focusLast()
           }
@@ -988,12 +1142,14 @@ export default {
           this.annotationList[this.dragContext.index].highlight = false
           this.dragContext = null
         }
-      } else if (this.mode === 'region' && this.preference.objects) {
+      }
+      else if (this.mode === 'region' && this.preference.objects) {
         if (this.dragContext) {
           this.dragContext.regionAnnotation.highlight = false
           this.dragContext = null
         }
-      } else if (this.mode === 'skeleton' && this.preference.objects) {
+      }
+      else if (this.mode === 'skeleton' && this.preference.objects) {
         if (this.createContext) {
           this.$refs.table.focusLast()
           this.createContext.skeletonAnnotation.highlight = false
@@ -1012,14 +1168,16 @@ export default {
     handlePopupShow () {
       if (this.$refs.select) {
         this.$refs.select.showPopup()
-      } else if (this.$refs.input) {
+      }
+      else if (this.$refs.input) {
         this.$refs.input.focus()
       }
     },
     autoFocus () {
       if (this.showPopup) {
         this.$refs.popup.show()
-      } else {
+      }
+      else {
         this.$refs.table.focusLast()
       }
     },
@@ -1027,7 +1185,8 @@ export default {
       if (this.preference.objects) {
         if (!this.objectAnnotationList) {
           this.objectAnnotationList = []
-        } else {
+        }
+        else {
           for (let annotation of this.objectAnnotationList) {
             annotation.draw(this.ctx)
           }
@@ -1036,7 +1195,8 @@ export default {
       if (this.preference.regions) {
         if (!this.regionAnnotationList) {
           this.regionAnnotationList = []
-        } else {
+        }
+        else {
           for (let annotation of this.regionAnnotationList) {
             annotation.draw(this.ctx)
           }
@@ -1045,7 +1205,8 @@ export default {
       if (this.preference.skeletons) {
         if (!this.skeletonAnnotationList) {
           this.skeletonAnnotationList = []
-        } else {
+        }
+        else {
           for (let annotation of this.skeletonAnnotationList) {
             annotation.draw(this.ctx)
           }
@@ -1058,23 +1219,28 @@ export default {
     handleKeyup (event) {
       if (event.target.nodeName.toLowerCase() === 'input' && event.keyCode !== 0x2E) { // see: https://github.com/anucvml/vidat/issues/91
         return false
-      } else if (event.keyCode === 0x2E) { // delete
+      }
+      else if (event.keyCode === 0x2E) { // delete
         if (this.activeContext) {
           this.annotationList.splice(this.activeContext.index, 1)
         }
-      } else if (event.keyCode === 0x1B) { // Esc
+      }
+      else if (event.keyCode === 0x1B) { // Esc
         if (this.createContext) {
           this.activeContext = null
           this.createContext = null
           this.annotationList.pop()
         }
-      } else if (event.keyCode === 0x10) { // shift
+      }
+      else if (event.keyCode === 0x10) { // shift
         this.shiftDown = false
         if (this.status) this.status.keydown = null
-      } else if (this.mode === 'region' && event.keyCode === 0x08) { // backspace
+      }
+      else if (this.mode === 'region' && event.keyCode === 0x08) { // backspace
         if (this.status) this.status.keydown = null
         this.backspaceDown = false
-      } else if (this.mode === 'region' && event.keyCode === 0x12) { // alt
+      }
+      else if (this.mode === 'region' && event.keyCode === 0x12) { // alt
         if (this.status) this.status.keydown = null
         this.altDown = false
       }
@@ -1082,13 +1248,16 @@ export default {
     handleKeydown (event) {
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
-      } else if (event.keyCode === 0x10) { // shift
+      }
+      else if (event.keyCode === 0x10) { // shift
         this.shiftDown = true
         if (this.status) this.status.keydown = 'copy'
-      } else if (this.mode === 'region' && event.keyCode === 0x08) { // backspace
+      }
+      else if (this.mode === 'region' && event.keyCode === 0x08) { // backspace
         this.backspaceDown = true
         if (this.status) this.status.keydown = 'delete'
-      } else if (this.mode === 'region' && event.keyCode === 0x12) { // alt
+      }
+      else if (this.mode === 'region' && event.keyCode === 0x12) { // alt
         this.altDown = true
         if (this.status) this.status.keydown = 'add'
       }
@@ -1146,6 +1315,21 @@ export default {
     },
     mode () {
       return this.$store.state.annotation.mode
+    },
+    delMode () {
+      return this.$store.state.delMode
+    },
+    copyMode () {
+      return this.$store.state.copyMode
+    },
+    addPointMode () {
+      return this.$store.state.addPointMode
+    },
+    delPointMode () {
+      return this.$store.state.delPointMode
+    },
+    indicatingMode () {
+      return this.$store.state.indicatingMode
     },
     annotationList: {
       get () {

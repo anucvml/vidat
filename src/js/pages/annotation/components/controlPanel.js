@@ -68,6 +68,15 @@ const CONTROL_PANEL_TEMPLATE = `
       ></q-select>
     </q-item-section>
   </q-item>
+  <q-item v-if="$q.platform.has.touch">
+    <q-item-section>
+      <q-toggle v-model="delMode" label="Delete"></q-toggle>
+      <q-toggle v-model="copyMode" label="Copy"></q-toggle>
+      <q-toggle v-if="mode === 'region'" v-model="addPointMode" label="Add Point"></q-toggle>
+      <q-toggle v-if="mode === 'region'" v-model="delPointMode" label="Del Point"></q-toggle>
+      <q-toggle v-if="mode === 'skeleton'" v-model="indicatingMode" label="Indicate"></q-toggle>
+    </q-item-section>
+  </q-item>
   <q-item dense>
     <q-item-section class="text-center">Operation</q-item-section>
   </q-item>
@@ -115,6 +124,11 @@ export default {
       'setSkeletonTypeId',
       'setGrayscale',
       'setShowPopup',
+      'setDelMode',
+      'setCopyMode',
+      'setAddPointMode',
+      'setDelPointMode',
+      'setIndicatingMode',
       'setLeftCurrentFrame',
       'setRightCurrentFrame',
       'setAnnotationList',
@@ -393,6 +407,91 @@ export default {
       },
       set (value) {
         this.setShowPopup(value)
+      },
+    },
+    delMode: {
+      get () {
+        return this.$store.state.delMode
+      },
+      set (value) {
+        if (value) {
+          this.setDelMode(true)
+          this.setCopyMode(false)
+          this.setAddPointMode(false)
+          this.setDelPointMode(false)
+          this.setIndicatingMode(false)
+        }
+        else {
+          this.setDelMode(false)
+        }
+      },
+    },
+    copyMode: {
+      get () {
+        return this.$store.state.copyMode
+      },
+      set (value) {
+        if (value) {
+          this.setDelMode(false)
+          this.setCopyMode(true)
+          this.setAddPointMode(false)
+          this.setDelPointMode(false)
+          this.setIndicatingMode(false)
+        }
+        else {
+          this.setCopyMode(false)
+        }
+      },
+    },
+    addPointMode: {
+      get () {
+        return this.$store.state.addPointMode
+      },
+      set (value) {
+        if (value) {
+          this.setDelMode(false)
+          this.setCopyMode(false)
+          this.setAddPointMode(true)
+          this.setDelPointMode(false)
+          this.setIndicatingMode(false)
+        }
+        else {
+          this.setAddPointMode(false)
+        }
+      },
+    },
+    delPointMode: {
+      get () {
+        return this.$store.state.delPointMode
+      },
+      set (value) {
+        if (value) {
+          this.setDelMode(false)
+          this.setCopyMode(false)
+          this.setAddPointMode(false)
+          this.setDelPointMode(true)
+          this.setIndicatingMode(false)
+        }
+        else {
+          this.setDelPointMode(false)
+        }
+      },
+    },
+    indicatingMode: {
+      get () {
+        return this.$store.state.indicatingMode
+      },
+      set (value) {
+        if (value) {
+          this.setDelMode(false)
+          this.setCopyMode(false)
+          this.setAddPointMode(false)
+          this.setDelPointMode(false)
+          this.setIndicatingMode(true)
+        }
+        else {
+          this.setIndicatingMode(false)
+        }
       },
     },
     leftCurrentFrame: {
