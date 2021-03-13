@@ -1,7 +1,7 @@
 <div align="center">
-<!--   <a href="https://www.anu.edu.au/" target="_blank">
-    <img src="src/img/logo.png" alt="ANU logo">
-  </a> -->
+<a href="https://www.anu.edu.au/" target="_blank">
+   <img src="src/img/logo.svg" alt="ANU logo">
+</a>
 
 # Vidat
 
