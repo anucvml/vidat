@@ -17,7 +17,7 @@ const APP_TEMPLATE = `
       <videoLoader></videoLoader>
       <router-view></router-view>
       <div class="text-black text-center text-weight-thin text-caption q-ma-sm absolute-bottom">
-          Copyright © 2020, <a href='https://github.com/anucvml/vidat' target="_blank">ANU CVML</a>. All rights reserved.
+          Copyright © 2021, <a href='https://github.com/anucvml/vidat' target="_blank">ANU CVML</a>. All rights reserved.
       </div>
     </q-page>
   </q-page-container>
