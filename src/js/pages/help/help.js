@@ -12,6 +12,12 @@ const HELP_TEMPLATE = `
     Anchor points (&#x25a0; or &#x25cf;) can be dragged to reshape objects, regions and skeletons.
     Edges between anchors can be dragged to move annotations.
   </div>
+  <div class="text-h5">Tips</div>
+  <div class="text-body1">
+    <ul>
+    <li>Touch support(mode modifier switches) for devices with touchscreens only.</li>
+    </ul>
+  </div>
   <div class="text-h5">Keyboard Shortcuts</div>
   <div class="row q-ma-none" v-for="shortcut in shortcuts" :key="shortcut.key">
     <div class="col text-center">
