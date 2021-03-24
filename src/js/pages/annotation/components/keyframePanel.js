@@ -27,6 +27,10 @@ const KEYFRAMES_PANEL_TEMPLATE = `
         :min="0"
         :max="video.frames"
         :step="1"
+        :left-label-text-color="currentFocus === 'left' || currentFocus === 'range' ? 'blue-grey-1' : 'primary'"
+        :right-label-text-color="currentFocus === 'right' || currentFocus === 'range' ? 'blue-grey-1' : 'primary'"
+        :left-label-color="currentFocus === 'left' || currentFocus === 'range' ? 'primary' : 'blue-grey-1'"
+        :right-label-color="currentFocus === 'right' || currentFocus === 'range' ? 'primary' : 'blue-grey-1'"
         :left-label-value="'L: ' + CurrentFrameRange.min + ' | ' + toFixed2(index2time(CurrentFrameRange.min)) + ' s'"
         :right-label-value="'R: ' + CurrentFrameRange.max + ' | ' + toFixed2(index2time(CurrentFrameRange.max)) + ' s'"
         label-always
