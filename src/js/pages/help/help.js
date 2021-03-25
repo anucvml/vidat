@@ -12,16 +12,16 @@ const HELP_TEMPLATE = `
     Anchor points (&#x25a0; or &#x25cf;) can be dragged to reshape objects, regions and skeletons.
     Edges between anchors can be dragged to move annotations.
   </div>
-  <div class="text-h5">Tips</div>
+  <div class="text-h5">Touch Support</div>
   <div class="text-body1">
     <ul>
-    <li>Touch support(mode modifier switches) for devices with touchscreens only.</li>
+    <li>Mode modifier switches will appear for devices with touchscreens (e.g., tablets), replacing modifier keys (shift, alt, etc.).</li>
     </ul>
   </div>
   <div class="text-h5">Keyboard Shortcuts</div>
-  <div class="row q-ma-none" v-for="shortcut in shortcuts" :key="shortcut.key">
+  <div class="row q-ma-none" v-for="shortcut in shortcuts">
     <div class="col text-center">
-      <q-chip size='md'>{{ shortcut.key }}</q-chip>
+      <q-chip size='md' v-for="key in shortcut.keys">{{ key }}</q-chip>
     </div>
     <div class="col text-body1" style="line-height: 30px;">
       {{ shortcut.description }}
@@ -44,63 +44,47 @@ export default {
     return {
       shortcuts: [
         {
-          key: 'p',
+          keys: ['p'],
           description: 'play / pause video segment',
         },
         {
-          key: 'comma, <',
-          description: 'advance to next keyframe',
+          keys: ['comma, <', 'period, >'],
+          description: 'advance to previous / next keyframe',
         },
         {
-          key: 'period, >',
-          description: 'retreat to previous keyframe',
+          keys: ['left-arrow', 'right-arrow'],
+          description: 'previous / next frame',
         },
         {
-          key: 'left-arrow',
-          description: 'previous frame',
+          keys: ['up-arrow', 'down-arrow'],
+          description: 'cycle through the frame slider: right > range > left',
         },
         {
-          key: 'right-arrow',
-          description: 'next frame',
+          keys: ['page-up', 'page-down'],
+          description: 'jump to previous / next 10% of video',
         },
         {
-          key: 'up-arrow',
-          description: 'control the frame slider: right -> range -> left',
-        },
-        {
-          key: 'down-arrow',
-          description: 'control the frame slider: left -> range -> right',
-        },
-        {
-          key: 'page-up',
-          description: 'jump to previous 10% of video',
-        },
-        {
-          key: 'page-down',
-          description: 'jump to next 10% of video',
-        },
-        {
-          key: 'plus (+)',
+          keys: ['plus (+)'],
           description: 'add a new action / video segment',
         },
         {
-          key: 'delete',
+          keys: ['delete'],
           description: 'delete currently active object',
         },
         {
-          key: 'shift',
+          keys: ['shift'],
           description: 'duplicate currently active object when mouse down',
         },
         {
-          key: 'alt',
+          keys: ['alt'],
           description: 'add new point to a region when mouse down',
         },
         {
-          key: 'backspace',
+          keys: ['backspace'],
           description: 'delete current point in a region when mouse down',
         },
         {
-          key: 'tab',
+          keys: ['tab'],
           description: 'move to next field when editing objects',
         },
       ],
