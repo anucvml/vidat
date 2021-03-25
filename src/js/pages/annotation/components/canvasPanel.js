@@ -26,6 +26,7 @@ const VIDEO_PANEL_TEMPLATE = `
         :style="{display: 'block', position: 'relative', top: 0, cursor: cursor}"
         class="full-width"
         :width="CANVAS_WIDTH"
+        tabindex="1"
         @mousemove="handleMousemove"
         @mouseout="handleMouseupAndMouseout"
         @mousedown="handleMousedown"
@@ -150,6 +151,7 @@ export default {
       }
     },
     getMouseLocation (event) {
+      this.$refs.canvas.focus()
       const mouseX = event.offsetX / this.$refs.canvas.clientWidth * this.video.width
       const mouseY = event.offsetY / this.$refs.canvas.clientHeight * this.video.height
       return [mouseX, mouseY]
@@ -806,6 +808,7 @@ export default {
       }
     },
     getTouchLocation (event) {
+      this.$refs.canvas.focus()
       let currentTarget = this.$refs.canvas
       let top = 0
       let left = 0

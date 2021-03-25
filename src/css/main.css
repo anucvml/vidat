@@ -108,3 +108,7 @@ input[type="number"] {
 table tbody tr.highlighted {
   background-color: rgba(0, 0, 0, 0.03)
 }
+
+canvas:focus {
+  outline: none;
+}
