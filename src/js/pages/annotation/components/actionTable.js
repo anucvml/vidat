@@ -271,7 +271,7 @@ export default {
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
       }
-      if (event.keyCode === 0xBB) { // +
+      if (event.code === 'Equal') {
         this.handleAdd()
       }
     },

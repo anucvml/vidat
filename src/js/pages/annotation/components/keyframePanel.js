@@ -255,7 +255,7 @@ export default {
       if (event.target.nodeName.toLowerCase() === 'input' || event.target.tabIndex === 0) {
         return false
       }
-      if (event.keyCode === 0x50) { // p
+      if (event.code === 'KeyP') {
         this.handlePlayPause()
       }
     },
@@ -263,7 +263,7 @@ export default {
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
       }
-      if (event.keyCode === 0x25) { // <-
+      if (event.code === 'ArrowLeft') {
         const delta = -1
         if (this.currentFocus === 'range') {
           this.moveRange(delta)
@@ -275,7 +275,7 @@ export default {
           this.moveRightFrame(delta)
         }
       }
-      else if (event.keyCode === 0x27) { // ->
+      else if (event.code === 'ArrowRight') {
         const delta = 1
         if (this.currentFocus === 'range') {
           this.moveRange(delta)
@@ -287,7 +287,23 @@ export default {
           this.moveRightFrame(delta)
         }
       }
-      else if (event.keyCode === 0x21) { // page up
+      else if (event.code === 'ArrowUp') {
+        this.currentFocus = {
+          left: 'right',
+          range: 'left',
+          right: 'range',
+        }[this.currentFocus]
+        event.preventDefault()
+      }
+      else if (event.code === 'ArrowDown') {
+        this.currentFocus = {
+          left: 'range',
+          range: 'right',
+          right: 'left',
+        }[this.currentFocus]
+        event.preventDefault()
+      }
+      else if (event.code === 'PageUp') {
         const delta = Math.round(-0.1 * this.video.frames)
         if (this.currentFocus === 'range') {
           this.moveRange(delta)
@@ -299,7 +315,7 @@ export default {
           this.moveRightFrame(delta)
         }
       }
-      else if (event.keyCode === 0x22) { // page down
+      else if (event.code === 'PageDown') {
         const delta = Math.round(0.1 * this.video.frames)
         if (this.currentFocus === 'range') {
           this.moveRange(delta)
@@ -311,10 +327,10 @@ export default {
           this.moveRightFrame(delta)
         }
       }
-      else if (event.keyCode === 0xBC) { // comma, <
+      else if (event.code === 'Comma') {
         this.handlePreviousKeyframe()
       }
-      else if (event.keyCode === 0xBE) { // period, >
+      else if (event.code === 'Period') {
         this.handleNextKeyframe()
       }
     },

@@ -64,6 +64,14 @@ export default {
           description: 'next frame',
         },
         {
+          key: 'up-arrow',
+          description: 'control the frame slider: right -> range -> left',
+        },
+        {
+          key: 'down-arrow',
+          description: 'control the frame slider: left -> range -> right',
+        },
+        {
           key: 'page-up',
           description: 'jump to previous 10% of video',
         },

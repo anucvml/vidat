@@ -1181,7 +1181,7 @@ export default {
         this.$refs.popup.show()
       }
       else {
-        this.$refs.table.focusLast()
+        this.$refs.table.focusLast() // most of the time, this will impact focus on the canvas
       }
     },
     draw () {
@@ -1220,30 +1220,30 @@ export default {
       this.ctx.clearRect(0, 0, this.$refs.canvas.width, this.$refs.canvas.height)
     },
     handleKeyup (event) {
-      if (event.target.nodeName.toLowerCase() === 'input' && event.keyCode !== 0x2E) { // see: https://github.com/anucvml/vidat/issues/91
+      if (event.target.nodeName.toLowerCase() === 'input') { // see: https://github.com/anucvml/vidat/issues/91
         return false
       }
-      else if (event.keyCode === 0x2E) { // delete
+      else if (event.code === 'Delete') {
         if (this.activeContext) {
           this.annotationList.splice(this.activeContext.index, 1)
         }
       }
-      else if (event.keyCode === 0x1B) { // Esc
+      else if (event.code === 'Escape') {
         if (this.createContext) {
           this.activeContext = null
           this.createContext = null
           this.annotationList.pop()
         }
       }
-      else if (event.keyCode === 0x10) { // shift
+      else if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
         this.shiftDown = false
         if (this.status) this.status.keydown = null
       }
-      else if (this.mode === 'region' && event.keyCode === 0x08) { // backspace
+      else if (this.mode === 'region' && event.code === 'Backspace') {
         if (this.status) this.status.keydown = null
         this.backspaceDown = false
       }
-      else if (this.mode === 'region' && event.keyCode === 0x12) { // alt
+      else if (this.mode === 'region' && (event.code === 'AltLeft' || event.code === 'AltRight')) {
         if (this.status) this.status.keydown = null
         this.altDown = false
       }
@@ -1252,15 +1252,15 @@ export default {
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
       }
-      else if (event.keyCode === 0x10) { // shift
+      else if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
         this.shiftDown = true
         if (this.status) this.status.keydown = 'copy'
       }
-      else if (this.mode === 'region' && event.keyCode === 0x08) { // backspace
+      else if (this.mode === 'region' && event.code === 'Backspace') {
         this.backspaceDown = true
         if (this.status) this.status.keydown = 'delete'
       }
-      else if (this.mode === 'region' && event.keyCode === 0x12) { // alt
+      else if (this.mode === 'region' && (event.code === 'AltLeft' || event.code === 'AltRight')) {
         this.altDown = true
         if (this.status) this.status.keydown = 'add'
       }
