@@ -19,7 +19,7 @@ const VIDEO_LOADER_TEMPLATE = `
     style="position: absolute; top: 5px; right: 5px"
     track-color="grey-3"
     indeterminate
-    v-show="loading"
+    v-show="video.src && loading"
   >
   </q-circular-progress>
 </div>
