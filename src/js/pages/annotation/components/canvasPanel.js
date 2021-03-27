@@ -151,7 +151,6 @@ export default {
       }
     },
     getMouseLocation (event) {
-      this.$refs.canvas.focus()
       const mouseX = event.offsetX / this.$refs.canvas.clientWidth * this.video.width
       const mouseY = event.offsetY / this.$refs.canvas.clientHeight * this.video.height
       return [mouseX, mouseY]
@@ -541,6 +540,7 @@ export default {
       }
     },
     handleMousedown (event) {
+      this.$refs.canvas.focus()
       event.preventDefault()
       const [mouseX, mouseY] = this.getMouseLocation(event)
       if (this.mode === 'object' && this.preference.objects) {
@@ -808,7 +808,6 @@ export default {
       }
     },
     getTouchLocation (event) {
-      this.$refs.canvas.focus()
       let currentTarget = this.$refs.canvas
       let top = 0
       let left = 0
@@ -822,6 +821,7 @@ export default {
       return [mouseX, mouseY]
     },
     handleTouchstart (event) {
+      this.$refs.canvas.focus()
       event.preventDefault()
       const [mouseX, mouseY] = this.getTouchLocation(event)
       if (this.mode === 'object' && this.preference.objects) {
