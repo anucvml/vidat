@@ -349,11 +349,13 @@ export default {
       return ret
     },
   },
-  mounted () {
-    window.addEventListener('keyup', this.handleKeyup)
+  created () {
     for (const action of this.actionLabelData) {
       this.actionFilterList[action.id] = true
     }
+  },
+  mounted () {
+    window.addEventListener('keyup', this.handleKeyup)
   },
   destroyed () {
     window.removeEventListener('keyup', this.handleKeyup)
