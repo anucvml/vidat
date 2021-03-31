@@ -222,11 +222,18 @@ export default {
         body: JSON.stringify(data),
       }).then(res => {
         this.submitLoading = false
-        console.log('Success', res)
-        res.text().then(text => {
-          utils.notify('Success: ' + text)
-        })
-        this.setIsSaved(true)
+	if (res.ok) {  
+          console.log('Success', res)
+          res.text().then(text => {
+            utils.notify('Success: ' + text, 'positive')
+          })
+          this.setIsSaved(true)
+	} else {
+          console.log('Failed', res)
+          res.text().then(text => {
+            utils.notify('Failed: ' + text, 'warning')
+          })
+	}
       }).catch(err => {
         this.submitLoading = false
         console.log('Failed', err)

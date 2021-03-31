@@ -36,6 +36,7 @@ To run the demo, install `nodejs`, `npm` and various modules. And link the stati
 code to the subdirectory `vdiat`.
   
 ```
+sudo apt install nodejs npm
 npm install --save express ejs body-parser cors
 
 ln -s ../../src vidat
