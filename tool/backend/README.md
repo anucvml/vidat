@@ -4,10 +4,12 @@ The ANU CVML Video Annotation Tool (Vidat) works just fine as a browser-based to
 load videos and save annotations to your local machine. Used in this way workers do not need to
 install any software and can make use of our existing hosts:
 
+<div align="center">
 _[Host1](http://users.cecs.anu.edu.au/~sgould/vidat/)_
 | _[Host2](https://vidat.davidz.cn)_
 | _[Demo1](http://users.cecs.anu.edu.au/~sgould/vidat/?video=needinput.mp4&config=needinputconfig.json)_
 | _[Demo2](https://vidat.davidz.cn/?video=needinput.mp4&annotation=needinput.json#/annotation)_
+</div>
 
 Vidat can also be integrated with a backend server for submitting user annotations and managing
 larger labelling tasks.
