@@ -1,0 +1,36 @@
+<!-- views/index.ejs -->
+<html>
+<head>
+  <title>Vidat Backend Example</title>
+  <link rel="stylesheet" href="style.css" type="text/css"/>
+</head>
+<body>
+  <h1>Vidat Backend Example</h1>
+  <%
+    if (videos.length == 0) {
+  %>
+  No videos available.
+  <%
+    } else {
+  %>
+  Click name to annotate the video. Refresh this page when done.
+  <p>
+  <%
+    }
+  %>
+  <%
+    for (var key in videos) {
+      var vid_url = vidaturl + '?video=' + videos[key].video
+      if (videos[key].annotation) {
+        vid_url += '&annotation=' + videos[key].annotation
+      }
+      vid_url += '&submitURL=' + encodeURIComponent(submission + "?token=" + key)
+  %>
+  <li><a href="<%= vid_url %>" target="_blank"><%= key %></a>
+  <%
+    }
+  %>
+  <p>
+  <address>Copyright &copy; 2021, All Rights Reserved.</address>
+</body>
+</html>
