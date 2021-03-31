@@ -79,7 +79,7 @@ There will be a button shown in the side menu which will `POST` the annotation f
 `http://localhost?token=123456`.
 
 Note that the submission url needs to be URL encoded. See `tool/backend` for a simple
-exmaple of developing a backend server.
+example of developing a backend server.
 
 ## Development
 
