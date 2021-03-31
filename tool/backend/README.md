@@ -1,8 +1,16 @@
 # Example Backend Server
 
 The ANU CVML Video Annotation Tool (Vidat) works just fine as a browser-based tool where you can
-load videos and save annotations to your local machine. It can also be integrated with a backend
-server for submitting user annotations and managing larger labelling tasks.
+load videos and save annotations to your local machine. Used in this way workers do not need to
+install any software and can make use of our existing hosts:
+
+_[Host1](http://users.cecs.anu.edu.au/~sgould/vidat/)_
+| _[Host2](https://vidat.davidz.cn)_
+| _[Demo1](http://users.cecs.anu.edu.au/~sgould/vidat/?video=needinput.mp4&config=needinputconfig.json)_
+| _[Demo2](https://vidat.davidz.cn/?video=needinput.mp4&annotation=needinput.json#/annotation)_
+
+Vidat can also be integrated with a backend server for submitting user annotations and managing
+larger labelling tasks.
 
 In this example we use node `nodejs` to build a simple backend server. Other web frameworks can be
 used instead of `nodejs`. The backend makes use of the `submitURL` parameter provided to the Vidat
