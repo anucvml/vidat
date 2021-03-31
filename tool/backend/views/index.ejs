@@ -5,28 +5,37 @@
   <link rel="stylesheet" href="style.css" type="text/css"/>
 </head>
 <body>
-  <h1>Vidat Backend Example</h1>
+  <h1><img src="logo.svg" height="32pt"> Vidat Backend Example</h1>
   <%
-    if (videos.length == 0) {
+    if (Object.keys(videos).length == 0) {
   %>
-  No videos available.
+  No videos available. Try copying mp4 files into <tt>vidat/video</tt> directory.
   <%
     } else {
   %>
-  Click name to annotate the video. Refresh this page when done.
+  Click name to annotate the video.
+  <a href="javascript:window.location.reload(true)">Refresh</a> this page when done.
   <p>
-  <%
-    }
-  %>
+  <table>
+    <tr><td><b>Video</b></td><td><b>Has Annotation</b></td></tr>
   <%
     for (var key in videos) {
       var vid_url = vidaturl + '?video=' + videos[key].video
+      var anno_flag = ''
       if (videos[key].annotation) {
         vid_url += '&annotation=' + videos[key].annotation
+        anno_flag = '&#x2714;'
       }
       vid_url += '&submitURL=' + encodeURIComponent(submission + "?token=" + key)
   %>
-  <li><a href="<%= vid_url %>" target="_blank"><%= key %></a>
+    <tr>
+      <td><a href="<%= vid_url %>" target="_blank"><%= key %></a></td>
+      <td align='center'><%- anno_flag %></td>
+    </tr>
+  <%
+    }
+  %>
+  </table>
   <%
     }
   %>
