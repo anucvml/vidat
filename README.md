@@ -54,7 +54,7 @@ Video tutorials will be posted on [YouTube](https://www.youtube.com/playlist?lis
 |   `grayscale`   |                `true`/`false`                 |               grayscale or not                |
 |   `showPopup`   |                `true`/`false`                 |               show popup or not               |
 |     `debug`     |                `true`/`false`                 |        auto load a video and no cache         |
-|   `submitURL`   |`http%3A%2F%2Flocalhost%3FsubmitToken%3D123456`|                URL for submit                 |
+|   `submitURL`   |   `http%3A%2F%2Flocalhost%3Ftoken%3D123456`   |                URL for submit                 |
 
 notes:
 
@@ -72,13 +72,14 @@ http://localhost/index.html?mode=skeleton&showPopup=false
 This will set the current mode to skeleton and disable popup window.
 
 ```
-http://localhost/index.html?submitURL=http%3A%2F%2Flocalhost%3FsubmitToken%3D123456
+http://localhost/index.html?submitURL=http%3A%2F%2Flocalhost%3Ftoken%3D123456
 ```
 
 There will be a button shown in the side menu which will `POST` the annotation file to
-`http://localhost?submitToken=123456`.
+`http://localhost?token=123456`.
 
-Note that the submission url needs to be URL encoded.
+Note that the submission url needs to be URL encoded. See `tool/backend` for a simple
+exmaple of developing a backend server.
 
 ## Development
 
