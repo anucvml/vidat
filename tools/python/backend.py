@@ -1,4 +1,4 @@
-# Example code for a Python backend to handle `submitURL` posts. See tool/backend
+# Example code for a Python backend to handle `submitURL` posts. See tools/backend
 # for a more extensive example using nodejs to write the backend server.
 
 import json
