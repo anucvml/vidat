@@ -78,7 +78,7 @@ http://localhost/index.html?submitURL=http%3A%2F%2Flocalhost%3Ftoken%3D123456
 There will be a button shown in the side menu which will `POST` the annotation file to
 `http://localhost?token=123456`.
 
-Note that the submission url needs to be URL encoded. See `tool/backend` for a simple
+Note that the submission url needs to be URL encoded. See `tools/backend` for a simple
 example of developing a backend server.
 
 ## Development
