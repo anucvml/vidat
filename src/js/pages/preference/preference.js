@@ -8,6 +8,22 @@ const PREFERENCE_TEMPLATE = `
   <q-list>
     <q-item tag="label" v-ripple>
       <q-item-section>
+        <q-item-label>Sensitivity (pixels)</q-item-label>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-input
+          dense
+          borderless
+          v-model.number="preference.sensitivity"
+          type="number"
+          @input="handleSavePreference"
+          :rules="[s => s >= 1 && s % 1 === 0 || 'Integer larger than 1.']"
+          @mousewheel.prevent
+        ></q-input>
+      </q-item-section>
+    </q-item>
+    <q-item tag="label" v-ripple>
+      <q-item-section>
         <q-item-label>Default FPS</q-item-label>
       </q-item-section>
       <q-item-section avatar>
@@ -108,6 +124,7 @@ export default {
     ]),
     handleRestore () {
       this.setPreferenceData({
+        sensitivity: Quasar.Platform.has.touch ? 10 : 5,
         defaultFps: 10,
         defaultFpk: 50,
         objects: true,

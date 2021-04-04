@@ -38,23 +38,24 @@ Video tutorials will be posted on [YouTube](https://www.youtube.com/playlist?lis
 
 ## URL Parameters
 
-|       key       |                     value                     |                  description                  |
-| :-------------: | :-------------------------------------------: | :-------------------------------------------: |
-|  `defaultFPS`   |             `1 <= Integer <= 60`              |                set default fps                |
-|  `defaultFPK`   |                `Integer >= 1`                 |        set default frames per keyframe        |
-|     `video`     |                 `example.mp4`                 |      set video src (under path `/video`)      |
-|    `config`     |                 `config.json`                 |     set config src (under path `/config`)     |
-|  `annotation`   |               `annotation.json`               | set annotation src (under path `/annotation`) |
-|     `mode`      |        `objects`, `region`, `skeleton`        |               set current mode                |
-|     `zoom`      |                `true`/`false`                 |                  zoom or not                  |
-|  `showObjects`  |                `true`/`false`                 |              show objects or not              |
-|  `showRegions`  |                `true`/`false`                 |              show regions or not              |
-| `showSkeletons` |                `true`/`false`                 |             show skeletons or not             |
-|  `showActions`  |                `true`/`false`                 |              show actions or not              |
-|   `grayscale`   |                `true`/`false`                 |               grayscale or not                |
-|   `showPopup`   |                `true`/`false`                 |               show popup or not               |
-|     `debug`     |                `true`/`false`                 |        auto load a video and no cache         |
-|   `submitURL`   |   `http%3A%2F%2Flocalhost%3Ftoken%3D123456`   |                URL for submit                 |
+|       key       |                   value                   |                  description                  |
+| :-------------: | :---------------------------------------: | :-------------------------------------------: |
+|  `sensitivity`  |              `1 <= Integer`               |           set sensitivity in pixels           |
+|  `defaultFPS`   |           `1 <= Integer <= 60`            |                set default fps                |
+|  `defaultFPK`   |              `Integer >= 1`               |        set default frames per keyframe        |
+|     `video`     |               `example.mp4`               |      set video src (under path `/video`)      |
+|    `config`     |               `config.json`               |     set config src (under path `/config`)     |
+|  `annotation`   |             `annotation.json`             | set annotation src (under path `/annotation`) |
+|     `mode`      |      `objects`, `region`, `skeleton`      |               set current mode                |
+|     `zoom`      |              `true`/`false`               |                  zoom or not                  |
+|  `showObjects`  |              `true`/`false`               |              show objects or not              |
+|  `showRegions`  |              `true`/`false`               |              show regions or not              |
+| `showSkeletons` |              `true`/`false`               |             show skeletons or not             |
+|  `showActions`  |              `true`/`false`               |              show actions or not              |
+|   `grayscale`   |              `true`/`false`               |               grayscale or not                |
+|   `showPopup`   |              `true`/`false`               |               show popup or not               |
+|     `debug`     |              `true`/`false`               |        auto load a video and no cache         |
+|   `submitURL`   | `http%3A%2F%2Flocalhost%3Ftoken%3D123456` |                URL for submit                 |
 
 notes:
 

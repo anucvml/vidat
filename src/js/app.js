@@ -45,6 +45,7 @@ const app = new Vue({
     ...Vuex.mapMutations([
       'setMode',
       'setVideoSrc',
+      'setSensitivity',
       'setDefaultFps',
       'setDefaultFpk',
       'setShowObjects',
@@ -84,6 +85,7 @@ const app = new Vue({
       URLParameter[key] = value
     }
     const {
+      sensitivity,
       defaultfps: defaultFps,
       defaultfpk: defaultFpk,
       video,
@@ -101,6 +103,12 @@ const app = new Vue({
       submiturl: submitURL,
     } = URLParameter
     // set options in silence
+    if (sensitivity) {
+      const s = parseInt(sensitivity, 10)
+      if (s >= 1 && s % 1 === 0) {
+        this.setSensitivity(s)
+      }
+    }
     if (!annotation && defaultFps) {
       const fps = parseInt(defaultFps, 10)
       if (fps >= 1 && fps <= 60 && fps % 1 === 0) {

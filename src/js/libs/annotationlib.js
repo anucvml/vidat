@@ -5,8 +5,6 @@
 import store from '../store/store.js'
 import utils from './utils.js'
 
-const PROXIMITY = Quasar.Platform.is.mobile ? 10 : 5 // proximity in pixels for active object / key point
-
 class Annotation {
   constructor (instance = null, score = null) {
     this.highlight = false
@@ -162,15 +160,23 @@ class ObjectAnnotation extends Annotation {
   }
 
   /**
+   * Get proximity from Vuex
+   * @returns {*}
+   */
+  getProximity () {
+    return store.state.settings.preferenceData.sensitivity
+  }
+
+  /**
    * Whether mouse is close to left boundary
    * @param mouseX
    * @param mouseY
    * @returns {boolean}
    */
   nearLeftBoundary (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x) <= PROXIMITY &&
-      mouseY < this.y + this.height - PROXIMITY &&
-      mouseY > this.y + PROXIMITY
+    return Math.abs(mouseX - this.x) <= this.getProximity() &&
+      mouseY < this.y + this.height - this.getProximity() &&
+      mouseY > this.y + this.getProximity()
   }
 
   /**
@@ -180,9 +186,9 @@ class ObjectAnnotation extends Annotation {
    * @returns {boolean}
    */
   nearRightBoundary (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x - this.width) <= PROXIMITY &&
-      mouseY < this.y + this.height - PROXIMITY &&
-      mouseY > this.y + PROXIMITY
+    return Math.abs(mouseX - this.x - this.width) <= this.getProximity() &&
+      mouseY < this.y + this.height - this.getProximity() &&
+      mouseY > this.y + this.getProximity()
   }
 
   /**
@@ -192,9 +198,9 @@ class ObjectAnnotation extends Annotation {
    * @returns {boolean}
    */
   nearTopBoundary (mouseX, mouseY) {
-    return Math.abs(mouseY - this.y) <= PROXIMITY &&
-      mouseX > this.x + PROXIMITY &&
-      mouseX < this.x + this.width - PROXIMITY
+    return Math.abs(mouseY - this.y) <= this.getProximity() &&
+      mouseX > this.x + this.getProximity() &&
+      mouseX < this.x + this.width - this.getProximity()
   }
 
   /**
@@ -204,9 +210,9 @@ class ObjectAnnotation extends Annotation {
    * @returns {boolean}
    */
   nearBottomBoundary (mouseX, mouseY) {
-    return Math.abs(mouseY - this.y - this.height) <= PROXIMITY &&
-      mouseX > this.x + PROXIMITY &&
-      mouseX < this.x + this.width - PROXIMITY
+    return Math.abs(mouseY - this.y - this.height) <= this.getProximity() &&
+      mouseX > this.x + this.getProximity() &&
+      mouseX < this.x + this.width - this.getProximity()
   }
 
   /**
@@ -227,7 +233,7 @@ class ObjectAnnotation extends Annotation {
    * @returns {boolean}
    */
   nearTopLeftAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY
+    return Math.abs(mouseX - this.x) <= this.getProximity() && Math.abs(mouseY - this.y) <= this.getProximity()
   }
 
   /**
@@ -237,7 +243,8 @@ class ObjectAnnotation extends Annotation {
    * @returns {boolean}
    */
   nearTopAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x - this.width / 2) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY
+    return Math.abs(mouseX - this.x - this.width / 2) <= this.getProximity() && Math.abs(mouseY - this.y) <=
+      this.getProximity()
   }
 
   /**
@@ -247,7 +254,8 @@ class ObjectAnnotation extends Annotation {
    * @returns {boolean}
    */
   nearTopRightAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y) <= PROXIMITY
+    return Math.abs(mouseX - this.x - this.width) <= this.getProximity() && Math.abs(mouseY - this.y) <=
+      this.getProximity()
   }
 
   /**
@@ -257,7 +265,8 @@ class ObjectAnnotation extends Annotation {
    * @returns {boolean}
    */
   nearLeftAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y - this.height / 2) <= PROXIMITY
+    return Math.abs(mouseX - this.x) <= this.getProximity() && Math.abs(mouseY - this.y - this.height / 2) <=
+      this.getProximity()
   }
 
   /**
@@ -267,8 +276,9 @@ class ObjectAnnotation extends Annotation {
    * @returns {boolean}
    */
   nearRightAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y - this.height / 2) <=
-      PROXIMITY
+    return Math.abs(mouseX - this.x - this.width) <= this.getProximity() &&
+      Math.abs(mouseY - this.y - this.height / 2) <=
+      this.getProximity()
   }
 
   /**
@@ -278,7 +288,8 @@ class ObjectAnnotation extends Annotation {
    * @returns {boolean}
    */
   nearBottomLeftAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <= PROXIMITY
+    return Math.abs(mouseX - this.x) <= this.getProximity() && Math.abs(mouseY - this.y - this.height) <=
+      this.getProximity()
   }
 
   /**
@@ -288,8 +299,9 @@ class ObjectAnnotation extends Annotation {
    * @returns {boolean}
    */
   nearBottomAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x - this.width / 2) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <=
-      PROXIMITY
+    return Math.abs(mouseX - this.x - this.width / 2) <= this.getProximity() &&
+      Math.abs(mouseY - this.y - this.height) <=
+      this.getProximity()
   }
 
   /**
@@ -299,7 +311,8 @@ class ObjectAnnotation extends Annotation {
    * @returns {boolean}
    */
   nearBottomRightAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x - this.width) <= PROXIMITY && Math.abs(mouseY - this.y - this.height) <= PROXIMITY
+    return Math.abs(mouseX - this.x - this.width) <= this.getProximity() && Math.abs(mouseY - this.y - this.height) <=
+      this.getProximity()
   }
 
   /**
@@ -443,7 +456,8 @@ class RegionAnnotation extends Annotation {
    * @returns {boolean}
    */
   static nearPoint (mouseX, mouseY, point) {
-    return Math.abs(mouseX - point.x) <= PROXIMITY * 3 && Math.abs(mouseY - point.y) <= PROXIMITY * 3
+    return Math.abs(mouseX - point.x) <= this.getProximity() * 3 && Math.abs(mouseY - point.y) <= this.getProximity() *
+      3
   }
 
   /**
@@ -491,11 +505,11 @@ class RegionAnnotation extends Annotation {
         distance = Math.abs((a * mouseX + b * mouseY + c) / Math.sqrt(a * a + b * b))
       }
       // approximate estimation
-      if (distance < PROXIMITY &&
-        mouseX > Math.min(p1.x, p2.x) - PROXIMITY &&
-        mouseX < Math.max(p1.x, p2.x) + PROXIMITY &&
-        mouseY > Math.min(p1.y, p2.y) - PROXIMITY &&
-        mouseY < Math.max(p1.y, p2.y) + PROXIMITY
+      if (distance < this.getProximity() &&
+        mouseX > Math.min(p1.x, p2.x) - this.getProximity() &&
+        mouseX < Math.max(p1.x, p2.x) + this.getProximity() &&
+        mouseY > Math.min(p1.y, p2.y) - this.getProximity() &&
+        mouseY < Math.max(p1.y, p2.y) + this.getProximity()
       ) {
         return [indexList[i], indexList[i + 1]]
       }
@@ -672,7 +686,8 @@ class SkeletonAnnotation extends Annotation {
    * @returns {boolean}
    */
   static nearPoint (mouseX, mouseY, point) {
-    return Math.abs(mouseX - point.x) <= PROXIMITY * 3 && Math.abs(mouseY - point.y) <= PROXIMITY * 3
+    return Math.abs(mouseX - point.x) <= this.getProximity() * 3 && Math.abs(mouseY - point.y) <= this.getProximity() *
+      3
   }
 
   /**

@@ -339,6 +339,7 @@ export default {
       ],
     preferenceData: JSON.parse(localStorage.getItem('preferenceData')) ||
       {
+        sensitivity: Quasar.Platform.has.touch ? 10 : 5,
         defaultFps: 10,
         defaultFpk: 50,
         objects: true,
@@ -374,6 +375,9 @@ export default {
     setPreferenceData (state, value) {
       state.preferenceData = value
       localStorage.setItem('preferenceData', JSON.stringify(value))
+    },
+    setSensitivity (state, value) {
+      Vue.set(state.preferenceData, 'sensitivity', value)
     },
     setDefaultFps (state, value) {
       Vue.set(state.preferenceData, 'defaultFps', value)
