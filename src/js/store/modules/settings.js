@@ -4,6 +4,27 @@
 
 import { validateObjectLabelData, validateActionLabelData, validateSkeletonTypeData } from '../validation.js'
 
+function getPreferenceData () {
+  const defaultPreferenceData = {
+    sensitivity: Quasar.Platform.has.touch ? 10 : 5,
+    defaultFps: 10,
+    defaultFpk: 50,
+    objects: true,
+    regions: true,
+    skeletons: true,
+    actions: true,
+  }
+  const ls = JSON.parse(localStorage.getItem('preferenceData'))
+  if (ls) {
+    for (const key in defaultPreferenceData) {
+      if (ls.hasOwnProperty(key)) {
+        defaultPreferenceData[key] = ls[key]
+      }
+    }
+  }
+  return defaultPreferenceData
+}
+
 export default {
   state: () => ({
     objectLabelData: JSON.parse(localStorage.getItem('objectLabelData')) ||
@@ -337,18 +358,7 @@ export default {
           ],
         },
       ],
-    preferenceData: JSON.parse(localStorage.getItem('preferenceData')) ||
-      {
-        sensitivity: JSON.parse(localStorage.getItem('preferenceData'))['sensitivity'] || Quasar.Platform.has.touch
-          ? 10
-          : 5,
-        defaultFps: 10,
-        defaultFpk: 50,
-        objects: true,
-        regions: true,
-        skeletons: true,
-        actions: true,
-      },
+    preferenceData: getPreferenceData(),
     grayscale: JSON.parse(localStorage.getItem('grayscale')) || false,
     showPopup: JSON.parse(localStorage.getItem('showPopup')) || false,
   }),
