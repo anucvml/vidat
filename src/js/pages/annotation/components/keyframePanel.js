@@ -4,12 +4,12 @@ const KEYFRAMES_PANEL_TEMPLATE = `
     <q-item>
       <q-item-section class="text-center">
         <q-btn-group>
-          <q-btn @click="handlePlayPause" :icon="playTimeInterval ? 'pause' : 'play_arrow'">
-            <q-tooltip>{{ playTimeInterval ? 'pause (p)' : 'play (p)' }}</q-tooltip>
+          <q-btn @click="handlePlayPause" :icon="isPaused ? 'play_arrow' : 'pause'">
+            <q-tooltip>{{ isPaused ? 'pause (p)' : 'play (p)' }}</q-tooltip>
           </q-btn>
-          <q-btn @click="handleStop" icon="stop" :disabled="lastLeftCurrentFrame === -1">
+          <q-btn @click="handleStop" icon="stop" :disabled="!isShowVideoPlayer">
             <!--See: https://github.com/quasarframework/quasar/issues/7096-->
-            <q-tooltip v-if="playTimeInterval">stop</q-tooltip>
+            <q-tooltip v-if="isShowVideoPlayer">stop</q-tooltip>
           </q-btn>
           <q-btn @click="showEdit = !showEdit" :icon="showEdit ? 'done' : 'edit'">
             <q-tooltip>{{ showEdit ? 'done' : 'edit' }}</q-tooltip>
@@ -37,7 +37,7 @@ const KEYFRAMES_PANEL_TEMPLATE = `
         drag-range
         snap
         @input="handleInput"
-        :readonly="lastLeftCurrentFrame !== -1"
+        :readonly="isShowVideoPlayer"
       ></q-range>
     </q-item>
     <q-space></q-space>
@@ -72,8 +72,6 @@ export default {
     return {
       index2time: utils.index2time,
       toFixed2: utils.toFixed2,
-      playTimeInterval: null,
-      lastLeftCurrentFrame: -1,
       keyframeList: null,
       objectAnnotationListMap: null,
       regionAnnotationListMap: null,
@@ -87,6 +85,11 @@ export default {
       showEdit: false,
       currentFocus: 'range', // 'left', 'right', 'range'
       inputValue: null,
+      isShowVideoPlayer: false,
+      isPaused: true,
+      videoPlayTimeout: null,
+      videoPlayInterval: null,
+      lastLeftCurrentFrame: 0,
     }
   },
   methods: {
@@ -94,36 +97,70 @@ export default {
       'setLeftCurrentFrame',
       'setRightCurrentFrame',
     ]),
+    handlePlay () {
+      this.isPaused = false
+      const videoPlayer = document.getElementById('video-player')
+      videoPlayer.play()
+
+      const duration = (this.rightCurrentFrame / this.video.fps - videoPlayer.currentTime) * 1000
+      this.videoPlayTimeout = setTimeout(() => {
+        videoPlayer.pause()
+        videoPlayer.currentTime = this.lastLeftCurrentFrame / this.video.fps
+        this.isPaused = true
+
+        clearInterval(this.videoPlayInterval)
+        this.videoPlayInterval = null
+        this.leftCurrentFrame = this.lastLeftCurrentFrame
+      }, duration)
+
+      this.videoPlayInterval = setInterval(() => {
+        this.moveLeftFrame(1)
+      }, 1000 / this.video.fps)
+    },
+    handlePause () {
+      clearTimeout(this.videoPlayTimeout)
+      this.videoPlayTimeout = null
+
+      clearInterval(this.videoPlayInterval)
+      this.videoPlayInterval = null
+
+      this.isPaused = true
+      const videoPlayer = document.getElementById('video-player')
+      videoPlayer.pause()
+    },
     handlePlayPause () {
-      if (!this.playTimeInterval) {
-        if (this.lastLeftCurrentFrame === -1) {
-          this.lastLeftCurrentFrame = this.leftCurrentFrame
-        }
-        this.playTimeInterval = setInterval(
-          () => {
-            if (this.leftCurrentFrame === this.rightCurrentFrame) {
-              clearInterval(this.playTimeInterval)
-              this.playTimeInterval = null
-              this.leftCurrentFrame = this.lastLeftCurrentFrame
-              this.lastLeftCurrentFrame = -1
-            }
-            else {
-              this.leftCurrentFrame = this.leftCurrentFrame + 1
-            }
-          },
-          1000 / this.video.fps,
-        )
+      const videoPlayer = document.getElementById('video-player')
+      if (!this.isShowVideoPlayer) {
+        this.isShowVideoPlayer = true
+        this.lastLeftCurrentFrame = this.leftCurrentFrame
+        videoPlayer.style.display = 'block'
+        videoPlayer.currentTime = this.leftCurrentFrame / this.video.fps
+        this.handlePlay()
       }
       else {
-        clearInterval(this.playTimeInterval)
-        this.playTimeInterval = null
+        if (this.isPaused) {
+          this.handlePlay()
+        }
+        else {
+          this.handlePause()
+        }
       }
     },
     handleStop () {
-      clearInterval(this.playTimeInterval)
-      this.playTimeInterval = null
+      const videoPlayer = document.getElementById('video-player')
+      videoPlayer.style.display = 'none'
+      videoPlayer.pause()
+      videoPlayer.currentTime = this.lastLeftCurrentFrame / this.video.fps
+
+      this.isShowVideoPlayer = false
+      this.isPaused = true
+
+      clearTimeout(this.videoPlayTimeout)
+      this.videoPlayTimeout = null
+
+      clearInterval(this.videoPlayInterval)
+      this.videoPlayInterval = null
       this.leftCurrentFrame = this.lastLeftCurrentFrame
-      this.lastLeftCurrentFrame = -1
     },
     handleInput (value) {
       if (this.inputValue) {
@@ -260,6 +297,9 @@ export default {
       }
     },
     handleKeydown (event) {
+      if (this.isShowVideoPlayer) {
+        return
+      }
       if (event.target.nodeName.toLowerCase() === 'input') {
         return false
       }

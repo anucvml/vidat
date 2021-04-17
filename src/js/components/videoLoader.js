@@ -4,7 +4,6 @@ const VIDEO_LOADER_TEMPLATE = `
     id="video"
     ref="video"
     preload="auto"
-    style="display: none"
     controls
     :src="video.src"
     @loadeddata="handleLoadeddata"

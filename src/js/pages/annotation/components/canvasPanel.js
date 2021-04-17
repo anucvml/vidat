@@ -4,7 +4,7 @@ const VIDEO_PANEL_TEMPLATE = `
     <div style="position: relative;">
       <img
         ref="background"
-        style="display: block; position: absolute;"
+        style="display: block; position: absolute"
         :class="['full-width', {'grayscale': grayscale}]"
       >
       <img
@@ -13,6 +13,7 @@ const VIDEO_PANEL_TEMPLATE = `
         style="display: none"
         @load="handleLoad"
       >
+      <video-player v-if="position === 'left'" style="position: absolute; top: 0"></video-player>
       <div
         v-if="actionList.length"
         style="display: block; position: absolute; bottom: 0; padding: 4px; font-size: 20px; color: white; background-color: black; opacity: 0.6">
@@ -23,7 +24,7 @@ const VIDEO_PANEL_TEMPLATE = `
       </div>
       <canvas
         ref="canvas"
-        :style="{display: 'block', position: 'relative', top: 0, cursor: cursor}"
+        :style="{display: 'block', position: 'relative', top: 0, cursor: cursor, 'z-index': 1}"
         class="full-width"
         :width="CANVAS_WIDTH"
         tabindex="1"
@@ -39,7 +40,7 @@ const VIDEO_PANEL_TEMPLATE = `
       <q-btn
         v-if="position === 'left'"
         class="bg-white"
-        style="position: absolute; top: 5px; right: 5px;"
+        style="position: absolute; top: 5px; right: 5px; z-index: 2"
         round
         @click="$store.commit('setZoom', !zoom)"
         :icon="zoom ? 'zoom_out' : 'zoom_in'"
@@ -106,15 +107,21 @@ import objectTable from './objectTable.js'
 import regionTable from './regionTable.js'
 import skeletonTable from './skeletonTable.js'
 import utils from '../../../libs/utils.js'
+import videoPlayer from './videoPlayer.js'
 import { ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '../../../libs/annotationlib.js'
 
 export default {
-  props: ['position'],
+  props: {
+    position: {
+      default: 'left',
+    },
+  },
   components: {
     filmStrip,
     objectTable,
     regionTable,
     skeletonTable,
+    videoPlayer,
   },
   data: () => {
     return {
