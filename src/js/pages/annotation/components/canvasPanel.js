@@ -229,7 +229,7 @@ export default {
         if (!currentRegionAnnotation) {
           for (let j = 0; j < regionAnnotation.pointList.length; j++) {
             const point = regionAnnotation.pointList[j]
-            if (RegionAnnotation.nearPoint(mouseX, mouseY, point)) {
+            if (regionAnnotation.nearPoint(mouseX, mouseY, point)) {
               nearPoint = point
               type = 'sizing'
               currentRegionAnnotation = regionAnnotation
@@ -264,7 +264,7 @@ export default {
         let skeletonAnnotation = this.annotationList[i]
         if (!currentSkeletonAnnotation) {
           for (const point of skeletonAnnotation.pointList) {
-            if (SkeletonAnnotation.nearPoint(mouseX, mouseY, point)) {
+            if (skeletonAnnotation.nearPoint(mouseX, mouseY, point)) {
               currentSkeletonAnnotation = skeletonAnnotation
               index = i
               nearPoint = point
@@ -514,7 +514,7 @@ export default {
           const skeletonAnnotation = this.annotationList[i]
           let nearPoint
           for (const point of skeletonAnnotation.pointList) {
-            if (SkeletonAnnotation.nearPoint(mouseX, mouseY, point)) {
+            if (skeletonAnnotation.nearPoint(mouseX, mouseY, point)) {
               nearPoint = point
               this.status.message = point.name
               break
@@ -615,7 +615,7 @@ export default {
             found = true
             let nearPoint = null
             for (const point of regionAnnotation.pointList) {
-              if (RegionAnnotation.nearPoint(mouseX, mouseY, point)) {
+              if (regionAnnotation.nearPoint(mouseX, mouseY, point)) {
                 nearPoint = point
                 break
               }
@@ -689,13 +689,13 @@ export default {
             // special order, see: https://github.com/anucvml/vidat/issues/69
             for (let i = 1; i < skeletonAnnotation.pointList.length; i++) {
               const point = skeletonAnnotation.pointList[i]
-              if (SkeletonAnnotation.nearPoint(mouseX, mouseY, point)) {
+              if (skeletonAnnotation.nearPoint(mouseX, mouseY, point)) {
                 nearPoint = point
                 break
               }
             }
             const centerPoint = skeletonAnnotation.pointList[0]
-            if (!nearPoint && SkeletonAnnotation.nearPoint(mouseX, mouseY, centerPoint)) nearPoint = centerPoint
+            if (!nearPoint && skeletonAnnotation.nearPoint(mouseX, mouseY, centerPoint)) nearPoint = centerPoint
             if (this.shiftDown && nearPoint && nearPoint.name === 'center') {
               skeletonAnnotation = skeletonAnnotation.clone()
               this.annotationList.push(skeletonAnnotation)
@@ -761,8 +761,8 @@ export default {
           const pointList = this.createContext.regionAnnotation.pointList
           // finish
           if (pointList.length >= 3 &&
-            (RegionAnnotation.nearPoint(mouseX, mouseY, pointList[0]) ||
-              RegionAnnotation.nearPoint(mouseX, mouseY, pointList[pointList.length - 2])
+            (this.createContext.regionAnnotation.nearPoint(mouseX, mouseY, pointList[0]) ||
+              this.createContext.regionAnnotation.nearPoint(mouseX, mouseY, pointList[pointList.length - 2])
             )) {
             pointList.pop()
             if (this.showPopup) {
@@ -874,8 +874,8 @@ export default {
           const pointList = this.createContext.regionAnnotation.pointList
           // finish
           if (pointList.length >= 3 &&
-            (RegionAnnotation.nearPoint(mouseX, mouseY, pointList[0]) ||
-              RegionAnnotation.nearPoint(mouseX, mouseY, pointList[pointList.length - 1])
+            (this.createContext.regionAnnotation.nearPoint(mouseX, mouseY, pointList[0]) ||
+              this.createContext.regionAnnotation.nearPoint(mouseX, mouseY, pointList[pointList.length - 1])
             )) {
             this.$refs.table.focusLast()
             this.createContext.regionAnnotation.highlight = false

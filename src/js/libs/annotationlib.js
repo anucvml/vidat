@@ -19,6 +19,14 @@ class Annotation {
   clone () {
     throw 'Not implemented!'
   }
+
+  /**
+   * Get proximity from Vuex
+   * @returns {*}
+   */
+  getProximity () {
+    return store.state.settings.preferenceData.sensitivity
+  }
 }
 
 class ObjectAnnotation extends Annotation {
@@ -157,14 +165,6 @@ class ObjectAnnotation extends Annotation {
       this.y = y
       this.height = height
     }
-  }
-
-  /**
-   * Get proximity from Vuex
-   * @returns {*}
-   */
-  getProximity () {
-    return store.state.settings.preferenceData.sensitivity
   }
 
   /**
@@ -455,7 +455,7 @@ class RegionAnnotation extends Annotation {
    * @param point
    * @returns {boolean}
    */
-  static nearPoint (mouseX, mouseY, point) {
+  nearPoint (mouseX, mouseY, point) {
     return Math.abs(mouseX - point.x) <= this.getProximity() * 3 && Math.abs(mouseY - point.y) <= this.getProximity() *
       3
   }
@@ -469,7 +469,7 @@ class RegionAnnotation extends Annotation {
   nearPoints (mouseX, mouseY) {
     let ret = false
     for (const point of this.pointList) {
-      ret = ret || RegionAnnotation.nearPoint(mouseX, mouseY, point)
+      ret = ret || this.nearPoint(mouseX, mouseY, point)
     }
     return ret
   }
@@ -685,7 +685,7 @@ class SkeletonAnnotation extends Annotation {
    * @param point
    * @returns {boolean}
    */
-  static nearPoint (mouseX, mouseY, point) {
+  nearPoint (mouseX, mouseY, point) {
     return Math.abs(mouseX - point.x) <= this.getProximity() * 3 && Math.abs(mouseY - point.y) <= this.getProximity() *
       3
   }
