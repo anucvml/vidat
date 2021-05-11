@@ -66,29 +66,40 @@ export default {
         this.setLeftCurrentFrame(keyframeList[0])
         this.setRightCurrentFrame(keyframeList[1] || keyframeList[0])
       }
-      // add keyframe to priorityQueue
-      for (const keyframe of this.keyframeList) {
-        if (keyframe !== 0) {
-          this.priorityQueue.push(keyframe)
-        }
-      }
-      if (this.$store.state.debug === false) {
-        // add frame index into the backendQueue
-        // 1. every one second
-        for (let i = 1.0; i < this.video.duration; i++) {
-          const index = utils.time2index(i)
-          if (this.keyframeList.indexOf(index) === -1) {
-            this.backendQueue.push(index)
+      const interval = parseFloat((1 / this.video.fps).toFixed(3))
+      if (this.video.src.startsWith('blob:')) {
+        // local video
+        // add keyframe to priorityQueue
+        for (const keyframe of this.keyframeList) {
+          if (keyframe !== 0) {
+            this.priorityQueue.push(keyframe)
           }
         }
-        // 2. every 1 / fps second
-        const interval = parseFloat((1 / this.video.fps).toFixed(3))
+        if (this.$store.state.debug === false) {
+          // add frame index into the backendQueue
+          // 1. every one second
+          for (let i = 1.0; i < this.video.duration; i++) {
+            const index = utils.time2index(i)
+            if (this.keyframeList.indexOf(index) === -1) {
+              this.backendQueue.push(index)
+            }
+          }
+          // 2. every 1 / fps second
+          for (let i = interval; i < this.video.duration; i += interval) {
+            if (i.toFixed(1) % 1 !== 0) {
+              this.backendQueue.push(utils.time2index(i))
+            }
+          }
+        }
+      }
+      else {
         for (let i = interval; i < this.video.duration; i += interval) {
           if (i.toFixed(1) % 1 !== 0) {
             this.backendQueue.push(utils.time2index(i))
           }
         }
       }
+
       // trigger
       event.target.currentTime = 0.0
     },
