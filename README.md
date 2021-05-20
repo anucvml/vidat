@@ -24,13 +24,14 @@ applications with the following desiradata:
    heavy "in-the-loop" processing (e.g., segments from bounding boxes or frame completion from partial labels).
 4. Integrates easily with crowd-sourced annotation services (e.g., Amazon Mechanical Turk).
 5. Compatible with all (most) modern browsers and operating systems including tablets.
-6. Open-source.
+6. Secure. Data does not need to leave the local machine (since there is no server-side processing).
+7. Open-source.
 
 Video tutorials will be posted on [YouTube](https://www.youtube.com/playlist?list=PLD-7XrNHCcFLv938DO4yYcTrgaff9BJjN).
 
 ## Installation
 
-> Note that this is only necessary if you want to do development or host your own version of the tool. If you just want to label videos then you can use one of the host servers linked to above.
+> Note that this is only necessary if you want to do development or host your own version of the tool. If you just want to label videos then you can use one of the host servers linked to above (data will remain on your local machine; it will not be sent to the host server).
 
 1. Copy all files from `src` into a single directory.
 2. Put all files behind a web server ([Nginx](http://nginx.org/), [Apache](http://httpd.apache.org/), etc.).
