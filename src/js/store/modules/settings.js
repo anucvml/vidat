@@ -13,6 +13,7 @@ function getPreferenceData () {
     regions: true,
     skeletons: true,
     actions: true,
+    muted: true,
   }
   const ls = JSON.parse(localStorage.getItem('preferenceData'))
   if (ls) {
@@ -408,6 +409,9 @@ export default {
     },
     setShowActions (state, value) {
       Vue.set(state.preferenceData, 'actions', value)
+    },
+    setMuted (state, value) {
+      Vue.set(state.preferenceData, 'muted', value)
     },
     setGrayscale (state, value) {
       Vue.set(state, 'grayscale', value)

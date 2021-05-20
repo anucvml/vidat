@@ -110,6 +110,20 @@ const PREFERENCE_TEMPLATE = `
         ></q-toggle>
       </q-item-section>
     </q-item>
+    <q-item tag="label" v-ripple>
+      <q-item-section>
+        <q-item-label>Mute video</q-item-label>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-toggle
+          color="green"
+          v-model="preference.muted"
+          checked-icon="check"
+          unchecked-icon="clear"
+          @input="handleSavePreference"
+        ></q-toggle>
+      </q-item-section>
+    </q-item>
   </q-list>
 </div>
 `
@@ -131,6 +145,7 @@ export default {
         regions: true,
         skeletons: true,
         actions: true,
+        muted: true,
       })
     },
     handleSavePreference () {

@@ -52,6 +52,7 @@ const app = new Vue({
       'setShowRegions',
       'setShowSkeletons',
       'setShowActions',
+      'setMuted',
       'setGrayscale',
       'setShowPopup',
       'setZoom',
@@ -95,6 +96,7 @@ const app = new Vue({
       showregions: showRegions,
       showskeletons: showSkeletons,
       showactions: showActions,
+      muted,
       grayscale,
       showpopup: showPopup,
       zoom,
@@ -188,6 +190,14 @@ const app = new Vue({
       }
       else if (showActions.toLowerCase() === 'false') {
         this.setShowActions(false)
+      }
+    }
+    if (muted) {
+      if (muted.toLowerCase() === 'true') {
+        this.setMuted(true)
+      }
+      else if (muted.toLowerCase() === 'false') {
+        this.setMuted(false)
       }
     }
     if (grayscale) {

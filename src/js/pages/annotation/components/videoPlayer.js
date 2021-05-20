@@ -4,7 +4,7 @@ const VIDEO_PLAYER_TEMPLATE = `
   :class="['full-width', {'grayscale': grayscale}]"
   preload="auto"
   :src="video.src"
-  muted
+  :muted="muted"
 >
 </video>
 `
@@ -19,6 +19,9 @@ export default {
     },
     video () {
       return this.$store.state.annotation.video
+    },
+    muted () {
+      return this.$store.state.settings.preferenceData.muted
     },
   },
   template: VIDEO_PLAYER_TEMPLATE,

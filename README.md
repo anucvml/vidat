@@ -52,6 +52,7 @@ Video tutorials will be posted on [YouTube](https://www.youtube.com/playlist?lis
 |  `showRegions`  |              `true`/`false`               |              show regions or not              |
 | `showSkeletons` |              `true`/`false`               |             show skeletons or not             |
 |  `showActions`  |              `true`/`false`               |              show actions or not              |
+|     `muted`     |              `true`/`false`               |               mute video or not               |
 |   `grayscale`   |              `true`/`false`               |               grayscale or not                |
 |   `showPopup`   |              `true`/`false`               |               show popup or not               |
 |     `debug`     |              `true`/`false`               |        auto load a video and no cache         |
@@ -79,8 +80,8 @@ http://localhost/index.html?submitURL=http%3A%2F%2Flocalhost%3Ftoken%3D123456
 There will be a button shown in the side menu which will `POST` the annotation file to
 `http://localhost?token=123456`.
 
-Note that the submission url needs to be URL encoded. See `tools/backend` for a simple
-example of developing a backend server.
+Note that the submission url needs to be URL encoded. See `tools/backend` for a simple example of developing a backend
+server.
 
 ## Development
 
