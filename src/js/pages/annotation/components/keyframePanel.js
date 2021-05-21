@@ -104,13 +104,7 @@ export default {
 
       const duration = (this.rightCurrentFrame / this.video.fps - videoPlayer.currentTime) * 1000
       this.videoPlayTimeout = setTimeout(() => {
-        videoPlayer.pause()
-        videoPlayer.currentTime = this.lastLeftCurrentFrame / this.video.fps
-        this.isPaused = true
-
-        clearInterval(this.videoPlayInterval)
-        this.videoPlayInterval = null
-        this.leftCurrentFrame = this.lastLeftCurrentFrame
+        this.handleStop()
       }, duration)
 
       this.videoPlayInterval = setInterval(() => {
@@ -601,6 +595,8 @@ export default {
     window.removeEventListener('resize', this.handleOnresize)
     const drawer = document.getElementById('drawer')
     drawer.removeEventListener('transitionend', this.handleOnresize)
+    clearInterval(this.videoPlayInterval)
+    clearTimeout(this.videoPlayTimeout)
   },
   template: KEYFRAMES_PANEL_TEMPLATE,
 }
