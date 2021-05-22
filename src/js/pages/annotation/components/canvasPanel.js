@@ -348,26 +348,30 @@ export default {
               undefined,
               mouseY,
               undefined,
-              this.dragContext.height - deltaY)
+              this.dragContext.height - deltaY,
+            )
           }
           else if (this.dragContext.type === 'bottomSizing') {
             activeAnnotation.resize(
               undefined,
-              mouseY > this.dragContext.y ? undefined : mouseY,
+              mouseY > this.dragContext.y ? this.dragContext.y : mouseY,
               undefined,
-              mouseY > this.dragContext.y ? this.dragContext.height + deltaY : this.dragContext.y - mouseY)
+              mouseY > this.dragContext.y ? this.dragContext.height + deltaY : this.dragContext.y - mouseY,
+            )
           }
           else if (this.dragContext.type === 'leftSizing') {
             activeAnnotation.resize(
               mouseX,
               undefined,
-              this.dragContext.width - deltaX)
+              this.dragContext.width - deltaX,
+            )
           }
           else if (this.dragContext.type === 'rightSizing') {
             activeAnnotation.resize(
-              mouseX > this.dragContext.x ? undefined : mouseX,
+              mouseX > this.dragContext.x ? this.dragContext.x : mouseX,
               undefined,
-              mouseX > this.dragContext.x ? this.dragContext.width + deltaX : this.dragContext.x - mouseX)
+              mouseX > this.dragContext.x ? this.dragContext.width + deltaX : this.dragContext.x - mouseX,
+            )
           }
         }
         // highlight the object
