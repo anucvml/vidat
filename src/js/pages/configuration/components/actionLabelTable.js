@@ -57,6 +57,7 @@ const ACTION_LABEL_TABLE_TEMPLATE = `
           ></q-btn>
         </q-td>
         <q-td key="name" :props="props" style="font-size: 14px">
+          <ZoomImage style="height: 100%; vertical-align: middle;" v-if="props.row.thumbnail" :src="props.row.thumbnail"/>
           {{ props.row.name }}
           <q-popup-edit
             auto-save
@@ -111,7 +112,7 @@ const ACTION_LABEL_TABLE_TEMPLATE = `
             <q-btn-group dense flat>
               <q-btn icon="apps" @click="handleSelectAll(props.row)"></q-btn>
               <q-btn icon="clear_all" @click="handleClearAll(props.row)"></q-btn>
-            </q-btn-group>
+            </q-btn-group>q-td
           </div>
           <div class="q-gutter-xs">
             <q-chip
@@ -161,8 +162,12 @@ const columnList = [
 ]
 
 import utils from '../../../libs/utils.js'
+import ZoomImage from '../../../components/zoomImage.js'
 
 export default {
+  components: {
+    ZoomImage
+  },
   data: () => {
     return {
       columnList,

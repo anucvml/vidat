@@ -10,3 +10,4 @@ src/config/*
 !src/config/.gitkeep
 src/video/*
 !src/video/.gitkeep
+src/annotation

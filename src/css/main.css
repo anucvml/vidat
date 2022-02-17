@@ -112,3 +112,13 @@ table tbody tr.highlighted {
 canvas:focus {
   outline: none;
 }
+
+.thumbnail:hover {
+  position: relative;
+  transform: scale(1000%);
+  z-index: 10;
+}
+
+.q-table__middle.scroll {
+  overflow: visible !important;
+}

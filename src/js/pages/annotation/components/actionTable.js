@@ -18,7 +18,7 @@ const ACTION_TABLE_TEMPLATE = `
       </q-btn>
       <q-btn icon="clear_all" @click="handleClearAll" label="clear"></q-btn>
     </q-btn-group>
-    <div class="" v-if="filter">
+    <div v-if="filter">
       <div class="q-mb-sm">
         <q-btn-group dense flat>
           <q-btn icon="apps" @click="handleSelectAll">
@@ -70,7 +70,9 @@ const ACTION_TABLE_TEMPLATE = `
         {{ toFixed2(props.row.end - props.row.start) }}
       </q-td>
       <q-td key="action" :props="props">
+        <ZoomImage style="height: 100%; vertical-align: middle;" v-if="actionLabelData[props.row.action].thumbnail" :src="actionLabelData[props.row.action].thumbnail"/>
         <q-select
+          class="inline-block"
           v-model="props.row.action"
           :options="actionOptionList"
           dense
@@ -203,8 +205,12 @@ const columnList = [
 
 import utils from '../../../libs/utils.js'
 import { ActionAnnotation } from '../../../libs/annotationlib.js'
+import ZoomImage from '../../../components/zoomImage.js'
 
 export default {
+  components: {
+    ZoomImage
+  },
   data: () => {
     return {
       columnList,
