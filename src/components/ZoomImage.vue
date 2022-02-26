@@ -1,7 +1,7 @@
 <template>
   <div v-if="src">
     <img
-        class="cursor-pointer fit"
+        class="cursor-pointer fit rounded-borders"
         :src="src"
         alt="thumbnail"
     />
