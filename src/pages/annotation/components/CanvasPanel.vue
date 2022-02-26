@@ -33,6 +33,18 @@
         :icon="mainStore.zoom ? 'zoom_out' : 'zoom_in'"
         @click="handleZoomClick"
     ></q-btn>
+    <div
+        class="absolute bg-black text-white"
+        v-if="actionList && actionList.length"
+        style="bottom: 0; padding: 4px; font-size: 20px; opacity: 0.8"
+    >Action: <span
+        v-for="(action, index) in actionList"
+        :style="{color: action.color}"
+    >{{ action.name }}<span
+        v-if="actionList.length !== 1 && index !== actionList.length - 1"
+        class="text-white"
+    >, </span></span>
+    </div>
     <q-badge
         class="bg-black text-white"
         v-if="preferenceStore.actions && status"
@@ -196,6 +208,19 @@ const skeletonAnnotationList = computed(() => {
 let createContext
 let dragContext
 let activeContext
+
+/// action indicator
+const actionList = computed(
+    () => annotationStore.actionAnnotationList.filter(action =>
+        currentFrame.value >= utils.time2index(action.start)
+        && currentFrame.value <= utils.time2index(action.end)
+    ).map(action => {
+      return {
+        name: configurationStore.actionLabelData.find(label => label.id === action.action).name,
+        color: action.color
+      }
+    })
+)
 
 /// status
 const status = ref()
