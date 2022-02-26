@@ -1,0 +1,29 @@
+{
+  "name": "vidat2",
+  "private": true,
+  "version": "2.0.0-alpha",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.12.5",
+    "jszip": "^3.7.1",
+    "lodash.clonedeep": "^4.5.0",
+    "monaco-editor": "^0.32.1",
+    "mp4box": "^0.4.9",
+    "pinia": "^2.0.11",
+    "quasar": "^2.5.4",
+    "vue": "^3.2.25",
+    "vue-router": "^4.0.12"
+  },
+  "devDependencies": {
+    "@quasar/vite-plugin": "^1.0.4",
+    "@vitejs/plugin-vue": "^2.2.0",
+    "sass": "^1.32.12",
+    "unplugin-vue-components": "^0.17.18",
+    "vite": "^2.8.0",
+    "vite-plugin-monaco-editor": "^1.0.10"
+  }
+}

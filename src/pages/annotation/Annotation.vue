@@ -1,0 +1,36 @@
+<template>
+  <AnnotationSkeleton v-if="!annotationStore.hasVideo"/>
+    <q-card flat v-else>
+    <KeyframePanel/>
+    <div class="row justify-center">
+      <div class="col-12 col-md">
+        <CanvasPanel position="left"/>
+      </div>
+      <ControlPanel v-show="!mainStore.zoom"/>
+      <div
+          class="col-12 col-md"
+          v-show="!mainStore.zoom"
+      >
+        <CanvasPanel position="right"/>
+      </div>
+    </div>
+    <ActionTable/>
+  </q-card>
+</template>
+
+<script setup>
+import ActionTable from '~/pages/annotation/components/ActionTable.vue'
+import CanvasPanel from '~/pages/annotation/components/CanvasPanel.vue'
+import ControlPanel from '~/pages/annotation/components/ControlPanel.vue'
+import { useAnnotationStore } from '~/store/annotation.js'
+import { useConfigurationStore } from '~/store/configuration.js'
+import { useMainStore } from '~/store/index.js'
+import { usePreferenceStore } from '~/store/preference.js'
+import AnnotationSkeleton from './components/AnnotationSkeleton.vue'
+import KeyframePanel from './components/KeyframePanel.vue'
+
+const annotationStore = useAnnotationStore()
+const configurationStore = useConfigurationStore()
+const preferenceStore = usePreferenceStore()
+const mainStore = useMainStore()
+</script>

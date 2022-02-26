@@ -1,0 +1,29 @@
+a {
+  text-decoration: none;
+}
+
+h5 {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 16px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+body.body--dark {
+  color: #e0e0e0;
+}
+
+body.body--dark a {
+  color: #e0e0e0;
+}
+
+body.body--light a {
+  color: #000000;
+}

@@ -1,6 +1,6 @@
 <div align="center">
 <a href="https://www.anu.edu.au/" target="_blank">
-   <img src="src/img/logo.svg" alt="ANU logo">
+   <img src="src/public/logo.svg" alt="ANU logo">
 </a>
 
 # Vidat
@@ -56,7 +56,6 @@ Video tutorials will be posted on [YouTube](https://www.youtube.com/playlist?lis
 |     `muted`     |              `true`/`false`               |               mute video or not               |
 |   `grayscale`   |              `true`/`false`               |               grayscale or not                |
 |   `showPopup`   |              `true`/`false`               |               show popup or not               |
-|     `debug`     |              `true`/`false`               |        auto load a video and no cache         |
 |   `submitURL`   | `http%3A%2F%2Flocalhost%3Ftoken%3D123456` |                URL for submit                 |
 
 notes:
