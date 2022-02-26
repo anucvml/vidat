@@ -533,8 +533,6 @@ class RegionAnnotation extends Annotation {
    * @param deltaY
    */
   move (deltaX, deltaY) {
-    this.centerX += deltaX
-    this.centerY += deltaY
     for (const point of this.pointList) {
       point.x += deltaX
       point.y += deltaY
