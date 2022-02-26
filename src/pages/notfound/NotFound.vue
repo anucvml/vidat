@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-link to="/annotation">
+    <router-link to="/">
       <q-img
           src="/img/404.svg"
           style="max-width: 40%"

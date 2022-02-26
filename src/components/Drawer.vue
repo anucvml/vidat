@@ -50,7 +50,7 @@ const menuList = [
   {
     icon: 'video_label',
     label: 'Annotation',
-    path: '/annotation'
+    path: '/'
   },
   {
     icon: 'settings',

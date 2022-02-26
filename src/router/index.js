@@ -4,13 +4,8 @@ export default createRouter({
   history: createWebHistory(),
   routes: [
     {
-      name: 'index',
-      path: '/',
-      redirect: '/annotation'
-    },
-    {
       name: 'annotation',
-      path: '/annotation',
+      path: '/',
       component: () => import('../pages/annotation/Annotation.vue')
     },
     {
