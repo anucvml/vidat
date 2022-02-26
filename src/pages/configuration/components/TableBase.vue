@@ -66,6 +66,11 @@
             :key="props.row.field"
         >
           <q-td v-if="col.type === 'input'">
+            <ZoomImage
+                class="vertical-middle float-left"
+                style="height: 40px;"
+                :src="props.row.thumbnail"
+            />
             <q-input
                 input-class="text-center"
                 v-model="props.row[col.field]"
@@ -113,7 +118,10 @@
         </template>
       </q-tr>
       <q-tr v-if="props.expand">
-        <slot name="expand" :props="props"></slot>
+        <slot
+            name="expand"
+            :props="props"
+        ></slot>
       </q-tr>
     </template>
   </q-table>
@@ -122,6 +130,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
+import ZoomImage from '~/components/ZoomImage.vue'
 import TableEditor from '~/pages/configuration/components/TableEditor.vue'
 import { useConfigurationStore } from '~/store/configuration.js'
 

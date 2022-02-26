@@ -107,13 +107,12 @@
           {{ utils.toFixed2(props.row.end - props.row.start) }}
         </q-td>
         <q-td>
-          <!--          <ZoomImage-->
-          <!--              style="height: 100%; vertical-align: middle;"-->
-          <!--              v-if="actionLabelData[props.row.action].thumbnail"-->
-          <!--              :src="actionLabelData[props.row.action].thumbnail"-->
-          <!--          />-->
+          <ZoomImage
+              class="vertical-middle float-left q-pr-md"
+              style="height: 40px;"
+              :src="configurationStore.actionLabelData[props.row.action].thumbnail"
+          />
           <q-select
-              class="inline-block"
               v-model="props.row.action"
               :options="actionOptionList"
               dense
@@ -191,6 +190,7 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import ZoomImage from '~/components/ZoomImage.vue'
 import { ActionAnnotation } from '~/libs/annotationlib.js'
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
@@ -206,7 +206,7 @@ const columnList = [
     label: 'start',
     field: 'start',
     sortable: true,
-    sort: (a, b, rowA, rowB) => a !== b ? a - b : rowA.end - rowB.end,
+    sort: (a, b, rowA, rowB) => a !== b ? a - b : rowA.end - rowB.end
   },
   {
     name: 'end',
@@ -214,30 +214,30 @@ const columnList = [
     label: 'end',
     field: 'end',
     sortable: true,
-    sort: (a, b, rowA, rowB) => a !== b ? a - b : rowA.start - rowB.start,
+    sort: (a, b, rowA, rowB) => a !== b ? a - b : rowA.start - rowB.start
   },
   {
     name: 'duration',
     align: 'center',
-    label: 'duration',
+    label: 'duration'
   },
   {
     name: 'action',
     align: 'center',
     label: 'action',
-    field: 'action',
+    field: 'action'
   },
   {
     name: 'object',
     align: 'center',
     label: 'object',
-    field: 'object',
+    field: 'object'
   },
   {
     name: 'color',
     align: 'center',
     label: 'color',
-    field: 'color',
+    field: 'color'
   },
   {
     name: 'description',
@@ -249,7 +249,7 @@ const columnList = [
     name: 'operation',
     align: 'center',
     label: 'operation',
-    field: 'operation',
+    field: 'operation'
   }
 ]
 
