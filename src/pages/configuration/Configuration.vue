@@ -32,9 +32,9 @@
 import { exportFile } from 'quasar'
 import { useConfigurationStore } from '~/store/configuration.js'
 import utils from '../../libs/utils.js'
-import ActionLabelTable from './components/ActionLabelTable.vue'
-import ObjectLabelTable from './components/ObjectLabelTable.vue'
-import SkeletonTypeTable from './components/SkeletonTypeTable.vue'
+import ActionLabelTable from './ActionLabelTable.vue'
+import ObjectLabelTable from './ObjectLabelTable.vue'
+import SkeletonTypeTable from './SkeletonTypeTable.vue'
 
 const configurationStore = useConfigurationStore()
 const handleLoad = () => {

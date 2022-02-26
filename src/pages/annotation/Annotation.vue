@@ -19,15 +19,15 @@
 </template>
 
 <script setup>
-import ActionTable from '~/pages/annotation/components/ActionTable.vue'
-import CanvasPanel from '~/pages/annotation/components/CanvasPanel.vue'
-import ControlPanel from '~/pages/annotation/components/ControlPanel.vue'
+import ActionTable from '~/pages/annotation/ActionTable.vue'
+import CanvasPanel from '~/pages/annotation/CanvasPanel.vue'
+import ControlPanel from '~/pages/annotation/ControlPanel.vue'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'
 import { useMainStore } from '~/store/index.js'
 import { usePreferenceStore } from '~/store/preference.js'
-import AnnotationSkeleton from './components/AnnotationSkeleton.vue'
-import KeyframePanel from './components/KeyframePanel.vue'
+import AnnotationSkeleton from './AnnotationSkeleton.vue'
+import KeyframePanel from './KeyframePanel.vue'
 
 const annotationStore = useAnnotationStore()
 const configurationStore = useConfigurationStore()
