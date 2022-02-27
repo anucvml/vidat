@@ -35,6 +35,7 @@
       <a
           class="text-body1"
           style="margin: 0 10px; text-decoration: underline;"
+          target="_blank"
           href="https://www.youtube.com/watch?v=XsxGac7Z4Wk&list=PLD-7XrNHCcFLv938DO4yYcTrgaff9BJjN"
       >Tutorial Videos</a>
       <router-link
