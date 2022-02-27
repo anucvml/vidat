@@ -8,6 +8,7 @@
         :width="CANVAS_WIDTH"
         :height="canvasHeight"
     />
+    <VideoPlayer v-if="position === 'left'" class="absolute-top"/>
     <canvas
         ref="canvas"
         style="inset: 0;"
@@ -133,6 +134,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '~/libs/annotationlib.js'
 import utils from '~/libs/utils.js'
 import FilmStrip from '~/pages/annotation/components/FilmStrip.vue'
+import VideoPlayer from '~/pages/annotation/components/VideoPlayer.vue'
 import ObjectTable from '~/pages/annotation/ObjectTable.vue'
 import RegionTable from '~/pages/annotation/RegionTable.vue'
 import SkeletonTable from '~/pages/annotation/SkeletonTable.vue'

@@ -9,7 +9,7 @@
       <q-card>
         <img
             class="cursor-pointer"
-            style="max-width: 300px"
+            style="max-width: 400px"
             :src="src"
             alt="thumbnail"
             @click="showPopup = false"

@@ -9,7 +9,7 @@
           :icon="isPaused ? 'play_arrow' : 'pause'"
           @click="handlePlayPause"
       >
-        <q-tooltip>{{ isPaused ? 'pause (p)' : 'play (p)' }}</q-tooltip>
+        <q-tooltip>{{ isPaused ? 'play (p)' : 'pause (p)' }}</q-tooltip>
       </q-btn>
       <q-btn
           outline
@@ -95,13 +95,55 @@ const q = useQuasar()
 const isPaused = ref(true)
 const showVideoPlayer = ref(false)
 const showEdit = ref(false)
+let videoPlayTimeout
+let videoPlayInterval
+let lastLeftCurrentFrame
 
-const handlePlayPause = () => {
-  // TODO
+const play = () => {
+  const videoPlayer = document.getElementById('video-player')
+  isPaused.value = false
+  videoPlayer.play()
+  const duration = (utils.index2time(annotationStore.rightCurrentFrame) - videoPlayer.currentTime) * 1000
+  videoPlayTimeout = setTimeout(() => {
+    handleStop()
+  }, duration)
+  videoPlayInterval = setInterval(() => {
+    moveLeftFrame(1)
+  }, 1000 / annotationStore.video.fps)
 }
-
+const pause = () => {
+  clearTimeout(videoPlayTimeout)
+  clearInterval(videoPlayInterval)
+  isPaused.value = true
+  const videoPlayer = document.getElementById('video-player')
+  videoPlayer.pause()
+}
+const handlePlayPause = () => {
+  const videoPlayer = document.getElementById('video-player')
+  if (!showVideoPlayer.value) {
+    showVideoPlayer.value = true
+    lastLeftCurrentFrame = annotationStore.leftCurrentFrame
+    videoPlayer.style.display = 'block'
+    videoPlayer.currentTime = utils.index2time(annotationStore.leftCurrentFrame)
+    play()
+  } else {
+    if (isPaused.value) {
+      play()
+    } else {
+      pause()
+    }
+  }
+}
 const handleStop = () => {
-  // TODO
+  const videoPlayer = document.getElementById('video-player')
+  videoPlayer.style.display = 'none'
+  videoPlayer.pause()
+  videoPlayer.currentTime = utils.index2time(lastLeftCurrentFrame)
+  showVideoPlayer.value = false
+  isPaused.value = true
+  clearTimeout(videoPlayTimeout)
+  clearInterval(videoPlayInterval)
+  annotationStore.leftCurrentFrame = lastLeftCurrentFrame
 }
 
 // right buttons
