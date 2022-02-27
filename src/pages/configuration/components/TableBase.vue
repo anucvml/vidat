@@ -129,10 +129,11 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, defineAsyncComponent, ref } from 'vue'
 import ZoomImage from '~/components/ZoomImage.vue'
-import TableEditor from '~/pages/configuration/components/TableEditor.vue'
 import { useConfigurationStore } from '~/store/configuration.js'
+
+const TableEditor = defineAsyncComponent(() => import('~/pages/configuration/components/TableEditor.vue'))
 
 const props = defineProps({
   title: {

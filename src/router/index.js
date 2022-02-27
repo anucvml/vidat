@@ -37,7 +37,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-  if (to.path === from.path || Object.keys(to.query).length) return true
+  if (to.path === from.path || Object.keys(to.query).length || !Object.keys(from.query).length) return true
   return { ...to, query: from.query }
 })
 
