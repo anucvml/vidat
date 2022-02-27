@@ -4,7 +4,7 @@ import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { usePreferenceStore } from '~/store/preference.js'
 
-export const useFrameIndicator = () => {
+export const frameIndicator = () => {
   const ALWAYS_SHOW = true // TODO: load from preferenceStore
 
   const HEIGHT_UNIT = 16

@@ -97,8 +97,8 @@ const handleSeeked = (event) => {
   }
 }
 const handleError = (event) => {
-  console.log(event)
-  utils.notify(`Unable to load video: ${event.target.error.message}, please check the video path.`, 'negative')
+  console.error(event)
+  utils.notify(`Could not load video: ${annotationStore.video.src}: ${event.target.error.message}`, 'negative')
   annotationStore.reset()
 }
 </script>

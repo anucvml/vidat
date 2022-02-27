@@ -44,10 +44,10 @@ onMounted(() => {
         } else if (event.data.error) {
           if (event.data.error.type === 'fetch') {
             utils.notify(
-                `Unable to load video: ${event.data.error.statusText} (${event.data.error.status}), please check the video path.`,
+                `Could not load video: ${newValue}: ${event.data.error.statusText} (${event.data.error.status})`,
                 'negative')
           }
-          console.log(event.data.error)
+          console.error(event.data.error)
           annotationStore.isCaching = false
           annotationStore.reset()
           worker.terminate()

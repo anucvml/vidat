@@ -1,5 +1,8 @@
 <template>
-  <div class="row justify-evenly items-center q-pt-lg">
+  <div
+      class="row justify-evenly items-center q-pt-lg"
+      :class="{'q-pb-lg': q.screen.lt.md}"
+  >
     <q-btn-group flat>
       <q-btn
           outline
@@ -80,7 +83,7 @@
 <script setup>
 import { useQuasar } from 'quasar'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useFrameIndicator } from '~/hooks/useFrameIndicator.js'
+import { frameIndicator } from '~/hooks/frameIndicator.js'
 import utils from '~/libs/utils.js'
 import KeyframeTable from '~/pages/annotation/components/KeyframeTable.vue'
 import { useAnnotationStore } from '~/store/annotation.js'
@@ -323,7 +326,7 @@ const currentFrameRange = computed({
     annotationStore.rightCurrentFrame = value.max
   }
 })
-const { rangeStyle } = useFrameIndicator()
+const { rangeStyle } = frameIndicator()
 </script>
 
 <style>

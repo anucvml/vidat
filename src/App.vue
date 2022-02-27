@@ -154,13 +154,11 @@ if (!annotation && video) {
 }
 if (!annotation && config) {
   utils.readFile(config).then(res => {
-    try {
-      configurationStore.importConfig(JSON.parse(res))
-      utils.notify('Config loaded successfully!', 'positive')
-    } catch (e) {
-      utils.notify(e.toString(), 'negative')
-      throw e
-    }
+    configurationStore.importConfig(JSON.parse(res))
+    utils.notify('Config loaded successfully!', 'positive')
+  }).catch(err => {
+    console.error(err)
+    utils.notify(`Could not load config: ${config}: ${err}`, 'negative')
   })
 }
 const mode_dict = {

@@ -59,6 +59,7 @@ export default {
   readFile: (pathname) => {
     return new Promise(function (resolve, reject) {
       fetch(pathname).then(res => {
+        if (!res.ok) reject(`${pathname}: ${res.statusText} (${res.status})`)
         return res.text()
       }).then(text => {
         resolve(text)
