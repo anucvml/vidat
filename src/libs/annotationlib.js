@@ -2,10 +2,10 @@
  * Library for annotations
  */
 
+import deepClone from 'lodash.clonedeep'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'
 import { usePreferenceStore } from '~/store/preference.js'
-import utils from './utils.js'
 
 class Annotation {
   constructor (instance = null, score = null) {
@@ -449,7 +449,7 @@ class RegionAnnotation extends Annotation {
    */
   clone () {
     return new RegionAnnotation(
-      utils.deepClone(this.pointList),
+      deepClone(this.pointList),
       this.labelId,
       this.color,
       this.instance,
@@ -679,7 +679,7 @@ class SkeletonAnnotation extends Annotation {
       this.score
     )
     skeletonAnnotation._ratio = this._ratio
-    skeletonAnnotation.pointList = utils.deepClone(this.pointList)
+    skeletonAnnotation.pointList = deepClone(this.pointList)
     return skeletonAnnotation
   }
 

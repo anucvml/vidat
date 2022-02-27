@@ -17,26 +17,21 @@ const DEFAULT_PREFERENCE = {
   showPopup: true
 }
 
-function getPreferenceData () {
-  const ret = deepClone(DEFAULT_PREFERENCE)
+export const usePreferenceStore = defineStore('preference', () => {
+  const defaultPreference = deepClone(DEFAULT_PREFERENCE)
+  const state = reactive(DEFAULT_PREFERENCE)
   const ls = JSON.parse(localStorage.getItem(LS_KEY))
   if (ls) {
-    for (const key in ret) {
+    for (const key in state) {
       if (ls.hasOwnProperty(key)) {
-        ret[key] = ls[key]
+        state[key] = ls[key]
       }
     }
   }
-  return ret
-}
-
-export const usePreferenceStore = defineStore('preference', () => {
-  const state = reactive(getPreferenceData())
   watch(state, (newValue) => {
     localStorage.setItem(LS_KEY, JSON.stringify(newValue))
   })
   const reset = () => {
-    const defaultPreference = deepClone(DEFAULT_PREFERENCE)
     Object.keys(state).map(key => state[key] = defaultPreference[key])
   }
   return { ...toRefs(state), reset }

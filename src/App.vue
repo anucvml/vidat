@@ -168,7 +168,7 @@ const mode_dict = {
 }
 if (mode) {
   if (mode in mode_dict) {
-    if (mode_dict[mode].toLowerCase() !== 'false') {
+    if (mode_dict[mode]?.toLowerCase() !== 'false') {
       annotationStore.mode = mode
     }
   }
@@ -191,13 +191,13 @@ if (sensitivity) {
     preferenceStore.sensitivity = sensitivity
   }
 }
-if (!annotation && defaultFps) {
+if (defaultFps) {
   const fps = parseInt(defaultFps, 10)
   if (fps >= 1 && fps <= 60 && fps % 1 === 0) {
     preferenceStore.defaultFps = fps
   }
 }
-if (!annotation && defaultFpk) {
+if (defaultFpk) {
   const fpk = parseInt(defaultFpk, 10)
   if (fpk >= 1 && fpk % 1 === 0) {
     preferenceStore.defaultFpk = fpk
@@ -205,30 +205,30 @@ if (!annotation && defaultFpk) {
 }
 if (showObjects) {
   if (showObjects.toLowerCase() === 'true') {
-    preferenceStore.showObjects = true
+    preferenceStore.objects = true
   } else if (showObjects.toLowerCase() === 'false') {
-    preferenceStore.showObjects(false)
+    preferenceStore.objects = false
   }
 }
 if (showRegions) {
   if (showRegions.toLowerCase() === 'true') {
-    preferenceStore.showRegions = true
+    preferenceStore.regions = true
   } else if (showRegions.toLowerCase() === 'false') {
-    preferenceStore.showRegions = false
+    preferenceStore.regions = false
   }
 }
 if (showSkeletons) {
   if (showSkeletons.toLowerCase() === 'true') {
-    preferenceStore.showSkeletons = true
+    preferenceStore.skeletons = true
   } else if (showSkeletons.toLowerCase() === 'false') {
-    preferenceStore.showSkeletons = false
+    preferenceStore.skeletons = false
   }
 }
 if (showActions) {
   if (showActions.toLowerCase() === 'true') {
-    preferenceStore.showActions = true
+    preferenceStore.actions = true
   } else if (showActions.toLowerCase() === 'false') {
-    preferenceStore.showActions = false
+    preferenceStore.actions = false
   }
 }
 if (muted) {
