@@ -1,85 +1,86 @@
 <template>
-    <div class="row justify-evenly items-center q-py-lg">
-      <q-btn-group flat>
-        <q-btn
-            outline
-            :icon="isPaused ? 'play_arrow' : 'pause'"
-            @click="handlePlayPause"
-        >
-          <q-tooltip>{{ isPaused ? 'pause (p)' : 'play (p)' }}</q-tooltip>
-        </q-btn>
-        <q-btn
-            outline
-            icon="stop"
-            :disabled="!showVideoPlayer"
-            @click="handleStop"
-        >
-          <q-tooltip v-if="showVideoPlayer">stop</q-tooltip>
-        </q-btn>
-        <q-btn
-            outline
-            :icon="showEdit ? 'done' : 'edit'"
-            @click="showEdit = !showEdit"
-        >
-          <q-tooltip>{{ showEdit ? 'done' : 'edit' }}</q-tooltip>
-        </q-btn>
-      </q-btn-group>
-      <div
-          class="col-grow q-px-lg"
-          :class="[{'col-12': q.screen.lt.md}]"
-          :style="{'order': !q.screen.lt.md ? 0 : -1}"
+  <div class="row justify-evenly items-center q-pt-lg">
+    <q-btn-group flat>
+      <q-btn
+          outline
+          :icon="isPaused ? 'play_arrow' : 'pause'"
+          @click="handlePlayPause"
       >
-        <q-range
-            class="custom-range"
-            :style="rangeStyle"
-            label-always
-            drag-range
-            snap
-            track-size="8px"
-            :min="0"
-            :max="annotationStore.video.frames - 1"
-            :step="1"
-            :readonly="showVideoPlayer"
-            :left-label-text-color="currentFocus === 'left' || currentFocus === 'range' ? 'blue-grey-1' : 'primary'"
-            :right-label-text-color="currentFocus === 'right' || currentFocus === 'range' ? 'blue-grey-1' : 'primary'"
-            :left-label-color="currentFocus === 'left' || currentFocus === 'range' ? 'primary' : 'blue-grey-1'"
-            :right-label-color="currentFocus === 'right' || currentFocus === 'range' ? 'primary' : 'blue-grey-1'"
-            :left-label-value="'L: ' + currentFrameRange.min + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.min)) + ' s'"
-            :right-label-value="'R: ' + currentFrameRange.max + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.max)) + ' s'"
-            :model-value="currentFrameRange"
-            @update:model-value="handleInput"
-        />
-      </div>
-      <q-btn-group flat>
-        <q-btn
-            outline
-            icon="keyboard_arrow_left"
-            @click="handlePreviousKeyframe"
-        >
-          <q-tooltip>previous keyframe (&lt)</q-tooltip>
-        </q-btn>
-        <q-btn
-            outline
-            icon="gps_fixed"
-            @click="handleNearestKeyframe"
-        >
-          <q-tooltip>locate nearest keyframe</q-tooltip>
-        </q-btn>
-        <q-btn
-            outline
-            icon="keyboard_arrow_right"
-            @click="handleNextKeyframe"
-        >
-          <q-tooltip>next keyframe (&gt)</q-tooltip>
-        </q-btn>
-      </q-btn-group>
+        <q-tooltip>{{ isPaused ? 'pause (p)' : 'play (p)' }}</q-tooltip>
+      </q-btn>
+      <q-btn
+          outline
+          icon="stop"
+          :disabled="!showVideoPlayer"
+          @click="handleStop"
+      >
+        <q-tooltip v-if="showVideoPlayer">stop</q-tooltip>
+      </q-btn>
+      <q-btn
+          outline
+          :icon="showEdit ? 'done' : 'edit'"
+          @click="showEdit = !showEdit"
+      >
+        <q-tooltip>{{ showEdit ? 'done' : 'edit' }}</q-tooltip>
+      </q-btn>
+    </q-btn-group>
+    <div
+        class="col-grow q-px-lg"
+        :class="[{'col-12': q.screen.lt.md}]"
+        :style="{'order': !q.screen.lt.md ? 0 : -1}"
+    >
+      <q-range
+          class="custom-range"
+          :style="rangeStyle"
+          label-always
+          drag-range
+          snap
+          track-size="8px"
+          :min="0"
+          :max="annotationStore.video.frames - 1"
+          :step="1"
+          :readonly="showVideoPlayer"
+          :left-label-text-color="currentFocus === 'left' || currentFocus === 'range' ? 'blue-grey-1' : 'primary'"
+          :right-label-text-color="currentFocus === 'right' || currentFocus === 'range' ? 'blue-grey-1' : 'primary'"
+          :left-label-color="currentFocus === 'left' || currentFocus === 'range' ? 'primary' : 'blue-grey-1'"
+          :right-label-color="currentFocus === 'right' || currentFocus === 'range' ? 'primary' : 'blue-grey-1'"
+          :left-label-value="'L: ' + currentFrameRange.min + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.min)) + ' s'"
+          :right-label-value="'R: ' + currentFrameRange.max + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.max)) + ' s'"
+          :model-value="currentFrameRange"
+          @update:model-value="handleInput"
+      />
     </div>
-    <KeyframeTable v-if="showEdit"/>
+    <q-btn-group flat>
+      <q-btn
+          outline
+          icon="keyboard_arrow_left"
+          @click="handlePreviousKeyframe"
+      >
+        <q-tooltip>previous keyframe (&lt)</q-tooltip>
+      </q-btn>
+      <q-btn
+          outline
+          icon="gps_fixed"
+          @click="handleNearestKeyframe"
+      >
+        <q-tooltip>locate nearest keyframe</q-tooltip>
+      </q-btn>
+      <q-btn
+          outline
+          icon="keyboard_arrow_right"
+          @click="handleNextKeyframe"
+      >
+        <q-tooltip>next keyframe (&gt)</q-tooltip>
+      </q-btn>
+    </q-btn-group>
+  </div>
+  <KeyframeTable v-if="showEdit"/>
 </template>
 
 <script setup>
 import { useQuasar } from 'quasar'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useFrameIndicator } from '~/hooks/useFrameIndicator.js'
 import utils from '~/libs/utils.js'
 import KeyframeTable from '~/pages/annotation/components/KeyframeTable.vue'
 import { useAnnotationStore } from '~/store/annotation.js'
@@ -322,27 +323,12 @@ const currentFrameRange = computed({
     annotationStore.rightCurrentFrame = value.max
   }
 })
-const rangeStyle = computed(() => {
-  const bgImageList = []
-  const bgPositionList = []
-  const bgSizeList = []
-  const markerWidth = 100 / (annotationStore.video.frames - 1)
-  for (let frame of annotationStore.keyframeList) {
-    const offset = ((2 * (frame * markerWidth) / 100) - 1) * markerWidth / 2
-    bgImageList.push('linear-gradient(#000, #000)')
-    bgPositionList.push(`${frame * markerWidth + offset}% 12px`)
-    bgSizeList.push(`${markerWidth}% 8px`)
-  }
-  return {
-    '--marker-bg-image': bgImageList.join(','),
-    '--marker-bg-position': bgPositionList.join(','),
-    '--marker-bg-size': bgSizeList.join(',')
-  }
-})
+const { rangeStyle } = useFrameIndicator()
 </script>
 
 <style>
 .custom-range .q-slider__track-container--h {
+  height: var(--marker-height);
   background-image: var(--marker-bg-image);
   background-position: var(--marker-bg-position);
   background-size: var(--marker-bg-size);
