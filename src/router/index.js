@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-export default createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
@@ -35,3 +35,10 @@ export default createRouter({
     }
   ]
 })
+
+router.beforeEach((to, from) => {
+  if (to.path === from.path || Object.keys(to.query).length) return true
+  return { ...to, query: from.query }
+})
+
+export default router

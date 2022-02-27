@@ -27,3 +27,4 @@ dist-ssr
 src/public/annotation
 src/public/config
 src/public/video
+src/public/dataset
