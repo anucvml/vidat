@@ -176,6 +176,13 @@
             <q-btn
                 flat
                 dense
+                icon="edit_location_alt"
+                style="width: 100%"
+                @click="handleSet(props.row)"
+            ></q-btn>
+            <q-btn
+                flat
+                dense
                 icon="delete"
                 color="negative"
                 style="width: 100%"
@@ -328,6 +335,10 @@ const handleGoto = (row) => {
   if (typeof (row.end) === 'number') {
     annotationStore.rightCurrentFrame = utils.time2index(row.end)
   }
+}
+const handleSet = (row) =>{
+  row.start = utils.index2time(annotationStore.leftCurrentFrame)
+  row.end = utils.index2time(annotationStore.rightCurrentFrame)
 }
 const handleDelete = (row) => {
   utils.confirm('Are you sure to delete this action?').onOk(() => {
