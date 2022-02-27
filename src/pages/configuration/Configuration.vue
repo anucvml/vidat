@@ -46,13 +46,13 @@ const handleLoad = () => {
         configurationStore.importConfig(JSON.parse(file))
         utils.notify('Load successfully!', 'positive')
       } catch (e) {
-        utils.notify(e.toString(), 'negative')
-        throw e
+        console.error(e)
+        utils.notify(`Could not load config: ${e}`, 'negative')
       }
     })
   })
 }
-const handleSave = () => { // TODO
+const handleSave = () => {
   utils.prompt(
       'Save',
       'Enter configuration filename for saving',

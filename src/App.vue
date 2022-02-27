@@ -33,7 +33,7 @@
           </a>
           <router-link
               class="vertical-middle"
-              :to="'annotation'"
+              :to="'/'"
           >
             ANU CVML Video Annotation Tool
           </router-link>

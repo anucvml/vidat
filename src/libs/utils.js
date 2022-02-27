@@ -22,13 +22,15 @@ export default {
    * Notify popup
    * @param message
    * @param color
+   * @param timeout
    * @returns
    */
-  notify (message, color = 'positive') {
+  notify (message, color = 'positive', timeout=5000) {
     return Notify.create({
       message: message,
       color: color,
-      position: 'bottom-right'
+      position: 'bottom-right',
+      timeout: timeout
     })
   },
   /**

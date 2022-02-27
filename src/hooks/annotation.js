@@ -86,25 +86,29 @@ export const useAnnotation = () => {
         submitLoading.value = false
         if (res.ok) {
           console.log('Success', res)
-          res.text().then(text => {
-            copyToClipboard(text).then(() => {
-              utils.notify('Success (Already copied to clipboard): ' + text, 'positive')
-            }).catch((err) => {
-                console.log('Failed to copy to clipboard', err)
-                utils.notify('Failed to copy to clipboard: ' + err, 'negative')
-              }
-            )
+          res.json().then(data => {
+            const { message, clipboard } = data
+            if (message) {
+              utils.notify('Server: ' + text, 'positive')
+            }
+            if (clipboard) {
+              copyToClipboard(clipboard).then(() => {
+                utils.notify('Copied to clipboard: ' + clipboard, 'positive')
+              }).catch((err) => {
+                  console.error('Failed to copy to clipboard', err)
+                  utils.notify('Failed to copy to clipboard, please do it manually: ' + clipboard, 'negative', 10000)
+                }
+              )
+            }
           })
         } else {
-          console.log('Failed', res)
-          res.text().then(text => {
-            utils.notify('Failed: ' + text, 'warning')
-          })
+          console.error('Failed', res)
+          utils.notify(`Failed to submit: ${res.statusText} (${res.status})`, 'warning')
         }
       }).catch(err => {
         submitLoading.value = false
-        console.log('Failed', err)
-        utils.notify('Failed: ' + err, 'negative')
+        console.error('Failed', err)
+        utils.notify('Failed to submit: ' + err, 'negative')
       })
     },
     submitLoading
