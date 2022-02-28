@@ -25,8 +25,7 @@ jobs:
         uses: martinbeentjes/npm-get-version-action@master
       - uses: montudor/action-zip@v1
         with:
-          args: zip -qq -r vidat-v${{ steps.package-version.outputs.current-version}}.zip ./*
-          working-directory: dist
+          args: zip -qq -r vidat-v${{ steps.package-version.outputs.current-version}}.zip ./dist/*
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
          repo_token: "${{ secrets.GITHUB_TOKEN }}"
