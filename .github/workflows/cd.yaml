@@ -37,7 +37,7 @@ jobs:
            vidat-v${{ steps.package-version.outputs.current-version}}.zip
       - name: Deploy with ssh
         uses: easingthemes/ssh-deploy@main
-        if: ${{ SSH_PRIVATE_KEY != '' && REMOTE_HOST != '' && REMOTE_USER != '' }}
+        if: ${{ env.SSH_PRIVATE_KEY != '' && env.REMOTE_HOST != '' && env.REMOTE_USER != '' }}
         env:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           ARGS: "-rltgoDzvO"
