@@ -9,8 +9,11 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node.js environment
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: v2
+      - name: Setup Node.js Environment
         uses: actions/setup-node@v2
         with:
           node-version: '14'
@@ -18,12 +21,30 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: Deploy with ssh
+      - name: Get Version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+      - name: Generate Zip
+        uses: papeloto/action-zip@v1
+        with:
+          files: dist/
+          dest: vidat-v${{ steps.package-version.outputs.current-version}}.zip
+      - name: Auto Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+         repo_token: ${{ secrets.GITHUB_TOKEN }}
+         automatic_release_tag: latest
+         draft: true
+         title: Release v${{ steps.package-version.outputs.current-version}}
+         files: |
+           vidat-v${{ steps.package-version.outputs.current-version}}.zip
+      - name: Deploy With SSH (Optional)
         uses: easingthemes/ssh-deploy@main
+        if: ${{ env.SSH_PRIVATE_KEY != '' && env.REMOTE_HOST != '' && env.REMOTE_USER != '' }}
         env:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          ARGS: "-rltgoDzvO"
-          SOURCE: "dist/"
+          ARGS: -rltgoDzvO
+          SOURCE: dist/
           REMOTE_HOST: ${{ secrets.HOST }}
           REMOTE_USER: ${{ secrets.USER }}
           TARGET: ${{ secrets.TARGET }}
