@@ -1,21 +1,20 @@
 <div align="center">
 <a href="https://www.anu.edu.au/" target="_blank">
-   <img src="src/public/logo.svg" alt="ANU logo">
+   <img src="src/public/img/logo.svg" alt="ANU logo">
 </a>
 
 # Vidat
 
 _An in-browser video annotation tool developed by [ANU CVML](https://github.com/anucvml)._
 
-_[Host1](http://users.cecs.anu.edu.au/~sgould/vidat/)_
-| _[Host2](https://vidat.davidz.cn)_
-| _[Demo1](http://users.cecs.anu.edu.au/~sgould/vidat/?video=needinput.mp4&config=needinputconfig.json)_
-| _[Demo2](https://vidat.davidz.cn/?video=needinput.mp4&annotation=needinput.json#/annotation)_
+_[Host](https://vidat2.davidz.cn)_
+| _[Demo](https://vidat2.davidz.cn/?annotation=needinput.json)_
+| _[Video Tutorials](https://www.youtube.com/playlist?list=PLD-7XrNHCcFLv938DO4yYcTrgaff9BJjN)_
 
 </div>
 
 The aim of this project is to develop a high-quality video annotation tool for computer vision and machine learning
-applications with the following desiradata:
+applications with the following desiderata:
 
 1. Simple and efficient to use for a non-expert.
 2. Supports multiple annotation types including temporal segments, object bounding boxes, semantic and instance regions,
@@ -27,62 +26,400 @@ applications with the following desiradata:
 6. Secure. Data does not need to leave the local machine (since there is no server-side processing).
 7. Open-source.
 
-Video tutorials will be posted on [YouTube](https://www.youtube.com/playlist?list=PLD-7XrNHCcFLv938DO4yYcTrgaff9BJjN).
+[//]: # (## Screenshots [WIP])
 
-## Installation
+## Usage
+
+### Annotate local videos
+
+Just open [Host](https://vidat2.davidz.cn) and open a local video, you are good to go!
+
+### Annotate remote videos
+
+You need to [deploy](#deployment) Vidat first, and then use [URL parameters](#url-parameters) to load the video into
+Vidat. Please note that Vidat does **not** support online YouTube videos due
+to [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
+
+### Integrate with Amazon Mechanical Turk (MTurk)
+
+1. **Prepare tasks**
+    1. [Deploy](#deployment) Vidat on a server which can access to the videos and annotation (config) files.
+    2. Generate URLs for each task,
+       e.g. `https://example.com?annotation=task1.json&submitURL=http%3A%2F%2Fexample2.com%3Ftoken%3D123456`.
+2. **Dispatch tasks on MTurk**
+    1. Create a new MTurk task with survey template, replace the survey link with task link.
+    2. Create a batch with generated URLs.
+3. **Collect submissions**
+    1. Build up an independent API backend (see `/tools/backend/` for a simple implementation) that handles submissions.
+
+Submission API:
+
+**Request**
+
+```text
+POST <submitURL>
+content-type: application/json
+<annotation>
+```
+
+**Respond**
+
+```text
+content-type: application/json
+{
+    message: '' // notify the user
+    clipboard: '' // copy to user's clipboard
+}
+```
+
+## Deployment
 
 > Note that this is only necessary if you want to do development or host your own version of the tool. If you just want to label videos then you can use one of the host servers linked to above (data will remain on your local machine; it will not be sent to the host server).
 
-1. Copy all files from `src` into a single directory.
-2. Put all files behind a web server ([Nginx](http://nginx.org/), [Apache](http://httpd.apache.org/), etc.).
+1. Download our latest [release](https://github.com/anucvml/vidat/releases). Note that the `pre-release` is
+   automatically generated and should **not** be used in production.
+2. Unzip all files and put them behind a web server ([Nginx](http://nginx.org/), [Apache](http://httpd.apache.org/),
+   etc.). Note that open `index.html` in your explorer does **not** work.
 3. Open in your favourite browser.
 
 ## URL Parameters
 
-|       key       |                   value                   |                  description                  |
-| :-------------: | :---------------------------------------: | :-------------------------------------------: |
-|  `sensitivity`  |              `1 <= Integer`               |           set sensitivity in pixels           |
-|  `defaultFPS`   |           `1 <= Integer <= 60`            |                set default fps                |
-|  `defaultFPK`   |              `Integer >= 1`               |        set default frames per keyframe        |
-|     `video`     |               `example.mp4`               |      set video src (under path `/video`)      |
-|    `config`     |               `config.json`               |     set config src (under path `/config`)     |
-|  `annotation`   |             `annotation.json`             | set annotation src (under path `/annotation`) |
-|     `mode`      |      `objects`, `region`, `skeleton`      |               set current mode                |
-|     `zoom`      |              `true`/`false`               |                  zoom or not                  |
-|  `showObjects`  |              `true`/`false`               |              show objects or not              |
-|  `showRegions`  |              `true`/`false`               |              show regions or not              |
-| `showSkeletons` |              `true`/`false`               |             show skeletons or not             |
-|  `showActions`  |              `true`/`false`               |              show actions or not              |
-|     `muted`     |              `true`/`false`               |               mute video or not               |
-|   `grayscale`   |              `true`/`false`               |               grayscale or not                |
-|   `showPopup`   |              `true`/`false`               |               show popup or not               |
-|   `submitURL`   | `http%3A%2F%2Flocalhost%3Ftoken%3D123456` |                URL for submit                 |
+> All the keys and values are **not** case-sensitive.
+>
+> **Note** if you are using an external URL for `annotation`, `video` or `config`,
+> please make sure you are following [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
 
-notes:
+### `annotation`
 
-1. `annotation` will overwrite `config`.
-2. `video` or `debug` is the precondition of `annotation`.
-3. No `annotation` is the precondition of `defaultFPS` and `defaultFPK`.
-4. `submitURL` will `POST` the annotation file to the given URL in json format.
+**Default** `null`
+
+**Example** `/annotation/exmaple.json`, `http://exmaple/static/annotation/exmaple.json`
+
+Path to the annotation file. Vidat will load the video, annotation and configurations from this file. This parameter has
+higher priority than `video`, `config`, `defaultFPS` and `defaultFPK`. Please refer
+to [File Formats - Annotation](#file-formats) for format details.
+
+### `video`
+
+**Default** `null`
+
+**Example** `/video/exmaple.mp4`, `http://exmaple/static/video/exmaple.json`
+
+Path to the video file. Please refer to [`decoder`](#decoder) for more information.
+
+### `config`
+
+**Default** `null`
+
+**Example** `/config/exmaple.json`, `http://exmaple/static/config/exmaple.json`
+
+Path to the video file. Please refer to [File Formats - Config](#file-formats) for format details.
+
+### `mode`
+
+**Default** `null`
+
+**Example** `object` | `region` | `skeleton`
+
+Specify current mode for Vidat.
+
+### `zoom`
+
+**Default** `false`
+
+**Example** `true` | `false`
+
+Whether toggle zoom on.
+
+### `sensitivity`
+
+**Default** `hasTouch ? 10 : 5`
+
+**Example** `Integer >= 1`
+
+When detecting points / edges, the number of pixel(s) between you mouse and the annotation.
+
+### `defaultFPS`
+
+**Default** `10`
+
+**Example** `1 <= Integer <= 60`
+
+The default frame per second used when extracting frames from the given video.
+
+### `defaultFPK`
+
+**Default** `50`
+
+**Example** `Integer >= 1`
+
+The default frame per keyframe used when generating keyframes.
+
+### `decoder`
+
+**Default** `auto`
+
+**Example** `auto` | `v1` | `v2`
+
+The video decoder used for frame extracting.
+
+`v1` uses `<canvas>` as a video decoder,
+by [`pause` - `draw` - `play` - `wait for timeupdate` strategy](https://stackoverflow.com/revisions/32708998/5). It is
+the most reliable and compatible methods for most cases. But it is slow and computational inefficient.
+
+`v2` uses [`WebCodecs.VideoDecoder`](https://developer.mozilla.org/en-US/docs/Web/API/VideoDecoder), it takes the
+advantages of native video decoder built inside the browser. It is way faster than `v1` but lack of support from old
+browsers.
+
+`auto` Vidat will determine which one to use for you.
+
+### `showObjects`
+
+**Default** `true`
+
+**Example** `true` | `false`
+
+Whether to show `object` mode related components.
+
+### `showRegions`
+
+**Default** `true`
+
+**Example** `true` | `false`
+
+Whether to show `region` mode related components.
+
+### `showSkeletons`
+
+**Default** `true`
+
+**Example** `true` | `false`
+
+Whether to show `skeleton` mode related components.
+
+### `showActions`
+
+**Default** `true`
+
+**Example** `true` | `false`
+
+Whether to show `action` related components.
+
+### `muted`
+
+**Default** `true`
+
+**Example** `true` | `false`
+
+Whether to mute the video when playing.
+
+### `grayscale`
+
+**Default** `false`
+
+**Example** `true` | `false`
+
+Whether to grayscale the video.
+
+### `showPopup`
+
+**Default** `true`
+
+**Example** `true` | `false`
+
+Whether to show quick popup when finishing annotating an object/region/skeleton.
+
+### `submitURL`
+
+**Default** `null`
+
+**Example** `submitURL=http%3A%2F%2Fexample.com%3Ftoken%3D123456`
+
+Note that the submission url needs to be URL encoded.
 
 ### Examples
 
 ```
-http://localhost/index.html?mode=skeleton&showPopup=false
+http://example.com?showObjects=false&showRegions=false&showSkeletons=false
+```
+
+This will show action only.
+
+```
+http://example.com?mode=skeleton&showPopup=false
 ```
 
 This will set the current mode to skeleton and disable popup window.
 
 ```
-http://localhost/index.html?submitURL=http%3A%2F%2Flocalhost%3Ftoken%3D123456
+http://example.com/index.html?submitURL=http%3A%2F%2Fexample.com%3Ftoken%3D123456
 ```
 
 There will be a button shown in the side menu which will `POST` the annotation file to
-`http://localhost?token=123456`.
+`http://example.com?token=123456`.
 
-Note that the submission url needs to be URL encoded. See `tools/backend` for a simple example of developing a backend
-server.
+## File Formats
+
+**Config**
+
+```json
+{
+  "objectLabelData": [
+    {
+      "id": 0,
+      "name": "default",
+      "color": "<color>"
+    }
+  ],
+  "actionLabelData": [
+    {
+      "id": 0,
+      "name": "default",
+      "color": "<color>",
+      "objects": [
+        0
+      ]
+    }
+  ],
+  "skeletonTypeData": [
+    {
+      "id": 0,
+      "name": "default",
+      "description": "",
+      "color": "<color>",
+      "pointList": [
+        {
+          "id": 0,
+          "name": "point 1",
+          "x": -10,
+          "y": 0
+        },
+        {
+          "id": 0,
+          "name": "point 2",
+          "x": 10,
+          "y": 0
+        }
+      ],
+      "edgeList": [
+        {
+          "id": 0,
+          "from": 0,
+          "to": 1
+        }
+      ]
+    }
+  ]
+}
+```
+
+See [`src/public/config/example.json`](src/public/config/example.json) for am example.
+
+**Annotation**
+
+```json
+{
+  "version": "2.0.0",
+  "annotation": {
+    "video": {
+      "src": "<path to video>",
+      "fps": "fps",
+      "frames": 0,
+      "duration": 0,
+      "height": 0,
+      "width": 0
+    },
+    "keyframeList": [
+      0
+    ],
+    "objectAnnotationListMap": {
+      "0": [
+        {
+          "instance": 0,
+          "score": 0,
+          "labelId": 0,
+          "color": "<color>",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ]
+    },
+    "regionAnnotationListMap": {
+      "0": [
+        {
+          "instance": 0,
+          "score": 0,
+          "labelId": 0,
+          "color": "<color>",
+          "pointList": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ]
+        }
+      ]
+    },
+    "skeletonAnnotationListMap": {
+      "0": [
+        {
+          "instance": 0,
+          "score": 0,
+          "centerX": 0,
+          "centerY": 0,
+          "typeId": 0,
+          "color": "<color>",
+          "_ratio": 1,
+          "pointList": [
+            {
+              "id": -1,
+              "name": "center",
+              "x": 0,
+              "y": 0
+            },
+            {
+              "id": 0,
+              "name": "point 1",
+              "x": -10,
+              "y": 0
+            },
+            {
+              "id": 1,
+              "name": "point 2",
+              "x": 10,
+              "y": 0
+            }
+          ]
+        }
+      ]
+    },
+    "actionAnnotationList": [
+      {
+        "start": 0,
+        "end": 0,
+        "action": 0,
+        "object": 0,
+        "color": "<color>",
+        "description": ""
+      }
+    ]
+  },
+  "config": "<config>"
+}
+```
+
+See [`src/public/annotation/example.json`](src/public/annotation/example.json) for am example.
 
 ## Development
 
-See `/doc/design/main.md`
+See [`doc/design/main.md`](doc/design/main.md) [WIP] for details.
