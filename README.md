@@ -8,7 +8,7 @@
 _An in-browser video annotation tool developed by [ANU CVML](https://github.com/anucvml)._
 
 _[Host](https://vidat2.davidz.cn)_
-| _[Demo](https://vidat2.davidz.cn/?annotation=needinput.json)_
+| _[Demo](https://vidat2.davidz.cn/?annotation=example.json)_
 | _[Video Tutorials](https://www.youtube.com/playlist?list=PLD-7XrNHCcFLv938DO4yYcTrgaff9BJjN)_
 
 </div>
