@@ -23,9 +23,10 @@ jobs:
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
-      - uses: montudor/action-zip@v1
+      - uses: papeloto/action-zip@v1
         with:
-          args: zip -qq -r vidat-v${{ steps.package-version.outputs.current-version}}.zip ./dist/*
+          files: dist/*
+          dest: vidat-v${{ steps.package-version.outputs.current-version}}.zip
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
          repo_token: "${{ secrets.GITHUB_TOKEN }}"
