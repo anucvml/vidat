@@ -48,6 +48,7 @@ const handleLoadeddata = (event) => {
   }
   // add frame index into the backendQueue
   // 1. every one second
+  annotationStore.backendQueue = []
   for (let i = 1.0; i < annotationStore.video.duration; i++) {
     const index = utils.time2index(i)
     if (keyframeList.indexOf(index) === -1) {
@@ -55,11 +56,13 @@ const handleLoadeddata = (event) => {
     }
   }
   // 2. every 1 / fps second
+  annotationStore.priorityQueue = []
   for (let i = interval; i < annotationStore.video.duration; i += interval) {
     if (i.toFixed(1) % 1 !== 0) {
       annotationStore.backendQueue.push(utils.time2index(i))
     }
   }
+  annotationStore.cachedFrameList = []
   nextTick(() => {
     event.target.currentTime = 0.0
   })

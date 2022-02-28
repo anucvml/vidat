@@ -65,7 +65,7 @@
     <q-page-container>
       <q-page padding>
         <template v-if="annotationStore.hasVideo">
-          <VideoLoaderV2 v-if="canUseV2"/>
+          <VideoLoaderV2 v-if="useV2"/>
           <VideoLoaderV1 v-else/>
         </template>
         <router-view></router-view>
@@ -93,6 +93,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useQuasar } from 'quasar'
+import { computed } from 'vue'
 import VideoLoaderV1 from '~/components/VideoLoaderV1.vue'
 import VideoLoaderV2 from '~/components/VideoLoaderV2.vue'
 import { useAnnotation } from '~/hooks/annotation.js'
@@ -112,7 +113,16 @@ const preferenceStore = usePreferenceStore()
 const q = useQuasar()
 q.dark.set('auto')
 
-const canUseV2 = !!window.VideoDecoder
+const useV2 = computed(() => {
+  console.log('Video Decoder: ', preferenceStore.decoder)
+  if (preferenceStore.decoder === 'v1') {
+    return false
+  } else if (preferenceStore.decoder === 'v2') {
+    return true
+  } else {
+    return !!window.VideoDecoder
+  }
+})
 
 // get parameters from url
 const URLParameter = {}
@@ -134,6 +144,7 @@ const {
   sensitivity,
   defaultfps: defaultFps,
   defaultfpk: defaultFpk,
+  decoder: decoder,
   showobjects: showObjects,
   showregions: showRegions,
   showskeletons: showSkeletons,
@@ -201,6 +212,11 @@ if (defaultFpk) {
   const fpk = parseInt(defaultFpk, 10)
   if (fpk >= 1 && fpk % 1 === 0) {
     preferenceStore.defaultFpk = fpk
+  }
+}
+if (decoder) {
+  if (decoder in ['auto', 'v1', 'v2']) {
+    preferenceStore.decoder = decoder
   }
 }
 if (showObjects) {

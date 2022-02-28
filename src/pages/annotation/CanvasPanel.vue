@@ -8,7 +8,10 @@
         :width="CANVAS_WIDTH"
         :height="canvasHeight"
     />
-    <VideoPlayer v-if="position === 'left'" class="absolute-top"/>
+    <VideoPlayer
+        v-if="position === 'left'"
+        class="absolute-top"
+    />
     <canvas
         ref="canvas"
         style="inset: 0;"

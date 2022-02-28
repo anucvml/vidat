@@ -1,5 +1,4 @@
 <template>
-
 </template>
 
 <script setup>
@@ -20,6 +19,7 @@ onMounted(() => {
     if (newValue) {
       worker = new VideoProcessWorker()
       worker.postMessage({ src: newValue, defaultFps: preferenceStore.defaultFps })
+      annotationStore.cachedFrameList = []
       annotationStore.isCaching = true
       worker.onmessage = event => {
         if (event.data.videoTrackInfo) {

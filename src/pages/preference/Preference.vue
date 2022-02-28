@@ -29,7 +29,7 @@
             >The number of pixels for border detection in Canvas.</q-tooltip></span>
           </q-item-label>
         </q-item-section>
-        <q-item-section avatar>
+        <q-item-section>
           <q-input
               dense
               outlined
@@ -53,7 +53,7 @@
             >The default frame(s) per second if not specified in config or annotation file.</q-tooltip></span>
           </q-item-label>
         </q-item-section>
-        <q-item-section avatar>
+        <q-item-section>
           <q-input
               dense
               outlined
@@ -77,7 +77,7 @@
             >The default frame(s) per keyframe if the keyframe list is not provided in annotation file.</q-tooltip></span>
           </q-item-label>
         </q-item-section>
-        <q-item-section avatar>
+        <q-item-section>
           <q-input
               dense
               outlined
@@ -86,6 +86,27 @@
               :rules="[fpk => fpk >= 1 && fpk % 1 === 0 || 'Integer greater than 1.']"
               @mousewheel.prevent
               hide-bottom-space
+          />
+        </q-item-section>
+      </q-item>
+      <q-item
+          tag="label"
+          v-ripple
+      >
+        <q-item-section>
+          <q-item-label>
+            <span>Video Decoder<q-tooltip
+                anchor="center right"
+                self="center left"
+            >Which video decoder is used to extract frames. Find more details in the documentation.</q-tooltip></span>
+          </q-item-label>
+        </q-item-section>
+        <q-item-section>
+          <q-select
+              dense
+              outlined
+              v-model="decoder"
+              :options="['auto', 'v1', 'v2']"
           />
         </q-item-section>
       </q-item>
@@ -249,6 +270,7 @@ const {
   sensitivity,
   defaultFps,
   defaultFpk,
+  decoder,
   objects,
   regions,
   skeletons,
