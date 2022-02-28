@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: v2
       - name: Setup Node.js environment
         uses: actions/setup-node@v2
         with:
@@ -18,8 +20,24 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r vidat-v${{ steps.package-version.outputs.current-version}}.zip ./*
+          working-directory: dist
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+         repo_token: "${{ secrets.GITHUB_TOKEN }}"
+         automatic_release_tag: "latest"
+         prerelease: true
+         title: "Development Build"
+         files: |
+           vidat-v${{ steps.package-version.outputs.current-version}}.zip
       - name: Deploy with ssh
         uses: easingthemes/ssh-deploy@main
+        if: ${{ SSH_PRIVATE_KEY != '' && REMOTE_HOST != '' && REMOTE_USER != '' }}
         env:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           ARGS: "-rltgoDzvO"
