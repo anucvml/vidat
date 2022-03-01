@@ -113,7 +113,7 @@ onmessage = async (event) => {
             offscreen.convertToBlob({ type: 'image/jpeg' }).then(blob => {
               postMessage({ frame: blob, frameIndex: frameIndexList.indexOf(_currentFrameIndex) })
             })
-            if (frameIndexList.indexOf(_currentFrameIndex) >= frameIndexList.length - 2) { // TODO: hack, safe margin
+            if (frameIndexList.indexOf(_currentFrameIndex) >= frameIndexList.length - 3) { // TODO: hack, safe margin
               postMessage({ done: true })
             }
           }
