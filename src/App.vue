@@ -38,20 +38,25 @@
             ANU CVML Video Annotation Tool
           </router-link>
         </q-toolbar-title>
-        <div
-            class="q-pr-sm"
+        <q-circular-progress
             v-if="annotationStore.hasVideo && annotationStore.isCaching"
+            class="q-mx-sm"
+            show-value
+            font-size="10px"
+            :value="progress"
+            size="30px"
+            :thickness="0.2"
+            color="primary"
+            track-color="grey-3"
         >
-          <q-spinner-ios size="sm">
-          </q-spinner-ios>
+          {{ progress }}%
           <q-tooltip
               anchor="center left"
               self="center right"
           >
             Caching video frames.
-
           </q-tooltip>
-        </div>
+        </q-circular-progress>
         <q-btn
             :icon="$q.dark.isActive ? 'dark_mode' : 'light_mode'"
             flat
@@ -121,6 +126,14 @@ const useV2 = computed(() => {
     return true
   } else {
     return !!window.VideoDecoder
+  }
+})
+
+const progress = computed(() => {
+  if (!isNaN(annotationStore.video.frames && annotationStore.cachedFrameList.length)) {
+    return Math.round(annotationStore.cachedFrameList.filter(frame => frame).length / annotationStore.video.frames * 100)
+  } else {
+    return 0
   }
 })
 
