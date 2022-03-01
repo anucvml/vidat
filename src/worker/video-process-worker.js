@@ -70,18 +70,18 @@ const getConfig = (info, mp4File) => {
   }
 }
 
+const probeUnit = 512 * 1024
+
 onmessage = async (event) => {
   try {
-    // load the video
-    const response = await fetch(event.data.src)
-    if (!response.ok) throw { type: 'fetch', status: response.status, statusText: response.statusText }
-    const reader = response.body.getReader()
     // demux and decode the video
     const mp4File = MP4Box.createFile()
     let decoder
     const offscreen = new OffscreenCanvas(0, 0)
     const ctx = offscreen.getContext('2d')
+    let isMoovFound = false
     mp4File.onReady = info => {
+      isMoovFound = true
       const videoTrack = info.tracks.find(track => track.type === 'video')
       const { id, track_width, track_height, nb_samples, movie_duration, movie_timescale } = videoTrack
       offscreen.width = track_width
@@ -141,17 +141,69 @@ onmessage = async (event) => {
         decoder.decode(chunk)
       }
     }
-    let offset = 0
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) {
-        mp4File.flush()
-        break
+    let leftOffset = 0
+    let rightOffset = 0
+    let contentLength = 0
+    const fetchVideo = async (isLeft) => {
+      try {
+        const abortController = new AbortController()
+        const headers = {}
+        if (isLeft) {
+          headers['Range'] = `bytes=${leftOffset}-`
+        } else {
+          headers['Range'] = `bytes=${rightOffset}-${rightOffset + probeUnit -
+          1}`
+        }
+        const response = await fetch(event.data.src, {
+          signal: abortController.signal,
+          headers
+        })
+        if (!response.ok) throw { type: 'fetch', status: response.status, statusText: response.statusText }
+        if (isLeft && contentLength === 0) {
+          contentLength = response.headers.get('Content-Length')
+          rightOffset = contentLength - probeUnit
+        }
+        const reader = response.body.getReader()
+        let offset = isLeft ? leftOffset : rightOffset
+        const initOffset = offset
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) {
+            if (isLeft && isMoovFound) {
+              mp4File.flush()
+              return true
+            } else if (isLeft && !isMoovFound) {
+              console.error('Error')
+              return false
+            } else if (!isLeft && isMoovFound) {
+              return true
+            } else {
+              return false
+            }
+          }
+          const buffer = value.buffer
+          buffer.fileStart = isLeft ? leftOffset : offset
+          offset += buffer.byteLength
+          if (isLeft) leftOffset += buffer.byteLength
+          mp4File.appendBuffer(buffer)
+          if (!isMoovFound && buffer.fileStart - initOffset > probeUnit) {
+            abortController.abort()
+          }
+        }
+      } catch (e) {
+        if (e.toString() === 'AbortError: The user aborted a request.') return false
+        else throw e
       }
-      const buffer = value.buffer
-      buffer.fileStart = offset
-      mp4File.appendBuffer(buffer)
-      offset += buffer.byteLength
+    }
+    let found = false
+    let isLeft = true
+    while (!found && rightOffset - leftOffset > -probeUnit) {
+      found = await fetchVideo(isLeft)
+      if (!found && !isLeft) rightOffset -= probeUnit
+      isLeft = !isLeft
+    }
+    if (isLeft) {
+      await fetchVideo(isLeft)
     }
   } catch (e) {
     postMessage({ error: e })
