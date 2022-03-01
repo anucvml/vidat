@@ -215,7 +215,7 @@ if (defaultFpk) {
   }
 }
 if (decoder) {
-  if (decoder in ['auto', 'v1', 'v2']) {
+  if (['auto', 'v1', 'v2'].includes(decoder)) {
     preferenceStore.decoder = decoder
   }
 }
