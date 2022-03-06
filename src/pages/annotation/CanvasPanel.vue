@@ -1001,7 +1001,6 @@ const handleTouchstart = event => {
     } else if (!createContext && !annotationStore.delMode && !annotationStore.copyMode) {
       const objectAnnotation = new ObjectAnnotation(mouseX, mouseY, 0, 0)
       objectAnnotation.highlight = true
-      annotationList.value.push(objectAnnotation)
       createContext = {
         index: annotationList.value.length,
         x: objectAnnotation.x,
@@ -1009,6 +1008,7 @@ const handleTouchstart = event => {
         mousedownX: mouseX,
         mousedownY: mouseY
       }
+      annotationList.value.push(objectAnnotation)
     }
   } else if (annotationStore.mode === 'region' && preferenceStore.regions) {
     // add point when creating
