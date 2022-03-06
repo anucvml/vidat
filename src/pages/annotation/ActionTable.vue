@@ -351,7 +351,8 @@ const handleDelete = (row) => {
 }
 
 // keybindings
-const handleKeyup = (event) => {
+const handleKeyup = event => {
+  event.stopPropagation()
   if (event.target.nodeName.toLowerCase() === 'input') {
     return false
   }
@@ -360,9 +361,9 @@ const handleKeyup = (event) => {
   }
 }
 onMounted(() => {
-  window.addEventListener('keyup', handleKeyup)
+  document.addEventListener('keyup', handleKeyup, true)
 })
 onUnmounted(() => {
-  window.removeEventListener('keyup', handleKeyup)
+  document.removeEventListener('keyup', handleKeyup, true)
 })
 </script>

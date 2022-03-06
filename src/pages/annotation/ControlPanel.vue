@@ -1,170 +1,170 @@
 <template>
   <q-list :class="{'flex justify-evenly full-width': q.screen.lt.md}">
-      <div v-if="annotationStore.mode !== 'action'">
-        <q-item dense>
-          <q-item-section class="text-center">
-            Copy
-          </q-item-section>
-        </q-item>
-        <q-item>
-          <q-item-section>
-            <q-btn-group
-                spread
-                flat
-            >
-              <q-btn
-                  outline
-                  icon="arrow_back"
-                  @click="handleCopyLeft"
-              >
-                <q-tooltip>copy from right to left</q-tooltip>
-              </q-btn>
-              <q-btn
-                  outline
-                  icon="arrow_forward"
-                  @click="handleCopyRight"
-              >
-                <q-tooltip>copy from left to right</q-tooltip>
-              </q-btn>
-            </q-btn-group>
-          </q-item-section>
-        </q-item>
-
-        <q-item>
-          <q-item-section>
-            <q-btn-group
-                spread
-                flat
-            >
-              <q-btn
-                  outline
-                  icon="first_page"
-                  @click="handleReplaceLeft"
-              >
-                <q-tooltip>replace left with right</q-tooltip>
-              </q-btn>
-              <q-btn
-                  outline
-                  icon="last_page"
-                  @click="handleReplaceRight"
-              >
-                <q-tooltip>replace right with left</q-tooltip>
-              </q-btn>
-            </q-btn-group>
-          </q-item-section>
-        </q-item>
-        <q-item>
-          <q-item-section>
-            <q-btn-group
-                spread
-                flat
-            >
-              <q-btn
-                  outline
-                  icon="double_arrow"
-                  label="fill"
-                  @click="handleInterpolate"
-              >
-                <q-tooltip>interpolate between with same instance id</q-tooltip>
-              </q-btn>
-            </q-btn-group>
-          </q-item-section>
-        </q-item>
-      </div>
-      <div>
-        <q-item dense>
-          <q-item-section class="text-center">Mode</q-item-section>
-        </q-item>
-        <q-item>
-          <q-item-section>
-            <q-select
-                v-model="annotationStore.mode"
-                outlined
-                stack-label
-                dense
-                options-dense
-                :options="modeOptions"
-                :readonly="modeOptions.length === 1"
-            ></q-select>
-          </q-item-section>
-        </q-item>
-        <q-item v-if="annotationStore.mode === 'skeleton'">
-          <q-item-section>
-            <q-select
-                v-model="annotationStore.skeletonTypeId"
-                outlined
-                stack-label
-                dense
-                options-dense
-                map-options
-                :options="skeletonTypeOptions"
-            ></q-select>
-          </q-item-section>
-        </q-item>
-        <q-item v-if="q.platform.has.touch">
-          <q-item-section>
-            <q-toggle
-                v-model="delMode"
-                label="Delete"
-            ></q-toggle>
-            <q-toggle
-                v-model="copyMode"
-                label="Copy"
-            ></q-toggle>
-            <q-toggle
-                v-if="annotationStore.mode === 'region'"
-                v-model="addPointMode"
-                label="Add Point"
-            ></q-toggle>
-            <q-toggle
-                v-if="annotationStore.mode === 'region'"
-                v-model="delPointMode"
-                label="Del Point"
-            ></q-toggle>
-            <q-toggle
-                v-if="annotationStore.mode === 'skeleton'"
-                v-model="indicatingMode"
-                label="Indicate"
-            ></q-toggle>
-          </q-item-section>
-        </q-item>
-      </div>
-      <div v-if="annotationStore.mode !== 'action'">
-        <q-item dense>
-          <q-item-section class="text-center">Operation</q-item-section>
-        </q-item>
-        <q-item>
-          <q-item-section>
+    <div v-if="annotationStore.mode !== 'action'">
+      <q-item dense>
+        <q-item-section class="text-center">
+          Copy
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-btn-group
+              spread
+              flat
+          >
             <q-btn
                 outline
-                label="bulk"
-                icon="delete_forever"
-                @click="handleBulkClear"
+                icon="arrow_back"
+                @click="handleCopyLeft"
             >
-              <q-tooltip>Clear all annotations between left and right frame</q-tooltip>
+              <q-tooltip>copy from right to left</q-tooltip>
             </q-btn>
-          </q-item-section>
-        </q-item>
-      </div>
-      <div>
-        <q-item dense>
-          <q-item-section class="text-center">Options</q-item-section>
-        </q-item>
-        <q-item>
-          <q-item-section>
-            <q-toggle
-                v-model="preferenceStore.grayscale"
-                label="Grayscale"
-            ></q-toggle>
-            <q-toggle
-                v-if="!q.platform.has.touch && annotationStore.mode !== 'action'"
-                v-model="preferenceStore.showPopup"
-                label="Show popup"
-            ></q-toggle>
-          </q-item-section>
-        </q-item>
-      </div>
-    </q-list>
+            <q-btn
+                outline
+                icon="arrow_forward"
+                @click="handleCopyRight"
+            >
+              <q-tooltip>copy from left to right</q-tooltip>
+            </q-btn>
+          </q-btn-group>
+        </q-item-section>
+      </q-item>
+
+      <q-item>
+        <q-item-section>
+          <q-btn-group
+              spread
+              flat
+          >
+            <q-btn
+                outline
+                icon="first_page"
+                @click="handleReplaceLeft"
+            >
+              <q-tooltip>replace left with right</q-tooltip>
+            </q-btn>
+            <q-btn
+                outline
+                icon="last_page"
+                @click="handleReplaceRight"
+            >
+              <q-tooltip>replace right with left</q-tooltip>
+            </q-btn>
+          </q-btn-group>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-btn-group
+              spread
+              flat
+          >
+            <q-btn
+                outline
+                icon="double_arrow"
+                label="fill"
+                @click="handleInterpolate"
+            >
+              <q-tooltip>interpolate between with same instance id</q-tooltip>
+            </q-btn>
+          </q-btn-group>
+        </q-item-section>
+      </q-item>
+    </div>
+    <div>
+      <q-item dense>
+        <q-item-section class="text-center">Mode</q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-select
+              v-model="annotationStore.mode"
+              outlined
+              stack-label
+              dense
+              options-dense
+              :options="modeOptions"
+              :readonly="modeOptions.length === 1"
+          ></q-select>
+        </q-item-section>
+      </q-item>
+      <q-item v-if="annotationStore.mode === 'skeleton'">
+        <q-item-section>
+          <q-select
+              v-model="annotationStore.skeletonTypeId"
+              outlined
+              stack-label
+              dense
+              options-dense
+              map-options
+              :options="skeletonTypeOptions"
+          ></q-select>
+        </q-item-section>
+      </q-item>
+      <q-item v-if="q.platform.has.touch">
+        <q-item-section>
+          <q-toggle
+              v-model="delMode"
+              label="Delete"
+          ></q-toggle>
+          <q-toggle
+              v-model="copyMode"
+              label="Copy"
+          ></q-toggle>
+          <q-toggle
+              v-if="annotationStore.mode === 'region'"
+              v-model="addPointMode"
+              label="Add Point"
+          ></q-toggle>
+          <q-toggle
+              v-if="annotationStore.mode === 'region'"
+              v-model="delPointMode"
+              label="Del Point"
+          ></q-toggle>
+          <q-toggle
+              v-if="annotationStore.mode === 'skeleton'"
+              v-model="indicatingMode"
+              label="Indicate"
+          ></q-toggle>
+        </q-item-section>
+      </q-item>
+    </div>
+    <div v-if="annotationStore.mode !== 'action'">
+      <q-item dense>
+        <q-item-section class="text-center">Operation</q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-btn
+              outline
+              label="bulk"
+              icon="delete_forever"
+              @click="handleBulkClear"
+          >
+            <q-tooltip>Clear all annotations between left and right frame</q-tooltip>
+          </q-btn>
+        </q-item-section>
+      </q-item>
+    </div>
+    <div>
+      <q-item dense>
+        <q-item-section class="text-center">Options</q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-toggle
+              v-model="preferenceStore.grayscale"
+              label="Grayscale"
+          ></q-toggle>
+          <q-toggle
+              v-if="!q.platform.has.touch && annotationStore.mode !== 'action'"
+              v-model="preferenceStore.showPopup"
+              label="Show popup"
+          ></q-toggle>
+        </q-item-section>
+      </q-item>
+    </div>
+  </q-list>
 </template>
 
 <script setup>
@@ -409,8 +409,7 @@ const delMode = computed({
       annotationStore.addPointMode = false
       annotationStore.delPointMode = false
       annotationStore.indicatingMode = false
-    }
-    else {
+    } else {
       annotationStore.delMode = false
     }
   }
@@ -424,8 +423,7 @@ const copyMode = computed({
       annotationStore.addPointMode = false
       annotationStore.delPointMode = false
       annotationStore.indicatingMode = false
-    }
-    else {
+    } else {
       annotationStore.copyMode = false
     }
   }
@@ -439,8 +437,7 @@ const addPointMode = computed({
       annotationStore.addPointMode = true
       annotationStore.delPointMode = false
       annotationStore.indicatingMode = false
-    }
-    else {
+    } else {
       annotationStore.addPointMode = false
     }
   }
@@ -454,8 +451,7 @@ const delPointMode = computed({
       annotationStore.addPointMode = false
       annotationStore.delPointMode = true
       annotationStore.indicatingMode = false
-    }
-    else {
+    } else {
       annotationStore.delPointMode = false
     }
   }
@@ -469,8 +465,7 @@ const indicatingMode = computed({
       annotationStore.addPointMode = false
       annotationStore.delPointMode = false
       annotationStore.indicatingMode = true
-    }
-    else {
+    } else {
       annotationStore.indicatingMode = false
     }
   }

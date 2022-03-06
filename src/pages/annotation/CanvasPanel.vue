@@ -298,6 +298,7 @@ const shiftDown = ref(false)
 const backspaceDown = ref(false)
 const altDown = ref(false)
 const handleKeyup = event => {
+  event.stopPropagation()
   if (event.target.nodeName.toLowerCase() === 'input') { // see: https://github.com/anucvml/vidat/issues/91
     return false
   } else if (event.code === 'Delete') {
@@ -322,6 +323,7 @@ const handleKeyup = event => {
   }
 }
 const handleKeydown = event => {
+  event.stopPropagation()
   if (event.target.nodeName.toLowerCase() === 'input') {
     return false
   } else if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
@@ -336,12 +338,12 @@ const handleKeydown = event => {
   }
 }
 onMounted(() => {
-  window.addEventListener('keyup', handleKeyup)
-  window.addEventListener('keydown', handleKeydown)
+  document.addEventListener('keyup', handleKeyup, true)
+  document.addEventListener('keydown', handleKeydown, true)
 })
 onUnmounted(() => {
-  window.removeEventListener('keyup', handleKeyup)
-  window.removeEventListener('keydown', handleKeydown)
+  document.removeEventListener('keyup', handleKeyup, true)
+  document.removeEventListener('keydown', handleKeydown, true)
 })
 
 /// get helpers
@@ -775,14 +777,16 @@ const handleMousedown = event => {
           let pointIndexList = regionAnnotation.getPointIndexListOfBoundary(mouseX, mouseY)
           const minIndex = Math.min(...pointIndexList)
           const maxIndex = Math.max(...pointIndexList)
-          const newPoint = {
+          let newPoint = {
             x: mouseX,
             y: mouseY
           }
           if (minIndex === 0 && maxIndex === regionAnnotation.pointList.length - 1) {
             regionAnnotation.pointList.push(newPoint)
+            newPoint = regionAnnotation.pointList.at(-1)
           } else {
             regionAnnotation.pointList.splice(minIndex + 1, 0, newPoint)
+            newPoint = regionAnnotation.pointList.at(minIndex + 1)
           }
           dragContext = {
             type: 'sizing',
@@ -795,6 +799,7 @@ const handleMousedown = event => {
           if (shiftDown.value && !nearPoint) {
             regionAnnotation = regionAnnotation.clone()
             annotationList.value.push(regionAnnotation)
+            regionAnnotation = annotationList.value.at(-1)
           }
           dragContext = {
             type: nearPoint ? 'sizing' : 'moving',
@@ -815,10 +820,10 @@ const handleMousedown = event => {
           y: mouseY
         }
       ])
-      createContext = {
-        regionAnnotation: regionAnnotation
-      }
       annotationList.value.push(regionAnnotation)
+      createContext = {
+        regionAnnotation: annotationList.value.at(-1)
+      }
     }
   } else if (annotationStore.mode === 'skeleton' && preferenceStore.skeletons) {
     // drag
@@ -840,6 +845,7 @@ const handleMousedown = event => {
         if (shiftDown.value && nearPoint && nearPoint.name === 'center') {
           skeletonAnnotation = skeletonAnnotation.clone()
           annotationList.value.push(skeletonAnnotation)
+          skeletonAnnotation = annotationList.value.at(-1)
         }
         dragContext = {
           type: nearPoint && nearPoint.name !== 'center' ? 'sizing' : 'moving',
@@ -854,12 +860,12 @@ const handleMousedown = event => {
     // creating a skeleton
     if (!found && !createContext) {
       const skeletonAnnotation = new SkeletonAnnotation(mouseX, mouseY, annotationStore.skeletonTypeId)
+      annotationList.value.push(skeletonAnnotation)
       createContext = {
-        skeletonAnnotation: skeletonAnnotation,
+        skeletonAnnotation: annotationList.value.at(-1),
         mouseDownX: mouseX,
         mouseDownY: mouseY
       }
-      annotationList.value.push(skeletonAnnotation)
     }
   }
 }
@@ -994,6 +1000,8 @@ const handleTouchstart = event => {
       }
     } else if (!createContext && !annotationStore.delMode && !annotationStore.copyMode) {
       const objectAnnotation = new ObjectAnnotation(mouseX, mouseY, 0, 0)
+      objectAnnotation.highlight = true
+      annotationList.value.push(objectAnnotation)
       createContext = {
         index: annotationList.value.length,
         x: objectAnnotation.x,
@@ -1001,8 +1009,6 @@ const handleTouchstart = event => {
         mousedownX: mouseX,
         mousedownY: mouseY
       }
-      objectAnnotation.highlight = true
-      annotationList.value.push(objectAnnotation)
     }
   } else if (annotationStore.mode === 'region' && preferenceStore.regions) {
     // add point when creating
@@ -1049,8 +1055,10 @@ const handleTouchstart = event => {
           }
           if (minIndex === 0 && maxIndex === regionAnnotation.pointList.length - 1) {
             regionAnnotation.pointList.push(nearPoint)
+            nearPoint = regionAnnotation.pointList.at(-1)
           } else {
             regionAnnotation.pointList.splice(minIndex + 1, 0, nearPoint)
+            nearPoint = regionAnnotation.pointList.at(minIndex + 1)
           }
           type = 'sizing'
         }
@@ -1074,11 +1082,11 @@ const handleTouchstart = event => {
             }
           ]
       )
-      createContext = {
-        regionAnnotation: regionAnnotation
-      }
       regionAnnotation.highlight = true
       annotationList.value.push(regionAnnotation)
+      createContext = {
+        regionAnnotation: annotationList.value.at(-1)
+      }
     }
   } else if (annotationStore.mode === 'skeleton' && preferenceStore.skeletons) {
     let [skeletonAnnotation, index, nearPoint, type] = getCurrentSkeletonAnnotation(mouseX, mouseY)
@@ -1096,6 +1104,7 @@ const handleTouchstart = event => {
         skeletonAnnotation = skeletonAnnotation.clone()
         skeletonAnnotation.highlight = true
         annotationList.value.push(skeletonAnnotation)
+        skeletonAnnotation = annotationList.value.at(-1)
       }
       if (!(annotationStore.copyMode || annotationStore.delMode || annotationStore.indicatingMode) ||
           nearPoint.name ===
@@ -1118,13 +1127,13 @@ const handleTouchstart = event => {
     else if (!createContext && !annotationStore.copyMode && !annotationStore.delMode &&
         !annotationStore.indicatingMode) {
       const skeletonAnnotation = new SkeletonAnnotation(mouseX, mouseY, annotationStore.skeletonTypeId)
+      skeletonAnnotation.highlight = true
+      annotationList.value.push(skeletonAnnotation)
       createContext = {
-        skeletonAnnotation: skeletonAnnotation,
+        skeletonAnnotation: annotationList.value.at(-1),
         mouseDownX: mouseX,
         mouseDownY: mouseY
       }
-      skeletonAnnotation.highlight = true
-      annotationList.value.push(skeletonAnnotation)
     }
   }
 }

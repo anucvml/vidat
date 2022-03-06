@@ -265,6 +265,7 @@ const moveRange = interval => {
   }
 }
 const handleKeyup = event => {
+  event.stopPropagation()
   if (event.target.nodeName.toLowerCase() === 'input' || event.target.tabIndex === 0) {
     return false
   }
@@ -284,6 +285,7 @@ const handleInput = value => {
   currentFrameRange.value = value
 }
 const handleKeydown = event => {
+  event.stopPropagation()
   if (showVideoPlayer.value) {
     return
   }
@@ -347,12 +349,12 @@ const handleKeydown = event => {
   }
 }
 onMounted(() => {
-  window.addEventListener('keyup', handleKeyup)
-  window.addEventListener('keydown', handleKeydown)
+  document.addEventListener('keyup', handleKeyup, true)
+  document.addEventListener('keydown', handleKeydown, true)
 })
 onUnmounted(() => {
-  window.removeEventListener('keyup', handleKeyup)
-  window.removeEventListener('keydown', handleKeydown)
+  document.removeEventListener('keyup', handleKeyup, true)
+  document.removeEventListener('keydown', handleKeydown, true)
 })
 
 // middle range
