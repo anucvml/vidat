@@ -131,7 +131,8 @@ const useV2 = computed(() => {
 
 const progress = computed(() => {
   if (!isNaN(annotationStore.video.frames && annotationStore.cachedFrameList.length)) {
-    return Math.round(annotationStore.cachedFrameList.filter(frame => frame).length / annotationStore.video.frames * 100)
+    return Math.round(
+        annotationStore.cachedFrameList.filter(frame => frame).length / annotationStore.video.frames * 100)
   } else {
     return 0
   }
@@ -171,6 +172,8 @@ if (annotation) {
   const { loadAnnotation } = useAnnotation()
   utils.readFile(annotation).then(res => {
     loadAnnotation(JSON.parse(res))
+  }).catch(err => {
+    utils.notify(`Could not load annotation: ${err}`, 'negative')
   })
 }
 if (!annotation && video) {
