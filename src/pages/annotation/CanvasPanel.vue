@@ -246,7 +246,7 @@ const labelOption = computed(() => configurationStore.objectLabelData.map(label 
   }
 }))
 const handleSelectInput = (labelId) => {
-  annotationList.value.at(-1).color = configurationStore.objectLabelData.find(label => label.id === labelId).color
+  annotationList.value[annotationList.value.length - 1].color = configurationStore.objectLabelData.find(label => label.id === labelId).color
 }
 
 /// autofocus
@@ -601,7 +601,7 @@ const handleMousemove = event => {
     // creating a region
     if (createContext) {
       const activeAnnotation = createContext.regionAnnotation
-      const lastPoint = activeAnnotation.pointList.at(-1)
+      const lastPoint = activeAnnotation.pointList[activeAnnotation.pointList.length - 1]
       lastPoint.x = mouseX
       lastPoint.y = mouseY
     }
@@ -783,10 +783,10 @@ const handleMousedown = event => {
           }
           if (minIndex === 0 && maxIndex === regionAnnotation.pointList.length - 1) {
             regionAnnotation.pointList.push(newPoint)
-            newPoint = regionAnnotation.pointList.at(-1)
+            newPoint = regionAnnotation.pointList[regionAnnotation.pointList.length - 1]
           } else {
             regionAnnotation.pointList.splice(minIndex + 1, 0, newPoint)
-            newPoint = regionAnnotation.pointList.at(minIndex + 1)
+            newPoint = regionAnnotation.pointList[minIndex + 1]
           }
           dragContext = {
             type: 'sizing',
@@ -799,7 +799,7 @@ const handleMousedown = event => {
           if (shiftDown.value && !nearPoint) {
             regionAnnotation = regionAnnotation.clone()
             annotationList.value.push(regionAnnotation)
-            regionAnnotation = annotationList.value.at(-1)
+            regionAnnotation = annotationList.value[annotationList.value.length - 1]
           }
           dragContext = {
             type: nearPoint ? 'sizing' : 'moving',
@@ -822,7 +822,7 @@ const handleMousedown = event => {
       ])
       annotationList.value.push(regionAnnotation)
       createContext = {
-        regionAnnotation: annotationList.value.at(-1)
+        regionAnnotation: annotationList.value[annotationList.value.length - 1]
       }
     }
   } else if (annotationStore.mode === 'skeleton' && preferenceStore.skeletons) {
@@ -845,7 +845,7 @@ const handleMousedown = event => {
         if (shiftDown.value && nearPoint && nearPoint.name === 'center') {
           skeletonAnnotation = skeletonAnnotation.clone()
           annotationList.value.push(skeletonAnnotation)
-          skeletonAnnotation = annotationList.value.at(-1)
+          skeletonAnnotation = annotationList.value[annotationList.value.length - 1]
         }
         dragContext = {
           type: nearPoint && nearPoint.name !== 'center' ? 'sizing' : 'moving',
@@ -862,7 +862,7 @@ const handleMousedown = event => {
       const skeletonAnnotation = new SkeletonAnnotation(mouseX, mouseY, annotationStore.skeletonTypeId)
       annotationList.value.push(skeletonAnnotation)
       createContext = {
-        skeletonAnnotation: annotationList.value.at(-1),
+        skeletonAnnotation: annotationList.value[annotationList.value.length - 1],
         mouseDownX: mouseX,
         mouseDownY: mouseY
       }
@@ -1055,10 +1055,10 @@ const handleTouchstart = event => {
           }
           if (minIndex === 0 && maxIndex === regionAnnotation.pointList.length - 1) {
             regionAnnotation.pointList.push(nearPoint)
-            nearPoint = regionAnnotation.pointList.at(-1)
+            nearPoint = regionAnnotation.pointList[regionAnnotation.pointList.length - 1]
           } else {
             regionAnnotation.pointList.splice(minIndex + 1, 0, nearPoint)
-            nearPoint = regionAnnotation.pointList.at(minIndex + 1)
+            nearPoint = regionAnnotation.pointList[minIndex + 1]
           }
           type = 'sizing'
         }
@@ -1085,7 +1085,7 @@ const handleTouchstart = event => {
       regionAnnotation.highlight = true
       annotationList.value.push(regionAnnotation)
       createContext = {
-        regionAnnotation: annotationList.value.at(-1)
+        regionAnnotation: annotationList.value[annotationList.value.length - 1]
       }
     }
   } else if (annotationStore.mode === 'skeleton' && preferenceStore.skeletons) {
@@ -1104,7 +1104,7 @@ const handleTouchstart = event => {
         skeletonAnnotation = skeletonAnnotation.clone()
         skeletonAnnotation.highlight = true
         annotationList.value.push(skeletonAnnotation)
-        skeletonAnnotation = annotationList.value.at(-1)
+        skeletonAnnotation = annotationList.value[annotationList.value.length - 1]
       }
       if (!(annotationStore.copyMode || annotationStore.delMode || annotationStore.indicatingMode) ||
           nearPoint.name ===
@@ -1130,7 +1130,7 @@ const handleTouchstart = event => {
       skeletonAnnotation.highlight = true
       annotationList.value.push(skeletonAnnotation)
       createContext = {
-        skeletonAnnotation: annotationList.value.at(-1),
+        skeletonAnnotation: annotationList.value[annotationList.value.length - 1],
         mouseDownX: mouseX,
         mouseDownY: mouseY
       }
