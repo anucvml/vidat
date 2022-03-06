@@ -5,7 +5,10 @@
         :src="src"
         alt="thumbnail"
     />
-    <q-popup-proxy v-model="showPopup">
+    <q-popup-proxy
+        persistent
+        v-model="showPopup"
+    >
       <q-card>
         <img
             class="cursor-pointer"
