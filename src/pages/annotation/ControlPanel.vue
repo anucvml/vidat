@@ -157,7 +157,7 @@
                 label="Grayscale"
             ></q-toggle>
             <q-toggle
-                v-if="annotationStore.mode !== 'action'"
+                v-if="!q.platform.has.touch && annotationStore.mode !== 'action'"
                 v-model="preferenceStore.showPopup"
                 label="Show popup"
             ></q-toggle>

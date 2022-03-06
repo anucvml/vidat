@@ -119,14 +119,16 @@ const q = useQuasar()
 q.dark.set('auto')
 
 const useV2 = computed(() => {
-  console.log('Video Decoder: ', preferenceStore.decoder)
+  let ret
   if (preferenceStore.decoder === 'v1') {
-    return false
+    ret = false
   } else if (preferenceStore.decoder === 'v2') {
-    return true
+    ret = true
   } else {
-    return !!window.VideoDecoder
+    ret = !!window.VideoDecoder
   }
+  console.log('Video Decoder:', ret ? 'V2' : 'V1')
+  return ret
 })
 
 const progress = computed(() => {

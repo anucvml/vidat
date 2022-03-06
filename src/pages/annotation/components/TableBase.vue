@@ -249,8 +249,9 @@ const handleClearAll = () => {
 }
 const currentInstance = getCurrentInstance()
 const focusLast = () => {
-  if (currentInstance.ctx.$refs.select) {
-    currentInstance.ctx.$refs.select.at(-1).showPopup()
+  const selectList = currentInstance.ctx.$refs.select
+  if (selectList) {
+    selectList[selectList.length - 1].showPopup()
   }
 }
 defineExpose({

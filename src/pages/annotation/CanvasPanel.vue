@@ -958,7 +958,7 @@ const getTouchLocation = event => {
   let currentTarget = canvas.value
   let top = 0
   let left = 0
-  while (currentTarget !== undefined) {
+  while (currentTarget) {
     top += currentTarget.offsetTop
     left += currentTarget.offsetLeft
     currentTarget = currentTarget.offsetParent
