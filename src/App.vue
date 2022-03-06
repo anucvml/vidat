@@ -284,6 +284,11 @@ if (showPopup) {
     preferenceStore.showPopup = false
   }
 }
+window.addEventListener('beforeunload', event => {
+  if (annotationStore.hasVideo && !mainStore.isSaved) {
+    event.returnValue = 'The annotations are not saved!'
+  }
+})
 </script>
 
 <style lang="sass">

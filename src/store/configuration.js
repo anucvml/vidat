@@ -382,7 +382,7 @@ export const useConfigurationStore = defineStore('configuration', () => {
       return {
         objectLabelData: state.objectLabelData,
         actionLabelData: state.actionLabelData,
-        skeletonTypeData: state.skeletonTypeData,
+        skeletonTypeData: state.skeletonTypeData
       }
     },
     importObjectLabelData,

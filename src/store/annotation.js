@@ -2,6 +2,7 @@ import deepClone from 'lodash.clonedeep'
 import { defineStore } from 'pinia'
 import { computed, reactive, toRefs, watch } from 'vue'
 import utils from '~/libs/utils.js'
+import { useMainStore } from '~/store/index.js'
 import { usePreferenceStore } from '~/store/preference.js'
 import { ActionAnnotation, ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '../libs/annotationlib.js'
 
@@ -35,13 +36,12 @@ const DEFAULT_ANNOTATION = {
   copyMode: false,
   addPointMode: false,
   delPointMode: false,
-  indicatingMode: false,
-
-  isSaved: true
+  indicatingMode: false
 }
 
 export const useAnnotationStore = defineStore('annotation', () => {
   const preferenceStore = usePreferenceStore()
+  const mainStore = useMainStore()
   let defaultAnnotation = deepClone(DEFAULT_ANNOTATION)
   const state = reactive(DEFAULT_ANNOTATION)
   watch(
@@ -77,6 +77,15 @@ export const useAnnotationStore = defineStore('annotation', () => {
       state.leftCurrentFrame = 0
     }
   })
+  watch(() => [
+    state.objectAnnotationListMap,
+    state.regionAnnotationListMap,
+    state.skeletonAnnotationListMap,
+    state.actionAnnotationList,
+    state.keyframeList
+  ], () => {
+    mainStore.isSaved = false
+  }, { deep: true })
   return {
     ...toRefs(state),
     hasVideo: computed(() => {
@@ -108,6 +117,7 @@ export const useAnnotationStore = defineStore('annotation', () => {
             }
           })
       }
+      mainStore.isSaved = true
       return {
         video: state.video,
         keyframeList: state.keyframeList,
@@ -200,6 +210,7 @@ export const useAnnotationStore = defineStore('annotation', () => {
         )
       }
       state.actionAnnotationList = actionAnnotationList
+      mainStore.isSaved = true
     }
   }
 })

@@ -6,6 +6,7 @@ export const useMainStore = defineStore('main', {
   state: () => ({
     drawer: false,
     zoom: false,
-    submitURL: null
+    submitURL: null,
+    isSaved: true
   })
 })
