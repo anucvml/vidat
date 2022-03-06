@@ -204,16 +204,14 @@ const handleNextKeyframe = () => { // base on left most one
   const rightCurrentKeyFrameIndex = annotationStore.keyframeList.indexOf(rightCurrentKeyFrame)
   const lastIndex = annotationStore.keyframeList.length - 1
   if (leftCurrentKeyFrameIndex >= lastIndex || rightCurrentKeyFrameIndex >= lastIndex) {
-    annotationStore.leftCurrentFrame = annotationStore.keyframeList[lastIndex - 1] ||
-        annotationStore.keyframeList[lastIndex]
+    annotationStore.leftCurrentFrame = lastIndex - 1 >= 0 ? annotationStore.keyframeList[lastIndex - 1] : annotationStore.keyframeList[lastIndex]
     annotationStore.rightCurrentFrame = annotationStore.keyframeList[lastIndex]
   } else if (leftCurrentKeyFrameIndex === rightCurrentKeyFrameIndex) {
     annotationStore.leftCurrentFrame = leftCurrentKeyFrame
     annotationStore.rightCurrentFrame = annotationStore.keyframeList[leftCurrentKeyFrameIndex + 1]
   } else if (leftCurrentKeyFrameIndex < rightCurrentKeyFrameIndex) {
     if (leftCurrentKeyFrameIndex + 2 > lastIndex) {
-      annotationStore.leftCurrentFrame = annotationStore.keyframeList[lastIndex - 1] ||
-          annotationStore.keyframeList[lastIndex]
+      annotationStore.leftCurrentFrame = lastIndex - 1 >= 0 ? annotationStore.keyframeList[lastIndex - 1] : annotationStore.keyframeList[lastIndex]
       annotationStore.rightCurrentFrame = annotationStore.keyframeList[lastIndex]
     } else {
       annotationStore.leftCurrentFrame = annotationStore.keyframeList[leftCurrentKeyFrameIndex + 1]
