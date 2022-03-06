@@ -169,7 +169,7 @@
 
 <script setup>
 import { useQuasar } from 'quasar'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '~/libs/annotationlib.js'
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
@@ -470,6 +470,15 @@ const indicatingMode = computed({
     }
   }
 })
+watch(() => annotationStore.mode,
+    () => {
+      annotationStore.delMode = false
+      annotationStore.copyMode = false
+      annotationStore.addPointMode = false
+      annotationStore.delPointMode = false
+      annotationStore.indicatingMode = false
+    }
+)
 
 // operation
 const handleBulkClear = () => {
