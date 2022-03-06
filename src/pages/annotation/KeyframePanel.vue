@@ -331,6 +331,7 @@ const handleKeydown = event => {
     } else if (currentFocus.value === 'right') {
       moveRightFrame(delta)
     }
+    event.preventDefault()
   } else if (event.code === 'PageDown') {
     const delta = Math.round(0.1 * annotationStore.video.frames)
     if (currentFocus.value === 'range') {
@@ -340,6 +341,7 @@ const handleKeydown = event => {
     } else if (currentFocus.value === 'right') {
       moveRightFrame(delta)
     }
+    event.preventDefault()
   } else if (event.code === 'Comma') {
     handlePreviousKeyframe()
   } else if (event.code === 'Period') {
