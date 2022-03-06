@@ -7,7 +7,7 @@
     >
       <div class="col">Duration</div>
       <div class="col">
-        <span v-if="video.duration && video.fps">{{ video.duration }}s @ {{ video.fps }}fps</span>
+        <span v-if="video.duration && video.fps">{{ utils.toFixed2(video.duration) }}s @ {{ video.fps }}fps</span>
         <span v-else>-</span>
       </div>
     </div>
@@ -50,6 +50,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useVideo } from '~/hooks/video.js'
+import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 
 const annotationStore = useAnnotationStore()
