@@ -87,9 +87,9 @@ export const useAnnotation = () => {
         if (res.ok) {
           console.log('Success', res)
           res.json().then(data => {
-            const { message, clipboard } = data
+            const { message, clipboard, type } = data
             if (message) {
-              utils.notify('Server: ' + message, 'positive')
+              utils.notify('Server: ' + message, type || 'positive')
             }
             if (clipboard) {
               copyToClipboard(clipboard).then(() => {

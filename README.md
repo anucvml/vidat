@@ -67,8 +67,9 @@ content-type: application/json
 ```text
 content-type: application/json
 {
-    message: '' // notify the user
-    clipboard: '' // copy to user's clipboard
+    type: '' // color: "primary" (default) | "secondary" | "accent" | "dark" | "positive" | "negative" | "info" | "warning"
+    message: '' // notify the user (required)
+    clipboard: '' // copy to user's clipboard (optional)
 }
 ```
 
