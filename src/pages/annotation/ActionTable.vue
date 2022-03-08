@@ -83,6 +83,7 @@
     </template>
     <template v-slot:body="props">
       <q-tr :class="{ 'bg-warning': props.row.end - props.row.start <= 0}">
+        <q-tooltip anchor="top middle" v-if="props.row.end - props.row.start <= 0">Duration should be greater than 0.</q-tooltip>
         <q-td auto-width>
           <q-input
               v-model.number="props.row.start"

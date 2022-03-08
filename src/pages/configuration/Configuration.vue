@@ -40,7 +40,7 @@ const configurationStore = useConfigurationStore()
 const handleLoad = () => {
   utils.confirm(
       'Are you sure to load? This would override the configuration!'
-  ).onOk(() => { // TODO
+  ).onOk(() => {
     utils.importFile().then(file => {
       try {
         configurationStore.importConfig(JSON.parse(file))
