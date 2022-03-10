@@ -7,6 +7,7 @@ import { defineConfig } from 'vite'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 
 export default defineConfig({
+  base: '',
   server: {
     host: '0.0.0.0',
     open: true
@@ -30,7 +31,8 @@ export default defineConfig({
       autoImportComponentCase: 'pascal'
     }),
     monacoEditorPlugin({
-      languageWorkers: ['editorWorkerService', 'json']
+      languageWorkers: ['editorWorkerService', 'json'],
+      publicPath: 'https://unpkg.com/vite-plugin-monaco-editor@1.0.10/cdn'
     })
   ],
   define: {

@@ -154,7 +154,7 @@ onmessage = async (event) => {
           headers['Range'] = `bytes=${rightOffset}-${rightOffset + probeUnit -
           1}`
         }
-        const response = await fetch(event.data.src, {
+        const response = await fetch((new URL(event.data.src, new URL('..', event.target.location)).href), {
           signal: abortController.signal,
           headers
         })
