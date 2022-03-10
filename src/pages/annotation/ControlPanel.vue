@@ -153,13 +153,17 @@
       <q-item>
         <q-item-section>
           <q-toggle
+              v-model="preferenceStore.muted"
+              label="Muted"
+          ></q-toggle>
+          <q-toggle
               v-model="preferenceStore.grayscale"
               label="Grayscale"
           ></q-toggle>
           <q-toggle
               v-if="!q.platform.has.touch && annotationStore.mode !== 'action'"
               v-model="preferenceStore.showPopup"
-              label="Show popup"
+              label="Show Popup"
           ></q-toggle>
         </q-item-section>
       </q-item>
