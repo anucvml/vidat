@@ -89,8 +89,9 @@ content-type: application/json
 
 > All the keys and values are **not** case-sensitive.
 >
-> **Note** if you are using an external URL for `annotation`, `video` or `config`,
+> **Note** if you are using an external URL for `annotation`, `video`, `config` or `submitURL`,
 > please make sure you are following [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
+> And they need to be [URL encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI) if there is any special characters.
 
 ### `annotation`
 
@@ -238,7 +239,7 @@ Whether to show quick popup when finishing annotating an object/region/skeleton.
 
 **Example** `submitURL=http%3A%2F%2Fexample.com%3Ftoken%3D123456`
 
-Note that the submission url needs to be URL encoded.
+URL used for submitting annotation.
 
 ### Examples
 

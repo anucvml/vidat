@@ -172,17 +172,17 @@ const {
 // annotation
 if (annotation) {
   const { loadAnnotation } = useAnnotation()
-  utils.readFile(annotation).then(res => {
+  utils.readFile(decodeURIComponent(annotation)).then(res => {
     loadAnnotation(JSON.parse(res))
   }).catch(err => {
     utils.notify(`Could not load annotation: ${err}`, 'negative')
   })
 }
 if (!annotation && video) {
-  annotationStore.video.src = video
+  annotationStore.video.src = decodeURIComponent(video)
 }
 if (!annotation && config) {
-  utils.readFile(config).then(res => {
+  utils.readFile(decodeURIComponent(config)).then(res => {
     configurationStore.importConfig(JSON.parse(res))
     utils.notify('Config loaded successfully!', 'positive')
   }).catch(err => {
