@@ -160,6 +160,9 @@ export const useAnnotationStore = defineStore('annotation', () => {
         if (state.video.duration && video.duration && state.video.duration !== video.duration) {
           throw `The duration of annotation and the video does not match (duration ${state.video.duration} != ${video.duration}).`
         }
+        if (state.video.frames && video.frames && state.video.frames !== video.frames) {
+          throw `The frames of annotation and the video does not match (duration ${state.video.frames} != ${video.frames}).`
+        }
         if (state.video.width && video.width && state.video.width !== video.width) {
           utils.notify(
             `The width of annotation and the video does not match (width ${state.video.width} != ${video.width}).`,
