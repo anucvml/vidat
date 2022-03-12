@@ -12,11 +12,11 @@ _An in-browser video annotation tool developed by [ANU CVML](https://github.com/
 [![CD Status](https://github.com/anucvml/vidat/actions/workflows/cd.yaml/badge.svg)](https://github.com/anucvml/vidat/actions/workflows/cd.yaml)
 [![Star](https://img.shields.io/github/stars/anucvml/vidat?style=social)](https://github.com/anucvml/vidat)
 
-_[Host 1](https://users.cecs.anu.edu.au/~sgould/vidat2/)_
-| _[Host 2](https://vidat2.davidz.cn)_
-| _[Demo 1](https://users.cecs.anu.edu.au/~sgould/vidat2/?annotation=annotation/example.json)_
-| _[Demo 2](https://vidat2.davidz.cn/?annotation=/annotation/example.json)_
-| _[Video Tutorials](https://www.youtube.com/playlist?list=PLD-7XrNHCcFLv938DO4yYcTrgaff9BJjN)_
+[![ANU Host](https://img.shields.io/badge/ANU-Host-b97d1c?style=for-the-badge)](https://users.cecs.anu.edu.au/~sgould/vidat2/)
+[![ANU Demo](https://img.shields.io/badge/ANU-Demo-b97d1c?style=for-the-badge)](https://users.cecs.anu.edu.au/~sgould/vidat2/?annotation=annotation/example.json)
+[![Aliyun Host](https://img.shields.io/badge/Aliyun-Host-45d3ff?style=for-the-badge)](https://vidat2.davidz.cn/)
+[![Aliyun Demo](https://img.shields.io/badge/Aliyun-Demo-45d3ff?style=for-the-badge)](https://vidat2.davidz.cn/?annotation=/annotation/example.json)
+[![Youtube Tutorials](https://img.shields.io/badge/Youtube-Tutorials-ff0000?style=for-the-badge)](https://www.youtube.com/playlist?list=PLD-7XrNHCcFLv938DO4yYcTrgaff9BJjN)
 
 </div>
 
