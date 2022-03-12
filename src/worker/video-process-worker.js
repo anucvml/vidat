@@ -151,8 +151,7 @@ onmessage = async (event) => {
         if (isLeft) {
           headers['Range'] = `bytes=${leftOffset}-`
         } else {
-          headers['Range'] = `bytes=${rightOffset}-${rightOffset + probeUnit -
-          1}`
+          headers['Range'] = `bytes=${rightOffset}-${rightOffset + probeUnit - 1}`
         }
         const response = await fetch((new URL(event.data.src, new URL('..', event.target.location)).href), {
           signal: abortController.signal,

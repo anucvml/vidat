@@ -125,7 +125,8 @@ const useV2 = computed(() => {
   } else if (preferenceStore.decoder === 'v2') {
     ret = true
   } else {
-    ret = !!window.VideoDecoder
+    const isSupported = window.VideoDecoder && window.EncodedVideoChunk && window.OffscreenCanvas
+    ret = isSupported && (mainStore.videoFormat === null || mainStore.videoFormat === 'mp4')
   }
   console.log('Video Decoder:', ret ? 'V2' : 'V1')
   return ret
@@ -179,7 +180,9 @@ if (annotation) {
   })
 }
 if (!annotation && video) {
-  annotationStore.video.src = decodeURIComponent(video)
+  const videoSrc = decodeURIComponent(video)
+  annotationStore.video.src = videoSrc
+  mainStore.videoFormat = videoSrc.split('.').at(-1).toLowerCase()
 }
 if (!annotation && config) {
   utils.readFile(decodeURIComponent(config)).then(res => {

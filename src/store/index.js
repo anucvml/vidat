@@ -7,6 +7,7 @@ export const useMainStore = defineStore('main', {
     drawer: false,
     zoom: false,
     submitURL: null,
-    isSaved: true
+    isSaved: true,
+    videoFormat: null
   })
 })

@@ -10,13 +10,15 @@ export const useVideo = () => {
       if (annotationStore.hasVideo) {
         utils.confirm('Are you sure to open a new video? You will LOSE all data!').onOk(() => {
           annotationStore.reset()
-          utils.importVideo().then(videoSrc => {
+          utils.importVideo().then(({ type, videoSrc }) => {
+            mainStore.videoFormat = type
             annotationStore.video.src = videoSrc
             mainStore.drawer = false
           })
         })
       } else {
-        utils.importVideo().then(videoSrc => {
+        utils.importVideo().then(({ type, videoSrc }) => {
+          mainStore.videoFormat = type
           annotationStore.video.src = videoSrc
           mainStore.drawer = false
         })
@@ -26,6 +28,7 @@ export const useVideo = () => {
       utils.confirm('Are you sure to close? You will LOSE all data!').onOk(() => {
         annotationStore.reset()
         mainStore.drawer = false
+        mainStore.videoFormat = null
       })
     }
   }

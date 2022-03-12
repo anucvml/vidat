@@ -141,6 +141,7 @@ export const useAnnotationStore = defineStore('annotation', () => {
         throw 'The src of video is blob (local), please load video first!'
       } else {
         state.video = video
+        mainStore.videoFormat = video.src.split('.').at(-1).toLowerCase()
       }
       /// keyframeList
       state.keyframeList = keyframeList

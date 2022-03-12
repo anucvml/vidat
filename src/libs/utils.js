@@ -101,7 +101,10 @@ export default {
       dialog.accept = 'video/*'
       dialog.onchange = e => {
         const file = e.target.files[0]
-        resolve(URL.createObjectURL(file))
+        resolve({
+          type: file.type.split('/').at(-1),
+          videoSrc: URL.createObjectURL(file)
+        })
       }
       dialog.click()
     })
