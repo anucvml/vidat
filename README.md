@@ -1,6 +1,6 @@
 <div align="center">
 <a href="https://www.anu.edu.au/" target="_blank">
-   <img src="src/public/img/logo.svg" alt="ANU logo">
+   <img src="public/img/logo.svg" alt="ANU logo">
 </a>
 
 # Vidat
@@ -324,7 +324,7 @@ There will be a button shown in the side menu which will `POST` the annotation f
 }
 ```
 
-See [`src/public/config/example.json`](src/public/config/example.json) for am example.
+See [`public/config/example.json`](src/public/config/example.json) for am example.
 
 **Annotation**
 
@@ -429,7 +429,7 @@ See [`src/public/config/example.json`](src/public/config/example.json) for am ex
 }
 ```
 
-See [`src/public/annotation/example.json`](src/public/annotation/example.json) for am example.
+See [`public/annotation/example.json`](src/public/annotation/example.json) for am example.
 
 ## Development
 

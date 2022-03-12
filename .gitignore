@@ -24,11 +24,11 @@ dist-ssr
 *.sw?
 
 # assets
-src/public/annotation/*
-!src/public/annotation/example.json
-src/public/config/*
-!src/public/config/example.json
-src/public/video/*
+public/annotation/*
+!public/annotation/example.json
+public/config/*
+!public/config/example.json
+public/video/*
 !src/public/video/example.mp4
 
-src/public/dataset
+public/dataset
