@@ -7,6 +7,11 @@
 
 _An in-browser video annotation tool developed by [ANU CVML](https://github.com/anucvml)._
 
+[![Stable Release](https://img.shields.io/github/v/release/anucvml/vidat?sort=semver&label=Stable)](https://github.com/anucvml/vidat/releases)
+[![Latest Release](https://img.shields.io/github/v/release/anucvml/vidat?include_prereleases&label=Latest&sort=semver)](https://github.com/anucvml/vidat/releases)
+[![CD Status](https://github.com/anucvml/vidat/actions/workflows/cd.yaml/badge.svg)](https://github.com/anucvml/vidat/actions/workflows/cd.yaml)
+[![Star](https://img.shields.io/github/stars/anucvml/vidat?style=social)](https://github.com/anucvml/vidat)
+
 _[Host 1](https://users.cecs.anu.edu.au/~sgould/vidat2/)_
 | _[Host 2](https://vidat2.davidz.cn)_
 | _[Demo 1](https://users.cecs.anu.edu.au/~sgould/vidat2/?annotation=annotation/example.json)_
@@ -176,6 +181,8 @@ advantages of native video decoder built inside the browser. It is way faster th
 browsers.
 
 `auto` Vidat will determine which one to use for you.
+
+See [VideoLoader Wiki](https://github.com/anucvml/vidat/wiki/VideoLoader) for details.
 
 ### `showObjects`
 
@@ -426,4 +433,8 @@ See [`src/public/annotation/example.json`](src/public/annotation/example.json) f
 
 ## Development
 
-See [`doc/design/main.md`](doc/design/main.md) [WIP] for details.
+See [Wiki](https://github.com/anucvml/vidat/wiki#further-development) for details.
+
+## Design
+
+See [Design Wiki](https://github.com/anucvml/vidat/wiki/Design) for details.
