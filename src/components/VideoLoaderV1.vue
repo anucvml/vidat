@@ -67,6 +67,9 @@ const handleLoadeddata = (event) => {
     event.target.currentTime = 0.0
   })
 }
+
+let canvas
+let ctx
 const handleSeeked = (event) => {
   if (annotationStore.hasVideo) {
     const videoElement = event.target
@@ -75,10 +78,14 @@ const handleSeeked = (event) => {
     if (!annotationStore.cachedFrameList[currentIndex]) {
       annotationStore.isCaching = true
       // get the image
-      const canvas = document.createElement('canvas')
-      canvas.width = annotationStore.video.width
-      canvas.height = annotationStore.video.height
-      let ctx = canvas.getContext('2d')
+      if (!ctx) {
+        canvas = document.createElement('canvas')
+        canvas.width = annotationStore.video.width
+        canvas.height = annotationStore.video.height
+        ctx = canvas.getContext('2d')
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+      }
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height)
       // save to cachedFrames
       canvas.toBlob((blob => {
