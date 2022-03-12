@@ -153,9 +153,23 @@ export const useAnnotationStore = defineStore('annotation', () => {
       /// video
       if (!state.video.src && video.src.startsWith('blob')) {
         throw 'The src of video is blob (local), please load video first!'
-      } else {
+      } else if (!state.video.src && !video.src.startsWith('blob')) {
         state.video = video
         mainStore.videoFormat = video.src.split('.').at(-1).toLowerCase()
+      } else {
+        if (state.video.duration && video.duration && state.video.duration !== video.duration) {
+          throw `The duration of annotation and the video does not match (duration ${state.video.duration} != ${video.duration}).`
+        }
+        if (state.video.width && video.width && state.video.width !== video.width) {
+          utils.notify(
+            `The width of annotation and the video does not match (width ${state.video.width} != ${video.width}).`,
+            'warning')
+        }
+        if (state.video.height && video.height && state.video.height !== video.height) {
+          utils.notify(
+            `The height of annotation and the video does not match (width ${state.video.height} != ${video.height}).`,
+            'warning')
+        }
       }
       /// keyframeList
       state.keyframeList = keyframeList
