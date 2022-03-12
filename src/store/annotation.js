@@ -100,29 +100,43 @@ export const useAnnotationStore = defineStore('annotation', () => {
       Object.keys(state).map(key => state[key] = annotation[key])
     },
     exportAnnotation: () => {
+      const objectAnnotationListMap = {}
+      for (const frame in state.objectAnnotationListMap) {
+        if (state.objectAnnotationListMap[frame].length) {
+          objectAnnotationListMap[frame] = state.objectAnnotationListMap[frame]
+        }
+      }
+      const regionAnnotationListMap = {}
+      for (const frame in state.regionAnnotationListMap) {
+        if (state.regionAnnotationListMap[frame].length) {
+          regionAnnotationListMap[frame] = state.regionAnnotationListMap[frame]
+        }
+      }
       // remove type in each skeletonAnnotation
       const skeletonAnnotationListMap = {}
       for (const frame in state.skeletonAnnotationListMap) {
-        skeletonAnnotationListMap[frame] = state.skeletonAnnotationListMap[frame].map(
-          skeletonAnnotation => {
-            return {
-              instance: skeletonAnnotation.instance,
-              score: skeletonAnnotation.score,
-              centerX: skeletonAnnotation.centerX,
-              centerY: skeletonAnnotation.centerY,
-              typeId: skeletonAnnotation.typeId,
-              color: skeletonAnnotation.color,
-              _ratio: skeletonAnnotation._ratio,
-              pointList: skeletonAnnotation.pointList
-            }
-          })
+        if (state.skeletonAnnotationListMap[frame].length) {
+          skeletonAnnotationListMap[frame] = state.skeletonAnnotationListMap[frame].map(
+            skeletonAnnotation => {
+              return {
+                instance: skeletonAnnotation.instance,
+                score: skeletonAnnotation.score,
+                centerX: skeletonAnnotation.centerX,
+                centerY: skeletonAnnotation.centerY,
+                typeId: skeletonAnnotation.typeId,
+                color: skeletonAnnotation.color,
+                _ratio: skeletonAnnotation._ratio,
+                pointList: skeletonAnnotation.pointList
+              }
+            })
+        }
       }
       mainStore.isSaved = true
       return {
         video: state.video,
         keyframeList: state.keyframeList,
-        objectAnnotationListMap: state.objectAnnotationListMap,
-        regionAnnotationListMap: state.regionAnnotationListMap,
+        objectAnnotationListMap,
+        regionAnnotationListMap,
         skeletonAnnotationListMap,
         actionAnnotationList: state.actionAnnotationList
       }
