@@ -86,6 +86,7 @@
         <q-tooltip anchor="top middle" v-if="props.row.end - props.row.start <= 0">Duration should be greater than 0.</q-tooltip>
         <q-td auto-width>
           <q-input
+              style="min-width: 100px;"
               v-model.number="props.row.start"
               dense
               borderless
@@ -96,6 +97,7 @@
         </q-td>
         <q-td auto-width>
           <q-input
+              style="min-width: 100px;"
               v-model.number="props.row.end"
               dense
               borderless
@@ -104,7 +106,7 @@
               @mousewheel.prevent
           ></q-input>
         </q-td>
-        <q-td>
+        <q-td auto-width>
           {{ utils.toFixed2(props.row.end - props.row.start) }}
         </q-td>
         <q-td>
