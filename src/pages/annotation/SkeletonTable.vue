@@ -15,6 +15,7 @@
           hide-bottom
           :rows="props.row.pointList"
           :columns="[
+            { name: 'name', align: 'left', label: 'name', field: 'name' },
             { name: 'x', align: 'left', label: 'x', field: 'x' },
             { name: 'y', align: 'left', label: 'y', field: 'y' },
           ]"
