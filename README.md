@@ -33,7 +33,27 @@ applications with the following desiderata:
 6. Secure. Data does not need to leave the local machine (since there is no server-side processing).
 7. Open-source.
 
-[//]: # (## Screenshots [WIP])
+## Screenshots
+
+### Object
+
+![Object](doc/img/object.gif)
+
+### Region
+
+![Region](doc/img/region.gif)
+
+### Skeleton
+
+![Skeleton](doc/img/skeleton.gif)
+
+### Skeleton Type
+
+![Skeleton Type](doc/img/skeleton-type.gif)
+
+### Action
+
+![Action](doc/img/action.gif)
 
 ## Usage
 
