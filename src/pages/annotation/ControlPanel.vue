@@ -97,6 +97,7 @@
               dense
               options-dense
               map-options
+              emit-value
               :options="skeletonTypeOptions"
           ></q-select>
         </q-item-section>
