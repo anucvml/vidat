@@ -42,7 +42,6 @@
           :min="0"
           :max="annotationStore.video.frames - 1"
           :step="1"
-          :readonly="showVideoPlayer"
           :left-label-text-color="currentFocus === 'left' || currentFocus === 'range' ? 'blue-grey-1' : 'primary'"
           :right-label-text-color="currentFocus === 'right' || currentFocus === 'range' ? 'blue-grey-1' : 'primary'"
           :left-label-color="currentFocus === 'left' || currentFocus === 'range' ? 'primary' : 'blue-grey-1'"
@@ -118,6 +117,16 @@ const pause = () => {
   const videoPlayer = document.getElementById('video-player')
   videoPlayer.pause()
 }
+const stop = () =>{
+  const videoPlayer = document.getElementById('video-player')
+  videoPlayer.style.display = 'none'
+  videoPlayer.pause()
+  videoPlayer.currentTime = utils.index2time(lastLeftCurrentFrame)
+  showVideoPlayer.value = false
+  isPaused.value = true
+  clearTimeout(videoPlayTimeout)
+  clearInterval(videoPlayInterval)
+}
 const handlePlayPause = () => {
   const videoPlayer = document.getElementById('video-player')
   if (!showVideoPlayer.value) {
@@ -135,14 +144,7 @@ const handlePlayPause = () => {
   }
 }
 const handleStop = () => {
-  const videoPlayer = document.getElementById('video-player')
-  videoPlayer.style.display = 'none'
-  videoPlayer.pause()
-  videoPlayer.currentTime = utils.index2time(lastLeftCurrentFrame)
-  showVideoPlayer.value = false
-  isPaused.value = true
-  clearTimeout(videoPlayTimeout)
-  clearInterval(videoPlayInterval)
+  stop()
   annotationStore.leftCurrentFrame = lastLeftCurrentFrame
 }
 
@@ -366,6 +368,9 @@ const currentFrameRange = computed({
     }
   },
   set: (value) => {
+    if (showVideoPlayer.value) {
+      stop()
+    }
     annotationStore.leftCurrentFrame = value.min
     annotationStore.rightCurrentFrame = value.max
   }
