@@ -23,14 +23,16 @@ export default {
    * @param message
    * @param color
    * @param timeout
+   * @param position
    * @returns
    */
-  notify (message, color = 'positive', timeout = 5000) {
+  notify (message, color = 'positive', timeout = 5000, position = 'bottom-right') {
     return Notify.create({
       message: message,
       color: color,
-      position: 'bottom-right',
-      timeout: timeout
+      position: position,
+      timeout: timeout,
+      closeBtn: timeout === 0 ? 'Dismiss' : false
     })
   },
   /**

@@ -93,7 +93,8 @@ export const useAnnotation = () => {
             }
             if (clipboard) {
               copyToClipboard(clipboard).then(() => {
-                utils.notify('Copied to clipboard: ' + clipboard, 'positive')
+                console.log('Copied to clipboard: ' + clipboard)
+                utils.notify('Copied to clipboard: ' + clipboard, 'positive', 0, 'center')
               }).catch((err) => {
                   console.error('Failed to copy to clipboard', err)
                   utils.notify('Failed to copy to clipboard, please do it manually: ' + clipboard, 'negative', 10000)
