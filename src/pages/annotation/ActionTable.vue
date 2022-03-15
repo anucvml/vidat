@@ -35,7 +35,9 @@
             icon="clear_all"
             label="clear"
             @click="handleClearAll"
-        ></q-btn>
+        >
+          <q-tooltip>Bulk clear all actions</q-tooltip>
+        </q-btn>
       </q-btn-group>
       <div
           class="col-12"
@@ -182,14 +184,18 @@
                 icon="gps_fixed"
                 style="width: 100%"
                 @click="handleGoto(props.row)"
-            ></q-btn>
+            >
+              <q-tooltip>Locate to the action</q-tooltip>
+            </q-btn>
             <q-btn
                 flat
                 dense
                 icon="edit_location_alt"
                 style="width: 100%"
                 @click="handleSet(props.row)"
-            ></q-btn>
+            >
+              <q-tooltip>Set current left / right frame as this action's start / end</q-tooltip>
+            </q-btn>
             <q-btn
                 flat
                 dense

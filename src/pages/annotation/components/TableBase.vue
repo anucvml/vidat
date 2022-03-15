@@ -16,7 +16,9 @@
           icon="clear_all"
           label="clear"
           @click="handleClearAll"
-      ></q-btn>
+      >
+        <q-tooltip>Bulk clear all {{ title.toLowerCase() }}</q-tooltip>
+      </q-btn>
     </template>
     <template v-slot:header="props">
       <q-tr>
