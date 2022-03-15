@@ -456,3 +456,17 @@ See [Wiki](https://github.com/anucvml/vidat/wiki#further-development) for detail
 ## Design
 
 See [Design Wiki](https://github.com/anucvml/vidat/wiki/Design) for details.
+
+## Citing
+
+If you use Vidat for your research and wish to reference it, please use the following BibTex entry:
+
+```
+@misc{zhang2020vidat,
+  author =       {Jiahao Zhang and Stephen Gould and Itzik Ben-Shabat},
+  title =        {Vidat---{ANU} {CVML} Video Annotation Tool},
+  howpublished = {\url{https://github.com/anucvml/vidat}},
+  year =         {2020}
+}
+```
+
