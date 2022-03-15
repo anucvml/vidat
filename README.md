@@ -1,7 +1,5 @@
 <div align="center">
-<a href="https://www.anu.edu.au/" target="_blank">
-   <img src="public/img/logo.svg" alt="ANU logo">
-</a>
+<img width="96px" height="96px" src="public/img/logo.svg" alt="Vidat logo">
 
 # Vidat
 

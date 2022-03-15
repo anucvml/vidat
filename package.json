@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.12.5",
+    "@vueuse/core": "^8.0.1",
     "jszip": "^3.7.1",
     "lodash.clonedeep": "^4.5.0",
     "monaco-editor": "^0.32.1",

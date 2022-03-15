@@ -26,6 +26,12 @@
                 size="md"
             >
               <img
+                  v-if="q.dark.isActive"
+                  src="/img/logo-dark.svg"
+                  alt="logo"
+              >
+              <img
+                  v-else
                   src="/img/logo.svg"
                   alt="logo"
               >
@@ -97,6 +103,7 @@
 </template>
 
 <script setup>
+import { useFavicon, usePreferredDark } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { useQuasar } from 'quasar'
 import { computed } from 'vue'
@@ -291,11 +298,16 @@ if (showPopup) {
     preferenceStore.showPopup = false
   }
 }
+// un-save notice
 document.addEventListener('beforeunload', event => {
   if (annotationStore.hasVideo && !mainStore.isSaved) {
     event.returnValue = 'The annotations are not saved!'
   }
 })
+// auto change favicon
+const isDark = usePreferredDark()
+const favicon = computed(() => isDark.value ? '/img/logo-dark.svg' : '/img/logo.svg')
+useFavicon(favicon)
 </script>
 
 <style lang="sass">
