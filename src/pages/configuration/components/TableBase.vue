@@ -66,10 +66,13 @@
             :key="props.row.field"
         >
           <q-td v-if="col.type === 'input'">
-            <ZoomImage
-                class="vertical-middle float-left"
+            <img
+                v-if="props.row.thumbnail"
+                class="vertical-middle float-left cursor-pointer rounded-borders float-left q-mr-md"
                 style="height: 40px;"
                 :src="props.row.thumbnail"
+                alt="thumbnail"
+                @click="handleThumbnailPreview(props.row.thumbnail)"
             />
             <q-input
                 input-class="text-center"
@@ -130,8 +133,8 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { computed, defineAsyncComponent, ref } from 'vue'
-import ZoomImage from '~/components/ZoomImage.vue'
 import { useConfigurationStore } from '~/store/configuration.js'
+import { useMainStore } from '~/store/index.js'
 
 const TableEditor = defineAsyncComponent(() => import('~/pages/configuration/components/TableEditor.vue'))
 
@@ -162,7 +165,11 @@ defineEmits(['add', 'delete'])
 
 // Table
 const configurationStore = useConfigurationStore()
+const mainStore = useMainStore()
 const { [props.storeKey]: tableData } = storeToRefs(configurationStore)
+const handleThumbnailPreview = (src) => {
+  mainStore.currentActionThumbnailSrc = mainStore.currentActionThumbnailSrc === src ? null : src
+}
 
 // Edit
 const showEdit = ref(false)

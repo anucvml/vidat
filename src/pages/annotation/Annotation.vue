@@ -17,7 +17,7 @@
         <CanvasPanel position="right"/>
       </div>
     </div>
-    <ActionTable/>
+    <ActionTable v-if="preferenceStore.actions"/>
   </q-card>
 </template>
 

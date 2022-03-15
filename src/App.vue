@@ -72,6 +72,7 @@
         <template v-if="annotationStore.hasVideo">
           <VideoLoaderV2 v-if="useV2"/>
           <VideoLoaderV1 v-else/>
+          <ActionThumbnailPreview v-if="preferenceStore.actions"/>
         </template>
         <router-view></router-view>
       </q-page>
@@ -99,6 +100,7 @@
 import { storeToRefs } from 'pinia'
 import { useQuasar } from 'quasar'
 import { computed } from 'vue'
+import ActionThumbnailPreview from '~/components/ActionThumbnailPreview.vue'
 import VideoLoaderV1 from '~/components/VideoLoaderV1.vue'
 import VideoLoaderV2 from '~/components/VideoLoaderV2.vue'
 import { useAnnotation } from '~/hooks/annotation.js'

@@ -83,7 +83,11 @@
     </template>
     <template v-slot:body="props">
       <q-tr :class="{ 'bg-warning': props.row.end - props.row.start <= 0}">
-        <q-tooltip anchor="top middle" v-if="props.row.end - props.row.start <= 0">Duration should be greater than 0.</q-tooltip>
+        <q-tooltip
+            anchor="top middle"
+            v-if="props.row.end - props.row.start <= 0"
+        >Duration should be greater than 0.
+        </q-tooltip>
         <q-td auto-width>
           <q-input
               style="min-width: 100px;"
@@ -110,10 +114,13 @@
           {{ utils.toFixed2(props.row.end - props.row.start) }}
         </q-td>
         <q-td>
-          <ZoomImage
-              class="vertical-middle float-left q-pr-md"
+          <img
+              v-if="configurationStore.actionLabelData.find(label => label.id === props.row.action).thumbnail"
+              class="cursor-pointer rounded-borders vertical-middle float-left q-mr-md"
               style="height: 40px;"
-              :src="configurationStore.actionLabelData[props.row.action].thumbnail"
+              :src="configurationStore.actionLabelData.find(label => label.id === props.row.action).thumbnail"
+              @click="handleThumbnailPreview(configurationStore.actionLabelData.find(label => label.id === props.row.action).thumbnail)"
+              alt="thumbnail"
           />
           <q-select
               v-model="props.row.action"
@@ -200,14 +207,15 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import ZoomImage from '~/components/ZoomImage.vue'
 import { ActionAnnotation } from '~/libs/annotationlib.js'
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'
+import { useMainStore } from '~/store/index.js'
 
 const annotationStore = useAnnotationStore()
 const configurationStore = useConfigurationStore()
+const mainStore = useMainStore()
 
 const columnList = [
   {
@@ -325,6 +333,9 @@ for (let action of configurationStore.actionLabelData) {
   }
   objectOptionMap.value[action.id] = objectOptionList
 }
+const handleThumbnailPreview = (src) => {
+  mainStore.currentActionThumbnailSrc = mainStore.currentActionThumbnailSrc === src ? null : src
+}
 const handleActionInput = (row) => {
   row.color = configurationStore.actionLabelData.find(label => label.id === row.action).color
   row.object = configurationStore.actionLabelData.find(label => label.id === row.action).objects[0]
@@ -339,7 +350,7 @@ const handleGoto = (row) => {
     annotationStore.rightCurrentFrame = utils.time2index(row.end)
   }
 }
-const handleSet = (row) =>{
+const handleSet = (row) => {
   row.start = utils.index2time(annotationStore.leftCurrentFrame)
   row.end = utils.index2time(annotationStore.rightCurrentFrame)
 }
