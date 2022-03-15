@@ -46,7 +46,6 @@ const handleLoad = () => {
         configurationStore.importConfig(JSON.parse(file))
         utils.notify('Load successfully!', 'positive')
       } catch (e) {
-        console.error(e)
         utils.notify(`Could not load config: ${e}`, 'negative')
       }
     })

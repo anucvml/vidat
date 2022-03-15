@@ -27,6 +27,23 @@ export default {
    * @returns
    */
   notify (message, color = 'positive', timeout = 5000, position = 'bottom-right') {
+    switch (color) {
+      case 'positive':
+        console.debug(message)
+        break
+      case 'info':
+        console.info(message)
+        break
+      case 'negative':
+        console.error(message)
+        break
+      case 'warning':
+        console.warn(message)
+        break
+      default:
+        console.log(message)
+        break
+    }
     return Notify.create({
       message: message,
       color: color,

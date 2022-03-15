@@ -75,7 +75,7 @@ export const useAnnotation = () => {
         annotation: annotationStore.exportAnnotation(),
         config: configurationStore.exportConfig()
       }
-      console.log('Submitting to: ' + mainStore.submitURL)
+      console.debug('Submitting to: ' + mainStore.submitURL)
       fetch(mainStore.submitURL, {
         method: 'post',
         headers: {
@@ -85,7 +85,7 @@ export const useAnnotation = () => {
       }).then(res => {
         submitLoading.value = false
         if (res.ok) {
-          console.log('Success', res)
+          console.debug('Success', res)
           res.json().then(data => {
             const { message, clipboard, type } = data
             if (message) {
@@ -93,22 +93,18 @@ export const useAnnotation = () => {
             }
             if (clipboard) {
               copyToClipboard(clipboard).then(() => {
-                console.log('Copied to clipboard: ' + clipboard)
                 utils.notify('Copied to clipboard: ' + clipboard, 'positive', 0, 'center')
-              }).catch((err) => {
-                  console.error('Failed to copy to clipboard', err)
+              }).catch(() => {
                   utils.notify('Failed to copy to clipboard, please do it manually: ' + clipboard, 'negative', 10000)
                 }
               )
             }
           })
         } else {
-          console.error('Failed', res)
           utils.notify(`Failed to submit: ${res.statusText} (${res.status})`, 'warning')
         }
       }).catch(err => {
         submitLoading.value = false
-        console.error('Failed', err)
         utils.notify('Failed to submit: ' + err, 'negative')
       })
     },
