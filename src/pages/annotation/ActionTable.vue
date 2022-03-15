@@ -32,6 +32,15 @@
         <q-btn
             size="sm"
             outline
+            icon="new_label"
+            label="add & advance"
+            @click="handleAddAdvance"
+        >
+          <q-tooltip>add current range and advance for next</q-tooltip>
+        </q-btn>
+        <q-btn
+            size="sm"
+            outline
             icon="clear_all"
             label="clear"
             @click="handleClearAll"
@@ -287,6 +296,25 @@ const handleAdd = () => {
       configurationStore.actionLabelData[0].color,
       ''
   ))
+}
+const handleAddAdvance = () => {
+  handleAdd()
+  const nextFrame = annotationStore.rightCurrentFrame + 1 > annotationStore.video.frames
+      ? annotationStore.rightCurrentFrame
+      : annotationStore.rightCurrentFrame + 1
+  // right frame -> next keyframe from action end frame + 1
+  let min = annotationStore.video.frames
+  let nearestKeyframe = nextFrame
+  for (let i = 0; i < annotationStore.keyframeList.length; i++) {
+    let distance = annotationStore.keyframeList[i] - nextFrame
+    if (distance > 0 && distance < min) {
+      min = distance
+      nearestKeyframe = annotationStore.keyframeList[i]
+    }
+  }
+  annotationStore.rightCurrentFrame = nearestKeyframe
+  // left frame -> left frame => action end frame + 1
+  annotationStore.leftCurrentFrame = nextFrame
 }
 const handleClearAll = () => {
   if (annotationStore.actionAnnotationList.length !== 0) {
