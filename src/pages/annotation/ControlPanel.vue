@@ -102,7 +102,7 @@
           ></q-select>
         </q-item-section>
       </q-item>
-      <q-item v-if="q.platform.has.touch">
+      <q-item v-if="q.platform.has.touch && annotationStore.mode !== 'action'">
         <q-item-section>
           <q-toggle
               v-model="delMode"
