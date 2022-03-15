@@ -60,7 +60,7 @@
               anchor="center left"
               self="center right"
           >
-            Caching video frames.
+            Caching video frames. VideoLoader: {{ useV2 ? 'V2' : 'V1' }}.
           </q-tooltip>
         </q-circular-progress>
         <q-btn
@@ -137,7 +137,7 @@ const useV2 = computed(() => {
     const isSupported = window.VideoDecoder && window.EncodedVideoChunk && window.OffscreenCanvas
     ret = isSupported && (mainStore.videoFormat === null || mainStore.videoFormat === 'mp4')
   }
-  console.log('Video Decoder:', ret ? 'V2' : 'V1')
+  console.debug('VideoLoader:', ret ? 'V2' : 'V1')
   return ret
 })
 
