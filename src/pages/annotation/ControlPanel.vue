@@ -1,5 +1,5 @@
 <template>
-  <q-list :class="{'flex justify-evenly full-width': q.screen.lt.md}">
+  <q-list :class="{'flex justify-evenly full-width': $q.screen.lt.md}">
     <div v-if="annotationStore.mode !== 'action'">
       <q-item dense>
         <q-item-section class="text-center">
@@ -102,7 +102,7 @@
           ></q-select>
         </q-item-section>
       </q-item>
-      <q-item v-if="q.platform.has.touch && annotationStore.mode !== 'action'">
+      <q-item v-if="$q.platform.has.touch && annotationStore.mode !== 'action'">
         <q-item-section>
           <q-toggle
               v-model="delMode"
@@ -162,7 +162,7 @@
               label="Grayscale"
           ></q-toggle>
           <q-toggle
-              v-if="!q.platform.has.touch && annotationStore.mode !== 'action'"
+              v-if="!$q.platform.has.touch && annotationStore.mode !== 'action'"
               v-model="preferenceStore.showPopup"
               label="Show Popup"
           ></q-toggle>
@@ -173,7 +173,6 @@
 </template>
 
 <script setup>
-import { useQuasar } from 'quasar'
 import { computed, watch } from 'vue'
 import { ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '~/libs/annotationlib.js'
 import utils from '~/libs/utils.js'
@@ -186,7 +185,6 @@ const mainStore = useMainStore()
 const preferenceStore = usePreferenceStore()
 const annotationStore = useAnnotationStore()
 const configurationStore = useConfigurationStore()
-const q = useQuasar()
 
 const annotationListMap = computed(() => annotationStore[annotationStore.mode + 'AnnotationListMap'])
 

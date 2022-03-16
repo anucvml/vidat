@@ -1,7 +1,7 @@
 <template>
   <div class="column flex-center">
     <img
-        v-if="q.dark.isActive"
+        v-if="$q.dark.isActive"
         style="width: 150px; padding: 100px 0 50px 0;"
         src="/img/logo-dark.svg"
         alt="Logo"
@@ -55,12 +55,10 @@
 </template>
 
 <script setup>
-import { useQuasar } from 'quasar'
 import VersionBadge from '~/components/VersionBadge.vue'
 import { useAnnotation } from '~/hooks/annotation.js'
 import { useVideo } from '~/hooks/video.js'
 
-const q = useQuasar()
 const { handleOpen } = useVideo()
 const { handleLoad } = useAnnotation()
 </script>

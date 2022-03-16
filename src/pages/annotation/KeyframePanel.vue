@@ -1,7 +1,7 @@
 <template>
   <div
       class="row justify-evenly items-center q-pt-lg"
-      :class="{'q-pb-lg': q.screen.lt.md}"
+      :class="{'q-pb-lg': $q.screen.lt.md}"
   >
     <q-btn-group flat>
       <q-btn
@@ -29,8 +29,8 @@
     </q-btn-group>
     <div
         class="col-grow q-px-lg"
-        :class="[{'col-12': q.screen.lt.md}]"
-        :style="{'order': !q.screen.lt.md ? 0 : -1}"
+        :class="[{'col-12': $q.screen.lt.md}]"
+        :style="{'order': !$q.screen.lt.md ? 0 : -1}"
     >
       <q-range
           class="custom-range"
@@ -80,7 +80,6 @@
 </template>
 
 <script setup>
-import { useQuasar } from 'quasar'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { frameIndicator } from '~/hooks/frameIndicator.js'
 import utils from '~/libs/utils.js'
@@ -88,7 +87,6 @@ import KeyframeTable from '~/pages/annotation/components/KeyframeTable.vue'
 import { useAnnotationStore } from '~/store/annotation.js'
 
 const annotationStore = useAnnotationStore()
-const q = useQuasar()
 
 // left buttons
 const isPaused = ref(true)
@@ -117,7 +115,7 @@ const pause = () => {
   const videoPlayer = document.getElementById('video-player')
   videoPlayer.pause()
 }
-const stop = () =>{
+const stop = () => {
   const videoPlayer = document.getElementById('video-player')
   videoPlayer.style.display = 'none'
   videoPlayer.pause()
@@ -206,14 +204,18 @@ const handleNextKeyframe = () => { // base on left most one
   const rightCurrentKeyFrameIndex = annotationStore.keyframeList.indexOf(rightCurrentKeyFrame)
   const lastIndex = annotationStore.keyframeList.length - 1
   if (leftCurrentKeyFrameIndex >= lastIndex || rightCurrentKeyFrameIndex >= lastIndex) {
-    annotationStore.leftCurrentFrame = lastIndex - 1 >= 0 ? annotationStore.keyframeList[lastIndex - 1] : annotationStore.keyframeList[lastIndex]
+    annotationStore.leftCurrentFrame = lastIndex - 1 >= 0
+        ? annotationStore.keyframeList[lastIndex - 1]
+        : annotationStore.keyframeList[lastIndex]
     annotationStore.rightCurrentFrame = annotationStore.keyframeList[lastIndex]
   } else if (leftCurrentKeyFrameIndex === rightCurrentKeyFrameIndex) {
     annotationStore.leftCurrentFrame = leftCurrentKeyFrame
     annotationStore.rightCurrentFrame = annotationStore.keyframeList[leftCurrentKeyFrameIndex + 1]
   } else if (leftCurrentKeyFrameIndex < rightCurrentKeyFrameIndex) {
     if (leftCurrentKeyFrameIndex + 2 > lastIndex) {
-      annotationStore.leftCurrentFrame = lastIndex - 1 >= 0 ? annotationStore.keyframeList[lastIndex - 1] : annotationStore.keyframeList[lastIndex]
+      annotationStore.leftCurrentFrame = lastIndex - 1 >= 0
+          ? annotationStore.keyframeList[lastIndex - 1]
+          : annotationStore.keyframeList[lastIndex]
       annotationStore.rightCurrentFrame = annotationStore.keyframeList[lastIndex]
     } else {
       annotationStore.leftCurrentFrame = annotationStore.keyframeList[leftCurrentKeyFrameIndex + 1]
