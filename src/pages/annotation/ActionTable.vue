@@ -218,6 +218,7 @@
       </q-tr>
     </template>
   </q-table>
+  <ActionThumbnailPreview/>
 </template>
 
 <script setup>
@@ -227,6 +228,7 @@ import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'
 import { useMainStore } from '~/store/index.js'
+import ActionThumbnailPreview from '~/components/ActionThumbnailPreview.vue'
 
 const annotationStore = useAnnotationStore()
 const configurationStore = useConfigurationStore()
