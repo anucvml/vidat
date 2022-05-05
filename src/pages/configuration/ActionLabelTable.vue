@@ -104,6 +104,8 @@ const handleDelete = (props) => {
   utils.confirm(
       'Are you sure to delete label ' + props.row.name + '?'
   ).onOk(() => {
+    if (props.row.id === configurationStore.currentThumbnailActionLabelId)
+      configurationStore.currentThumbnailActionLabelId = null
     tableData.value.splice(tableData.value.findIndex(type => type.id === props.row.id), 1)
   })
 }

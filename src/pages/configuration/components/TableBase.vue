@@ -47,7 +47,7 @@
       </q-tr>
     </template>
     <template v-slot:body="props">
-      <q-tr>
+      <q-tr :class="{'bg-green-2': configurationStore.currentThumbnailActionLabelId === props.row.id && title === 'Action Labels'}">
         <q-td
             v-if="expand"
             auto-width
@@ -68,10 +68,11 @@
           <q-td v-if="col.type === 'input'">
             <img
                 v-if="props.row.thumbnail"
-                class="vertical-middle float-left rounded-borders float-left q-mr-md"
+                class="vertical-middle float-left cursor-pointer rounded-borders float-left q-mr-md"
                 style="height: 40px;"
                 :src="props.row.thumbnail"
                 alt="thumbnail"
+                @click="handleThumbnailPreview(props.row)"
             />
             <q-input
                 input-class="text-center"
@@ -166,11 +167,16 @@ defineEmits(['add', 'delete'])
 const configurationStore = useConfigurationStore()
 const mainStore = useMainStore()
 const { [props.storeKey]: tableData } = storeToRefs(configurationStore)
-// TODO: adapt ActionThumbnailPreview
+const handleThumbnailPreview = (row) => {
+  configurationStore.currentThumbnailActionLabelId = configurationStore.currentThumbnailActionLabelId === row.id
+      ? null
+      : row.id
+}
 
 // Edit
 const showEdit = ref(false)
 const toggleShowEdit = () => {
+  configurationStore.currentThumbnailActionLabelId = null
   showEdit.value = !showEdit.value
 }
 const jsonData = computed({

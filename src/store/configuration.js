@@ -335,7 +335,9 @@ const DEFAULT_CONFIGURATION = {
         }
       ]
     }
-  ]
+  ],
+
+  currentThumbnailActionLabelId: null
 }
 
 export const useConfigurationStore = defineStore('configuration', () => {

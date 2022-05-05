@@ -80,6 +80,7 @@
           <VideoLoaderV1 v-else/>
           <ActionThumbnailPreview v-if="preferenceStore.actions"/>
         </template>
+        <ActionLabelThumbnailPreview v-if="preferenceStore.actions"/>
         <router-view></router-view>
       </q-page>
     </q-page-container>
@@ -106,6 +107,7 @@
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import ActionThumbnailPreview from '~/components/ActionThumbnailPreview.vue'
+import ActionLabelThumbnailPreview from '~/components/ActionLabelThumbnailPreview.vue'
 import VideoLoaderV1 from '~/components/VideoLoaderV1.vue'
 import VideoLoaderV2 from '~/components/VideoLoaderV2.vue'
 import { useAnnotationStore } from '~/store/annotation.js'
