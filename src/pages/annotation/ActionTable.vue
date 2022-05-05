@@ -93,7 +93,7 @@
       </div>
     </template>
     <template v-slot:body="props">
-      <q-tr :class="{ 'bg-warning': props.row.end - props.row.start <= 0}">
+      <q-tr :class="{ 'bg-warning': props.row.end - props.row.start <= 0, 'bg-green-2': props.rowIndex === annotationStore.currentThumbnailActionId}">
         <q-tooltip
             anchor="top middle"
             v-if="props.row.end - props.row.start <= 0"
@@ -130,7 +130,7 @@
               class="cursor-pointer rounded-borders vertical-middle float-left q-mr-md"
               style="height: 40px;"
               :src="configurationStore.actionLabelData.find(label => label.id === props.row.action).thumbnail"
-              @click="handleThumbnailPreview(configurationStore.actionLabelData.find(label => label.id === props.row.action).thumbnail)"
+              @click="handleThumbnailPreview(props)"
               alt="thumbnail"
           />
           <q-select
@@ -319,6 +319,7 @@ const handleAddAdvance = () => {
 const handleClearAll = () => {
   if (annotationStore.actionAnnotationList.length !== 0) {
     utils.confirm('Are you sure to delete ALL actions?').onOk(() => {
+      annotationStore.currentThumbnailActionId = null
       annotationStore.actionAnnotationList = []
     })
   } else {
@@ -367,8 +368,10 @@ for (let action of configurationStore.actionLabelData) {
   }
   objectOptionMap.value[action.id] = objectOptionList
 }
-const handleThumbnailPreview = (src) => {
-  mainStore.currentActionThumbnailSrc = mainStore.currentActionThumbnailSrc === src ? null : src
+const handleThumbnailPreview = props => {
+  const { row: { action }, rowIndex } = props
+  if (configurationStore.actionLabelData.find(label => label.id === action).thumbnail)
+    annotationStore.currentThumbnailActionId = annotationStore.currentThumbnailActionId === rowIndex ? null : rowIndex
 }
 const handleActionInput = (row) => {
   row.color = configurationStore.actionLabelData.find(label => label.id === row.action).color
@@ -390,6 +393,7 @@ const handleSet = (row) => {
 }
 const handleDelete = (row) => {
   utils.confirm('Are you sure to delete this action?').onOk(() => {
+    annotationStore.currentThumbnailActionId = null
     for (let i in annotationStore.actionAnnotationList) {
       if (annotationStore.actionAnnotationList[i] === row) {
         annotationStore.actionAnnotationList.splice(i, 1)

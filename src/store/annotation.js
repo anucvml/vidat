@@ -36,7 +36,9 @@ const DEFAULT_ANNOTATION = {
   copyMode: false,
   addPointMode: false,
   delPointMode: false,
-  indicatingMode: false
+  indicatingMode: false,
+
+  currentThumbnailActionId: null,
 }
 
 export const useAnnotationStore = defineStore('annotation', () => {

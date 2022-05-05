@@ -68,11 +68,10 @@
           <q-td v-if="col.type === 'input'">
             <img
                 v-if="props.row.thumbnail"
-                class="vertical-middle float-left cursor-pointer rounded-borders float-left q-mr-md"
+                class="vertical-middle float-left rounded-borders float-left q-mr-md"
                 style="height: 40px;"
                 :src="props.row.thumbnail"
                 alt="thumbnail"
-                @click="handleThumbnailPreview(props.row.thumbnail)"
             />
             <q-input
                 input-class="text-center"
@@ -167,9 +166,7 @@ defineEmits(['add', 'delete'])
 const configurationStore = useConfigurationStore()
 const mainStore = useMainStore()
 const { [props.storeKey]: tableData } = storeToRefs(configurationStore)
-const handleThumbnailPreview = (src) => {
-  mainStore.currentActionThumbnailSrc = mainStore.currentActionThumbnailSrc === src ? null : src
-}
+// TODO: adapt ActionThumbnailPreview
 
 // Edit
 const showEdit = ref(false)

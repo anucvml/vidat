@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { useMainStore } from '~/store/index.js'
+import { useAnnotationStore } from '~/store/annotation.js'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -38,7 +38,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-  useMainStore().currentActionThumbnailSrc = null
+  useAnnotationStore().currentThumbnailActionId = null
   if (to.path === from.path || Object.keys(to.query).length || !Object.keys(from.query).length) return true
   return { ...to, query: from.query }
 })
