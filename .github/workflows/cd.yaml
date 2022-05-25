@@ -47,3 +47,19 @@ jobs:
           REMOTE_HOST: ${{ secrets.HOST }}
           REMOTE_USER: ${{ secrets.USER }}
           TARGET: ${{ secrets.TARGET }}
+      - name: Inject Umami Script (Optional)
+        uses: appleboy/ssh-action@master
+        if: ${{ env.SSH_PRIVATE_KEY != '' && env.REMOTE_HOST != '' && env.REMOTE_USER != '' && env.UMAMI_SCRIPT != '' }}
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.HOST }}
+          REMOTE_USER: ${{ secrets.USER }}
+          UMAMI_SCRIPT: ${{ secrets.UMAMI_SCRIPT }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.TARGET }}
+            mv index.html index.html.bak
+            sed "/<\/head>/ i ${{ secrets.UMAMI_SCRIPT }}" index.html.bak > index.html
