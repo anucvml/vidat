@@ -180,7 +180,7 @@ if (showPopup) {
   }
 }
 // un-save notice
-document.addEventListener('beforeunload', event => {
+window.addEventListener('beforeunload', event => {
   if (annotationStore.hasVideo && !mainStore.isSaved) {
     event.returnValue = 'The annotations are not saved!'
   }
