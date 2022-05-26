@@ -1,8 +1,8 @@
 <template>
   <video
       id="video-player"
-      :class="['full-width', {'grayscale': preferenceStore.grayscale}]"
-      style="display: none;"
+      class="full-width"
+      :style="{display: 'none', filter: preferenceStore.grayscale ? 'grayscale(100%)' : 'none'}"
       preload="auto"
       :src="annotationStore.video.src"
       :muted="preferenceStore.muted"
