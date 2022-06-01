@@ -34,6 +34,7 @@
     >
       <q-range
           class="custom-range"
+          :class="{'hide-right-marker': currentFocus === 'left', 'hide-left-marker': currentFocus === 'right'}"
           :style="rangeStyle"
           label-always
           drag-range
@@ -42,10 +43,10 @@
           :min="0"
           :max="annotationStore.video.frames - 1"
           :step="1"
-          :left-label-text-color="currentFocus === 'left' || currentFocus === 'range' ? 'blue-grey-1' : 'primary'"
-          :right-label-text-color="currentFocus === 'right' || currentFocus === 'range' ? 'blue-grey-1' : 'primary'"
-          :left-label-color="currentFocus === 'left' || currentFocus === 'range' ? 'primary' : 'blue-grey-1'"
-          :right-label-color="currentFocus === 'right' || currentFocus === 'range' ? 'primary' : 'blue-grey-1'"
+          left-label-text-color="blue-grey-1"
+          right-label-text-color="blue-grey-1"
+          left-label-color="primary"
+          right-label-color="primary"
           :left-label-value="'L: ' + currentFrameRange.min + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.min)) + ' s'"
           :right-label-value="'R: ' + currentFrameRange.max + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.max)) + ' s'"
           :model-value="currentFrameRange"
@@ -387,5 +388,13 @@ const { rangeStyle } = frameIndicator()
   background-position: var(--marker-bg-position);
   background-size: var(--marker-bg-size);
   background-repeat: no-repeat;
+}
+
+.hide-left-marker .q-slider__thumb:nth-child(3) .q-slider__pin {
+  display: none;
+}
+
+.hide-right-marker .q-slider__thumb:last-child .q-slider__pin {
+  display: none;
 }
 </style>
