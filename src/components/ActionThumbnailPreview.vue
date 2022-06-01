@@ -1,7 +1,7 @@
 <template>
   <q-page-sticky
       class="z-top"
-      v-if="annotationStore.currentThumbnailActionId !== null"
+      v-if="annotationStore.currentThumbnailAction !== null"
       :offset="offset"
   >
     <div class="relative-position">
@@ -58,7 +58,7 @@
             class="text-black"
             flat
             icon="cancel"
-            @click="annotationStore.currentThumbnailActionId = null"
+            @click="annotationStore.currentThumbnailAction = null"
         >
           <q-tooltip>Close thumbnail preview</q-tooltip>
         </q-btn>
@@ -80,9 +80,8 @@ const configurationStore = useConfigurationStore()
 
 // thumbnail src
 const thumbnailSrc = computed(() => {
-  return configurationStore.actionLabelData.find(label => label.id ===
-      annotationStore.actionAnnotationList[annotationStore.currentThumbnailActionId].action
-  ).thumbnail
+  return configurationStore.actionLabelData.find(
+      label => label.id === annotationStore.currentThumbnailAction.action).thumbnail
 })
 
 // draggable
@@ -104,25 +103,19 @@ const handleResize = event => {
 }
 // buttons
 const handlePrevThumbnail = () => {
-  for (let i = annotationStore.currentThumbnailActionId - 1; i >= 0; i--) {
-    if (configurationStore.actionLabelData.find(
-        label => label.id === annotationStore.actionAnnotationList[i].action).thumbnail) {
-      annotationStore.currentThumbnailActionId = i
-      return
-    }
+  const currentIndex = annotationStore.currentSortedActionList.indexOf(annotationStore.currentThumbnailAction)
+  if (currentIndex > 0) {
+    annotationStore.currentThumbnailAction = annotationStore.currentSortedActionList[currentIndex - 1]
   }
 }
 const handleNextThumbnail = () => {
-  for (let i = annotationStore.currentThumbnailActionId + 1; i < annotationStore.actionAnnotationList.length; i++) {
-    if (configurationStore.actionLabelData.find(
-        label => label.id === annotationStore.actionAnnotationList[i].action).thumbnail) {
-      annotationStore.currentThumbnailActionId = i
-      return
-    }
+  const currentIndex = annotationStore.currentSortedActionList.indexOf(annotationStore.currentThumbnailAction)
+  if (currentIndex < annotationStore.currentSortedActionList.length - 1) {
+    annotationStore.currentThumbnailAction = annotationStore.currentSortedActionList[currentIndex + 1]
   }
 }
 const handleLocate = () => {
-  const currentAction = annotationStore.actionAnnotationList[annotationStore.currentThumbnailActionId]
+  const currentAction = annotationStore.currentThumbnailAction
   if (typeof (currentAction.start) === 'number') {
     annotationStore.leftCurrentFrame = utils.time2index(currentAction.start)
   }
@@ -131,7 +124,7 @@ const handleLocate = () => {
   }
 }
 const handleSet = () => {
-  const currentAction = annotationStore.actionAnnotationList[annotationStore.currentThumbnailActionId]
+  const currentAction = annotationStore.currentThumbnailAction
   currentAction.start = utils.index2time(annotationStore.leftCurrentFrame)
   currentAction.end = utils.index2time(annotationStore.rightCurrentFrame)
 }

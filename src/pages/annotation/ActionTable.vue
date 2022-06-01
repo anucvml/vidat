@@ -8,6 +8,8 @@
       :pagination="{ rowsPerPage: 0 }"
       :filter="actionFilterList"
       :filter-method="actionFilter"
+      :sort-method="actionSort"
+      binary-state-sort
   >
     <template v-slot:top="props">
       <div class="col-6 q-table__title">Actions / Video Segments</div>
@@ -93,7 +95,7 @@
       </div>
     </template>
     <template v-slot:body="props">
-      <q-tr :class="{ 'bg-warning': props.row.end - props.row.start <= 0, 'bg-green-2': props.rowIndex === annotationStore.currentThumbnailActionId}">
+      <q-tr :class="{ 'bg-warning': props.row.end - props.row.start <= 0, 'bg-green-2': props.row === annotationStore.currentThumbnailAction}">
         <q-tooltip
             anchor="top middle"
             v-if="props.row.end - props.row.start <= 0"
@@ -321,7 +323,7 @@ const handleAddAdvance = () => {
 const handleClearAll = () => {
   if (annotationStore.actionAnnotationList.length !== 0) {
     utils.confirm('Are you sure to delete ALL actions?').onOk(() => {
-      annotationStore.currentThumbnailActionId = null
+      annotationStore.currentThumbnailAction = null
       annotationStore.actionAnnotationList = []
     })
   } else {
@@ -350,6 +352,17 @@ const actionFilter = (rows, filter) => {
   return rows.filter(row => filter[row.action])
 }
 
+// sort
+annotationStore.currentSortedActionList = annotationStore.actionAnnotationList
+const actionSort = (rows, sortBy, descending) => {
+  const sortedRows = rows.slice().sort((a, b) => {
+    const sortVal = a[sortBy] < b[sortBy] ? -1 : 1
+    return descending ? sortVal : -sortVal
+  })
+  annotationStore.currentSortedActionList = sortedRows
+  return sortedRows
+}
+
 // body
 const actionOptionList = computed(() => configurationStore.actionLabelData.map(label => {
   return {
@@ -371,9 +384,10 @@ for (let action of configurationStore.actionLabelData) {
   objectOptionMap.value[action.id] = objectOptionList
 }
 const handleThumbnailPreview = props => {
-  const { row: { action }, rowIndex } = props
-  if (configurationStore.actionLabelData.find(label => label.id === action).thumbnail)
-    annotationStore.currentThumbnailActionId = annotationStore.currentThumbnailActionId === rowIndex ? null : rowIndex
+  const { row } = props
+  if (configurationStore.actionLabelData.find(label => label.id === row.action).thumbnail) {
+    annotationStore.currentThumbnailAction = annotationStore.currentThumbnailAction === row ? null : row
+  }
 }
 const handleActionInput = (row) => {
   row.color = configurationStore.actionLabelData.find(label => label.id === row.action).color
@@ -395,7 +409,7 @@ const handleSet = (row) => {
 }
 const handleDelete = (row) => {
   utils.confirm('Are you sure to delete this action?').onOk(() => {
-    annotationStore.currentThumbnailActionId = null
+    annotationStore.currentThumbnailAction = null
     for (let i in annotationStore.actionAnnotationList) {
       if (annotationStore.actionAnnotationList[i] === row) {
         annotationStore.actionAnnotationList.splice(i, 1)

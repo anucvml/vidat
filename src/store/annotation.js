@@ -38,7 +38,8 @@ const DEFAULT_ANNOTATION = {
   delPointMode: false,
   indicatingMode: false,
 
-  currentThumbnailActionId: null,
+  currentSortedActionList: [],
+  currentThumbnailAction: null,
 }
 
 export const useAnnotationStore = defineStore('annotation', () => {

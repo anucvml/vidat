@@ -39,7 +39,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-  useAnnotationStore().currentThumbnailActionId = null
+  useAnnotationStore().currentSortedActionList = []
+  useAnnotationStore().currentThumbnailAction = null
   useConfigurationStore().currentThumbnailActionLabelId = null
   if (to.path === from.path || Object.keys(to.query).length || !Object.keys(from.query).length) return true
   return { ...to, query: from.query }
