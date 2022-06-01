@@ -16,7 +16,6 @@ export const frameIndicator = () => {
   const COLOR_OBJECT = 'linear-gradient(var(--q-primary), var(--q-primary))'
   const COLOR_REGION = 'linear-gradient(var(--q-info), var(--q-info))'
   const COLOR_SKELETON = 'linear-gradient(var(--q-positive), var(--q-positive))'
-  const COLOR_ACTION = 'linear-gradient(var(--q-accent), var(--q-accent))'
 
   const annotationStore = useAnnotationStore()
   const preferenceStore = usePreferenceStore()
@@ -33,11 +32,12 @@ export const frameIndicator = () => {
     bgSizeList.push(`100% ${HEIGHT_MARKER}px`)
   }
 
-  const getStyleList = (frameList, color, positionHeightOffset = 0) => {
+  const getStyleList = (frameList, colorList, positionHeightOffset = 0) => {
     const markerWidthUnit = 100 / (annotationStore.video.frames - 1)
-    for (let [frame, width] of frameList) {
+    for (let i = 0; i < frameList.length; i++) {
+      const [frame, width] = frameList[i]
       const markerWidth = width * markerWidthUnit
-      bgImageList.push(color)
+      bgImageList.push(colorList[i])
       bgPositionList.push(
         `${10000 * frame / (annotationStore.video.frames - 1) / (100 - markerWidth) - 0.5 * markerWidthUnit}% ${12 +
         positionHeightOffset}px`)
@@ -54,7 +54,7 @@ export const frameIndicator = () => {
 
     getStyleList(
       annotationStore.keyframeList.map(keyframe => [keyframe, 1]),
-      COLOR_KEYFRAME,
+      annotationStore.keyframeList.map(() => COLOR_KEYFRAME),
       positionHeightOffset
     )
 
@@ -67,7 +67,7 @@ export const frameIndicator = () => {
         getBackgroundStyleList(positionHeightOffset)
         getStyleList(
           frameList,
-          COLOR_OBJECT,
+          frameList.map(() => COLOR_OBJECT),
           positionHeightOffset
         )
       }
@@ -77,12 +77,12 @@ export const frameIndicator = () => {
       const frameList = Object.entries(annotationStore.regionAnnotationListMap).
         filter(([, annotationList]) => annotationList.length).
         map(([frame]) => [parseInt(frame), 1])
-      if (ALWAYS_SHOW ||frameList.length) {
+      if (ALWAYS_SHOW || frameList.length) {
         positionHeightOffset += HEIGHT_UNIT
         getBackgroundStyleList(positionHeightOffset)
         getStyleList(
           frameList,
-          COLOR_REGION,
+          frameList.map(() => COLOR_REGION),
           positionHeightOffset
         )
       }
@@ -92,30 +92,33 @@ export const frameIndicator = () => {
       const frameList = Object.entries(annotationStore.skeletonAnnotationListMap).
         filter(([, annotationList]) => annotationList.length).
         map(([frame]) => [parseInt(frame), 1])
-      if (ALWAYS_SHOW ||frameList.length) {
+      if (ALWAYS_SHOW || frameList.length) {
         positionHeightOffset += HEIGHT_UNIT
         getBackgroundStyleList(positionHeightOffset)
         getStyleList(
           frameList,
-          COLOR_SKELETON,
+          frameList.map(() => COLOR_SKELETON),
           positionHeightOffset
         )
       }
     }
 
     if (preferenceStore.actions) {
-      const frameList = annotationStore.actionAnnotationList.map(
-        action => {
-          const startFrame = utils.time2index(action.start)
-          const endFrame = utils.time2index(action.end)
-          return [startFrame, (endFrame - startFrame + 1)]
-        })
+      const frameList = []
+      const colorList = []
+      for (let i = 0; i < annotationStore.actionAnnotationList.length; i++) {
+        const action = annotationStore.actionAnnotationList[i]
+        const startFrame = utils.time2index(action.start)
+        const endFrame = utils.time2index(action.end)
+        frameList.push([startFrame, (endFrame - startFrame + 1)])
+        colorList.push(`linear-gradient(${action.color}, ${action.color})`)
+      }
       if (ALWAYS_SHOW || frameList.length) {
         positionHeightOffset += HEIGHT_UNIT
         getBackgroundStyleList(positionHeightOffset)
         getStyleList(
           frameList,
-          COLOR_ACTION,
+          colorList,
           positionHeightOffset
         )
       }
