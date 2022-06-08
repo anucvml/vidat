@@ -40,7 +40,8 @@
     <div
         class="absolute bg-black text-white"
         v-if="actionList && actionList.length"
-        style="bottom: 0; padding: 4px; font-size: 20px; opacity: 0.8"
+        :style="actionIndicatorStyle"
+        style="padding: 4px; font-size: 20px; opacity: 0.8"
     >Action: <span
         v-for="(action, index) in actionList"
         :style="{color: action.color}"
@@ -215,6 +216,9 @@ let dragContext
 let activeContext
 
 /// action indicator
+const actionIndicatorStyle = ref({
+  bottom: '0'
+})
 const actionList = computed(
     () => annotationStore.actionAnnotationList.filter(action =>
         currentFrame.value >= utils.time2index(action.start)
@@ -246,7 +250,8 @@ const labelOption = computed(() => configurationStore.objectLabelData.map(label 
   }
 }))
 const handleSelectInput = (labelId) => {
-  annotationList.value[annotationList.value.length - 1].color = configurationStore.objectLabelData.find(label => label.id === labelId).color
+  annotationList.value[annotationList.value.length - 1].color = configurationStore.objectLabelData.find(
+      label => label.id === labelId).color
 }
 
 /// autofocus
@@ -473,17 +478,28 @@ const handleMousemove = event => {
       y: mouseY
     }
   }
+  let isActionIndicatorOverlapsStatus = false
   if (mouseX > annotationStore.video.width / 2 && mouseY > annotationStore.video.height / 2) {
     statusStyle.value = {
       ...statusBaseStyle,
       top: '1px',
       left: '1px'
     }
+    isActionIndicatorOverlapsStatus = true
   } else {
     statusStyle.value = {
       ...statusBaseStyle,
       bottom: '1px',
       right: '1px'
+    }
+  }
+  if (mouseY > annotationStore.video.height / 2) {
+    actionIndicatorStyle.value = {
+      top: isActionIndicatorOverlapsStatus ? '17px' : '0'
+    }
+  } else {
+    actionIndicatorStyle.value = {
+      bottom: '0'
     }
   }
   if (annotationStore.mode === 'object' && preferenceStore.objects) {
@@ -946,6 +962,9 @@ const handleMouseupAndMouseout = event => {
       dragContext = undefined
     }
   }
+  actionIndicatorStyle.value = {
+    bottom: '0'
+  }
 }
 const handleMouseenter = event => {
   const [mouseX, mouseY] = getMouseLocation(event)
@@ -1149,17 +1168,28 @@ const handleTouchmove = event => {
       y: mouseY
     }
   }
+  let isActionIndicatorOverlapsStatus = false
   if (mouseX > annotationStore.video.width / 2 && mouseY > annotationStore.video.height / 2) {
     statusStyle.value = {
       ...statusBaseStyle,
       top: '1px',
       left: '1px'
     }
+    isActionIndicatorOverlapsStatus = true
   } else {
     statusStyle.value = {
       ...statusBaseStyle,
       bottom: '1px',
       right: '1px'
+    }
+  }
+  if (mouseY > annotationStore.video.height / 2) {
+    actionIndicatorStyle.value = {
+      top: isActionIndicatorOverlapsStatus ? '17px' : '0'
+    }
+  } else {
+    actionIndicatorStyle.value = {
+      bottom: '0'
     }
   }
   if (annotationStore.mode === 'object' && preferenceStore.objects) {
@@ -1290,6 +1320,9 @@ const handleTouchend = () => {
       dragContext.skeletonAnnotation.highlight = false
       dragContext = undefined
     }
+  }
+  actionIndicatorStyle.value = {
+    bottom: '0'
   }
 }
 
