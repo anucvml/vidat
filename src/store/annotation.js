@@ -40,6 +40,7 @@ const DEFAULT_ANNOTATION = {
 
   currentSortedActionList: [],
   currentThumbnailAction: null,
+  videoPlaybackRate: 1
 }
 
 export const useAnnotationStore = defineStore('annotation', () => {

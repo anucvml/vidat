@@ -100,14 +100,16 @@ let lastLeftCurrentFrame
 const play = () => {
   const videoPlayer = document.getElementById('video-player')
   isPaused.value = false
+  videoPlayer.playbackRate = annotationStore.videoPlaybackRate
   videoPlayer.play()
-  const duration = (utils.index2time(annotationStore.rightCurrentFrame) - videoPlayer.currentTime) * 1000
+  const duration = (utils.index2time(annotationStore.rightCurrentFrame) - videoPlayer.currentTime) * 1000 /
+      videoPlayer.playbackRate
   videoPlayTimeout = setTimeout(() => {
     handleStop()
   }, duration)
   videoPlayInterval = setInterval(() => {
     moveLeftFrame(1)
-  }, 1000 / annotationStore.video.fps)
+  }, 1000 / annotationStore.video.fps / videoPlayer.playbackRate)
 }
 const pause = () => {
   clearTimeout(videoPlayTimeout)
