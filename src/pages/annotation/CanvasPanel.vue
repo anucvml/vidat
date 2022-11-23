@@ -980,16 +980,11 @@ const handleMouseenter = event => {
 
 /// handlers for mobile
 const getTouchLocation = event => {
-  let currentTarget = canvas.value
-  let top = 0
-  let left = 0
-  while (currentTarget) {
-    top += currentTarget.offsetTop
-    left += currentTarget.offsetLeft
-    currentTarget = currentTarget.offsetParent
-  }
-  const mouseX = (event.touches[0].pageX - left) / canvas.value.clientWidth * annotationStore.video.width
-  const mouseY = (event.touches[0].pageY - top) / canvas.value.clientHeight * annotationStore.video.height
+  let currentTargetRect = canvas.value.getBoundingClientRect()
+  const mouseX = (event.touches[0].clientX - currentTargetRect.left) / canvas.value.clientWidth *
+      annotationStore.video.width
+  const mouseY = (event.touches[0].clientY - currentTargetRect.top) / canvas.value.clientHeight *
+      annotationStore.video.height
   return [mouseX, mouseY]
 }
 const handleTouchstart = event => {

@@ -161,7 +161,7 @@
 </template>
 
 <script setup>
-import { computed, getCurrentInstance } from 'vue'
+import { computed, ref } from 'vue'
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'
@@ -249,11 +249,10 @@ const handleClearAll = () => {
     utils.notify('There are no objects!', 'warning')
   }
 }
-const currentInstance = getCurrentInstance()
+const select = ref()
 const focusLast = () => {
-  const selectList = currentInstance.ctx.$refs.select
-  if (selectList) {
-    selectList[selectList.length - 1].showPopup()
+  if (select.value) {
+    select.value[select.value.length - 1].showPopup()
   }
 }
 defineExpose({
