@@ -88,7 +88,7 @@
             class="text-center text-caption"
             :class="$q.dark.isActive ? 'text-gray-4': 'text-black'"
         >
-          Copyright © 2022,
+          Copyright © 2023,
           <a
               href="https://github.com/anucvml/vidat"
               target="_blank"
