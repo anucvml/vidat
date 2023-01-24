@@ -166,17 +166,6 @@
               v-model="preferenceStore.showPopup"
               label="Show Popup"
           />
-          <q-select
-              class="q-my-md"
-              label="Playback Rate"
-              outlined
-              dense
-              options-dense
-              emit-value
-              map-options
-              v-model="annotationStore.videoPlaybackRate"
-              :options="videoPlaybackRateOptions"
-          />
         </q-item-section>
       </q-item>
     </div>
@@ -184,7 +173,7 @@
 </template>
 
 <script setup>
-import { computed, watch, ref } from 'vue'
+import { computed, watch } from 'vue'
 import { ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '~/libs/annotationlib.js'
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
@@ -505,32 +494,4 @@ const handleBulkClear = () => {
         utils.notify('Bulk clear successful!', 'positive')
       })
 }
-
-// options
-const videoPlaybackRateOptions = [
-  {
-    label: '0.5x',
-    value: 0.5
-  },
-  {
-    label: '0.75x',
-    value: 0.75
-  },
-  {
-    label: '1.0x',
-    value: 1.0
-  },
-  {
-    label: '1.25x',
-    value: 1.25
-  },
-  {
-    label: '1.5x',
-    value: 1.5
-  },
-  {
-    label: '2.0x',
-    value: 2.0
-  }
-]
 </script>

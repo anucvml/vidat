@@ -1,77 +1,106 @@
 <template>
   <div
-      class="row justify-evenly items-center q-pt-lg"
-      :class="{'q-pb-lg': $q.screen.lt.md}"
+    class="row justify-between items-center q-pt-lg"
+    :class="{'q-pb-lg q-px-lg': $q.screen.lt.md}"
   >
-    <q-btn-group flat>
-      <q-btn
+    <div>
+      <q-btn-group flat>
+        <q-btn
           outline
           :icon="isPaused ? 'play_arrow' : 'pause'"
           @click="handlePlayPause"
-      >
-        <q-tooltip>{{ isPaused ? 'play (p)' : 'pause (p)' }}</q-tooltip>
-      </q-btn>
-      <q-btn
+        >
+          <q-tooltip>{{ isPaused ? 'play (p)' : 'pause (p)' }}</q-tooltip>
+        </q-btn>
+        <q-btn
           outline
           icon="stop"
           :disabled="!showVideoPlayer"
           @click="handleStop"
-      >
-        <q-tooltip v-if="showVideoPlayer">stop</q-tooltip>
-      </q-btn>
-      <q-btn
+        >
+          <q-tooltip v-if="showVideoPlayer">stop</q-tooltip>
+        </q-btn>
+        <q-btn
           outline
           :icon="showEdit ? 'done' : 'edit'"
           @click="showEdit = !showEdit"
-      >
-        <q-tooltip>{{ showEdit ? 'done' : 'edit' }}</q-tooltip>
-      </q-btn>
-    </q-btn-group>
+        >
+          <q-tooltip>{{ showEdit ? 'done' : 'edit' }}</q-tooltip>
+        </q-btn>
+      </q-btn-group>
+      <q-select
+        v-if="!$q.screen.lt.md"
+        class="q-my-md"
+        label="Playback Rate"
+        outlined
+        dense
+        options-dense
+        emit-value
+        map-options
+        :disable="!isStopped"
+        v-model="annotationStore.videoPlaybackRate"
+        :options="videoPlaybackRateOptions"
+      />
+    </div>
+    <q-select
+      v-if="$q.screen.lt.md"
+      class="q-my-md"
+      style="width: 162px;"
+      label="Playback Rate"
+      outlined
+      dense
+      options-dense
+      emit-value
+      map-options
+      :disable="!isStopped"
+      v-model="annotationStore.videoPlaybackRate"
+      :options="videoPlaybackRateOptions"
+    />
     <div
-        class="col-grow q-px-lg"
-        :class="[{'col-12': $q.screen.lt.md}]"
-        :style="{'order': !$q.screen.lt.md ? 0 : -1}"
+      class="col-grow"
+      :class="[{'col-12': $q.screen.lt.md, 'q-px-lg': !$q.screen.lt.md}]"
+      :style="{'order': !$q.screen.lt.md ? 0 : -1}"
     >
       <q-range
-          class="custom-range"
-          :class="{'hide-right-marker': currentFocus === 'left', 'hide-left-marker': currentFocus === 'right'}"
-          :style="rangeStyle"
-          label-always
-          drag-range
-          snap
-          track-size="8px"
-          :min="0"
-          :max="annotationStore.video.frames - 1"
-          :step="1"
-          left-label-text-color="blue-grey-1"
-          right-label-text-color="blue-grey-1"
-          left-label-color="primary"
-          right-label-color="primary"
-          :left-label-value="'L: ' + currentFrameRange.min + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.min)) + ' s'"
-          :right-label-value="'R: ' + currentFrameRange.max + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.max)) + ' s'"
-          :model-value="currentFrameRange"
-          @update:model-value="handleInput"
+        class="custom-range"
+        :class="{'hide-right-marker': currentFocus === 'left', 'hide-left-marker': currentFocus === 'right'}"
+        :style="rangeStyle"
+        label-always
+        drag-range
+        snap
+        track-size="8px"
+        :min="0"
+        :max="annotationStore.video.frames - 1"
+        :step="1"
+        left-label-text-color="blue-grey-1"
+        right-label-text-color="blue-grey-1"
+        left-label-color="primary"
+        right-label-color="primary"
+        :left-label-value="'L: ' + currentFrameRange.min + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.min)) + ' s'"
+        :right-label-value="'R: ' + currentFrameRange.max + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.max)) + ' s'"
+        :model-value="currentFrameRange"
+        @update:model-value="handleInput"
       />
     </div>
     <q-btn-group flat>
       <q-btn
-          outline
-          icon="keyboard_arrow_left"
-          @click="handlePreviousKeyframe"
+        outline
+        icon="keyboard_arrow_left"
+        @click="handlePreviousKeyframe"
       >
         <q-tooltip>previous keyframe (&lt)</q-tooltip>
       </q-btn>
       <q-btn
-          outline
-          icon="gps_fixed"
-          @click="handleNearestKeyframe"
+        outline
+        icon="gps_fixed"
+        @click="handleNearestKeyframe"
       >
         <q-tooltip>locate nearest keyframe</q-tooltip>
       </q-btn>
       <q-btn
-          outline
-          icon="keyboard_arrow_right"
-          @click="handleNextKeyframe"
+        outline
+        icon="keyboard_arrow_right"
+        @click="handleNextKeyframe"
       >
         <q-tooltip>next keyframe (&gt)</q-tooltip>
       </q-btn>
@@ -91,6 +120,7 @@ const annotationStore = useAnnotationStore()
 
 // left buttons
 const isPaused = ref(true)
+const isStopped = ref(true)
 const showVideoPlayer = ref(false)
 const showEdit = ref(false)
 let videoPlayTimeout
@@ -100,10 +130,11 @@ let lastLeftCurrentFrame
 const play = () => {
   const videoPlayer = document.getElementById('video-player')
   isPaused.value = false
+  isStopped.value = false
   videoPlayer.playbackRate = annotationStore.videoPlaybackRate
   videoPlayer.play()
   const duration = (utils.index2time(annotationStore.rightCurrentFrame) - videoPlayer.currentTime) * 1000 /
-      videoPlayer.playbackRate
+    videoPlayer.playbackRate
   videoPlayTimeout = setTimeout(() => {
     handleStop()
   }, duration)
@@ -125,6 +156,7 @@ const stop = () => {
   videoPlayer.currentTime = utils.index2time(lastLeftCurrentFrame)
   showVideoPlayer.value = false
   isPaused.value = true
+  isStopped.value = true
   clearTimeout(videoPlayTimeout)
   clearInterval(videoPlayInterval)
 }
@@ -148,6 +180,34 @@ const handleStop = () => {
   stop()
   annotationStore.leftCurrentFrame = lastLeftCurrentFrame
 }
+
+// options
+const videoPlaybackRateOptions = [
+  {
+    label: '0.5x',
+    value: 0.5,
+  },
+  {
+    label: '0.75x',
+    value: 0.75,
+  },
+  {
+    label: '1.0x',
+    value: 1.0,
+  },
+  {
+    label: '1.25x',
+    value: 1.25,
+  },
+  {
+    label: '1.5x',
+    value: 1.5,
+  },
+  {
+    label: '2.0x',
+    value: 2.0,
+  },
+]
 
 // right buttons
 const nearestKeyframe = currentFrame => {
@@ -197,7 +257,7 @@ const handleNearestKeyframe = () => {
   } else {
     annotationStore.leftCurrentFrame = leftCurrentKeyFrame
     annotationStore.rightCurrentFrame = annotationStore.keyframeList[leftCurrentKeyFrameIndex + 1] ||
-        leftCurrentKeyFrame
+      leftCurrentKeyFrame
   }
 }
 const handleNextKeyframe = () => { // base on left most one
@@ -208,8 +268,8 @@ const handleNextKeyframe = () => { // base on left most one
   const lastIndex = annotationStore.keyframeList.length - 1
   if (leftCurrentKeyFrameIndex >= lastIndex || rightCurrentKeyFrameIndex >= lastIndex) {
     annotationStore.leftCurrentFrame = lastIndex - 1 >= 0
-        ? annotationStore.keyframeList[lastIndex - 1]
-        : annotationStore.keyframeList[lastIndex]
+      ? annotationStore.keyframeList[lastIndex - 1]
+      : annotationStore.keyframeList[lastIndex]
     annotationStore.rightCurrentFrame = annotationStore.keyframeList[lastIndex]
   } else if (leftCurrentKeyFrameIndex === rightCurrentKeyFrameIndex) {
     annotationStore.leftCurrentFrame = leftCurrentKeyFrame
@@ -217,8 +277,8 @@ const handleNextKeyframe = () => { // base on left most one
   } else if (leftCurrentKeyFrameIndex < rightCurrentKeyFrameIndex) {
     if (leftCurrentKeyFrameIndex + 2 > lastIndex) {
       annotationStore.leftCurrentFrame = lastIndex - 1 >= 0
-          ? annotationStore.keyframeList[lastIndex - 1]
-          : annotationStore.keyframeList[lastIndex]
+        ? annotationStore.keyframeList[lastIndex - 1]
+        : annotationStore.keyframeList[lastIndex]
       annotationStore.rightCurrentFrame = annotationStore.keyframeList[lastIndex]
     } else {
       annotationStore.leftCurrentFrame = annotationStore.keyframeList[leftCurrentKeyFrameIndex + 1]
@@ -263,7 +323,7 @@ const moveRange = interval => {
     }
   } else {
     if (Math.max(annotationStore.leftCurrentFrame, annotationStore.rightCurrentFrame) + interval
-        <= annotationStore.video.frames) {
+      <= annotationStore.video.frames) {
       annotationStore.leftCurrentFrame += interval
       annotationStore.rightCurrentFrame += interval
     }
@@ -319,14 +379,14 @@ const handleKeydown = event => {
     currentFocus.value = {
       left: 'right',
       range: 'left',
-      right: 'range'
+      right: 'range',
     }[currentFocus.value]
     event.preventDefault()
   } else if (event.code === 'ArrowDown') {
     currentFocus.value = {
       left: 'range',
       range: 'right',
-      right: 'left'
+      right: 'left',
     }[currentFocus.value]
     event.preventDefault()
   } else if (event.code === 'PageUp') {
@@ -369,7 +429,7 @@ const currentFrameRange = computed({
   get: () => {
     return {
       min: annotationStore.leftCurrentFrame,
-      max: annotationStore.rightCurrentFrame
+      max: annotationStore.rightCurrentFrame,
     }
   },
   set: (value) => {
@@ -378,7 +438,7 @@ const currentFrameRange = computed({
     }
     annotationStore.leftCurrentFrame = value.min
     annotationStore.rightCurrentFrame = value.max
-  }
+  },
 })
 const { rangeStyle } = frameIndicator()
 </script>
