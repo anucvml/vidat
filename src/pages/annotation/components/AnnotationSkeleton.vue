@@ -3,13 +3,13 @@
     <img
         v-if="$q.dark.isActive"
         style="width: 150px; padding: 100px 0 50px 0;"
-        src="/img/logo-dark.svg"
+        src="img/logo-dark.svg"
         alt="Logo"
     >
     <img
         v-else
         style="width: 150px; padding: 100px 0 50px 0;"
-        src="/img/logo.svg"
+        src="img/logo.svg"
         alt="Logo"
     >
     <div class="text-h4">Vidat</div>

@@ -9,12 +9,12 @@
     ><img
         v-if="$q.dark.isActive"
         style="height: 24px; margin-left: 6px;"
-        src="/img/github-logo-dark.png"
+        src="img/github-logo-dark.png"
         alt="github"
     /><img
         v-else
         style="height: 24px; margin-left: 6px;"
-        src="/img/github-logo-light.png"
+        src="img/github-logo-light.png"
         alt="github"
     /></a></h5>
     <div class="text-body1">Developed by the Australian National University Machine Learning and Computer Vision group

@@ -187,7 +187,7 @@ window.addEventListener('beforeunload', event => {
 })
 // auto change favicon
 const isDark = usePreferredDark()
-const favicon = computed(() => isDark.value ? '/img/logo-dark.svg' : '/img/logo.svg')
+const favicon = computed(() => isDark.value ? 'img/logo-dark.svg' : 'img/logo.svg')
 useFavicon(favicon)
 </script>
 

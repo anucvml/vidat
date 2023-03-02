@@ -27,12 +27,12 @@
             >
               <img
                   v-if="$q.dark.isActive"
-                  src="/img/logo-dark.svg"
+                  src="img/logo-dark.svg"
                   alt="logo"
               >
               <img
                   v-else
-                  src="/img/logo.svg"
+                  src="img/logo.svg"
                   alt="logo"
               >
             </q-avatar>
