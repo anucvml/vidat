@@ -6,7 +6,7 @@ import { onMounted, watch } from 'vue'
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { usePreferenceStore } from '~/store/preference.js'
-import VideoProcessWorker from '../worker/video-process-worker.js?worker'
+import VideoProcessWorker from '~/worker/video-process-worker.js?worker'
 
 const annotationStore = useAnnotationStore()
 const preferenceStore = usePreferenceStore()
@@ -18,7 +18,9 @@ onMounted(() => {
     }
     if (newValue) {
       worker = new VideoProcessWorker()
-      worker.postMessage({ src: newValue, defaultFps: preferenceStore.defaultFps })
+      // Parse the src into a ful URL (the worker does not know the current web root)
+      const srcURL = new URL(newValue, window.location.href).href
+      worker.postMessage({ src: srcURL, defaultFps: preferenceStore.defaultFps })
       annotationStore.cachedFrameList = []
       annotationStore.isCaching = true
       worker.onmessage = event => {
