@@ -46,8 +46,8 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useAnnotation } from '~/hooks/annotation.js'
-import { useAnnotationStore } from '../store/annotation.js'
-import { useMainStore } from '../store/index.js'
+import { useAnnotationStore } from '~/store/annotation.js'
+import { useMainStore } from '~/store/index.js'
 
 const { submitURL } = storeToRefs(useMainStore())
 const annotationStore = useAnnotationStore()

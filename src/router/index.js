@@ -8,32 +8,32 @@ const router = createRouter({
     {
       name: 'annotation',
       path: '/',
-      component: () => import('../pages/annotation/Annotation.vue')
+      component: () => import('~/pages/annotation/Annotation.vue')
     },
     {
       name: 'configuration',
       path: '/configuration',
-      component: () => import('../pages/configuration/Configuration.vue')
+      component: () => import('~/pages/configuration/Configuration.vue')
     },
     {
       name: 'preference',
       path: '/preference',
-      component: () => import('../pages/preference/Preference.vue')
+      component: () => import('~/pages/preference/Preference.vue')
     },
     {
       name: 'help',
       path: '/help',
-      component: () => import('../pages/help/Help.vue')
+      component: () => import('~/pages/help/Help.vue')
     },
     {
       name: 'about',
       path: '/about',
-      component: () => import('../pages/about/About.vue')
+      component: () => import('~/pages/about/About.vue')
     },
     {
       name: 'notfound',
       path: '/:pathMatch(.*)*',
-      component: () => import('../pages/notfound/NotFound.vue')
+      component: () => import('~/pages/notfound/NotFound.vue')
     }
   ]
 })

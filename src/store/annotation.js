@@ -4,7 +4,7 @@ import { computed, reactive, toRefs, watch } from 'vue'
 import utils from '~/libs/utils.js'
 import { useMainStore } from '~/store/index.js'
 import { usePreferenceStore } from '~/store/preference.js'
-import { ActionAnnotation, ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '../libs/annotationlib.js'
+import { ActionAnnotation, ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '~/libs/annotationlib.js'
 
 const DEFAULT_ANNOTATION = {
   video: {
