@@ -132,11 +132,10 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { computed, defineAsyncComponent, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useConfigurationStore } from '~/store/configuration.js'
 import { useMainStore } from '~/store/index.js'
-
-const TableEditor = defineAsyncComponent(() => import('~/pages/configuration/components/TableEditor.vue'))
+import TableEditor from '~/pages/configuration/components/TableEditor.vue'
 
 const props = defineProps({
   title: {

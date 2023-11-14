@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'
+import Annotation from '~/pages/annotation/Annotation.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -8,7 +9,7 @@ const router = createRouter({
     {
       name: 'annotation',
       path: '/',
-      component: () => import('~/pages/annotation/Annotation.vue')
+      component: Annotation
     },
     {
       name: 'configuration',

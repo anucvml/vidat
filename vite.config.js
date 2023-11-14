@@ -33,9 +33,9 @@ export default defineConfig({
     monacoEditorPlugin({
       languageWorkers: ['editorWorkerService', 'json'],
       publicPath: 'https://unpkg.com/vite-plugin-monaco-editor@1.0.10/cdn'
-    })
+    }),
   ],
   define: {
     PACKAGE_VERSION: JSON.stringify(process.env.npm_package_version)
-  }
+  },
 })
