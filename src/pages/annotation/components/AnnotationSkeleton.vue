@@ -34,11 +34,16 @@
       />
     </q-btn-group>
     <div style="margin-top: 20px;">
+      <a
+      class="text-body1"
+          style="margin: 0 10px; text-decoration: underline;"
+          href="/?annotation=/annotation/example.json"
+      >Demo</a>
       <router-link
           class="text-body1"
           style="margin: 0 10px; text-decoration: underline;"
           to="/help"
-      ><span>Help</span></router-link>
+      >Help</router-link>
       <a
           class="text-body1"
           style="margin: 0 10px; text-decoration: underline;"
@@ -49,7 +54,7 @@
           class="text-body1"
           style="margin: 0 10px; text-decoration: underline;"
           to="/about"
-      ><span>About</span></router-link>
+      >About</router-link>
     </div>
   </div>
 </template>
