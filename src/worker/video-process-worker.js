@@ -164,8 +164,7 @@ onmessage = async (event) => {
           }
         }
       } catch (e) {
-        if (e.toString() ===
-          'AbortError: The user aborted a request.') return false
+        if (e.toString().includes('AbortError')) return false
         else throw e
       }
     }
