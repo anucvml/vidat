@@ -7,7 +7,9 @@
     >
       <div class="col">Duration</div>
       <div class="col">
-        <span v-if="video.duration && video.fps">{{ utils.toFixed2(video.duration) }}s @ {{ video.fps }}fps</span>
+        <span v-if="video.duration && video.fps">{{ utils.toFixed2(video.duration) }}s @ {{
+          utils.toFixed2(video.fps)
+          }}fps</span>
         <span v-else>-</span>
       </div>
     </div>
@@ -17,9 +19,9 @@
     >
       <div class="col">Size</div>
       <div class="col">
-        <span v-if="video.width && video.height && video.frames">{{ video.width }} &times; {{ video.height }}px &times; {{
-            video.frames
-          }}
+        <span v-if="video.width && video.height && video.frames">{{ parseInt(video.width) }} &times; {{
+        parseInt(video.height)
+      }}px &times; {{ parseInt(video.frames) }}
       </span>
         <span v-else>-</span>
       </div>
