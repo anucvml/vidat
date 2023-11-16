@@ -357,7 +357,7 @@ const handleKeydown = event => {
   if (event.target.nodeName.toLowerCase() === 'input') {
     return false
   }
-  if (event.code === 'ArrowLeft') {
+  if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
     const delta = -1
     if (currentFocus.value === 'range') {
       moveRange(delta)
@@ -366,7 +366,7 @@ const handleKeydown = event => {
     } else if (currentFocus.value === 'right') {
       moveRightFrame(delta)
     }
-  } else if (event.code === 'ArrowRight') {
+  } else if (event.code === 'ArrowRight' || event.code === 'KeyD') {
     const delta = 1
     if (currentFocus.value === 'range') {
       moveRange(delta)
@@ -375,18 +375,18 @@ const handleKeydown = event => {
     } else if (currentFocus.value === 'right') {
       moveRightFrame(delta)
     }
-  } else if (event.code === 'ArrowUp') {
+  } else if (event.code === 'ArrowUp' || event.code === 'KeyW') {
+    if (currentFocus.value === 'left') return
     currentFocus.value = {
-      left: 'right',
       range: 'left',
       right: 'range',
     }[currentFocus.value]
     event.preventDefault()
-  } else if (event.code === 'ArrowDown') {
+  } else if (event.code === 'ArrowDown' || event.code === 'KeyS') {
+    if (currentFocus.value === 'right') return
     currentFocus.value = {
       left: 'range',
       range: 'right',
-      right: 'left',
     }[currentFocus.value]
     event.preventDefault()
   } else if (event.code === 'PageUp') {
