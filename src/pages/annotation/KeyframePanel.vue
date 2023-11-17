@@ -459,4 +459,12 @@ const { rangeStyle } = frameIndicator()
 .hide-right-marker .q-slider__thumb:last-child .q-slider__pin {
   display: none;
 }
+
+.q-slider__thumb:nth-child(3) .q-slider__text-container {
+  transform: translateX(-41%) !important;
+}
+
+.q-slider__thumb:last-child .q-slider__text-container {
+  transform: translateX(41%)  !important;
+}
 </style>
