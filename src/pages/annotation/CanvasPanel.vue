@@ -478,14 +478,12 @@ const handleMousemove = event => {
       y: mouseY
     }
   }
-  let isActionIndicatorOverlapsStatus = false
   if (mouseX > annotationStore.video.width / 2 && mouseY > annotationStore.video.height / 2) {
     statusStyle.value = {
       ...statusBaseStyle,
       top: '1px',
-      left: '1px'
+      right: '1px'
     }
-    isActionIndicatorOverlapsStatus = true
   } else {
     statusStyle.value = {
       ...statusBaseStyle,
@@ -493,9 +491,9 @@ const handleMousemove = event => {
       right: '1px'
     }
   }
-  if (mouseY > annotationStore.video.height / 2) {
+  if (mouseX < annotationStore.video.width / 2 && mouseY > annotationStore.video.height / 2) {
     actionIndicatorStyle.value = {
-      top: isActionIndicatorOverlapsStatus ? '17px' : '0'
+      top: '0'
     }
   } else {
     actionIndicatorStyle.value = {
@@ -1163,14 +1161,12 @@ const handleTouchmove = event => {
       y: mouseY
     }
   }
-  let isActionIndicatorOverlapsStatus = false
   if (mouseX > annotationStore.video.width / 2 && mouseY > annotationStore.video.height / 2) {
     statusStyle.value = {
       ...statusBaseStyle,
       top: '1px',
-      left: '1px'
+      right: '1px'
     }
-    isActionIndicatorOverlapsStatus = true
   } else {
     statusStyle.value = {
       ...statusBaseStyle,
@@ -1178,9 +1174,9 @@ const handleTouchmove = event => {
       right: '1px'
     }
   }
-  if (mouseY > annotationStore.video.height / 2) {
+  if (mouseX < annotationStore.video.width / 2 && mouseY > annotationStore.video.height / 2) {
     actionIndicatorStyle.value = {
-      top: isActionIndicatorOverlapsStatus ? '17px' : '0'
+      top: '0'
     }
   } else {
     actionIndicatorStyle.value = {
