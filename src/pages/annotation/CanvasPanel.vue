@@ -482,7 +482,7 @@ const handleMousemove = event => {
     statusStyle.value = {
       ...statusBaseStyle,
       top: '1px',
-      right: '1px'
+      left: '1px'
     }
   } else {
     statusStyle.value = {
@@ -1165,7 +1165,7 @@ const handleTouchmove = event => {
     statusStyle.value = {
       ...statusBaseStyle,
       top: '1px',
-      right: '1px'
+      left: '1px'
     }
   } else {
     statusStyle.value = {
