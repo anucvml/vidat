@@ -1,11 +1,11 @@
 <template>
   <TableBase
-      ref="table"
-      title="Objects"
-      storeKey="objectAnnotationListMap"
-      rowKey="x"
-      :position="position"
-      :columnList="columnList"
+    ref="table"
+    title="Objects"
+    storeKey="objectAnnotationListMap"
+    rowKey="x"
+    :position="position"
+    :columnList="columnList"
   />
 </template>
 

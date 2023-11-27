@@ -1,28 +1,26 @@
 <template>
-  <q-list :class="{'flex justify-evenly full-width': $q.screen.lt.md}">
+  <q-list :class="{ 'flex justify-evenly full-width': $q.screen.lt.md }">
     <div v-if="annotationStore.mode !== 'action'">
       <q-item dense>
-        <q-item-section class="text-center">
-          Copy
-        </q-item-section>
+        <q-item-section class="text-center"> Copy </q-item-section>
       </q-item>
       <q-item>
         <q-item-section>
           <q-btn-group
-              spread
-              flat
+            spread
+            flat
           >
             <q-btn
-                outline
-                icon="arrow_back"
-                @click="handleCopyLeft"
+              outline
+              icon="arrow_back"
+              @click="handleCopyLeft"
             >
               <q-tooltip>copy from right to left</q-tooltip>
             </q-btn>
             <q-btn
-                outline
-                icon="arrow_forward"
-                @click="handleCopyRight"
+              outline
+              icon="arrow_forward"
+              @click="handleCopyRight"
             >
               <q-tooltip>copy from left to right</q-tooltip>
             </q-btn>
@@ -33,20 +31,20 @@
       <q-item>
         <q-item-section>
           <q-btn-group
-              spread
-              flat
+            spread
+            flat
           >
             <q-btn
-                outline
-                icon="first_page"
-                @click="handleReplaceLeft"
+              outline
+              icon="first_page"
+              @click="handleReplaceLeft"
             >
               <q-tooltip>replace left with right</q-tooltip>
             </q-btn>
             <q-btn
-                outline
-                icon="last_page"
-                @click="handleReplaceRight"
+              outline
+              icon="last_page"
+              @click="handleReplaceRight"
             >
               <q-tooltip>replace right with left</q-tooltip>
             </q-btn>
@@ -56,14 +54,14 @@
       <q-item>
         <q-item-section>
           <q-btn-group
-              spread
-              flat
+            spread
+            flat
           >
             <q-btn
-                outline
-                icon="double_arrow"
-                label="fill"
-                @click="handleInterpolate"
+              outline
+              icon="double_arrow"
+              label="fill"
+              @click="handleInterpolate"
             >
               <q-tooltip>interpolate between with same instance id</q-tooltip>
             </q-btn>
@@ -78,54 +76,54 @@
       <q-item>
         <q-item-section>
           <q-select
-              v-model="annotationStore.mode"
-              outlined
-              stack-label
-              dense
-              options-dense
-              :options="modeOptions"
-              :readonly="modeOptions.length === 1"
+            v-model="annotationStore.mode"
+            outlined
+            stack-label
+            dense
+            options-dense
+            :options="modeOptions"
+            :readonly="modeOptions.length === 1"
           ></q-select>
         </q-item-section>
       </q-item>
       <q-item v-if="annotationStore.mode === 'skeleton'">
         <q-item-section>
           <q-select
-              v-model="annotationStore.skeletonTypeId"
-              outlined
-              stack-label
-              dense
-              options-dense
-              map-options
-              emit-value
-              :options="skeletonTypeOptions"
+            v-model="annotationStore.skeletonTypeId"
+            outlined
+            stack-label
+            dense
+            options-dense
+            map-options
+            emit-value
+            :options="skeletonTypeOptions"
           ></q-select>
         </q-item-section>
       </q-item>
       <q-item v-if="$q.platform.has.touch && annotationStore.mode !== 'action'">
         <q-item-section>
           <q-toggle
-              v-model="delMode"
-              label="Delete"
+            v-model="delMode"
+            label="Delete"
           ></q-toggle>
           <q-toggle
-              v-model="copyMode"
-              label="Copy"
+            v-model="copyMode"
+            label="Copy"
           ></q-toggle>
           <q-toggle
-              v-if="annotationStore.mode === 'region'"
-              v-model="addPointMode"
-              label="Add Point"
+            v-if="annotationStore.mode === 'region'"
+            v-model="addPointMode"
+            label="Add Point"
           ></q-toggle>
           <q-toggle
-              v-if="annotationStore.mode === 'region'"
-              v-model="delPointMode"
-              label="Del Point"
+            v-if="annotationStore.mode === 'region'"
+            v-model="delPointMode"
+            label="Del Point"
           ></q-toggle>
           <q-toggle
-              v-if="annotationStore.mode === 'skeleton'"
-              v-model="indicatingMode"
-              label="Indicate"
+            v-if="annotationStore.mode === 'skeleton'"
+            v-model="indicatingMode"
+            label="Indicate"
           ></q-toggle>
         </q-item-section>
       </q-item>
@@ -137,10 +135,10 @@
       <q-item>
         <q-item-section>
           <q-btn
-              outline
-              label="bulk"
-              icon="delete_forever"
-              @click="handleBulkClear"
+            outline
+            label="bulk"
+            icon="delete_forever"
+            @click="handleBulkClear"
           >
             <q-tooltip>Clear all annotations between left and right frame</q-tooltip>
           </q-btn>
@@ -154,17 +152,17 @@
       <q-item>
         <q-item-section>
           <q-toggle
-              v-model="preferenceStore.muted"
-              label="Muted"
+            v-model="preferenceStore.muted"
+            label="Muted"
           />
           <q-toggle
-              v-model="preferenceStore.grayscale"
-              label="Grayscale"
+            v-model="preferenceStore.grayscale"
+            label="Grayscale"
           />
           <q-toggle
-              v-if="!$q.platform.has.touch && annotationStore.mode !== 'action'"
-              v-model="preferenceStore.showPopup"
-              label="Show Popup"
+            v-if="!$q.platform.has.touch && annotationStore.mode !== 'action'"
+            v-model="preferenceStore.showPopup"
+            label="Show Popup"
           />
         </q-item-section>
       </q-item>
@@ -188,8 +186,8 @@ const configurationStore = useConfigurationStore()
 
 const annotationListMap = computed(() => annotationStore[annotationStore.mode + 'AnnotationListMap'])
 
-const clone = annotationList => {
-  return annotationList.map(annotation => annotation.clone())
+const clone = (annotationList) => {
+  return annotationList.map((annotation) => annotation.clone())
 }
 
 // copy
@@ -203,7 +201,7 @@ const handleCopyLeft = () => {
     return
   }
   annotationListMap.value[annotationStore.leftCurrentFrame].push(
-      ...clone(annotationListMap.value[annotationStore.rightCurrentFrame])
+    ...clone(annotationListMap.value[annotationStore.rightCurrentFrame])
   )
 }
 const handleCopyRight = () => {
@@ -216,7 +214,7 @@ const handleCopyRight = () => {
     return
   }
   annotationListMap.value[annotationStore.rightCurrentFrame].push(
-      ...clone(annotationListMap.value[annotationStore.leftCurrentFrame])
+    ...clone(annotationListMap.value[annotationStore.leftCurrentFrame])
   )
 }
 const handleReplaceLeft = () => {
@@ -230,12 +228,12 @@ const handleReplaceLeft = () => {
   }
   if (annotationListMap.value[annotationStore.leftCurrentFrame].length === 0) {
     annotationListMap.value[annotationStore.leftCurrentFrame] = clone(
-        annotationListMap.value[annotationStore.rightCurrentFrame]
+      annotationListMap.value[annotationStore.rightCurrentFrame]
     )
   } else {
     utils.confirm('Are you sure to replace? This would remove ALL annotations in the LEFT panel!').onOk(() => {
       annotationListMap.value[annotationStore.leftCurrentFrame] = clone(
-          annotationListMap.value[annotationStore.rightCurrentFrame]
+        annotationListMap.value[annotationStore.rightCurrentFrame]
       )
     })
   }
@@ -250,12 +248,12 @@ const handleReplaceRight = () => {
   }
   if (annotationListMap.value[annotationStore.rightCurrentFrame].length === 0) {
     annotationListMap.value[annotationStore.rightCurrentFrame] = clone(
-        annotationListMap.value[annotationStore.leftCurrentFrame]
+      annotationListMap.value[annotationStore.leftCurrentFrame]
     )
   } else {
     utils.confirm('Are you sure to replace? This would remove ALL annotations in the RIGHT panel!').onOk(() => {
       annotationListMap.value[annotationStore.rightCurrentFrame] = clone(
-          annotationListMap.value[annotationStore.leftCurrentFrame]
+        annotationListMap.value[annotationStore.leftCurrentFrame]
       )
     })
   }
@@ -268,12 +266,12 @@ const handleInterpolate = () => {
     let cnt = 0
     for (const rightAnnotation of rightAnnotationList) {
       if (
-          rightAnnotation.instance !== null &&
+        (rightAnnotation.instance !== null &&
           leftAnnotation.instance !== null &&
           rightAnnotation.instance === leftAnnotation.instance &&
-          ((annotationStore.mode === 'object' || annotationStore.mode === 'region') && rightAnnotation.labelId ===
-              leftAnnotation.labelId) ||
-          (annotationStore.mode === 'skeleton' && rightAnnotation.typeId === leftAnnotation.typeId)
+          (annotationStore.mode === 'object' || annotationStore.mode === 'region') &&
+          rightAnnotation.labelId === leftAnnotation.labelId) ||
+        (annotationStore.mode === 'skeleton' && rightAnnotation.typeId === leftAnnotation.typeId)
       ) {
         // same number of points only
         if (annotationStore.mode === 'region') {
@@ -310,25 +308,18 @@ const handleInterpolate = () => {
       // remove archive interpolations
       for (let k = 0; k < originalAnnotationList.length; k++) {
         if (
-            originalAnnotationList[k].instance === leftAnnotation.instance &&
-            (
-                (
-                    (annotationStore.mode === 'object' || annotationStore.mode === 'region') &&
-                    originalAnnotationList[k].labelId === leftAnnotation.labelId
-                )
-                ||
-                (
-                    annotationStore.mode === 'skeleton' &&
-                    originalAnnotationList[k].typeId === leftAnnotation.typeId
-                )
-            )
+          originalAnnotationList[k].instance === leftAnnotation.instance &&
+          (((annotationStore.mode === 'object' || annotationStore.mode === 'region') &&
+            originalAnnotationList[k].labelId === leftAnnotation.labelId) ||
+            (annotationStore.mode === 'skeleton' && originalAnnotationList[k].typeId === leftAnnotation.typeId))
         ) {
           originalAnnotationList.splice(k, 1)
         }
       }
       // interpolate from left to right
       if (annotationStore.mode === 'object') {
-        originalAnnotationList.push(new ObjectAnnotation(
+        originalAnnotationList.push(
+          new ObjectAnnotation(
             leftAnnotation.x * (1 - ratio) + rightAnnotation.x * ratio,
             leftAnnotation.y * (1 - ratio) + rightAnnotation.y * ratio,
             leftAnnotation.width * (1 - ratio) + rightAnnotation.width * ratio,
@@ -337,7 +328,8 @@ const handleInterpolate = () => {
             leftAnnotation.color,
             leftAnnotation.instance,
             leftAnnotation.score
-        ))
+          )
+        )
       } else if (annotationStore.mode === 'region') {
         const newPointList = []
         for (let k = 0; k < leftAnnotation.pointList.length; k++) {
@@ -348,13 +340,15 @@ const handleInterpolate = () => {
             y: leftPoint.y * (1 - ratio) + rightPoint.y * ratio
           })
         }
-        originalAnnotationList.push(new RegionAnnotation(
+        originalAnnotationList.push(
+          new RegionAnnotation(
             newPointList,
             leftAnnotation.labelId,
             leftAnnotation.color,
             leftAnnotation.instance,
             leftAnnotation.score
-        ))
+          )
+        )
       } else if (annotationStore.mode === 'skeleton') {
         const newPointList = []
         for (let k = 0; k < leftAnnotation.pointList.length; k++) {
@@ -368,12 +362,12 @@ const handleInterpolate = () => {
           })
         }
         const newSkeletonAnnotation = new SkeletonAnnotation(
-            leftAnnotation.centerX * (1 - ratio) + rightAnnotation.centerX * ratio,
-            leftAnnotation.centerY * (1 - ratio) + rightAnnotation.centerY * ratio,
-            leftAnnotation.typeId,
-            leftAnnotation.color,
-            leftAnnotation.instance,
-            leftAnnotation.score
+          leftAnnotation.centerX * (1 - ratio) + rightAnnotation.centerX * ratio,
+          leftAnnotation.centerY * (1 - ratio) + rightAnnotation.centerY * ratio,
+          leftAnnotation.typeId,
+          leftAnnotation.color,
+          leftAnnotation.instance,
+          leftAnnotation.score
         )
         newSkeletonAnnotation.ratio = leftAnnotation.ratio * (1 - ratio) + rightAnnotation.ratio * ratio
         newSkeletonAnnotation.pointList = newPointList
@@ -393,19 +387,19 @@ const modeOptions = computed(() => {
   if (preferenceStore.skeletons) ret.push('skeleton')
   return ret
 })
-const skeletonTypeOptions = computed(
-    () => configurationStore.skeletonTypeData.map(type => {
-      return {
-        label: type.name,
-        value: type.id
-      }
-    })
+const skeletonTypeOptions = computed(() =>
+  configurationStore.skeletonTypeData.map((type) => {
+    return {
+      label: type.name,
+      value: type.id
+    }
+  })
 )
 
 /// mode for mobile
 const delMode = computed({
   get: () => annotationStore.delMode,
-  set: newValue => {
+  set: (newValue) => {
     if (newValue) {
       annotationStore.delMode = true
       annotationStore.copyMode = false
@@ -419,7 +413,7 @@ const delMode = computed({
 })
 const copyMode = computed({
   get: () => annotationStore.copyMode,
-  set: newValue => {
+  set: (newValue) => {
     if (newValue) {
       annotationStore.delMode = false
       annotationStore.copyMode = true
@@ -433,7 +427,7 @@ const copyMode = computed({
 })
 const addPointMode = computed({
   get: () => annotationStore.addPointMode,
-  set: newValue => {
+  set: (newValue) => {
     if (newValue) {
       annotationStore.delMode = false
       annotationStore.copyMode = false
@@ -447,7 +441,7 @@ const addPointMode = computed({
 })
 const delPointMode = computed({
   get: () => annotationStore.delPointMode,
-  set: newValue => {
+  set: (newValue) => {
     if (newValue) {
       annotationStore.delMode = false
       annotationStore.copyMode = false
@@ -461,7 +455,7 @@ const delPointMode = computed({
 })
 const indicatingMode = computed({
   get: () => annotationStore.indicatingMode,
-  set: newValue => {
+  set: (newValue) => {
     if (newValue) {
       annotationStore.delMode = false
       annotationStore.copyMode = false
@@ -473,25 +467,28 @@ const indicatingMode = computed({
     }
   }
 })
-watch(() => annotationStore.mode,
-    () => {
-      annotationStore.delMode = false
-      annotationStore.copyMode = false
-      annotationStore.addPointMode = false
-      annotationStore.delPointMode = false
-      annotationStore.indicatingMode = false
-    }
+watch(
+  () => annotationStore.mode,
+  () => {
+    annotationStore.delMode = false
+    annotationStore.copyMode = false
+    annotationStore.addPointMode = false
+    annotationStore.delPointMode = false
+    annotationStore.indicatingMode = false
+  }
 )
 
 // operation
 const handleBulkClear = () => {
-  utils.confirm(
-      `Are you sure to REMOVE ALL ${annotationStore.mode} annotations between frame ${annotationStore.leftCurrentFrame} to ${annotationStore.rightCurrentFrame}?`).
-      onOk(() => {
-        for (let frame = annotationStore.leftCurrentFrame; frame <= annotationStore.rightCurrentFrame; frame += 1) {
-          annotationListMap.value[frame] = []
-        }
-        utils.notify('Bulk clear successful!', 'positive')
-      })
+  utils
+    .confirm(
+      `Are you sure to REMOVE ALL ${annotationStore.mode} annotations between frame ${annotationStore.leftCurrentFrame} to ${annotationStore.rightCurrentFrame}?`
+    )
+    .onOk(() => {
+      for (let frame = annotationStore.leftCurrentFrame; frame <= annotationStore.rightCurrentFrame; frame += 1) {
+        annotationListMap.value[frame] = []
+      }
+      utils.notify('Bulk clear successful!', 'positive')
+    })
 }
 </script>

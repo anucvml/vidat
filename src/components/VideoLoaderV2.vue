@@ -1,5 +1,4 @@
-<template>
-</template>
+<template></template>
 
 <script setup>
 import { onMounted, watch } from 'vue'
@@ -12,55 +11,58 @@ const annotationStore = useAnnotationStore()
 const preferenceStore = usePreferenceStore()
 let worker
 onMounted(() => {
-  watch(() => annotationStore.video.src, (newValue) => {
-    if (worker) {
-      worker.terminate()
-    }
-    if (newValue) {
-      worker = new VideoProcessWorker()
-      // Parse the src into a ful URL (the worker does not know the current web root)
-      const srcURL = new URL(newValue, window.location.href).href
-      worker.postMessage({ src: srcURL, defaultFps: preferenceStore.defaultFps })
-      annotationStore.cachedFrameList = []
-      annotationStore.isCaching = true
-      worker.onmessage = event => {
-        if (event.data.videoTrackInfo) {
-          const videoTrackInfo = event.data.videoTrackInfo
-          if (!annotationStore.video.duration) annotationStore.video.duration = videoTrackInfo.duration
-          if (!annotationStore.video.width) annotationStore.video.width = videoTrackInfo.width
-          if (!annotationStore.video.height) annotationStore.video.height = videoTrackInfo.height
-          if (!annotationStore.video.fps) annotationStore.video.fps = videoTrackInfo.fps
-          if (!annotationStore.video.frames) annotationStore.video.frames = videoTrackInfo.frames
-          const keyframeList = []
-          if (annotationStore.keyframeList.length === 0) {
-            for (let i = 0; i < annotationStore.video.frames; i += preferenceStore.defaultFpk) {
-              keyframeList.push(i)
+  watch(
+    () => annotationStore.video.src,
+    (newValue) => {
+      if (worker) {
+        worker.terminate()
+      }
+      if (newValue) {
+        worker = new VideoProcessWorker()
+        // Parse the src into a ful URL (the worker does not know the current web root)
+        const srcURL = new URL(newValue, window.location.href).href
+        worker.postMessage({ src: srcURL, defaultFps: preferenceStore.defaultFps })
+        annotationStore.cachedFrameList = []
+        annotationStore.isCaching = true
+        worker.onmessage = (event) => {
+          if (event.data.videoTrackInfo) {
+            const videoTrackInfo = event.data.videoTrackInfo
+            if (!annotationStore.video.duration) annotationStore.video.duration = videoTrackInfo.duration
+            if (!annotationStore.video.width) annotationStore.video.width = videoTrackInfo.width
+            if (!annotationStore.video.height) annotationStore.video.height = videoTrackInfo.height
+            if (!annotationStore.video.fps) annotationStore.video.fps = videoTrackInfo.fps
+            if (!annotationStore.video.frames) annotationStore.video.frames = videoTrackInfo.frames
+            const keyframeList = []
+            if (annotationStore.keyframeList.length === 0) {
+              for (let i = 0; i < annotationStore.video.frames; i += preferenceStore.defaultFpk) {
+                keyframeList.push(i)
+              }
+              annotationStore.keyframeList = keyframeList
             }
-            annotationStore.keyframeList = keyframeList
-          }
-          utils.notify('Video loaded successfully!', 'positive')
-        } else if (event.data.frame) {
-          annotationStore.cachedFrameList[event.data.frameIndex] = event.data.frame
-        } else if (event.data.done) {
-          annotationStore.isCaching = false
-        } else if (event.data.error) {
-          if (event.data.error.type === 'fetch') {
-            utils.notify(
+            utils.notify('Video loaded successfully!', 'positive')
+          } else if (event.data.frame) {
+            annotationStore.cachedFrameList[event.data.frameIndex] = event.data.frame
+          } else if (event.data.done) {
+            annotationStore.isCaching = false
+          } else if (event.data.error) {
+            if (event.data.error.type === 'fetch') {
+              utils.notify(
                 `Could not fetch the video: ${newValue}: ${event.data.error.statusText} (${event.data.error.status})`,
-                'negative')
+                'negative'
+              )
+            }
+            console.error(event.data.error)
+            utils.notify(`Could not load the video: ${event.data.error}`, 'negative')
+            annotationStore.isCaching = false
+            annotationStore.reset()
+            worker.terminate()
           }
-          console.error(event.data.error)
-          utils.notify(
-              `Could not load the video: ${event.data.error}`,
-              'negative')
-          annotationStore.isCaching = false
-          annotationStore.reset()
-          worker.terminate()
         }
       }
+    },
+    {
+      immediate: true
     }
-  }, {
-    immediate: true
-  })
+  )
 })
 </script>

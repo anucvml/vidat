@@ -1,7 +1,7 @@
 <template>
   <a
-      href="https://github.com/anucvml/vidat/releases"
-      target="_blank"
+    href="https://github.com/anucvml/vidat/releases"
+    target="_blank"
   >
     <q-badge color="primary">v{{ version }}</q-badge>
   </a>

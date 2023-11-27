@@ -27,8 +27,7 @@ export const frameIndicator = () => {
 
   const getBackgroundStyleList = (positionHeightOffset = 0) => {
     bgImageList.push(q.dark.isActive ? COLOR_BACKGROUND_DARK : COLOR_BACKGROUND)
-    bgPositionList.push(
-      `0% ${12 + positionHeightOffset}px`)
+    bgPositionList.push(`0% ${12 + positionHeightOffset}px`)
     bgSizeList.push(`100% ${HEIGHT_MARKER}px`)
   }
 
@@ -39,8 +38,10 @@ export const frameIndicator = () => {
       const markerWidth = width * markerWidthUnit
       bgImageList.push(colorList[i])
       bgPositionList.push(
-        `${10000 * frame / (annotationStore.video.frames - 1) / (100 - markerWidth) - 0.5 * markerWidthUnit}% ${12 +
-        positionHeightOffset}px`)
+        `${(10000 * frame) / (annotationStore.video.frames - 1) / (100 - markerWidth) - 0.5 * markerWidthUnit}% ${
+          12 + positionHeightOffset
+        }px`
+      )
       bgSizeList.push(`${markerWidth}% ${HEIGHT_MARKER}px`)
     }
   }
@@ -53,15 +54,15 @@ export const frameIndicator = () => {
     let positionHeightOffset = 0
 
     getStyleList(
-      annotationStore.keyframeList.map(keyframe => [keyframe, 1]),
+      annotationStore.keyframeList.map((keyframe) => [keyframe, 1]),
       annotationStore.keyframeList.map(() => COLOR_KEYFRAME),
       positionHeightOffset
     )
 
     if (preferenceStore.objects) {
-      const frameList = Object.entries(annotationStore.objectAnnotationListMap).
-        filter(([, annotationList]) => annotationList.length).
-        map(([frame]) => [parseInt(frame), 1])
+      const frameList = Object.entries(annotationStore.objectAnnotationListMap)
+        .filter(([, annotationList]) => annotationList.length)
+        .map(([frame]) => [parseInt(frame), 1])
       if (ALWAYS_SHOW || frameList.length) {
         positionHeightOffset += HEIGHT_UNIT
         getBackgroundStyleList(positionHeightOffset)
@@ -74,9 +75,9 @@ export const frameIndicator = () => {
     }
 
     if (preferenceStore.regions) {
-      const frameList = Object.entries(annotationStore.regionAnnotationListMap).
-        filter(([, annotationList]) => annotationList.length).
-        map(([frame]) => [parseInt(frame), 1])
+      const frameList = Object.entries(annotationStore.regionAnnotationListMap)
+        .filter(([, annotationList]) => annotationList.length)
+        .map(([frame]) => [parseInt(frame), 1])
       if (ALWAYS_SHOW || frameList.length) {
         positionHeightOffset += HEIGHT_UNIT
         getBackgroundStyleList(positionHeightOffset)
@@ -89,9 +90,9 @@ export const frameIndicator = () => {
     }
 
     if (preferenceStore.skeletons) {
-      const frameList = Object.entries(annotationStore.skeletonAnnotationListMap).
-        filter(([, annotationList]) => annotationList.length).
-        map(([frame]) => [parseInt(frame), 1])
+      const frameList = Object.entries(annotationStore.skeletonAnnotationListMap)
+        .filter(([, annotationList]) => annotationList.length)
+        .map(([frame]) => [parseInt(frame), 1])
       if (ALWAYS_SHOW || frameList.length) {
         positionHeightOffset += HEIGHT_UNIT
         getBackgroundStyleList(positionHeightOffset)
@@ -110,17 +111,13 @@ export const frameIndicator = () => {
         const action = annotationStore.actionAnnotationList[i]
         const startFrame = utils.time2index(action.start)
         const endFrame = utils.time2index(action.end)
-        frameList.push([startFrame, (endFrame - startFrame + 1)])
+        frameList.push([startFrame, endFrame - startFrame + 1])
         colorList.push(`linear-gradient(${action.color}, ${action.color})`)
       }
       if (ALWAYS_SHOW || frameList.length) {
         positionHeightOffset += HEIGHT_UNIT
         getBackgroundStyleList(positionHeightOffset)
-        getStyleList(
-          frameList,
-          colorList,
-          positionHeightOffset
-        )
+        getStyleList(frameList, colorList, positionHeightOffset)
       }
     }
 

@@ -1,79 +1,79 @@
 <template>
   <q-table
-      dense
-      flat
-      :rows="annotationStore.actionAnnotationList"
-      row-key="start"
-      :columns="columnList"
-      :pagination="{ rowsPerPage: 0 }"
-      :filter="actionFilterList"
-      :filter-method="actionFilter"
-      :sort-method="actionSort"
-      binary-state-sort
+    dense
+    flat
+    :rows="annotationStore.actionAnnotationList"
+    row-key="start"
+    :columns="columnList"
+    :pagination="{ rowsPerPage: 0 }"
+    :filter="actionFilterList"
+    :filter-method="actionFilter"
+    :sort-method="actionSort"
+    binary-state-sort
   >
     <template v-slot:top="props">
       <div class="col-6 q-table__title">Actions / Video Segments</div>
       <q-space></q-space>
       <q-btn-group flat>
         <q-btn
-            size="sm"
-            outline
-            :icon="showFilter ? 'expand_more' : 'expand_less'"
-            label="filter"
-            @click="showFilter = !showFilter"
+          size="sm"
+          outline
+          :icon="showFilter ? 'expand_more' : 'expand_less'"
+          label="filter"
+          @click="showFilter = !showFilter"
         ></q-btn>
         <q-btn
-            size="sm"
-            outline
-            icon="add"
-            label="add"
-            @click="handleAdd"
+          size="sm"
+          outline
+          icon="add"
+          label="add"
+          @click="handleAdd"
         >
           <q-tooltip>add current range (+)</q-tooltip>
         </q-btn>
         <q-btn
-            size="sm"
-            outline
-            icon="new_label"
-            label="add & advance"
-            @click="handleAddAdvance"
+          size="sm"
+          outline
+          icon="new_label"
+          label="add & advance"
+          @click="handleAddAdvance"
         >
           <q-tooltip>add current range and advance for next</q-tooltip>
         </q-btn>
         <q-btn
-            size="sm"
-            outline
-            icon="clear_all"
-            label="clear"
-            @click="handleClearAll"
+          size="sm"
+          outline
+          icon="clear_all"
+          label="clear"
+          @click="handleClearAll"
         >
           <q-tooltip>Bulk clear all actions</q-tooltip>
         </q-btn>
       </q-btn-group>
       <div
-          class="col-12"
-          v-if="showFilter"
+        class="col-12"
+        v-if="showFilter"
       >
         <div class="q-mb-sm">
           <q-btn-group
-              dense
-              flat
+            dense
+            flat
           >
             <q-btn
-                outline
-                size="sm"
-                icon="apps"
-                label="select all"
-                @click="handleSelectAll"
+              outline
+              size="sm"
+              icon="apps"
+              label="select all"
+              @click="handleSelectAll"
             >
               <q-tooltip>select all actions</q-tooltip>
             </q-btn>
             <q-btn
-                outline
-                size="sm"
-                icon="clear_all"
-                label="clear all"
-                @click="handleClearSelectedAll"
+              outline
+              size="sm"
+              icon="clear_all"
+              label="clear all"
+              @click="handleClearSelectedAll"
             >
               <q-tooltip>clear all actions</q-tooltip>
             </q-btn>
@@ -81,13 +81,13 @@
         </div>
         <div class="q-gutter-xs row truncate-chip-labels">
           <q-chip
-              v-for="action in configurationStore.actionLabelData"
-              :key="action.id"
-              v-model:selected="actionFilterList[action.id]"
-              :label="action.name"
-              style="max-width: 150px"
-              color="primary"
-              text-color="white"
+            v-for="action in configurationStore.actionLabelData"
+            :key="action.id"
+            v-model:selected="actionFilterList[action.id]"
+            :label="action.name"
+            style="max-width: 150px"
+            color="primary"
+            text-color="white"
           >
             <q-tooltip>{{ action.name }}</q-tooltip>
           </q-chip>
@@ -95,32 +95,37 @@
       </div>
     </template>
     <template v-slot:body="props">
-      <q-tr :class="{ 'bg-warning': props.row.end - props.row.start <= 0, 'bg-green-2': props.row === annotationStore.currentThumbnailAction}">
+      <q-tr
+        :class="{
+          'bg-warning': props.row.end - props.row.start <= 0,
+          'bg-green-2': props.row === annotationStore.currentThumbnailAction
+        }"
+      >
         <q-tooltip
-            anchor="top middle"
-            v-if="props.row.end - props.row.start <= 0"
-        >Duration should be greater than 0.
+          anchor="top middle"
+          v-if="props.row.end - props.row.start <= 0"
+          >Duration should be greater than 0.
         </q-tooltip>
         <q-td auto-width>
           <q-input
-              style="min-width: 100px;"
-              v-model.number="props.row.start"
-              dense
-              borderless
-              type="number"
-              :debounce="1500"
-              @mousewheel.prevent
+            style="min-width: 100px"
+            v-model.number="props.row.start"
+            dense
+            borderless
+            type="number"
+            :debounce="1500"
+            @mousewheel.prevent
           ></q-input>
         </q-td>
         <q-td auto-width>
           <q-input
-              style="min-width: 100px;"
-              v-model.number="props.row.end"
-              dense
-              borderless
-              type="number"
-              :debounce="1500"
-              @mousewheel.prevent
+            style="min-width: 100px"
+            v-model.number="props.row.end"
+            dense
+            borderless
+            type="number"
+            :debounce="1500"
+            @mousewheel.prevent
           ></q-input>
         </q-td>
         <q-td auto-width>
@@ -128,99 +133,99 @@
         </q-td>
         <q-td>
           <img
-              v-if="configurationStore.actionLabelData.find(label => label.id === props.row.action).thumbnail"
-              class="cursor-pointer rounded-borders vertical-middle float-left q-mr-md"
-              style="height: 40px;"
-              :src="configurationStore.actionLabelData.find(label => label.id === props.row.action).thumbnail"
-              @click="handleThumbnailPreview(props)"
-              alt="thumbnail"
+            v-if="configurationStore.actionLabelData.find((label) => label.id === props.row.action).thumbnail"
+            class="cursor-pointer rounded-borders vertical-middle float-left q-mr-md"
+            style="height: 40px"
+            :src="configurationStore.actionLabelData.find((label) => label.id === props.row.action).thumbnail"
+            @click="handleThumbnailPreview(props)"
+            alt="thumbnail"
           />
           <q-select
-              v-model="props.row.action"
-              :options="actionOptionList"
-              dense
-              options-dense
-              borderless
-              emit-value
-              map-options
-              @update:model-value="handleActionInput(props.row)"
+            v-model="props.row.action"
+            :options="actionOptionList"
+            dense
+            options-dense
+            borderless
+            emit-value
+            map-options
+            @update:model-value="handleActionInput(props.row)"
           ></q-select>
         </q-td>
         <q-td>
           <q-select
-              v-model="props.row.object"
-              :options="objectOptionMap[props.row.action]"
-              dense
-              options-dense
-              borderless
-              emit-value
-              map-options
+            v-model="props.row.object"
+            :options="objectOptionMap[props.row.action]"
+            dense
+            options-dense
+            borderless
+            emit-value
+            map-options
           ></q-select>
         </q-td>
         <q-td
-            auto-width
-            class="cursor-pointer text-center"
+          auto-width
+          class="cursor-pointer text-center"
         >
           <q-chip
-              dense
-              outline
-              :style="{ 'border-color': props.row.color, 'color': props.row.color }"
+            dense
+            outline
+            :style="{ 'border-color': props.row.color, color: props.row.color }"
           >
             {{ props.row.color.toUpperCase() }}
           </q-chip>
           <q-popup-edit
-              auto-save
-              v-model="props.row.color"
-              title="Edit the action color"
+            auto-save
+            v-model="props.row.color"
+            title="Edit the action color"
           >
             <q-color v-model="props.row.color"></q-color>
           </q-popup-edit>
         </q-td>
         <q-td>
           <q-input
-              v-model="props.row.description"
-              dense
-              borderless
-              type="text"
+            v-model="props.row.description"
+            dense
+            borderless
+            type="text"
           ></q-input>
         </q-td>
         <q-td auto-width>
           <q-btn-group
-              spread
-              flat
+            spread
+            flat
           >
             <q-btn
-                flat
-                dense
-                icon="gps_fixed"
-                style="width: 100%"
-                @click="handleGoto(props.row)"
+              flat
+              dense
+              icon="gps_fixed"
+              style="width: 100%"
+              @click="handleGoto(props.row)"
             >
               <q-tooltip>Locate to the action</q-tooltip>
             </q-btn>
             <q-btn
-                flat
-                dense
-                icon="edit_location_alt"
-                style="width: 100%"
-                @click="handleSet(props.row)"
+              flat
+              dense
+              icon="edit_location_alt"
+              style="width: 100%"
+              @click="handleSet(props.row)"
             >
               <q-tooltip>Set current left / right frame as this action's start / end</q-tooltip>
             </q-btn>
             <q-btn
-                flat
-                dense
-                icon="delete"
-                color="negative"
-                style="width: 100%"
-                @click="handleDelete(props.row)"
+              flat
+              dense
+              icon="delete"
+              color="negative"
+              style="width: 100%"
+              @click="handleDelete(props.row)"
             ></q-btn>
           </q-btn-group>
         </q-td>
       </q-tr>
     </template>
   </q-table>
-  <ActionThumbnailPreview/>
+  <ActionThumbnailPreview />
 </template>
 
 <script setup>
@@ -243,7 +248,7 @@ const columnList = [
     label: 'start',
     field: 'start',
     sortable: true,
-    sort: (a, b, rowA, rowB) => a !== b ? a - b : rowA.end - rowB.end
+    sort: (a, b, rowA, rowB) => (a !== b ? a - b : rowA.end - rowB.end)
   },
   {
     name: 'end',
@@ -251,7 +256,7 @@ const columnList = [
     label: 'end',
     field: 'end',
     sortable: true,
-    sort: (a, b, rowA, rowB) => a !== b ? a - b : rowA.start - rowB.start
+    sort: (a, b, rowA, rowB) => (a !== b ? a - b : rowA.start - rowB.start)
   },
   {
     name: 'duration',
@@ -292,18 +297,21 @@ const columnList = [
 
 // header
 const handleAdd = () => {
-  annotationStore.actionAnnotationList.push(new ActionAnnotation(
+  annotationStore.actionAnnotationList.push(
+    new ActionAnnotation(
       utils.index2time(annotationStore.leftCurrentFrame),
       utils.index2time(annotationStore.rightCurrentFrame),
       configurationStore.actionLabelData[0].id,
       configurationStore.actionLabelData[0].objects[0],
       configurationStore.actionLabelData[0].color,
       ''
-  ))
+    )
+  )
 }
 const handleAddAdvance = () => {
   handleAdd()
-  const nextFrame = annotationStore.rightCurrentFrame + 1 > annotationStore.video.frames
+  const nextFrame =
+    annotationStore.rightCurrentFrame + 1 > annotationStore.video.frames
       ? annotationStore.rightCurrentFrame
       : annotationStore.rightCurrentFrame + 1
   // right frame -> next keyframe from action end frame + 1
@@ -334,22 +342,22 @@ const handleClearAll = () => {
 /// filter
 const showFilter = ref(false)
 const actionFilterList = ref({})
-configurationStore.actionLabelData.forEach(label => {
+configurationStore.actionLabelData.forEach((label) => {
   actionFilterList.value[label.id] = true
 })
 const handleSelectAll = () => {
-  configurationStore.actionLabelData.forEach(label => {
+  configurationStore.actionLabelData.forEach((label) => {
     actionFilterList.value[label.id] = true
   })
 }
 const handleClearSelectedAll = () => {
-  configurationStore.actionLabelData.forEach(label => {
+  configurationStore.actionLabelData.forEach((label) => {
     actionFilterList.value[label.id] = false
   })
   actionFilterList.value[0] = true
 }
 const actionFilter = (rows, filter) => {
-  return rows.filter(row => filter[row.action])
+  return rows.filter((row) => filter[row.action])
 }
 
 // sort
@@ -364,12 +372,14 @@ const actionSort = (rows, sortBy, descending) => {
 }
 
 // body
-const actionOptionList = computed(() => configurationStore.actionLabelData.map(label => {
-  return {
-    label: label.name,
-    value: label.id
-  }
-}))
+const actionOptionList = computed(() =>
+  configurationStore.actionLabelData.map((label) => {
+    return {
+      label: label.name,
+      value: label.id
+    }
+  })
+)
 const objectOptionMap = ref({})
 for (let action of configurationStore.actionLabelData) {
   const objectOptionList = []
@@ -383,23 +393,23 @@ for (let action of configurationStore.actionLabelData) {
   }
   objectOptionMap.value[action.id] = objectOptionList
 }
-const handleThumbnailPreview = props => {
+const handleThumbnailPreview = (props) => {
   const { row } = props
-  if (configurationStore.actionLabelData.find(label => label.id === row.action).thumbnail) {
+  if (configurationStore.actionLabelData.find((label) => label.id === row.action).thumbnail) {
     annotationStore.currentThumbnailAction = annotationStore.currentThumbnailAction === row ? null : row
   }
 }
 const handleActionInput = (row) => {
-  row.color = configurationStore.actionLabelData.find(label => label.id === row.action).color
-  row.object = configurationStore.actionLabelData.find(label => label.id === row.action).objects[0]
+  row.color = configurationStore.actionLabelData.find((label) => label.id === row.action).color
+  row.object = configurationStore.actionLabelData.find((label) => label.id === row.action).objects[0]
 }
 
 /// operation
 const handleGoto = (row) => {
-  if (typeof (row.start) === 'number') {
+  if (typeof row.start === 'number') {
     annotationStore.leftCurrentFrame = utils.time2index(row.start)
   }
-  if (typeof (row.end) === 'number') {
+  if (typeof row.end === 'number') {
     annotationStore.rightCurrentFrame = utils.time2index(row.end)
   }
 }
@@ -419,7 +429,7 @@ const handleDelete = (row) => {
 }
 
 // keybindings
-const handleKeyup = event => {
+const handleKeyup = (event) => {
   event.stopPropagation()
   if (event.target.nodeName.toLowerCase() === 'input') {
     return false

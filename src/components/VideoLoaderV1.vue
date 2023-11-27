@@ -1,15 +1,15 @@
 <template>
   <video
-      class="full-width hidden"
-      v-if="annotationStore.hasVideo"
-      ref="video"
-      preload="auto"
-      controls
-      muted
-      :src="annotationStore.video.src"
-      @loadeddata="handleLoadeddata"
-      @seeked="handleSeeked"
-      @error="handleError"
+    class="full-width hidden"
+    v-if="annotationStore.hasVideo"
+    ref="video"
+    preload="auto"
+    controls
+    muted
+    :src="annotationStore.video.src"
+    @loadeddata="handleLoadeddata"
+    @seeked="handleSeeked"
+    @error="handleError"
   >
     Sorry, your browser doesn't support embedded videos.
   </video>
@@ -29,8 +29,8 @@ const handleLoadeddata = (event) => {
   if (!annotationStore.video.width) annotationStore.video.width = event.target.videoWidth
   if (!annotationStore.video.height) annotationStore.video.height = event.target.videoHeight
   if (!annotationStore.video.fps) annotationStore.video.fps = preferenceStore.defaultFps
-  if (!annotationStore.video.frames) annotationStore.video.frames = Math.round(
-      annotationStore.video.fps * annotationStore.video.duration)
+  if (!annotationStore.video.frames)
+    annotationStore.video.frames = Math.round(annotationStore.video.fps * annotationStore.video.duration)
   const keyframeList = []
   if (annotationStore.keyframeList.length === 0) {
     // init keyframe list
@@ -88,9 +88,9 @@ const handleSeeked = (event) => {
       }
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height)
       // save to cachedFrames
-      canvas.toBlob((blob => {
+      canvas.toBlob((blob) => {
         annotationStore.cachedFrameList[currentIndex] = blob
-      }), 'image/jpeg')
+      }, 'image/jpeg')
     }
     // trigger next frame
     if (!annotationStore.cachedFrameList[annotationStore.leftCurrentFrame]) {

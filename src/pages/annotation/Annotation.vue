@@ -1,23 +1,23 @@
 <template>
-  <AnnotationSkeleton v-if="!annotationStore.hasVideo"/>
+  <AnnotationSkeleton v-if="!annotationStore.hasVideo" />
   <q-card
-      flat
-      v-else
+    flat
+    v-else
   >
-    <KeyframePanel/>
+    <KeyframePanel />
     <div class="row justify-center">
       <div class="col-12 col-md">
-        <CanvasPanel position="left"/>
+        <CanvasPanel position="left" />
       </div>
-      <ControlPanel v-show="!mainStore.zoom"/>
+      <ControlPanel v-show="!mainStore.zoom" />
       <div
-          class="col-12 col-md"
-          v-show="!mainStore.zoom"
+        class="col-12 col-md"
+        v-show="!mainStore.zoom"
       >
-        <CanvasPanel position="right"/>
+        <CanvasPanel position="right" />
       </div>
     </div>
-    <ActionTable v-if="preferenceStore.actions"/>
+    <ActionTable v-if="preferenceStore.actions" />
   </q-card>
 </template>
 

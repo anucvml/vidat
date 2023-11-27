@@ -1,74 +1,74 @@
 <template>
   <q-layout
-      view="hHh Lpr lff"
-      style="height: 100%"
+    view="hHh Lpr lff"
+    style="height: 100%"
   >
     <q-header
-        :class="['header', {'text-dark': !$q.dark.isActive}]"
-        :elevated="!$q.dark.isActive"
+      :class="['header', { 'text-dark': !$q.dark.isActive }]"
+      :elevated="!$q.dark.isActive"
     >
       <q-toolbar>
         <q-btn
-            flat
-            round
-            dense
-            :icon="drawer ? 'menu_open' : 'menu'"
-            @click="drawer = !drawer"
+          flat
+          round
+          dense
+          :icon="drawer ? 'menu_open' : 'menu'"
+          @click="drawer = !drawer"
         ></q-btn>
         <q-toolbar-title class="text-center">
           <a
-              class="q-mr-sm"
-              href="https://www.anu.edu.au/"
-              target="_blank"
+            class="q-mr-sm"
+            href="https://www.anu.edu.au/"
+            target="_blank"
           >
             <q-avatar
-                square
-                size="md"
+              square
+              size="md"
             >
               <img
-                  v-if="$q.dark.isActive"
-                  src="img/logo-dark.svg"
-                  alt="logo"
-              >
+                v-if="$q.dark.isActive"
+                src="img/logo-dark.svg"
+                alt="logo"
+              />
               <img
-                  v-else
-                  src="img/logo.svg"
-                  alt="logo"
-              >
+                v-else
+                src="img/logo.svg"
+                alt="logo"
+              />
             </q-avatar>
           </a>
           <router-link
-              class="vertical-middle"
-              :to="'/'"
+            class="vertical-middle"
+            :to="'/'"
           >
             ANU CVML Video Annotation Tool
           </router-link>
         </q-toolbar-title>
         <q-circular-progress
-            v-if="annotationStore.hasVideo && annotationStore.isCaching"
-            class="q-mx-sm"
-            show-value
-            font-size="10px"
-            :value="progress"
-            size="30px"
-            :thickness="0.2"
-            color="primary"
-            track-color="grey-3"
+          v-if="annotationStore.hasVideo && annotationStore.isCaching"
+          class="q-mx-sm"
+          show-value
+          font-size="10px"
+          :value="progress"
+          size="30px"
+          :thickness="0.2"
+          color="primary"
+          track-color="grey-3"
         >
           {{ progress }}%
           <q-tooltip
-              anchor="center left"
-              self="center right"
+            anchor="center left"
+            self="center right"
           >
             Caching video frames. VideoLoader: {{ useV2 ? 'V2' : 'V1' }}.
           </q-tooltip>
         </q-circular-progress>
         <q-btn
-            :icon="$q.dark.isActive ? 'dark_mode' : 'light_mode'"
-            flat
-            round
-            dense
-            @click="$q.dark.toggle"
+          :icon="$q.dark.isActive ? 'dark_mode' : 'light_mode'"
+          flat
+          round
+          dense
+          @click="$q.dark.toggle"
         ></q-btn>
       </q-toolbar>
     </q-header>
@@ -76,8 +76,8 @@
     <q-page-container>
       <q-page padding>
         <template v-if="annotationStore.hasVideo">
-          <VideoLoaderV2 v-if="useV2"/>
-          <VideoLoaderV1 v-else/>
+          <VideoLoaderV2 v-if="useV2" />
+          <VideoLoaderV1 v-else />
         </template>
         <router-view></router-view>
       </q-page>
@@ -85,16 +85,16 @@
     <q-footer class="bg-transparent">
       <q-toolbar>
         <q-toolbar-title
-            class="text-center text-caption"
-            :class="$q.dark.isActive ? 'text-gray-4': 'text-black'"
+          class="text-center text-caption"
+          :class="$q.dark.isActive ? 'text-gray-4' : 'text-black'"
         >
           Copyright © 2023,
           <a
-              href="https://github.com/anucvml/vidat"
-              target="_blank"
+            href="https://github.com/anucvml/vidat"
+            target="_blank"
           >
-            ANU CVML
-          </a>. All rights reserved.
+            ANU CVML </a
+          >. All rights reserved.
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
@@ -135,7 +135,8 @@ const useV2 = computed(() => {
 const progress = computed(() => {
   if (!isNaN(annotationStore.video.frames && annotationStore.cachedFrameList.length)) {
     return Math.round(
-        annotationStore.cachedFrameList.filter(frame => frame).length / annotationStore.video.frames * 100)
+      (annotationStore.cachedFrameList.filter((frame) => frame).length / annotationStore.video.frames) * 100
+    )
   } else {
     return 0
   }

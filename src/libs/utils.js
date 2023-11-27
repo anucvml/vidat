@@ -10,7 +10,7 @@ export default {
    * @param message
    * @returns
    */
-  confirm (message) {
+  confirm(message) {
     return Dialog.create({
       title: 'Confirm',
       message: message,
@@ -26,7 +26,7 @@ export default {
    * @param position
    * @returns
    */
-  notify (message, color = 'positive', timeout = 5000, position = 'bottom-right') {
+  notify(message, color = 'positive', timeout = 5000, position = 'bottom-right') {
     switch (color) {
       case 'positive':
         console.debug(message)
@@ -60,7 +60,7 @@ export default {
    * @param type of input
    * @returns
    */
-  prompt (title, message, defaultValue, type = 'text') {
+  prompt(title, message, defaultValue, type = 'text') {
     return Dialog.create({
       title: title,
       message: message,
@@ -79,14 +79,17 @@ export default {
    */
   readFile: (pathname) => {
     return new Promise(function (resolve, reject) {
-      fetch(pathname).then(res => {
-        if (!res.ok) reject(`${pathname}: ${res.statusText} (${res.status})`)
-        return res.text()
-      }).then(text => {
-        resolve(text)
-      }).catch(err => {
-        reject(err)
-      })
+      fetch(pathname)
+        .then((res) => {
+          if (!res.ok) reject(`${pathname}: ${res.statusText} (${res.status})`)
+          return res.text()
+        })
+        .then((text) => {
+          resolve(text)
+        })
+        .catch((err) => {
+          reject(err)
+        })
     })
   },
   /**
@@ -98,10 +101,10 @@ export default {
       const dialog = document.createElement('input')
       dialog.type = 'file'
       dialog.accept = 'application/json'
-      dialog.onchange = e => {
+      dialog.onchange = (e) => {
         const file = e.target.files[0]
         const reader = new FileReader()
-        reader.onload = readerEvent => {
+        reader.onload = (readerEvent) => {
           resolve(readerEvent.target.result)
         }
         reader.readAsText(file, 'UTF-8')
@@ -118,7 +121,7 @@ export default {
       const dialog = document.createElement('input')
       dialog.type = 'file'
       dialog.accept = 'video/*'
-      dialog.onchange = e => {
+      dialog.onchange = (e) => {
         const file = e.target.files[0]
         resolve({
           type: file.type.split('/').at(-1),
@@ -133,7 +136,7 @@ export default {
    * @param time
    * @returns {number}
    */
-  time2index (time) {
+  time2index(time) {
     return Math.round(useAnnotationStore().video.fps * time)
   },
   /**
@@ -141,7 +144,7 @@ export default {
    * @param index
    * @returns {number}
    */
-  index2time (index) {
+  index2time(index) {
     return parseFloat((index / useAnnotationStore().video.fps).toFixed(3))
   },
   /**
@@ -149,7 +152,7 @@ export default {
    * @param value
    * @returns {string}
    */
-  toFixed2 (value) {
+  toFixed2(value) {
     if (value) {
       return value.toFixed(2)
     } else {
@@ -160,8 +163,7 @@ export default {
    * Generate a random color
    * @returns {string}
    */
-  randomColor () {
-    return `#${('000000' + (Math.random() * 16777216 | 0).toString(16)).slice(
-      -6)}`
+  randomColor() {
+    return `#${('000000' + ((Math.random() * 16777216) | 0).toString(16)).slice(-6)}`
   }
 }

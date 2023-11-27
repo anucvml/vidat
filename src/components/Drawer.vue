@@ -1,27 +1,27 @@
 <template>
   <q-drawer
-      id="drawer"
-      v-model="drawer"
-      :width="300"
-      :breakpoint="500"
-      bordered
-      overlay
-      content-class="bg-grey-3"
+    id="drawer"
+    v-model="drawer"
+    :width="300"
+    :breakpoint="500"
+    bordered
+    overlay
+    content-class="bg-grey-3"
   >
     <q-scroll-area class="fit">
       <q-list class="full-height">
-        <DrawerVideoControl/>
-        <q-separator/>
-        <DrawerAnnotationControl/>
-        <q-separator/>
+        <DrawerVideoControl />
+        <q-separator />
+        <DrawerAnnotationControl />
+        <q-separator />
         <q-item
-            clickable
-            v-ripple
-            v-for="(item, index) in menuList"
-            :key="index"
-            :to="item.path"
-            :active="$route.name && item.label.toLowerCase() === $route.name.toLowerCase()"
-            @click="drawer = false"
+          clickable
+          v-ripple
+          v-for="(item, index) in menuList"
+          :key="index"
+          :to="item.path"
+          :active="$route.name && item.label.toLowerCase() === $route.name.toLowerCase()"
+          @click="drawer = false"
         >
           <q-item-section avatar>
             <q-icon :name="item.icon"></q-icon>
@@ -30,7 +30,7 @@
         </q-item>
         <q-item class="fixed-bottom">
           <q-item-section class="text-center">
-            <VersionBadge/>
+            <VersionBadge />
           </q-item-section>
         </q-item>
       </q-list>

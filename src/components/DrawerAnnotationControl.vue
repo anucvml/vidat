@@ -1,42 +1,40 @@
 <template>
-  <div
-      class="q-pt-sm"
-  >
+  <div class="q-pt-sm">
     <div class="q-px-md q-pb-sm text-h6">Annotations</div>
     <div class="q-px-md q-pb-md">
       <q-btn-group
-          spread
-          flat
+        spread
+        flat
       >
         <q-btn
-            outline
-            icon="file_upload"
-            @click="handleLoad"
-            label="load"
+          outline
+          icon="file_upload"
+          @click="handleLoad"
+          label="load"
         ></q-btn>
         <q-btn
-            v-if="annotationStore.hasVideo"
-            outline
-            icon="file_download"
-            @click="handleSave"
-            label="save"
+          v-if="annotationStore.hasVideo"
+          outline
+          icon="file_download"
+          @click="handleSave"
+          label="save"
         ></q-btn>
       </q-btn-group>
     </div>
     <div
-        v-if="annotationStore.hasVideo && submitURL"
-        class="q-px-md q-pb-md"
+      v-if="annotationStore.hasVideo && submitURL"
+      class="q-px-md q-pb-md"
     >
       <q-btn-group
-          spread
-          flat
+        spread
+        flat
       >
         <q-btn
-            outline
-            icon="cloud_upload"
-            label="submit"
-            :loading="submitLoading"
-            @click="handleSubmit"
+          outline
+          icon="cloud_upload"
+          label="submit"
+          :loading="submitLoading"
+          @click="handleSubmit"
         ></q-btn>
       </q-btn-group>
     </div>

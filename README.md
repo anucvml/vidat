@@ -68,14 +68,14 @@ to [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/do
 ### Integrate with Amazon Mechanical Turk (MTurk)
 
 1. **Prepare tasks**
-    1. [Deploy](#deployment) Vidat on a server which can access to the videos and annotation (config) files.
-    2. Generate URLs for each task,
-       e.g. `https://example.com?annotation=task1.json&submitURL=http%3A%2F%2Fexample2.com%3Ftoken%3D123456`.
+   1. [Deploy](#deployment) Vidat on a server which can access to the videos and annotation (config) files.
+   2. Generate URLs for each task,
+      e.g. `https://example.com?annotation=task1.json&submitURL=http%3A%2F%2Fexample2.com%3Ftoken%3D123456`.
 2. **Dispatch tasks on MTurk**
-    1. Create a new MTurk task with survey template, replace the survey link with task link.
-    2. Create a batch with generated URLs.
+   1. Create a new MTurk task with survey template, replace the survey link with task link.
+   2. Create a batch with generated URLs.
 3. **Collect submissions**
-    1. Build up an independent API backend (see `/tools/backend/` for a simple implementation) that handles submissions.
+   1. Build up an independent API backend (see `/tools/backend/` for a simple implementation) that handles submissions.
 
 Submission API:
 
@@ -305,9 +305,7 @@ There will be a button shown in the side menu which will `POST` the annotation f
       "id": 0,
       "name": "default",
       "color": "<color>",
-      "objects": [
-        0
-      ]
+      "objects": [0]
     }
   ],
   "skeletonTypeData": [
@@ -358,9 +356,7 @@ See [`public/config/example.json`](src/public/config/example.json) for am exampl
       "height": 0,
       "width": 0
     },
-    "keyframeList": [
-      0
-    ],
+    "keyframeList": [0],
     "objectAnnotationListMap": {
       "0": [
         {
@@ -469,4 +465,3 @@ If you use Vidat for your research and wish to reference it, please use the foll
   year =         {2020}
 }
 ```
-

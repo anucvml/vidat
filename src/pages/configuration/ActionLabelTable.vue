@@ -1,47 +1,47 @@
 <template>
   <TableBase
-      title="Action Labels"
-      storeKey="actionLabelData"
-      :columnList="columnList"
-      :importFunction="configurationStore.importActionLabelData"
-      expand
-      @add="handleAdd"
-      @delete="handleDelete"
+    title="Action Labels"
+    storeKey="actionLabelData"
+    :columnList="columnList"
+    :importFunction="configurationStore.importActionLabelData"
+    expand
+    @add="handleAdd"
+    @delete="handleDelete"
   >
-    <template v-slot:expand="{props}">
+    <template v-slot:expand="{ props }">
       <q-td
-          colspan="100%"
-          style="white-space: normal;"
+        colspan="100%"
+        style="white-space: normal"
       >
         <div class="q-mb-sm">
           <q-btn-group
-              dense
-              flat
+            dense
+            flat
           >
             <q-btn
-                size="sm"
-                outline
-                icon="apps"
-                @click="handleSelectAll(props.row)"
-                label="Select All"
+              size="sm"
+              outline
+              icon="apps"
+              @click="handleSelectAll(props.row)"
+              label="Select All"
             ></q-btn>
             <q-btn
-                size="sm"
-                outline
-                icon="clear_all"
-                @click="handleClearAll(props.row)"
-                label="Clear All"
+              size="sm"
+              outline
+              icon="clear_all"
+              @click="handleClearAll(props.row)"
+              label="Clear All"
             ></q-btn>
           </q-btn-group>
         </div>
         <div class="q-gutter-xs">
           <q-chip
-              square
-              v-for="object in objectLabelData"
-              :key="object.id"
-              :selected="selectedObjectListMap[props.row.id][object.id]"
-              :color="$q.dark.isActive ? 'primary' : 'secondary'"
-              @update:selected="handleSelectUpdate(props.row.id, object.id)"
+            square
+            v-for="object in objectLabelData"
+            :key="object.id"
+            :selected="selectedObjectListMap[props.row.id][object.id]"
+            :color="$q.dark.isActive ? 'primary' : 'secondary'"
+            @update:selected="handleSelectUpdate(props.row.id, object.id)"
           >
             {{ object.name }}
           </q-chip>
@@ -49,7 +49,7 @@
       </q-td>
     </template>
   </TableBase>
-  <ActionLabelThumbnailPreview/>
+  <ActionLabelThumbnailPreview />
 </template>
 
 <script setup>
@@ -103,19 +103,20 @@ const handleAdd = () => {
   })
 }
 const handleDelete = (props) => {
-  utils.confirm(
-      'Are you sure to delete label ' + props.row.name + '?'
-  ).onOk(() => {
+  utils.confirm('Are you sure to delete label ' + props.row.name + '?').onOk(() => {
     if (props.row.id === configurationStore.currentThumbnailActionLabelId)
       configurationStore.currentThumbnailActionLabelId = null
-    tableData.value.splice(tableData.value.findIndex(type => type.id === props.row.id), 1)
+    tableData.value.splice(
+      tableData.value.findIndex((type) => type.id === props.row.id),
+      1
+    )
   })
 }
 // Object
-const handleSelectAll = row => {
-  row.objects = objectLabelData.value.map(object => object.id)
+const handleSelectAll = (row) => {
+  row.objects = objectLabelData.value.map((object) => object.id)
 }
-const handleClearAll = row => {
+const handleClearAll = (row) => {
   row.objects = [0]
 }
 const selectedObjectListMap = computed(() => {
@@ -129,7 +130,7 @@ const selectedObjectListMap = computed(() => {
   return ret
 })
 const handleSelectUpdate = (actionID, objectID) => {
-  const action = tableData.value.find(action => action.id === actionID)
+  const action = tableData.value.find((action) => action.id === actionID)
   if (action.objects.indexOf(objectID) === -1) {
     action.objects.push(objectID)
     action.objects.sort((a, b) => a - b)

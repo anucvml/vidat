@@ -52,44 +52,47 @@ export const useAnnotationStore = defineStore('annotation', () => {
     () => [preferenceStore.objects, preferenceStore.regions, preferenceStore.skeletons, preferenceStore.actions],
     (newValue, oldValue) => {
       if (!newValue.includes(true)) {
-        utils.notify('You cannot disable all four modes at the same time!', 'warning');
-        [
-          preferenceStore.objects,
-          preferenceStore.regions,
-          preferenceStore.skeletons,
-          preferenceStore.actions
-        ] = oldValue
+        utils.notify('You cannot disable all four modes at the same time!', 'warning')
+        ;[preferenceStore.objects, preferenceStore.regions, preferenceStore.skeletons, preferenceStore.actions] =
+          oldValue
       } else if (!newValue.slice(0, 3).includes(true) && newValue.at(-1) === true) {
         state.mode = 'action'
       } else if (!preferenceStore[state.mode + 's']) {
-        state.mode = ['object', 'region', 'skeleton'].find(item => preferenceStore[item + 's'])
+        state.mode = ['object', 'region', 'skeleton'].find((item) => preferenceStore[item + 's'])
       }
     },
     {
       immediate: true
     }
   )
-  watch(() => state.keyframeList, (newValue) => {
-    if (newValue.length >= 2) {
-      state.leftCurrentFrame = newValue[0]
-      state.rightCurrentFrame = newValue[1]
-    } else if (newValue.length === 1) {
-      state.rightCurrentFrame = newValue[0]
-      state.leftCurrentFrame = newValue[0]
-    } else {
-      state.rightCurrentFrame = 0
-      state.leftCurrentFrame = 0
+  watch(
+    () => state.keyframeList,
+    (newValue) => {
+      if (newValue.length >= 2) {
+        state.leftCurrentFrame = newValue[0]
+        state.rightCurrentFrame = newValue[1]
+      } else if (newValue.length === 1) {
+        state.rightCurrentFrame = newValue[0]
+        state.leftCurrentFrame = newValue[0]
+      } else {
+        state.rightCurrentFrame = 0
+        state.leftCurrentFrame = 0
+      }
     }
-  })
-  watch(() => [
-    state.objectAnnotationListMap,
-    state.regionAnnotationListMap,
-    state.skeletonAnnotationListMap,
-    state.actionAnnotationList,
-    state.keyframeList
-  ], () => {
-    mainStore.isSaved = false
-  }, { deep: true })
+  )
+  watch(
+    () => [
+      state.objectAnnotationListMap,
+      state.regionAnnotationListMap,
+      state.skeletonAnnotationListMap,
+      state.actionAnnotationList,
+      state.keyframeList
+    ],
+    () => {
+      mainStore.isSaved = false
+    },
+    { deep: true }
+  )
   return {
     ...toRefs(state),
     hasVideo: computed(() => {
@@ -101,7 +104,7 @@ export const useAnnotationStore = defineStore('annotation', () => {
       annotation.zoom = state.zoom
       annotation.skeletonTypeId = state.skeletonTypeId
       annotation.isSaved = true
-      Object.keys(state).map(key => state[key] = annotation[key])
+      Object.keys(state).map((key) => (state[key] = annotation[key]))
     },
     exportAnnotation: () => {
       const objectAnnotationListMap = {}
@@ -120,19 +123,18 @@ export const useAnnotationStore = defineStore('annotation', () => {
       const skeletonAnnotationListMap = {}
       for (const frame in state.skeletonAnnotationListMap) {
         if (state.skeletonAnnotationListMap[frame].length) {
-          skeletonAnnotationListMap[frame] = state.skeletonAnnotationListMap[frame].map(
-            skeletonAnnotation => {
-              return {
-                instance: skeletonAnnotation.instance,
-                score: skeletonAnnotation.score,
-                centerX: skeletonAnnotation.centerX,
-                centerY: skeletonAnnotation.centerY,
-                typeId: skeletonAnnotation.typeId,
-                color: skeletonAnnotation.color,
-                _ratio: skeletonAnnotation._ratio,
-                pointList: skeletonAnnotation.pointList
-              }
-            })
+          skeletonAnnotationListMap[frame] = state.skeletonAnnotationListMap[frame].map((skeletonAnnotation) => {
+            return {
+              instance: skeletonAnnotation.instance,
+              score: skeletonAnnotation.score,
+              centerX: skeletonAnnotation.centerX,
+              centerY: skeletonAnnotation.centerY,
+              typeId: skeletonAnnotation.typeId,
+              color: skeletonAnnotation.color,
+              _ratio: skeletonAnnotation._ratio,
+              pointList: skeletonAnnotation.pointList
+            }
+          })
         }
       }
       mainStore.isSaved = true
@@ -170,12 +172,14 @@ export const useAnnotationStore = defineStore('annotation', () => {
         if (state.video.width && video.width && state.video.width !== video.width) {
           utils.notify(
             `The width of annotation and the video does not match (width ${state.video.width} != ${video.width}).`,
-            'warning')
+            'warning'
+          )
         }
         if (state.video.height && video.height && state.video.height !== video.height) {
           utils.notify(
             `The height of annotation and the video does not match (width ${state.video.height} != ${video.height}).`,
-            'warning')
+            'warning'
+          )
         }
       }
       /// keyframeList

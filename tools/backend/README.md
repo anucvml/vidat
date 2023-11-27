@@ -22,10 +22,10 @@ current version the main webpage will need to be refershed after submitting an a
 the changes. Newly submitted annotations override any existing annotations for a given video.
 
 ## Installation
-  
+
 To run the demo, install `nodejs`, `npm` and various modules. And link the static Vidat browser
 code to the subdirectory `vdiat`.
-  
+
 ```
 sudo apt install nodejs npm
 npm install --save express ejs body-parser cors

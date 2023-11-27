@@ -1,11 +1,11 @@
 <template>
   <video
-      id="video-player"
-      class="full-width"
-      :style="{display: 'none', filter: preferenceStore.grayscale ? 'grayscale(100%)' : 'none'}"
-      preload="auto"
-      :src="annotationStore.video.src"
-      :muted="preferenceStore.muted"
+    id="video-player"
+    class="full-width"
+    :style="{ display: 'none', filter: preferenceStore.grayscale ? 'grayscale(100%)' : 'none' }"
+    preload="auto"
+    :src="annotationStore.video.src"
+    :muted="preferenceStore.muted"
   />
 </template>
 

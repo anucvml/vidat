@@ -9,22 +9,7 @@
       "height": 480,
       "width": 640
     },
-    "keyframeList": [
-      0,
-      10,
-      20,
-      30,
-      40,
-      50,
-      60,
-      70,
-      80,
-      90,
-      100,
-      110,
-      120,
-      130
-    ],
+    "keyframeList": [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130],
     "objectAnnotationListMap": {
       "0": [
         {
@@ -838,9 +823,7 @@
         "id": 0,
         "name": "default",
         "color": "#0000FF",
-        "objects": [
-          0
-        ]
+        "objects": [0]
       }
     ],
     "skeletonTypeData": [

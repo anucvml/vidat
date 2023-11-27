@@ -1,12 +1,12 @@
 <template>
   <q-scroll-area
-      v-if="$q.platform.is.desktop"
-      style="height: 100vh; max-width: 100vw;"
-      :thumb-style="{ right: '3px',  width: '4px' }"
+    v-if="$q.platform.is.desktop"
+    style="height: 100vh; max-width: 100vw"
+    :thumb-style="{ right: '3px', width: '4px' }"
   >
-    <Layout/>
+    <Layout />
   </q-scroll-area>
-  <Layout v-else/>
+  <Layout v-else />
 </template>
 
 <script setup>
@@ -63,11 +63,14 @@ const {
 // annotation
 if (annotation) {
   const { loadAnnotation } = useAnnotation()
-  utils.readFile(decodeURIComponent(annotation)).then(res => {
-    loadAnnotation(JSON.parse(res))
-  }).catch(err => {
-    utils.notify(`Could not load annotation: ${err}`, 'negative')
-  })
+  utils
+    .readFile(decodeURIComponent(annotation))
+    .then((res) => {
+      loadAnnotation(JSON.parse(res))
+    })
+    .catch((err) => {
+      utils.notify(`Could not load annotation: ${err}`, 'negative')
+    })
 }
 if (!annotation && video) {
   const videoSrc = decodeURIComponent(video)
@@ -75,18 +78,21 @@ if (!annotation && video) {
   mainStore.videoFormat = videoSrc.split('.').at(-1).toLowerCase()
 }
 if (!annotation && config) {
-  utils.readFile(decodeURIComponent(config)).then(res => {
-    configurationStore.importConfig(JSON.parse(res))
-    utils.notify('Config loaded successfully!', 'positive')
-  }).catch(err => {
-    console.error(err)
-    utils.notify(`Could not load config: ${config}: ${err}`, 'negative')
-  })
+  utils
+    .readFile(decodeURIComponent(config))
+    .then((res) => {
+      configurationStore.importConfig(JSON.parse(res))
+      utils.notify('Config loaded successfully!', 'positive')
+    })
+    .catch((err) => {
+      console.error(err)
+      utils.notify(`Could not load config: ${config}: ${err}`, 'negative')
+    })
 }
 const mode_dict = {
-  'object': showObjects,
-  'region': showRegions,
-  'skeleton': showSkeletons
+  object: showObjects,
+  region: showRegions,
+  skeleton: showSkeletons
 }
 if (mode) {
   if (mode in mode_dict) {
@@ -180,14 +186,14 @@ if (showPopup) {
   }
 }
 // un-save notice
-window.addEventListener('beforeunload', event => {
+window.addEventListener('beforeunload', (event) => {
   if (annotationStore.hasVideo && !mainStore.isSaved) {
     event.returnValue = 'The annotations are not saved!'
   }
 })
 // auto change favicon
 const isDark = usePreferredDark()
-const favicon = computed(() => isDark.value ? 'img/logo-dark.svg' : 'img/logo.svg')
+const favicon = computed(() => (isDark.value ? 'img/logo-dark.svg' : 'img/logo.svg'))
 useFavicon(favicon)
 </script>
 

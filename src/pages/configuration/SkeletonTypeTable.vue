@@ -1,140 +1,140 @@
 <template>
   <TableBase
-      title="Skeleton Types"
-      storeKey="skeletonTypeData"
-      :columnList="columnList"
-      :importFunction="configurationStore.importSkeletonTypeData"
-      expand
-      @add="handleAdd"
-      @delete="handleDelete"
+    title="Skeleton Types"
+    storeKey="skeletonTypeData"
+    :columnList="columnList"
+    :importFunction="configurationStore.importSkeletonTypeData"
+    expand
+    @add="handleAdd"
+    @delete="handleDelete"
   >
-    <template v-slot:expand="{props}">
+    <template v-slot:expand="{ props }">
       <q-td colspan="100%">
-        <SkeletonPreview :type-id="props.row.id"/>
+        <SkeletonPreview :type-id="props.row.id" />
         <q-table
-            flat
-            dense
-            row-key="id"
-            :rows="props.row.pointList"
-            :columns="[
-                { name: 'name', align: 'center', label: 'name', field: 'name' },
-                { name: 'x', align: 'left', label: 'x', field: 'x' },
-                { name: 'y', align: 'left', label: 'y', field: 'y' },
-                { name: 'operation', align: 'operation', label: 'operation', field: 'operation' }
-                ]"
-            :pagination="{ rowsPerPage: 0 }"
+          flat
+          dense
+          row-key="id"
+          :rows="props.row.pointList"
+          :columns="[
+            { name: 'name', align: 'center', label: 'name', field: 'name' },
+            { name: 'x', align: 'left', label: 'x', field: 'x' },
+            { name: 'y', align: 'left', label: 'y', field: 'y' },
+            { name: 'operation', align: 'operation', label: 'operation', field: 'operation' }
+          ]"
+          :pagination="{ rowsPerPage: 0 }"
         >
           <template v-slot:top="pointProps">
             <div class="col-6 q-table__title">Points</div>
             <q-space></q-space>
             <q-btn
-                size="sm"
-                outline
-                icon="add"
-                @click="handleAddPoint(props)"
-                label="add"
+              size="sm"
+              outline
+              icon="add"
+              @click="handleAddPoint(props)"
+              label="add"
             ></q-btn>
           </template>
           <template v-slot:body="pointProps">
             <q-tr>
               <q-td>
                 <q-input
-                    input-class="text-center"
-                    v-model="pointProps.row.name"
-                    borderless
-                    dense
-                    hide-bottom-space
-                    :rules="[ val => val.length !== 0 || 'Please enter at least 1 character' ]"
+                  input-class="text-center"
+                  v-model="pointProps.row.name"
+                  borderless
+                  dense
+                  hide-bottom-space
+                  :rules="[(val) => val.length !== 0 || 'Please enter at least 1 character']"
                 />
               </q-td>
               <q-td>
                 <q-input
-                    v-model.number="pointProps.row.x"
-                    borderless
-                    dense
-                    :debounce="1500"
-                    @mousewheel.prevent
+                  v-model.number="pointProps.row.x"
+                  borderless
+                  dense
+                  :debounce="1500"
+                  @mousewheel.prevent
                 />
               </q-td>
               <q-td>
                 <q-input
-                    v-model.number="pointProps.row.y"
-                    borderless
-                    dense
-                    :debounce="1500"
-                    @mousewheel.prevent
+                  v-model.number="pointProps.row.y"
+                  borderless
+                  dense
+                  :debounce="1500"
+                  @mousewheel.prevent
                 />
               </q-td>
               <q-td>
                 <q-btn
-                    icon="delete"
-                    color="negative"
-                    flat
-                    dense
-                    style="width: 100%"
-                    @click="handleDeletePoint(props, pointProps)"
+                  icon="delete"
+                  color="negative"
+                  flat
+                  dense
+                  style="width: 100%"
+                  @click="handleDeletePoint(props, pointProps)"
                 ></q-btn>
               </q-td>
             </q-tr>
           </template>
         </q-table>
         <q-table
-            flat
-            dense
-            row-key="id"
-            :rows="props.row.edgeList"
-            :columns="[
-                { name: 'from', align: 'left', label: 'from', field: 'from' },
-                { name: 'to', align: 'left', label: 'to', field: 'to' },
-                { name: 'operation', align: 'center', label: 'operation', field: 'operation' }
-                ]"
-            :pagination="{ rowsPerPage: 0 }"
+          flat
+          dense
+          row-key="id"
+          :rows="props.row.edgeList"
+          :columns="[
+            { name: 'from', align: 'left', label: 'from', field: 'from' },
+            { name: 'to', align: 'left', label: 'to', field: 'to' },
+            { name: 'operation', align: 'center', label: 'operation', field: 'operation' }
+          ]"
+          :pagination="{ rowsPerPage: 0 }"
         >
           <template v-slot:top="edgeProps">
             <div class="col-6 q-table__title">Edges</div>
             <q-space></q-space>
             <q-btn
-                size="sm"
-                outline
-                icon="add"
-                @click="handleAddEdge(props)"
-                label="add"
+              size="sm"
+              outline
+              icon="add"
+              @click="handleAddEdge(props)"
+              label="add"
             ></q-btn>
           </template>
           <template v-slot:body="edgeProps">
             <q-tr :props="edgeProps">
               <q-td>
                 <q-select
-                    v-model="edgeProps.row.from"
-                    stack-label
-                    dense
-                    options-dense
-                    borderless
-                    map-options
-                    emit-value
-                    :options="pointOptions[props.key]"
+                  v-model="edgeProps.row.from"
+                  stack-label
+                  dense
+                  options-dense
+                  borderless
+                  map-options
+                  emit-value
+                  :options="pointOptions[props.key]"
                 ></q-select>
               </q-td>
               <q-td>
                 <q-select
-                    v-model="edgeProps.row.to"
-                    stack-label
-                    dense
-                    options-dense
-                    borderless
-                    map-options
-                    emit-value
-                    :options="pointOptions[props.key]"
+                  v-model="edgeProps.row.to"
+                  stack-label
+                  dense
+                  options-dense
+                  borderless
+                  map-options
+                  emit-value
+                  :options="pointOptions[props.key]"
                 ></q-select>
               </q-td>
               <q-td>
                 <q-btn
-                    icon="delete"
-                    color="negative"
-                    flat
-                    dense
-                    style="width: 100%"
-                    @click="handleDeleteEdge(props, edgeProps)"
+                  icon="delete"
+                  color="negative"
+                  flat
+                  dense
+                  style="width: 100%"
+                  @click="handleDeleteEdge(props, edgeProps)"
                 ></q-btn>
               </q-td>
             </q-tr>
@@ -211,12 +211,13 @@ const handleAdd = () => {
   })
 }
 const handleDelete = (props) => {
-  utils.confirm(
-      'Are you sure to delete type ' + props.row.name + '?'
-  ).onOk(() => {
+  utils.confirm('Are you sure to delete type ' + props.row.name + '?').onOk(() => {
     props.expand = false
     nextTick(() => {
-      tableData.value.splice(tableData.value.findIndex(type => type.id === props.row.id), 1)
+      tableData.value.splice(
+        tableData.value.findIndex((type) => type.id === props.row.id),
+        1
+      )
     })
   })
 }
@@ -241,21 +242,24 @@ const handleDeletePoint = (props, pointProps) => {
     }
   }
   if (includeList.length !== 0) {
-    utils.notify('Please delete its corresponding edges first!' +
-        includeList.map(edge => `\n(${edge.from} <=> ${edge.to})`), 'warning')
+    utils.notify(
+      'Please delete its corresponding edges first!' + includeList.map((edge) => `\n(${edge.from} <=> ${edge.to})`),
+      'warning'
+    )
     return
   }
-  utils.confirm(
-      'Are you sure to delete point ' + pointProps.row.name + '?'
-  ).onOk(() => {
-    pointList.splice(pointList.findIndex(point => point.id === pointProps.row.id), 1)
+  utils.confirm('Are you sure to delete point ' + pointProps.row.name + '?').onOk(() => {
+    pointList.splice(
+      pointList.findIndex((point) => point.id === pointProps.row.id),
+      1
+    )
   })
 }
 // Edge
 const pointOptions = computed(() => {
   const ret = {}
   for (const type of tableData.value) {
-    ret[type.id] = type.pointList.map(point => {
+    ret[type.id] = type.pointList.map((point) => {
       return {
         label: point.name,
         value: point.id
@@ -268,7 +272,7 @@ const pointOptions = computed(() => {
   }
   return ret
 })
-const handleAddEdge = props => {
+const handleAddEdge = (props) => {
   const edgeList = props.row.edgeList
   let lastId = edgeList.length ? edgeList.at(-1).id : -1
   edgeList.push({
@@ -278,11 +282,12 @@ const handleAddEdge = props => {
   })
 }
 const handleDeleteEdge = (props, edgeProps) => {
-  utils.confirm(
-      'Are you sure to delete edge (' + edgeProps.row.from + ' <=> ' + edgeProps.row.to + ')?'
-  ).onOk(() => {
+  utils.confirm('Are you sure to delete edge (' + edgeProps.row.from + ' <=> ' + edgeProps.row.to + ')?').onOk(() => {
     const edgeList = props.row.edgeList
-    edgeList.splice(edgeList.findIndex(edge => edge.id === edgeProps.row.id), 1)
+    edgeList.splice(
+      edgeList.findIndex((edge) => edge.id === edgeProps.row.id),
+      1
+    )
   })
 }
 </script>

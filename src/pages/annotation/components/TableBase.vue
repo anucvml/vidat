@@ -1,21 +1,21 @@
 <template>
   <q-table
-      dense
-      flat
-      :rows="annotationList"
-      :row-key="rowKey"
-      :columns="columnList"
-      :pagination="{ rowsPerPage: 0 }"
+    dense
+    flat
+    :rows="annotationList"
+    :row-key="rowKey"
+    :columns="columnList"
+    :pagination="{ rowsPerPage: 0 }"
   >
     <template v-slot:top="props">
       <div class="col-6 q-table__title">{{ title }}</div>
       <q-space></q-space>
       <q-btn
-          size="sm"
-          outline
-          icon="clear_all"
-          label="clear"
-          @click="handleClearAll"
+        size="sm"
+        outline
+        icon="clear_all"
+        label="clear"
+        @click="handleClearAll"
       >
         <q-tooltip>Bulk clear all {{ title.toLowerCase() }}</q-tooltip>
       </q-btn>
@@ -23,12 +23,12 @@
     <template v-slot:header="props">
       <q-tr>
         <q-th
-            v-if="expand"
-            auto-width
+          v-if="expand"
+          auto-width
         ></q-th>
         <q-th
-            v-for="col in props.cols"
-            :key="col.name"
+          v-for="col in props.cols"
+          :key="col.name"
         >
           {{ col.label }}
         </q-th>
@@ -36,123 +36,123 @@
     </template>
     <template v-slot:body="props">
       <q-tr
-          :class="{'highlighted' : props.row.highlight}"
-          @mouseenter="props.row.highlight = true"
-          @mouseleave="props.row.highlight = false"
+        :class="{ highlighted: props.row.highlight }"
+        @mouseenter="props.row.highlight = true"
+        @mouseleave="props.row.highlight = false"
       >
         <q-td
-            v-if="expand"
-            auto-width
+          v-if="expand"
+          auto-width
         >
           <q-btn
-              size="sm"
-              flat
-              round
-              dense
-              @click="props.expand = !props.expand"
-              :icon="props.expand ? 'expand_more' : 'chevron_right'"
+            size="sm"
+            flat
+            round
+            dense
+            @click="props.expand = !props.expand"
+            :icon="props.expand ? 'expand_more' : 'chevron_right'"
           ></q-btn>
         </q-td>
         <template
-            v-for="col in props.cols"
-            :key="props.row.field"
+          v-for="col in props.cols"
+          :key="props.row.field"
         >
           <q-td v-if="col.type === 'input'">
             <q-input
-                input-class="text-center"
-                v-model="props.row[col.field]"
-                dense
-                borderless
-                hide-bottom-space
+              input-class="text-center"
+              v-model="props.row[col.field]"
+              dense
+              borderless
+              hide-bottom-space
             />
           </q-td>
           <q-td v-else-if="col.type === 'number'">
             <q-input
-                v-model.number="props.row[col.field]"
-                dense
-                borderless
-                type="number"
-                :debounce="1500"
-                @mousewheel.prevent
+              v-model.number="props.row[col.field]"
+              dense
+              borderless
+              type="number"
+              :debounce="1500"
+              @mousewheel.prevent
             />
           </q-td>
           <q-td
-              auto-width
-              v-else-if="col.type === 'color'"
-              class="cursor-pointer text-center"
+            auto-width
+            v-else-if="col.type === 'color'"
+            class="cursor-pointer text-center"
           >
             <q-chip
-                dense
-                outline
-                :style="{ 'border-color': props.row.color, 'color': props.row.color }"
+              dense
+              outline
+              :style="{ 'border-color': props.row.color, color: props.row.color }"
             >
               {{ props.row.color.toUpperCase() }}
             </q-chip>
             <q-popup-edit
-                auto-save
-                v-model="props.row.color"
-                title="Edit the label color"
+              auto-save
+              v-model="props.row.color"
+              title="Edit the label color"
             >
               <q-color v-model="props.row.color"></q-color>
             </q-popup-edit>
           </q-td>
           <q-td v-else-if="col.type === 'label'">
             <q-select
-                ref="select"
-                v-model="props.row.labelId"
-                :options="labelOption"
-                dense
-                options-dense
-                borderless
-                emit-value
-                map-options
-                @update:model-value="handleLabelInput(props.row)"
+              ref="select"
+              v-model="props.row.labelId"
+              :options="labelOption"
+              dense
+              options-dense
+              borderless
+              emit-value
+              map-options
+              @update:model-value="handleLabelInput(props.row)"
             ></q-select>
           </q-td>
           <q-td
-              auto-width
-              v-else-if="col.type === 'operation'"
+            auto-width
+            v-else-if="col.type === 'operation'"
           >
             <q-btn-group
-                spread
-                flat
+              spread
+              flat
             >
               <q-btn
-                  flat
-                  dense
-                  icon="keyboard_arrow_up"
-                  @click="handleUp(props.row)"
+                flat
+                dense
+                icon="keyboard_arrow_up"
+                @click="handleUp(props.row)"
               ></q-btn>
               <q-btn
-                  flat
-                  dense
-                  icon="keyboard_arrow_down"
-                  @click="handleDown(props.row)"
+                flat
+                dense
+                icon="keyboard_arrow_down"
+                @click="handleDown(props.row)"
               ></q-btn>
               <q-btn
-                  flat
-                  dense
-                  icon="delete"
-                  color="negative"
-                  @click="handleDelete(props.row)"
+                flat
+                dense
+                icon="delete"
+                color="negative"
+                @click="handleDelete(props.row)"
               ></q-btn>
             </q-btn-group>
           </q-td>
           <q-td
-              v-else
-              class="text-center"
-          >{{ typeof col.field === 'string' ? props.row[col.field] : col.field(props.row) }}
+            v-else
+            class="text-center"
+            >{{ typeof col.field === 'string' ? props.row[col.field] : col.field(props.row) }}
           </q-td>
         </template>
       </q-tr>
       <q-tr v-if="props.expand">
         <q-td
-            colspan="100%"
-            style="padding: 0;"
+          colspan="100%"
+          style="padding: 0"
         >
           <slot
-              name="expand"
-              :props="props"
+            name="expand"
+            :props="props"
           ></slot>
         </q-td>
       </q-tr>
@@ -196,22 +196,24 @@ const annotationStore = useAnnotationStore()
 const configurationStore = useConfigurationStore()
 const annotationList = computed({
   get: () => annotationStore[props.storeKey][annotationStore[props.position + 'CurrentFrame']],
-  set: newValue => {
+  set: (newValue) => {
     annotationStore[props.storeKey][annotationStore[props.position + 'CurrentFrame']] = newValue
   }
 })
-const labelOption = computed(() => configurationStore.objectLabelData.map(label => {
-  return {
-    label: label.name,
-    value: label.id,
-    color: label.color
-  }
-}))
+const labelOption = computed(() =>
+  configurationStore.objectLabelData.map((label) => {
+    return {
+      label: label.name,
+      value: label.id,
+      color: label.color
+    }
+  })
+)
 
-const handleLabelInput = row => {
-  row.color = configurationStore.objectLabelData.find(label => label.id === row.labelId).color
+const handleLabelInput = (row) => {
+  row.color = configurationStore.objectLabelData.find((label) => label.id === row.labelId).color
 }
-const handleUp = row => {
+const handleUp = (row) => {
   for (let i = 0; i < annotationList.value.length; i++) {
     if (annotationList.value[i] === row) {
       if (i - 1 >= 0) {
@@ -231,7 +233,7 @@ const handleDown = (row) => {
     }
   }
 }
-const handleDelete = row => {
+const handleDelete = (row) => {
   utils.confirm('Are you sure to delete this object?').onOk(() => {
     for (let i in annotationList.value) {
       if (annotationList.value[i] === row) {

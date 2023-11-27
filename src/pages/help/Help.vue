@@ -1,46 +1,45 @@
 <template>
   <div
-      style="max-width: 800px; margin: 0 auto"
-      class="q-gutter-md"
+    style="max-width: 800px; margin: 0 auto"
+    class="q-gutter-md"
   >
     <h5>Tutorial Videos</h5>
     <div class="text-body1">
       <q-video
-          :ratio="16/9"
-          src="https://www.youtube.com/embed/videoseries?list=PLD-7XrNHCcFLv938DO4yYcTrgaff9BJjN"
+        :ratio="16 / 9"
+        src="https://www.youtube.com/embed/videoseries?list=PLD-7XrNHCcFLv938DO4yYcTrgaff9BJjN"
       />
     </div>
     <h5>Help</h5>
     <div class="text-body1">
-      Click the top-left menu button (&#x2630;) to load and save data.
-      Three annotation modes are supported:
+      Click the top-left menu button (&#x2630;) to load and save data. Three annotation modes are supported:
       <ul>
         <li><b>Object:</b> Click and drag on frame to add a new bounding box.</li>
         <li><b>Region:</b> Click on frame to add next point to polygon region. Double-click to end.</li>
         <li><b>Skeleton:</b> Click and drag on frame to add a new skeleton with default pose.</li>
       </ul>
-      Anchor points (&#x25a0; or &#x25cf;) can be dragged to reshape objects, regions and skeletons.
-      Edges between anchors can be dragged to move annotations.
+      Anchor points (&#x25a0; or &#x25cf;) can be dragged to reshape objects, regions and skeletons. Edges between
+      anchors can be dragged to move annotations.
     </div>
     <h5>Keyboard Shortcuts</h5>
     <div class="text-body1">
       <div
-          class="row q-ma-none"
-          v-for="shortcut in shortcuts"
+        class="row q-ma-none"
+        v-for="shortcut in shortcuts"
       >
         <div
-            class="col"
-            style="line-height: 30px;"
+          class="col"
+          style="line-height: 30px"
         >
           {{ shortcut.description }}
         </div>
         <div class="col text-center">
           <q-chip
-              class="text-black"
-              color="secondary"
-              size='md'
-              v-for="key in shortcut.keys"
-          >{{ key.toUpperCase() }}
+            class="text-black"
+            color="secondary"
+            size="md"
+            v-for="key in shortcut.keys"
+            >{{ key.toUpperCase() }}
           </q-chip>
         </div>
       </div>

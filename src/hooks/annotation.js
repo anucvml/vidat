@@ -12,15 +12,13 @@ export const useAnnotation = () => {
   const submitLoading = ref(false)
   const loadAnnotation = (obj) => {
     try {
-      const {
-        version,
-        annotation,
-        config
-      } = obj
+      const { version, annotation, config } = obj
       // version
       if (version !== PACKAGE_VERSION) {
-        utils.notify('Version mismatch, weird stuff is likely to happen! ' + version + ' != ' + PACKAGE_VERSION,
-          'warning')
+        utils.notify(
+          'Version mismatch, weird stuff is likely to happen! ' + version + ' != ' + PACKAGE_VERSION,
+          'warning'
+        )
       }
       // config
       configurationStore.importConfig(config)
@@ -33,7 +31,7 @@ export const useAnnotation = () => {
     }
   }
   const loadAnnotationFromFile = () => {
-    utils.importFile().then(file => {
+    utils.importFile().then((file) => {
       loadAnnotation(JSON.parse(file))
     })
   }
@@ -41,9 +39,7 @@ export const useAnnotation = () => {
     loadAnnotation,
     handleLoad: () => {
       if (annotationStore.hasVideo) {
-        utils.confirm(
-          'Are you sure to load? This would override current data!'
-        ).onOk(() => {
+        utils.confirm('Are you sure to load? This would override current data!').onOk(() => {
           loadAnnotationFromFile()
         })
       } else {
@@ -51,20 +47,13 @@ export const useAnnotation = () => {
       }
     },
     handleSave: () => {
-      utils.prompt(
-        'Save',
-        'Enter annotation filename for saving',
-        'annotations').onOk(filename => {
+      utils.prompt('Save', 'Enter annotation filename for saving', 'annotations').onOk((filename) => {
         const data = {
           version: PACKAGE_VERSION,
           annotation: annotationStore.exportAnnotation(),
           config: configurationStore.exportConfig()
         }
-        exportFile(
-          filename + '.json',
-          new Blob([JSON.stringify(data)]),
-          { mimeType: 'text/plain' }
-        )
+        exportFile(filename + '.json', new Blob([JSON.stringify(data)]), { mimeType: 'text/plain' })
         mainStore.drawer = false
       })
     },
@@ -82,31 +71,34 @@ export const useAnnotation = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-      }).then(res => {
-        submitLoading.value = false
-        if (res.ok) {
-          console.debug('Success', res)
-          res.json().then(data => {
-            const { message, clipboard, type } = data
-            if (message) {
-              utils.notify('Server: ' + message, type || 'positive')
-            }
-            if (clipboard) {
-              copyToClipboard(clipboard).then(() => {
-                utils.notify('Copied to clipboard: ' + clipboard, 'positive', 0, 'center')
-              }).catch(() => {
-                  utils.notify('Failed to copy to clipboard, please do it manually: ' + clipboard, 'negative', 10000)
-                }
-              )
-            }
-          })
-        } else {
-          utils.notify(`Failed to submit: ${res.statusText} (${res.status})`, 'warning')
-        }
-      }).catch(err => {
-        submitLoading.value = false
-        utils.notify('Failed to submit: ' + err, 'negative')
       })
+        .then((res) => {
+          submitLoading.value = false
+          if (res.ok) {
+            console.debug('Success', res)
+            res.json().then((data) => {
+              const { message, clipboard, type } = data
+              if (message) {
+                utils.notify('Server: ' + message, type || 'positive')
+              }
+              if (clipboard) {
+                copyToClipboard(clipboard)
+                  .then(() => {
+                    utils.notify('Copied to clipboard: ' + clipboard, 'positive', 0, 'center')
+                  })
+                  .catch(() => {
+                    utils.notify('Failed to copy to clipboard, please do it manually: ' + clipboard, 'negative', 10000)
+                  })
+              }
+            })
+          } else {
+            utils.notify(`Failed to submit: ${res.statusText} (${res.status})`, 'warning')
+          }
+        })
+        .catch((err) => {
+          submitLoading.value = false
+          utils.notify('Failed to submit: ' + err, 'negative')
+        })
     },
     submitLoading
   }

@@ -1,11 +1,11 @@
 <template>
   <TableBase
-      title="Object Labels"
-      storeKey="objectLabelData"
-      :columnList="columnList"
-      :importFunction="configurationStore.importObjectLabelData"
-      @add="handleAdd"
-      @delete="handleDelete"
+    title="Object Labels"
+    storeKey="objectLabelData"
+    :columnList="columnList"
+    :importFunction="configurationStore.importObjectLabelData"
+    @add="handleAdd"
+    @delete="handleDelete"
   />
 </template>
 
@@ -51,10 +51,11 @@ const handleAdd = () => {
   })
 }
 const handleDelete = (props) => {
-  utils.confirm(
-      'Are you sure to delete label ' + props.row.name + '?'
-  ).onOk(() => {
-    tableData.value.splice(tableData.value.findIndex(type => type.id === props.row.id), 1)
+  utils.confirm('Are you sure to delete label ' + props.row.name + '?').onOk(() => {
+    tableData.value.splice(
+      tableData.value.findIndex((type) => type.id === props.row.id),
+      1
+    )
   })
 }
 </script>

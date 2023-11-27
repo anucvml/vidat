@@ -33,7 +33,7 @@ export const usePreferenceStore = defineStore('preference', () => {
     localStorage.setItem(LS_KEY, JSON.stringify(newValue))
   })
   const reset = () => {
-    Object.keys(state).map(key => state[key] = defaultPreference[key])
+    Object.keys(state).map((key) => (state[key] = defaultPreference[key]))
   }
   return { ...toRefs(state), reset }
 })

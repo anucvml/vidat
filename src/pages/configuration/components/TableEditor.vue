@@ -5,27 +5,27 @@
       <q-space></q-space>
       <q-btn-group flat>
         <q-btn
-            size="sm"
-            outline
-            icon="save"
-            color="primary"
-            @click="handleSave"
-            label="save"
+          size="sm"
+          outline
+          icon="save"
+          color="primary"
+          @click="handleSave"
+          label="save"
         ></q-btn>
         <q-btn
-            size="sm"
-            outline
-            icon="close"
-            color="negative"
-            @click="handleCancel"
-            label="cancel"
+          size="sm"
+          outline
+          icon="close"
+          color="negative"
+          @click="handleCancel"
+          label="cancel"
         ></q-btn>
       </q-btn-group>
     </div>
     <MonacoCodeEditor
-        style="height: 70vh;"
-        v-model="jsonString"
-        language="json"
+      style="height: 70vh"
+      v-model="jsonString"
+      language="json"
     />
   </q-card>
 </template>

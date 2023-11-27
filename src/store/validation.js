@@ -2,7 +2,7 @@
  * Validation function to verify uploaded json files
  */
 
-function validateObjectLabelData (json) {
+function validateObjectLabelData(json) {
   if (!json.length) {
     throw 'At least one object!'
   }
@@ -11,25 +11,24 @@ function validateObjectLabelData (json) {
   }
   const idList = []
   for (const object of json) {
-    if (typeof (object.id) !== 'number') {
+    if (typeof object.id !== 'number') {
       throw 'Id must be integer'
     }
     if (idList.indexOf(object.id) !== -1) {
       throw 'Duplicated id'
-    }
-    else {
+    } else {
       idList.push(object.id)
     }
-    if (typeof (object.name) !== 'string') {
+    if (typeof object.name !== 'string') {
       throw 'Name must be string'
     }
-    if (typeof (object.name) !== 'string') {
+    if (typeof object.name !== 'string') {
       throw 'Color must be string'
     }
   }
 }
 
-function validateActionLabelData (json) {
+function validateActionLabelData(json) {
   if (!json.length) {
     throw 'At least one action!'
   }
@@ -38,19 +37,18 @@ function validateActionLabelData (json) {
   }
   const idList = []
   for (const action of json) {
-    if (typeof (action.id) !== 'number') {
+    if (typeof action.id !== 'number') {
       throw 'Id must be integer'
     }
     if (idList.indexOf(action.id) !== -1) {
       throw 'Duplicated id'
-    }
-    else {
+    } else {
       idList.push(action.id)
     }
-    if (typeof (action.name) !== 'string') {
+    if (typeof action.name !== 'string') {
       throw 'Name must be string'
     }
-    if (typeof (action.name) !== 'string') {
+    if (typeof action.name !== 'string') {
       throw 'Color must be string'
     }
     if (!action.objects.length) {
@@ -58,13 +56,12 @@ function validateActionLabelData (json) {
     }
     const objectIdList = []
     for (const objectId of action.objects) {
-      if (typeof (objectId) !== 'number') {
+      if (typeof objectId !== 'number') {
         throw 'Object id must be integer'
       }
       if (objectIdList.indexOf(objectId) !== -1) {
         throw 'Duplicated object id'
-      }
-      else {
+      } else {
         objectIdList.push(objectId)
       }
       if (objectIdList.indexOf(objectId) === -1) {
@@ -74,68 +71,65 @@ function validateActionLabelData (json) {
   }
 }
 
-function validateSkeletonTypeData (json) {
+function validateSkeletonTypeData(json) {
   const idList = []
   for (const type of json) {
-    if (typeof (type.id) !== 'number') {
+    if (typeof type.id !== 'number') {
       throw 'Id must be integer'
     }
     if (idList.indexOf(type.id) !== -1) {
       throw 'Duplicated id'
-    }
-    else {
+    } else {
       idList.push(type.id)
     }
-    if (typeof (type.name) !== 'string') {
+    if (typeof type.name !== 'string') {
       throw 'Name must be string'
     }
-    if (typeof (type.description) !== 'string') {
+    if (typeof type.description !== 'string') {
       throw 'Description must be string'
     }
-    if (typeof (type.name) !== 'string') {
+    if (typeof type.name !== 'string') {
       throw 'Color must be string'
     }
     // pointList
     const pointIdList = []
     for (const point in json.pointList) {
-      if (typeof (point.id) !== 'number') {
+      if (typeof point.id !== 'number') {
         throw 'Point id must be integer'
       }
       if (pointIdList.indexOf(point.id) !== -1) {
         throw 'Duplicated point id'
-      }
-      else {
+      } else {
         pointIdList.push(point.id)
       }
-      if (typeof (point.name) !== 'string') {
+      if (typeof point.name !== 'string') {
         throw 'Point name must be string'
       }
-      if (typeof (point.x) !== 'number') {
+      if (typeof point.x !== 'number') {
         throw 'Point x must be integer'
       }
-      if (typeof (point.y) !== 'number') {
+      if (typeof point.y !== 'number') {
         throw 'Point y must be integer'
       }
     }
     // edgeList
     const edgeIdList = []
     for (const edge in json.edgeList) {
-      if (typeof (edge.id) !== 'number') {
+      if (typeof edge.id !== 'number') {
         throw 'Edge id must be integer'
       }
       if (edgeIdList.indexOf(edge.id) !== -1) {
         throw 'Duplicated edge id'
-      }
-      else {
+      } else {
         edgeIdList.push(edge.id)
       }
-      if (typeof (edge.to) !== 'number') {
+      if (typeof edge.to !== 'number') {
         throw 'Edge to must be integer'
       }
       if (pointIdList.indexOf(edge.to) === -1) {
         throw `Point id ${edge.to} dose not exist`
       }
-      if (typeof (edge.from) !== 'number') {
+      if (typeof edge.from !== 'number') {
         throw 'Edge from must be integer'
       }
       if (pointIdList.indexOf(edge.from) === -1) {
@@ -145,8 +139,4 @@ function validateSkeletonTypeData (json) {
   }
 }
 
-export {
-  validateObjectLabelData,
-  validateActionLabelData,
-  validateSkeletonTypeData,
-}
+export { validateObjectLabelData, validateActionLabelData, validateSkeletonTypeData }

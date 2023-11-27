@@ -1,7 +1,7 @@
 <template>
   <div
     class="row justify-between items-center q-pt-lg"
-    :class="{'q-pb-lg q-px-lg': $q.screen.lt.md}"
+    :class="{ 'q-pb-lg q-px-lg': $q.screen.lt.md }"
   >
     <div>
       <q-btn-group flat>
@@ -45,7 +45,7 @@
     <q-select
       v-if="$q.screen.lt.md"
       class="q-my-md"
-      style="width: 162px;"
+      style="width: 162px"
       label="Playback Rate"
       outlined
       dense
@@ -58,12 +58,12 @@
     />
     <div
       class="col-grow"
-      :class="[{'col-12': $q.screen.lt.md, 'q-px-lg': !$q.screen.lt.md}]"
-      :style="{'order': !$q.screen.lt.md ? 0 : -1}"
+      :class="[{ 'col-12': $q.screen.lt.md, 'q-px-lg': !$q.screen.lt.md }]"
+      :style="{ order: !$q.screen.lt.md ? 0 : -1 }"
     >
       <q-range
         class="custom-range"
-        :class="{'hide-right-marker': currentFocus === 'left', 'hide-left-marker': currentFocus === 'right'}"
+        :class="{ 'hide-right-marker': currentFocus === 'left', 'hide-left-marker': currentFocus === 'right' }"
         :style="rangeStyle"
         label-always
         drag-range
@@ -76,8 +76,12 @@
         right-label-text-color="blue-grey-1"
         left-label-color="primary"
         right-label-color="primary"
-        :left-label-value="'L: ' + currentFrameRange.min + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.min)) + ' s'"
-        :right-label-value="'R: ' + currentFrameRange.max + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.max)) + ' s'"
+        :left-label-value="
+          'L: ' + currentFrameRange.min + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.min)) + ' s'
+        "
+        :right-label-value="
+          'R: ' + currentFrameRange.max + ' | ' + utils.toFixed2(utils.index2time(currentFrameRange.max)) + ' s'
+        "
         :model-value="currentFrameRange"
         @update:model-value="handleInput"
       />
@@ -106,7 +110,7 @@
       </q-btn>
     </q-btn-group>
   </div>
-  <KeyframeTable v-if="showEdit"/>
+  <KeyframeTable v-if="showEdit" />
 </template>
 
 <script setup>
@@ -133,14 +137,17 @@ const play = () => {
   isStopped.value = false
   videoPlayer.playbackRate = annotationStore.videoPlaybackRate
   videoPlayer.play()
-  const duration = (utils.index2time(annotationStore.rightCurrentFrame) - videoPlayer.currentTime) * 1000 /
-    videoPlayer.playbackRate
+  const duration =
+    ((utils.index2time(annotationStore.rightCurrentFrame) - videoPlayer.currentTime) * 1000) / videoPlayer.playbackRate
   videoPlayTimeout = setTimeout(() => {
     handleStop()
   }, duration)
-  videoPlayInterval = setInterval(() => {
-    moveLeftFrame(1)
-  }, 1000 / annotationStore.video.fps / videoPlayer.playbackRate)
+  videoPlayInterval = setInterval(
+    () => {
+      moveLeftFrame(1)
+    },
+    1000 / annotationStore.video.fps / videoPlayer.playbackRate
+  )
 }
 const pause = () => {
   clearTimeout(videoPlayTimeout)
@@ -185,32 +192,32 @@ const handleStop = () => {
 const videoPlaybackRateOptions = [
   {
     label: '0.5x',
-    value: 0.5,
+    value: 0.5
   },
   {
     label: '0.75x',
-    value: 0.75,
+    value: 0.75
   },
   {
     label: '1.0x',
-    value: 1.0,
+    value: 1.0
   },
   {
     label: '1.25x',
-    value: 1.25,
+    value: 1.25
   },
   {
     label: '1.5x',
-    value: 1.5,
+    value: 1.5
   },
   {
     label: '2.0x',
-    value: 2.0,
-  },
+    value: 2.0
+  }
 ]
 
 // right buttons
-const nearestKeyframe = currentFrame => {
+const nearestKeyframe = (currentFrame) => {
   let min = annotationStore.video.frames
   let nearestKeyframe = currentFrame
   for (let i = 0; i < annotationStore.keyframeList.length; i++) {
@@ -222,7 +229,8 @@ const nearestKeyframe = currentFrame => {
   }
   return nearestKeyframe
 }
-const handlePreviousKeyframe = () => { // base on right most one
+const handlePreviousKeyframe = () => {
+  // base on right most one
   const leftCurrentKeyFrame = nearestKeyframe(annotationStore.leftCurrentFrame)
   const rightCurrentKeyFrame = nearestKeyframe(annotationStore.rightCurrentFrame)
   const leftCurrentKeyFrameIndex = annotationStore.keyframeList.indexOf(leftCurrentKeyFrame)
@@ -256,29 +264,28 @@ const handleNearestKeyframe = () => {
     annotationStore.rightCurrentFrame = rightCurrentKeyFrame
   } else {
     annotationStore.leftCurrentFrame = leftCurrentKeyFrame
-    annotationStore.rightCurrentFrame = annotationStore.keyframeList[leftCurrentKeyFrameIndex + 1] ||
-      leftCurrentKeyFrame
+    annotationStore.rightCurrentFrame =
+      annotationStore.keyframeList[leftCurrentKeyFrameIndex + 1] || leftCurrentKeyFrame
   }
 }
-const handleNextKeyframe = () => { // base on left most one
+const handleNextKeyframe = () => {
+  // base on left most one
   const leftCurrentKeyFrame = nearestKeyframe(annotationStore.leftCurrentFrame)
   const rightCurrentKeyFrame = nearestKeyframe(annotationStore.rightCurrentFrame)
   const leftCurrentKeyFrameIndex = annotationStore.keyframeList.indexOf(leftCurrentKeyFrame)
   const rightCurrentKeyFrameIndex = annotationStore.keyframeList.indexOf(rightCurrentKeyFrame)
   const lastIndex = annotationStore.keyframeList.length - 1
   if (leftCurrentKeyFrameIndex >= lastIndex || rightCurrentKeyFrameIndex >= lastIndex) {
-    annotationStore.leftCurrentFrame = lastIndex - 1 >= 0
-      ? annotationStore.keyframeList[lastIndex - 1]
-      : annotationStore.keyframeList[lastIndex]
+    annotationStore.leftCurrentFrame =
+      lastIndex - 1 >= 0 ? annotationStore.keyframeList[lastIndex - 1] : annotationStore.keyframeList[lastIndex]
     annotationStore.rightCurrentFrame = annotationStore.keyframeList[lastIndex]
   } else if (leftCurrentKeyFrameIndex === rightCurrentKeyFrameIndex) {
     annotationStore.leftCurrentFrame = leftCurrentKeyFrame
     annotationStore.rightCurrentFrame = annotationStore.keyframeList[leftCurrentKeyFrameIndex + 1]
   } else if (leftCurrentKeyFrameIndex < rightCurrentKeyFrameIndex) {
     if (leftCurrentKeyFrameIndex + 2 > lastIndex) {
-      annotationStore.leftCurrentFrame = lastIndex - 1 >= 0
-        ? annotationStore.keyframeList[lastIndex - 1]
-        : annotationStore.keyframeList[lastIndex]
+      annotationStore.leftCurrentFrame =
+        lastIndex - 1 >= 0 ? annotationStore.keyframeList[lastIndex - 1] : annotationStore.keyframeList[lastIndex]
       annotationStore.rightCurrentFrame = annotationStore.keyframeList[lastIndex]
     } else {
       annotationStore.leftCurrentFrame = annotationStore.keyframeList[leftCurrentKeyFrameIndex + 1]
@@ -291,7 +298,7 @@ const handleNextKeyframe = () => { // base on left most one
 }
 
 // key bindings
-const moveLeftFrame = delta => {
+const moveLeftFrame = (delta) => {
   const newFrame = annotationStore.leftCurrentFrame + delta
   if (newFrame >= 0 && newFrame <= annotationStore.video.frames) {
     if (newFrame > annotationStore.rightCurrentFrame) {
@@ -303,7 +310,7 @@ const moveLeftFrame = delta => {
     }
   }
 }
-const moveRightFrame = delta => {
+const moveRightFrame = (delta) => {
   const newFrame = annotationStore.rightCurrentFrame + delta
   if (newFrame >= 0 && newFrame <= annotationStore.video.frames) {
     if (newFrame < annotationStore.leftCurrentFrame) {
@@ -315,21 +322,23 @@ const moveRightFrame = delta => {
     }
   }
 }
-const moveRange = interval => {
+const moveRange = (interval) => {
   if (interval < 0) {
     if (Math.min(annotationStore.leftCurrentFrame, annotationStore.rightCurrentFrame) + interval >= 0) {
       annotationStore.leftCurrentFrame += interval
       annotationStore.rightCurrentFrame += interval
     }
   } else {
-    if (Math.max(annotationStore.leftCurrentFrame, annotationStore.rightCurrentFrame) + interval
-      <= annotationStore.video.frames) {
+    if (
+      Math.max(annotationStore.leftCurrentFrame, annotationStore.rightCurrentFrame) + interval <=
+      annotationStore.video.frames
+    ) {
       annotationStore.leftCurrentFrame += interval
       annotationStore.rightCurrentFrame += interval
     }
   }
 }
-const handleKeyup = event => {
+const handleKeyup = (event) => {
   event.stopPropagation()
   if (event.target.nodeName.toLowerCase() === 'input' || event.target.tabIndex === 0) {
     return false
@@ -339,7 +348,7 @@ const handleKeyup = event => {
   }
 }
 const currentFocus = ref('range') // 'left', 'right', 'range'
-const handleInput = value => {
+const handleInput = (value) => {
   if (currentFrameRange.value.min !== value.min && currentFrameRange.value.max !== value.max) {
     currentFocus.value = 'range'
   } else if (currentFrameRange.value.min !== value.min) {
@@ -349,7 +358,7 @@ const handleInput = value => {
   }
   currentFrameRange.value = value
 }
-const handleKeydown = event => {
+const handleKeydown = (event) => {
   event.stopPropagation()
   if (showVideoPlayer.value) {
     return
@@ -379,14 +388,14 @@ const handleKeydown = event => {
     if (currentFocus.value === 'left') return
     currentFocus.value = {
       range: 'left',
-      right: 'range',
+      right: 'range'
     }[currentFocus.value]
     event.preventDefault()
   } else if (event.code === 'ArrowDown' || event.code === 'KeyS') {
     if (currentFocus.value === 'right') return
     currentFocus.value = {
       left: 'range',
-      range: 'right',
+      range: 'right'
     }[currentFocus.value]
     event.preventDefault()
   } else if (event.code === 'PageUp') {
@@ -429,7 +438,7 @@ const currentFrameRange = computed({
   get: () => {
     return {
       min: annotationStore.leftCurrentFrame,
-      max: annotationStore.rightCurrentFrame,
+      max: annotationStore.rightCurrentFrame
     }
   },
   set: (value) => {
@@ -438,7 +447,7 @@ const currentFrameRange = computed({
     }
     annotationStore.leftCurrentFrame = value.min
     annotationStore.rightCurrentFrame = value.max
-  },
+  }
 })
 const { rangeStyle } = frameIndicator()
 </script>
@@ -465,6 +474,6 @@ const { rangeStyle } = frameIndicator()
 }
 
 .q-slider__thumb:last-child .q-slider__text-container {
-  transform: translateX(41%)  !important;
+  transform: translateX(41%) !important;
 }
 </style>

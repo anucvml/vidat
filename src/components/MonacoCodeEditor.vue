@@ -35,12 +35,15 @@ onMounted(() => {
     language: props.language,
     theme: q.dark.isActive ? 'vs-dark' : 'vs'
   })
-  onDidChangeModelContentHandler = monacoEditor.onDidChangeModelContent((() => {
+  onDidChangeModelContentHandler = monacoEditor.onDidChangeModelContent(() => {
     emits('update:modelValue', monacoEditor.getValue())
-  }))
-  watch(() => props.modelValue, (newValue) => {
-    monacoEditor.getModel().setValue(newValue)
   })
+  watch(
+    () => props.modelValue,
+    (newValue) => {
+      monacoEditor.getModel().setValue(newValue)
+    }
+  )
 })
 onUnmounted(() => {
   onDidChangeModelContentHandler.dispose()

@@ -14,7 +14,8 @@ app.use(store)
 app.use(router)
 app.use(Quasar, {
   plugins: {
-    Dialog, Notify
+    Dialog,
+    Notify
   },
   iconSet: quasarIconSet,
   config: {

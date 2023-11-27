@@ -1,135 +1,138 @@
 <template>
-  <FilmStrip/>
+  <FilmStrip />
   <div class="relative-position">
     <canvas
-        ref="background"
-        class="full-width block"
-        :style="{'filter': preferenceStore.grayscale ? 'grayscale(100%)' : 'none'}"
-        :width="CANVAS_WIDTH"
-        :height="canvasHeight"
+      ref="background"
+      class="full-width block"
+      :style="{ filter: preferenceStore.grayscale ? 'grayscale(100%)' : 'none' }"
+      :width="CANVAS_WIDTH"
+      :height="canvasHeight"
     />
     <VideoPlayer
-        v-if="position === 'left'"
-        class="absolute-top"
+      v-if="position === 'left'"
+      class="absolute-top"
     />
     <canvas
-        ref="canvas"
-        style="inset: 0;"
-        :style="{'cursor': cursor}"
-        class="full-width block absolute"
-        :width="CANVAS_WIDTH"
-        :height="canvasHeight"
-        @mousemove.prevent="handleMousemove"
-        @mouseout.prevent="handleMouseupAndMouseout"
-        @mousedown.prevent="handleMousedown"
-        @mouseup.prevent="handleMouseupAndMouseout"
-        @mouseenter.prevent="handleMouseenter"
-        @touchstart.prevent="handleTouchstart"
-        @touchmove.prevent="handleTouchmove"
-        @touchend.prevent="handleTouchend"
+      ref="canvas"
+      style="inset: 0"
+      :style="{ cursor: cursor }"
+      class="full-width block absolute"
+      :width="CANVAS_WIDTH"
+      :height="canvasHeight"
+      @mousemove.prevent="handleMousemove"
+      @mouseout.prevent="handleMouseupAndMouseout"
+      @mousedown.prevent="handleMousedown"
+      @mouseup.prevent="handleMouseupAndMouseout"
+      @mouseenter.prevent="handleMouseenter"
+      @touchstart.prevent="handleTouchstart"
+      @touchmove.prevent="handleTouchmove"
+      @touchend.prevent="handleTouchend"
     />
     <q-btn
-        v-if="position === 'left'"
-        class="bg-blue-grey-1 text-black absolute"
-        style="top: 5px; right: 5px;"
-        round
-        flat
-        :icon="mainStore.zoom ? 'zoom_out' : 'zoom_in'"
-        @click="handleZoomClick"
+      v-if="position === 'left'"
+      class="bg-blue-grey-1 text-black absolute"
+      style="top: 5px; right: 5px"
+      round
+      flat
+      :icon="mainStore.zoom ? 'zoom_out' : 'zoom_in'"
+      @click="handleZoomClick"
     ></q-btn>
     <div
-        class="absolute bg-black text-white"
-        v-if="actionList && actionList.length"
-        :style="actionIndicatorStyle"
-        style="padding: 4px; font-size: 20px; opacity: 0.8"
-    >Action: <span
+      class="absolute bg-black text-white"
+      v-if="actionList && actionList.length"
+      :style="actionIndicatorStyle"
+      style="padding: 4px; font-size: 20px; opacity: 0.8"
+    >
+      Action:
+      <span
         v-for="(action, index) in actionList"
-        :style="{color: action.color}"
-    >{{ action.name }}<span
-        v-if="actionList.length !== 1 && index !== actionList.length - 1"
-        class="text-white"
-    >, </span></span>
+        :style="{ color: action.color }"
+        >{{ action.name
+        }}<span
+          v-if="actionList.length !== 1 && index !== actionList.length - 1"
+          class="text-white"
+          >,
+        </span></span
+      >
     </div>
     <q-badge
-        class="bg-black text-white"
-        v-if="preferenceStore.actions && status"
-        :style="statusStyle"
+      class="bg-black text-white"
+      v-if="preferenceStore.actions && status"
+      :style="statusStyle"
     >
       <span v-if="status.keydown">{{ status.keydown }},</span>
       <span v-if="status.message">{{ status.message }},</span>
       <span>{{ utils.toFixed2(status.x) }},{{ utils.toFixed2(status.y) }}</span>
     </q-badge>
     <div
-        v-if="preferenceStore.showPopup && showPopup && annotationList.length && popup.x && popup.y"
-        class="absolute"
-        :style="{top: popup.y + 'px', left: popup.x + 'px'}"
+      v-if="preferenceStore.showPopup && showPopup && annotationList.length && popup.x && popup.y"
+      class="absolute"
+      :style="{ top: popup.y + 'px', left: popup.x + 'px' }"
     >
       <q-popup-proxy
-          no-parent-event
-          v-model="showPopup"
+        no-parent-event
+        v-model="showPopup"
       >
         <q-card
-            flat
-            class="q-py-sm q-px-md"
-            style="min-width: 200px;"
+          flat
+          class="q-py-sm q-px-md"
+          style="min-width: 200px"
         >
-          <div class="q-py-sm">
-            New {{ annotationStore.mode }}
-          </div>
+          <div class="q-py-sm">New {{ annotationStore.mode }}</div>
           <q-select
-              ref="select"
-              dense
-              options-dense
-              borderless
-              emit-value
-              map-options
-              :options="labelOption"
-              v-if="annotationList.length && (annotationStore.mode === 'object' || annotationStore.mode === 'region')"
-              v-model="annotationList.at(-1).labelId"
-              @update:model-value="handleSelectInput"
+            ref="select"
+            dense
+            options-dense
+            borderless
+            emit-value
+            map-options
+            :options="labelOption"
+            v-if="annotationList.length && (annotationStore.mode === 'object' || annotationStore.mode === 'region')"
+            v-model="annotationList.at(-1).labelId"
+            @update:model-value="handleSelectInput"
           ></q-select>
           <q-input
-              ref="input"
-              dense
-              flat
-              label="instance"
-              v-model="annotationList.at(-1).instance"
-              @keydown.enter="showPopup = false"
+            ref="input"
+            dense
+            flat
+            label="instance"
+            v-model="annotationList.at(-1).instance"
+            @keydown.enter="showPopup = false"
           ></q-input>
           <q-input
-              dense
-              flat
-              label="score"
-              v-model="annotationList.at(-1).score"
-              @keydown.enter="showPopup = false"
+            dense
+            flat
+            label="score"
+            v-model="annotationList.at(-1).score"
+            @keydown.enter="showPopup = false"
           ></q-input>
           <q-btn
-              dense
-              outline
-              class="full-width q-mt-sm"
-              @click="showPopup = false"
-              color="primary"
-              label="confirm"
+            dense
+            outline
+            class="full-width q-mt-sm"
+            @click="showPopup = false"
+            color="primary"
+            label="confirm"
           ></q-btn>
         </q-card>
       </q-popup-proxy>
     </div>
   </div>
-  <FilmStrip/>
+  <FilmStrip />
   <ObjectTable
-      v-if="annotationStore.mode === 'object' && preferenceStore.objects"
-      ref="table"
-      :position="position"
+    v-if="annotationStore.mode === 'object' && preferenceStore.objects"
+    ref="table"
+    :position="position"
   />
   <RegionTable
-      v-else-if="annotationStore.mode === 'region' && preferenceStore.regions"
-      ref="table"
-      :position="position"
+    v-else-if="annotationStore.mode === 'region' && preferenceStore.regions"
+    ref="table"
+    :position="position"
   />
   <SkeletonTable
-      v-else-if="annotationStore.mode === 'skeleton' && preferenceStore.skeletons"
-      ref="table"
-      :position="position"
+    v-else-if="annotationStore.mode === 'skeleton' && preferenceStore.skeletons"
+    ref="table"
+    :position="position"
   />
 </template>
 
@@ -149,7 +152,7 @@ import { usePreferenceStore } from '~/store/preference.js'
 
 // common
 const CANVAS_WIDTH = 1920
-const canvasHeight = computed(() => CANVAS_WIDTH * annotationStore.video.height / annotationStore.video.width)
+const canvasHeight = computed(() => (CANVAS_WIDTH * annotationStore.video.height) / annotationStore.video.width)
 const props = defineProps({
   position: {
     type: String,
@@ -167,15 +170,16 @@ const background = ref()
 onMounted(() => {
   const ctxBMR = background.value.getContext('bitmaprenderer')
   watch(
-      () => annotationStore.cachedFrameList[annotationStore[props.position + 'CurrentFrame']],
-      (frame) => {
-        if (frame) createImageBitmap(frame).then(image => {
+    () => annotationStore.cachedFrameList[annotationStore[props.position + 'CurrentFrame']],
+    (frame) => {
+      if (frame)
+        createImageBitmap(frame).then((image) => {
           ctxBMR.transferFromImageBitmap(image)
         })
-      },
-      {
-        immediate: true
-      }
+    },
+    {
+      immediate: true
+    }
   )
 })
 
@@ -219,13 +223,15 @@ let activeContext
 const actionIndicatorStyle = ref({
   bottom: '0'
 })
-const actionList = computed(
-    () => annotationStore.actionAnnotationList.filter(action =>
-        currentFrame.value >= utils.time2index(action.start)
-        && currentFrame.value <= utils.time2index(action.end)
-    ).map(action => {
+const actionList = computed(() =>
+  annotationStore.actionAnnotationList
+    .filter(
+      (action) =>
+        currentFrame.value >= utils.time2index(action.start) && currentFrame.value <= utils.time2index(action.end)
+    )
+    .map((action) => {
       return {
-        name: configurationStore.actionLabelData.find(label => label.id === action.action).name,
+        name: configurationStore.actionLabelData.find((label) => label.id === action.action).name,
         color: action.color
       }
     })
@@ -242,16 +248,19 @@ const statusBaseStyle = {
 /// popup
 const popup = ref()
 const showPopup = ref(false)
-const labelOption = computed(() => configurationStore.objectLabelData.map(label => {
-  return {
-    label: label.name,
-    value: label.id,
-    color: label.color
-  }
-}))
+const labelOption = computed(() =>
+  configurationStore.objectLabelData.map((label) => {
+    return {
+      label: label.name,
+      value: label.id,
+      color: label.color
+    }
+  })
+)
 const handleSelectInput = (labelId) => {
   annotationList.value[annotationList.value.length - 1].color = configurationStore.objectLabelData.find(
-      label => label.id === labelId).color
+    (label) => label.id === labelId
+  ).color
 }
 
 /// autofocus
@@ -276,9 +285,9 @@ const autoFocus = () => {
 
 /// drawing
 const draw = (ctx) => {
-  if (preferenceStore.objects) objectAnnotationList.value.map(annotation => annotation.draw(ctx))
-  if (preferenceStore.regions) regionAnnotationList.value.map(annotation => annotation.draw(ctx))
-  if (preferenceStore.skeletons) skeletonAnnotationList.value.map(annotation => annotation.draw(ctx))
+  if (preferenceStore.objects) objectAnnotationList.value.map((annotation) => annotation.draw(ctx))
+  if (preferenceStore.regions) regionAnnotationList.value.map((annotation) => annotation.draw(ctx))
+  if (preferenceStore.skeletons) skeletonAnnotationList.value.map((annotation) => annotation.draw(ctx))
 }
 const clear = (ctx) => {
   ctx.clearRect(0, 0, CANVAS_WIDTH, canvasHeight.value)
@@ -286,15 +295,15 @@ const clear = (ctx) => {
 onMounted(() => {
   const ctx = canvas.value.getContext('2d')
   watch(
-      annotationList,
-      () => {
-        clear(ctx)
-        draw(ctx)
-      },
-      {
-        immediate: true,
-        deep: true
-      }
+    annotationList,
+    () => {
+      clear(ctx)
+      draw(ctx)
+    },
+    {
+      immediate: true,
+      deep: true
+    }
   )
 })
 
@@ -302,9 +311,10 @@ onMounted(() => {
 const shiftDown = ref(false)
 const backspaceDown = ref(false)
 const altDown = ref(false)
-const handleKeyup = event => {
+const handleKeyup = (event) => {
   event.stopPropagation()
-  if (event.target.nodeName.toLowerCase() === 'input') { // see: https://github.com/anucvml/vidat/issues/91
+  if (event.target.nodeName.toLowerCase() === 'input') {
+    // see: https://github.com/anucvml/vidat/issues/91
     return false
   } else if (event.code === 'Delete') {
     if (activeContext) {
@@ -327,7 +337,7 @@ const handleKeyup = event => {
     altDown.value = false
   }
 }
-const handleKeydown = event => {
+const handleKeydown = (event) => {
   event.stopPropagation()
   if (event.target.nodeName.toLowerCase() === 'input') {
     return false
@@ -359,10 +369,12 @@ const getCurrentObjectAnnotation = (mouseX, mouseY) => {
   for (let i = 0; i < annotationList.value.length; i++) {
     let objectAnnotation = annotationList.value[i]
     if (!currentObjectAnnotation) {
-      if (objectAnnotation.nearTopLeftAnchor(mouseX, mouseY) ||
-          objectAnnotation.nearTopRightAnchor(mouseX, mouseY) ||
-          objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY) ||
-          objectAnnotation.nearBottomRightAnchor(mouseX, mouseY)) {
+      if (
+        objectAnnotation.nearTopLeftAnchor(mouseX, mouseY) ||
+        objectAnnotation.nearTopRightAnchor(mouseX, mouseY) ||
+        objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY) ||
+        objectAnnotation.nearBottomRightAnchor(mouseX, mouseY)
+      ) {
         type = 'cornerSizing'
         currentObjectAnnotation = objectAnnotation
         index = i
@@ -461,12 +473,12 @@ const getCurrentSkeletonAnnotation = (mouseX, mouseY) => {
 }
 
 /// handlers for desktop
-const getMouseLocation = event => {
-  const mouseX = event.offsetX / canvas.value.clientWidth * annotationStore.video.width
-  const mouseY = event.offsetY / canvas.value.clientHeight * annotationStore.video.height
+const getMouseLocation = (event) => {
+  const mouseX = (event.offsetX / canvas.value.clientWidth) * annotationStore.video.width
+  const mouseY = (event.offsetY / canvas.value.clientHeight) * annotationStore.video.height
   return [mouseX, mouseY]
 }
-const handleMousemove = event => {
+const handleMousemove = (event) => {
   canvas.value.focus()
   const [mouseX, mouseY] = getMouseLocation(event)
   if (status.value) {
@@ -506,12 +518,7 @@ const handleMousemove = event => {
       const activeAnnotation = annotationList.value[createContext.index]
       const deltaX = mouseX - createContext.mousedownX
       const deltaY = mouseY - createContext.mousedownY
-      activeAnnotation.resize(
-          createContext.x,
-          createContext.y,
-          deltaX,
-          deltaY
-      )
+      activeAnnotation.resize(createContext.x, createContext.y, deltaX, deltaY)
     }
     // drag the object
     if (dragContext) {
@@ -519,43 +526,31 @@ const handleMousemove = event => {
       const deltaX = mouseX - dragContext.mousedownX
       const deltaY = mouseY - dragContext.mousedownY
       if (dragContext.type === 'moving') {
-        activeAnnotation.resize(
-            dragContext.x + deltaX,
-            dragContext.y + deltaY
-        )
+        activeAnnotation.resize(dragContext.x + deltaX, dragContext.y + deltaY)
       } else if (dragContext.type === 'cornerSizing') {
         const oppositeAnchor = dragContext.oppositeAnchor
         activeAnnotation.resize(
-            oppositeAnchor.x,
-            oppositeAnchor.y,
-            (oppositeAnchor.x > dragContext.x ? -dragContext.width : dragContext.width) + deltaX,
-            (oppositeAnchor.y > dragContext.y ? -dragContext.height : dragContext.height) + deltaY
+          oppositeAnchor.x,
+          oppositeAnchor.y,
+          (oppositeAnchor.x > dragContext.x ? -dragContext.width : dragContext.width) + deltaX,
+          (oppositeAnchor.y > dragContext.y ? -dragContext.height : dragContext.height) + deltaY
         )
       } else if (dragContext.type === 'topSizing') {
-        activeAnnotation.resize(
-            undefined,
-            mouseY,
-            undefined,
-            dragContext.height - deltaY
-        )
+        activeAnnotation.resize(undefined, mouseY, undefined, dragContext.height - deltaY)
       } else if (dragContext.type === 'bottomSizing') {
         activeAnnotation.resize(
-            undefined,
-            mouseY > dragContext.y ? dragContext.y : mouseY,
-            undefined,
-            mouseY > dragContext.y ? dragContext.height + deltaY : dragContext.y - mouseY
+          undefined,
+          mouseY > dragContext.y ? dragContext.y : mouseY,
+          undefined,
+          mouseY > dragContext.y ? dragContext.height + deltaY : dragContext.y - mouseY
         )
       } else if (dragContext.type === 'leftSizing') {
-        activeAnnotation.resize(
-            mouseX,
-            undefined,
-            dragContext.width - deltaX
-        )
+        activeAnnotation.resize(mouseX, undefined, dragContext.width - deltaX)
       } else if (dragContext.type === 'rightSizing') {
         activeAnnotation.resize(
-            mouseX > dragContext.x ? dragContext.x : mouseX,
-            undefined,
-            mouseX > dragContext.x ? dragContext.width + deltaX : dragContext.x - mouseX
+          mouseX > dragContext.x ? dragContext.x : mouseX,
+          undefined,
+          mouseX > dragContext.x ? dragContext.width + deltaX : dragContext.x - mouseX
         )
       }
     }
@@ -603,7 +598,7 @@ const handleMousemove = event => {
         objectAnnotation.highlight = false
       }
     }
-    if (typeof (found) === 'number') {
+    if (typeof found === 'number') {
       activeContext = {
         index: found
       }
@@ -650,7 +645,7 @@ const handleMousemove = event => {
         regionAnnotation.highlight = false
       }
     }
-    if (typeof (found) === 'number') {
+    if (typeof found === 'number') {
       activeContext = {
         index: found
       }
@@ -661,8 +656,8 @@ const handleMousemove = event => {
   } else if (annotationStore.mode === 'skeleton' && preferenceStore.skeletons) {
     // create a skeleton
     if (createContext) {
-      createContext.skeletonAnnotation.ratio = Math.sqrt(
-          (mouseX - createContext.mouseDownX) ** 2 + (mouseY - createContext.mouseDownY) ** 2) / 10
+      createContext.skeletonAnnotation.ratio =
+        Math.sqrt((mouseX - createContext.mouseDownX) ** 2 + (mouseY - createContext.mouseDownY) ** 2) / 10
     }
     // drag the skeleton
     if (dragContext) {
@@ -703,7 +698,7 @@ const handleMousemove = event => {
         skeletonAnnotation.highlight = false
       }
     }
-    if (typeof (found) === 'number') {
+    if (typeof found === 'number') {
       activeContext = {
         index: found
       }
@@ -714,7 +709,7 @@ const handleMousemove = event => {
     }
   }
 }
-const handleMousedown = event => {
+const handleMousedown = (event) => {
   const [mouseX, mouseY] = getMouseLocation(event)
   if (annotationStore.mode === 'object' && preferenceStore.objects) {
     // drag
@@ -728,10 +723,12 @@ const handleMousedown = event => {
           annotationList.value.push(objectAnnotation)
         }
         let type = 'moving'
-        if (objectAnnotation.nearTopLeftAnchor(mouseX, mouseY) ||
-            objectAnnotation.nearTopRightAnchor(mouseX, mouseY) ||
-            objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY) ||
-            objectAnnotation.nearBottomRightAnchor(mouseX, mouseY)) {
+        if (
+          objectAnnotation.nearTopLeftAnchor(mouseX, mouseY) ||
+          objectAnnotation.nearTopRightAnchor(mouseX, mouseY) ||
+          objectAnnotation.nearBottomLeftAnchor(mouseX, mouseY) ||
+          objectAnnotation.nearBottomRightAnchor(mouseX, mouseY)
+        ) {
           type = 'cornerSizing'
         } else if (objectAnnotation.nearTopAnchor(mouseX, mouseY)) {
           type = 'topSizing'
@@ -883,7 +880,7 @@ const handleMousedown = event => {
     }
   }
 }
-const handleMouseupAndMouseout = event => {
+const handleMouseupAndMouseout = (event) => {
   const [mouseX, mouseY] = getMouseLocation(event)
   if (event.type === 'mouseout') {
     status.value = undefined
@@ -919,10 +916,11 @@ const handleMouseupAndMouseout = event => {
       }
       const pointList = createContext.regionAnnotation.pointList
       // finish
-      if (pointList.length >= 3 &&
-          (createContext.regionAnnotation.nearPoint(mouseX, mouseY, pointList[0]) ||
-              createContext.regionAnnotation.nearPoint(mouseX, mouseY, pointList[pointList.length - 2])
-          )) {
+      if (
+        pointList.length >= 3 &&
+        (createContext.regionAnnotation.nearPoint(mouseX, mouseY, pointList[0]) ||
+          createContext.regionAnnotation.nearPoint(mouseX, mouseY, pointList[pointList.length - 2]))
+      ) {
         pointList.pop()
         if (preferenceStore.showPopup) {
           popup.value = {
@@ -964,7 +962,7 @@ const handleMouseupAndMouseout = event => {
     bottom: '0'
   }
 }
-const handleMouseenter = event => {
+const handleMouseenter = (event) => {
   const [mouseX, mouseY] = getMouseLocation(event)
   status.value = {
     x: mouseX,
@@ -977,15 +975,15 @@ const handleMouseenter = event => {
 }
 
 /// handlers for mobile
-const getTouchLocation = event => {
+const getTouchLocation = (event) => {
   let currentTargetRect = canvas.value.getBoundingClientRect()
-  const mouseX = (event.touches[0].clientX - currentTargetRect.left) / canvas.value.clientWidth *
-      annotationStore.video.width
-  const mouseY = (event.touches[0].clientY - currentTargetRect.top) / canvas.value.clientHeight *
-      annotationStore.video.height
+  const mouseX =
+    ((event.touches[0].clientX - currentTargetRect.left) / canvas.value.clientWidth) * annotationStore.video.width
+  const mouseY =
+    ((event.touches[0].clientY - currentTargetRect.top) / canvas.value.clientHeight) * annotationStore.video.height
   return [mouseX, mouseY]
 }
-const handleTouchstart = event => {
+const handleTouchstart = (event) => {
   canvas.value.focus()
   const [mouseX, mouseY] = getTouchLocation(event)
   if (annotationStore.mode === 'object' && preferenceStore.objects) {
@@ -1027,10 +1025,11 @@ const handleTouchstart = event => {
     if (createContext) {
       const pointList = createContext.regionAnnotation.pointList
       // finish
-      if (pointList.length >= 3 &&
-          (createContext.regionAnnotation.nearPoint(mouseX, mouseY, pointList[0]) ||
-              createContext.regionAnnotation.nearPoint(mouseX, mouseY, pointList.at(-1))
-          )) {
+      if (
+        pointList.length >= 3 &&
+        (createContext.regionAnnotation.nearPoint(mouseX, mouseY, pointList[0]) ||
+          createContext.regionAnnotation.nearPoint(mouseX, mouseY, pointList.at(-1)))
+      ) {
         table.value.focusLast()
         createContext.regionAnnotation.highlight = false
         createContext = undefined
@@ -1084,16 +1083,19 @@ const handleTouchstart = event => {
       }
     }
     // creating a region
-    else if (!createContext && !annotationStore.delMode && !annotationStore.copyMode &&
-        !annotationStore.addPointMode &&
-        !annotationStore.delPointMode) {
+    else if (
+      !createContext &&
+      !annotationStore.delMode &&
+      !annotationStore.copyMode &&
+      !annotationStore.addPointMode &&
+      !annotationStore.delPointMode
+    ) {
       const regionAnnotation = new RegionAnnotation([
-            {
-              x: mouseX,
-              y: mouseY
-            }
-          ]
-      )
+        {
+          x: mouseX,
+          y: mouseY
+        }
+      ])
       regionAnnotation.highlight = true
       annotationList.value.push(regionAnnotation)
       createContext = {
@@ -1118,9 +1120,10 @@ const handleTouchstart = event => {
         annotationList.value.push(skeletonAnnotation)
         skeletonAnnotation = annotationList.value[annotationList.value.length - 1]
       }
-      if (!(annotationStore.copyMode || annotationStore.delMode || annotationStore.indicatingMode) ||
-          nearPoint.name ===
-          'center') {
+      if (
+        !(annotationStore.copyMode || annotationStore.delMode || annotationStore.indicatingMode) ||
+        nearPoint.name === 'center'
+      ) {
         dragContext = {
           type: type,
           skeletonAnnotation: skeletonAnnotation,
@@ -1136,8 +1139,12 @@ const handleTouchstart = event => {
       }
     }
     // creating a skeleton
-    else if (!createContext && !annotationStore.copyMode && !annotationStore.delMode &&
-        !annotationStore.indicatingMode) {
+    else if (
+      !createContext &&
+      !annotationStore.copyMode &&
+      !annotationStore.delMode &&
+      !annotationStore.indicatingMode
+    ) {
       const skeletonAnnotation = new SkeletonAnnotation(mouseX, mouseY, annotationStore.skeletonTypeId)
       skeletonAnnotation.highlight = true
       annotationList.value.push(skeletonAnnotation)
@@ -1149,7 +1156,7 @@ const handleTouchstart = event => {
     }
   }
 }
-const handleTouchmove = event => {
+const handleTouchmove = (event) => {
   const [mouseX, mouseY] = getTouchLocation(event)
   // status
   if (status.value) {
@@ -1189,12 +1196,7 @@ const handleTouchmove = event => {
       const activeAnnotation = annotationList.value[createContext.index]
       const deltaX = mouseX - createContext.mousedownX
       const deltaY = mouseY - createContext.mousedownY
-      activeAnnotation.resize(
-          createContext.x,
-          createContext.y,
-          deltaX,
-          deltaY
-      )
+      activeAnnotation.resize(createContext.x, createContext.y, deltaX, deltaY)
     }
     // drag the object
     if (dragContext) {
@@ -1202,40 +1204,32 @@ const handleTouchmove = event => {
       const deltaX = mouseX - dragContext.mousedownX
       const deltaY = mouseY - dragContext.mousedownY
       if (dragContext.type === 'moving') {
-        activeAnnotation.resize(
-            dragContext.x + deltaX,
-            dragContext.y + deltaY
-        )
+        activeAnnotation.resize(dragContext.x + deltaX, dragContext.y + deltaY)
       } else if (dragContext.type === 'cornerSizing') {
         const oppositeAnchor = dragContext.oppositeAnchor
         activeAnnotation.resize(
-            oppositeAnchor.x,
-            oppositeAnchor.y,
-            (oppositeAnchor.x > dragContext.x ? -dragContext.width : dragContext.width) + deltaX,
-            (oppositeAnchor.y > dragContext.y ? -dragContext.height : dragContext.height) + deltaY
+          oppositeAnchor.x,
+          oppositeAnchor.y,
+          (oppositeAnchor.x > dragContext.x ? -dragContext.width : dragContext.width) + deltaX,
+          (oppositeAnchor.y > dragContext.y ? -dragContext.height : dragContext.height) + deltaY
         )
       } else if (dragContext.type === 'topSizing') {
-        activeAnnotation.resize(
-            undefined,
-            mouseY,
-            undefined,
-            dragContext.height - deltaY)
+        activeAnnotation.resize(undefined, mouseY, undefined, dragContext.height - deltaY)
       } else if (dragContext.type === 'bottomSizing') {
         activeAnnotation.resize(
-            undefined,
-            mouseY > dragContext.y ? undefined : mouseY,
-            undefined,
-            mouseY > dragContext.y ? dragContext.height + deltaY : dragContext.y - mouseY)
+          undefined,
+          mouseY > dragContext.y ? undefined : mouseY,
+          undefined,
+          mouseY > dragContext.y ? dragContext.height + deltaY : dragContext.y - mouseY
+        )
       } else if (dragContext.type === 'leftSizing') {
-        activeAnnotation.resize(
-            mouseX,
-            undefined,
-            dragContext.width - deltaX)
+        activeAnnotation.resize(mouseX, undefined, dragContext.width - deltaX)
       } else if (dragContext.type === 'rightSizing') {
         activeAnnotation.resize(
-            mouseX > dragContext.x ? undefined : mouseX,
-            undefined,
-            mouseX > dragContext.x ? dragContext.width + deltaX : dragContext.x - mouseX)
+          mouseX > dragContext.x ? undefined : mouseX,
+          undefined,
+          mouseX > dragContext.x ? dragContext.width + deltaX : dragContext.x - mouseX
+        )
       }
     }
   } else if (annotationStore.mode === 'region' && preferenceStore.regions) {
@@ -1257,8 +1251,7 @@ const handleTouchmove = event => {
     // create a skeleton
     if (createContext) {
       createContext.skeletonAnnotation.ratio =
-          Math.sqrt((mouseX - createContext.mouseDownX) ** 2 + (mouseY - createContext.mouseDownY) ** 2) /
-          10
+        Math.sqrt((mouseX - createContext.mouseDownX) ** 2 + (mouseY - createContext.mouseDownY) ** 2) / 10
     }
     if (dragContext) {
       const skeletonAnnotation = dragContext.skeletonAnnotation

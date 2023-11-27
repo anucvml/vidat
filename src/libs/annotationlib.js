@@ -8,17 +8,17 @@ import { useConfigurationStore } from '~/store/configuration.js'
 import { usePreferenceStore } from '~/store/preference.js'
 
 class Annotation {
-  constructor (instance = null, score = null) {
+  constructor(instance = null, score = null) {
     this.highlight = false
     this.instance = instance
     this.score = score
   }
 
-  draw () {
+  draw() {
     throw 'Not implemented!'
   }
 
-  clone () {
+  clone() {
     throw 'Not implemented!'
   }
 
@@ -26,7 +26,7 @@ class Annotation {
    * Get proximity from Vuex
    * @returns {*}
    */
-  getProximity () {
+  getProximity() {
     return usePreferenceStore().sensitivity
   }
 }
@@ -43,12 +43,11 @@ class ObjectAnnotation extends Annotation {
    * @param instance
    * @param score
    */
-  constructor (
-    x, y, width, height, labelId = 0, color = null, instance, score) {
+  constructor(x, y, width, height, labelId = 0, color = null, instance, score) {
     super(instance, score)
     this.labelId = labelId
     if (!color) {
-      this.color = useConfigurationStore().objectLabelData.find(label => label.id === this.labelId).color
+      this.color = useConfigurationStore().objectLabelData.find((label) => label.id === this.labelId).color
     } else {
       this.color = color
     }
@@ -62,7 +61,7 @@ class ObjectAnnotation extends Annotation {
    * Draw on canvas
    * @param ctx: canvas context
    */
-  draw (ctx) {
+  draw(ctx) {
     const widthFactor = ctx.canvas.width / useAnnotationStore().video.width
     const heightFactor = ctx.canvas.height / useAnnotationStore().video.height
     const u = this.x * widthFactor
@@ -80,35 +79,43 @@ class ObjectAnnotation extends Annotation {
     ctx.strokeRect(u, v, w, h)
     // draw the handles
     const pointList = [
-      { // top left
+      {
+        // top left
         x: u,
         y: v
       },
-      { // top
+      {
+        // top
         x: u + w / 2,
         y: v
       },
-      { // top right
+      {
+        // top right
         x: u + w,
         y: v
       },
-      { // left
+      {
+        // left
         x: u,
         y: v + h / 2
       },
-      { // right
+      {
+        // right
         x: u + w,
         y: v + h / 2
       },
-      { // bottom left
+      {
+        // bottom left
         x: u,
         y: v + h
       },
-      { // bottom
+      {
+        // bottom
         x: u + w / 2,
         y: v + h
       },
-      { // bottom right
+      {
+        // bottom right
         x: u + w,
         y: v + h
       }
@@ -120,9 +127,12 @@ class ObjectAnnotation extends Annotation {
       const size = this.highlight ? 6 * unitLineWidth : 5 * unitLineWidth
       ctx.fillRect(x - size, y - size, size * 2, size * 2)
       ctx.fillStyle = this.color
-      ctx.fillRect(x - size + unitLineWidth, y - size + unitLineWidth,
+      ctx.fillRect(
+        x - size + unitLineWidth,
+        y - size + unitLineWidth,
         size * 2 - 2 * unitLineWidth,
-        size * 2 - 2 * unitLineWidth)
+        size * 2 - 2 * unitLineWidth
+      )
     }
   }
 
@@ -130,7 +140,7 @@ class ObjectAnnotation extends Annotation {
    * Self-clone
    * @returns {ObjectAnnotation}
    */
-  clone () {
+  clone() {
     return new ObjectAnnotation(
       this.x,
       this.y,
@@ -150,7 +160,7 @@ class ObjectAnnotation extends Annotation {
    * @param width
    * @param height
    */
-  resize (x = this.x, y = this.y, width = this.width, height = this.height) {
+  resize(x = this.x, y = this.y, width = this.width, height = this.height) {
     if (width < 0) {
       this.x = x + width
       this.width = -width
@@ -174,10 +184,12 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearLeftBoundary (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x) <= this.getProximity() &&
+  nearLeftBoundary(mouseX, mouseY) {
+    return (
+      Math.abs(mouseX - this.x) <= this.getProximity() &&
       mouseY < this.y + this.height - this.getProximity() &&
       mouseY > this.y + this.getProximity()
+    )
   }
 
   /**
@@ -186,10 +198,12 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearRightBoundary (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x - this.width) <= this.getProximity() &&
+  nearRightBoundary(mouseX, mouseY) {
+    return (
+      Math.abs(mouseX - this.x - this.width) <= this.getProximity() &&
       mouseY < this.y + this.height - this.getProximity() &&
       mouseY > this.y + this.getProximity()
+    )
   }
 
   /**
@@ -198,10 +212,12 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearTopBoundary (mouseX, mouseY) {
-    return Math.abs(mouseY - this.y) <= this.getProximity() &&
+  nearTopBoundary(mouseX, mouseY) {
+    return (
+      Math.abs(mouseY - this.y) <= this.getProximity() &&
       mouseX > this.x + this.getProximity() &&
       mouseX < this.x + this.width - this.getProximity()
+    )
   }
 
   /**
@@ -210,10 +226,12 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearBottomBoundary (mouseX, mouseY) {
-    return Math.abs(mouseY - this.y - this.height) <= this.getProximity() &&
+  nearBottomBoundary(mouseX, mouseY) {
+    return (
+      Math.abs(mouseY - this.y - this.height) <= this.getProximity() &&
       mouseX > this.x + this.getProximity() &&
       mouseX < this.x + this.width - this.getProximity()
+    )
   }
 
   /**
@@ -222,11 +240,13 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearBoundary (mouseX, mouseY) {
-    return this.nearLeftBoundary(mouseX, mouseY) ||
+  nearBoundary(mouseX, mouseY) {
+    return (
+      this.nearLeftBoundary(mouseX, mouseY) ||
       this.nearRightBoundary(mouseX, mouseY) ||
       this.nearTopBoundary(mouseX, mouseY) ||
       this.nearBottomBoundary(mouseX, mouseY)
+    )
   }
 
   /**
@@ -235,9 +255,8 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearTopLeftAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x) <= this.getProximity() &&
-      Math.abs(mouseY - this.y) <= this.getProximity()
+  nearTopLeftAnchor(mouseX, mouseY) {
+    return Math.abs(mouseX - this.x) <= this.getProximity() && Math.abs(mouseY - this.y) <= this.getProximity()
   }
 
   /**
@@ -246,10 +265,11 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearTopAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x - this.width / 2) <= this.getProximity() &&
-      Math.abs(mouseY - this.y) <=
-      this.getProximity()
+  nearTopAnchor(mouseX, mouseY) {
+    return (
+      Math.abs(mouseX - this.x - this.width / 2) <= this.getProximity() &&
+      Math.abs(mouseY - this.y) <= this.getProximity()
+    )
   }
 
   /**
@@ -258,10 +278,10 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearTopRightAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x - this.width) <= this.getProximity() &&
-      Math.abs(mouseY - this.y) <=
-      this.getProximity()
+  nearTopRightAnchor(mouseX, mouseY) {
+    return (
+      Math.abs(mouseX - this.x - this.width) <= this.getProximity() && Math.abs(mouseY - this.y) <= this.getProximity()
+    )
   }
 
   /**
@@ -270,10 +290,11 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearLeftAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x) <= this.getProximity() &&
-      Math.abs(mouseY - this.y - this.height / 2) <=
-      this.getProximity()
+  nearLeftAnchor(mouseX, mouseY) {
+    return (
+      Math.abs(mouseX - this.x) <= this.getProximity() &&
+      Math.abs(mouseY - this.y - this.height / 2) <= this.getProximity()
+    )
   }
 
   /**
@@ -282,10 +303,11 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearRightAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x - this.width) <= this.getProximity() &&
-      Math.abs(mouseY - this.y - this.height / 2) <=
-      this.getProximity()
+  nearRightAnchor(mouseX, mouseY) {
+    return (
+      Math.abs(mouseX - this.x - this.width) <= this.getProximity() &&
+      Math.abs(mouseY - this.y - this.height / 2) <= this.getProximity()
+    )
   }
 
   /**
@@ -294,10 +316,10 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearBottomLeftAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x) <= this.getProximity() &&
-      Math.abs(mouseY - this.y - this.height) <=
-      this.getProximity()
+  nearBottomLeftAnchor(mouseX, mouseY) {
+    return (
+      Math.abs(mouseX - this.x) <= this.getProximity() && Math.abs(mouseY - this.y - this.height) <= this.getProximity()
+    )
   }
 
   /**
@@ -306,10 +328,11 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearBottomAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x - this.width / 2) <= this.getProximity() &&
-      Math.abs(mouseY - this.y - this.height) <=
-      this.getProximity()
+  nearBottomAnchor(mouseX, mouseY) {
+    return (
+      Math.abs(mouseX - this.x - this.width / 2) <= this.getProximity() &&
+      Math.abs(mouseY - this.y - this.height) <= this.getProximity()
+    )
   }
 
   /**
@@ -318,10 +341,11 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearBottomRightAnchor (mouseX, mouseY) {
-    return Math.abs(mouseX - this.x - this.width) <= this.getProximity() &&
-      Math.abs(mouseY - this.y - this.height) <=
-      this.getProximity()
+  nearBottomRightAnchor(mouseX, mouseY) {
+    return (
+      Math.abs(mouseX - this.x - this.width) <= this.getProximity() &&
+      Math.abs(mouseY - this.y - this.height) <= this.getProximity()
+    )
   }
 
   /**
@@ -330,8 +354,9 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearAnchor (mouseX, mouseY) {
-    return this.nearTopLeftAnchor(mouseX, mouseY) ||
+  nearAnchor(mouseX, mouseY) {
+    return (
+      this.nearTopLeftAnchor(mouseX, mouseY) ||
       this.nearTopAnchor(mouseX, mouseY) ||
       this.nearTopRightAnchor(mouseX, mouseY) ||
       this.nearLeftAnchor(mouseX, mouseY) ||
@@ -339,6 +364,7 @@ class ObjectAnnotation extends Annotation {
       this.nearBottomLeftAnchor(mouseX, mouseY) ||
       this.nearBottomAnchor(mouseX, mouseY) ||
       this.nearBottomRightAnchor(mouseX, mouseY)
+    )
   }
 
   /**
@@ -347,7 +373,7 @@ class ObjectAnnotation extends Annotation {
    * @param mouseY
    * @returns {null|{x: *, y: *}}
    */
-  oppositeAnchor (mouseX, mouseY) {
+  oppositeAnchor(mouseX, mouseY) {
     // top left anchor => bottom right anchor
     if (this.nearTopLeftAnchor(mouseX, mouseY)) {
       return {
@@ -378,7 +404,6 @@ class ObjectAnnotation extends Annotation {
     }
     return null
   }
-
 }
 
 class RegionAnnotation extends Annotation {
@@ -390,11 +415,11 @@ class RegionAnnotation extends Annotation {
    * @param instance
    * @param score
    */
-  constructor (pointList = [], labelId = 0, color = null, instance, score) {
+  constructor(pointList = [], labelId = 0, color = null, instance, score) {
     super(instance, score)
     this.labelId = labelId
     if (!color) {
-      this.color = useConfigurationStore().objectLabelData.find(label => label.id === labelId).color
+      this.color = useConfigurationStore().objectLabelData.find((label) => label.id === labelId).color
     } else {
       this.color = color
     }
@@ -405,7 +430,7 @@ class RegionAnnotation extends Annotation {
    * Draw on canvas
    * @param ctx: canvas context
    */
-  draw (ctx) {
+  draw(ctx) {
     if (this.pointList && this.pointList.length) {
       const widthFactor = ctx.canvas.width / useAnnotationStore().video.width
       const heightFactor = ctx.canvas.height / useAnnotationStore().video.height
@@ -436,9 +461,12 @@ class RegionAnnotation extends Annotation {
         const size = this.highlight ? 6 * unitLineWidth : 5 * unitLineWidth
         ctx.fillRect(x - size, y - size, size * 2, size * 2)
         ctx.fillStyle = this.color
-        ctx.fillRect(x - size + unitLineWidth, y - size + unitLineWidth,
+        ctx.fillRect(
+          x - size + unitLineWidth,
+          y - size + unitLineWidth,
           size * 2 - 2 * unitLineWidth,
-          size * 2 - 2 * unitLineWidth)
+          size * 2 - 2 * unitLineWidth
+        )
       }
     }
   }
@@ -447,14 +475,8 @@ class RegionAnnotation extends Annotation {
    * Self-clone
    * @returns {RegionAnnotation}
    */
-  clone () {
-    return new RegionAnnotation(
-      deepClone(this.pointList),
-      this.labelId,
-      this.color,
-      this.instance,
-      this.score
-    )
+  clone() {
+    return new RegionAnnotation(deepClone(this.pointList), this.labelId, this.color, this.instance, this.score)
   }
 
   /**
@@ -464,10 +486,10 @@ class RegionAnnotation extends Annotation {
    * @param point
    * @returns {boolean}
    */
-  nearPoint (mouseX, mouseY, point) {
-    return Math.abs(mouseX - point.x) <= this.getProximity() * 3 &&
-      Math.abs(mouseY - point.y) <= this.getProximity() *
-      3
+  nearPoint(mouseX, mouseY, point) {
+    return (
+      Math.abs(mouseX - point.x) <= this.getProximity() * 3 && Math.abs(mouseY - point.y) <= this.getProximity() * 3
+    )
   }
 
   /**
@@ -476,7 +498,7 @@ class RegionAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearPoints (mouseX, mouseY) {
+  nearPoints(mouseX, mouseY) {
     let ret = false
     for (const point of this.pointList) {
       ret = ret || this.nearPoint(mouseX, mouseY, point)
@@ -490,7 +512,7 @@ class RegionAnnotation extends Annotation {
    * @param mouseY
    * @returns {[]}
    */
-  getPointIndexListOfBoundary (mouseX, mouseY) {
+  getPointIndexListOfBoundary(mouseX, mouseY) {
     const indexList = []
     for (let i = 0; i < this.pointList.length; i++) {
       indexList.push(i)
@@ -501,19 +523,22 @@ class RegionAnnotation extends Annotation {
       const p2 = this.pointList[indexList[i + 1]]
       // ax + by + c = 0
       let distance
-      if (Math.abs(p2.x - p1.x) <= 1) { // vertical
+      if (Math.abs(p2.x - p1.x) <= 1) {
+        // vertical
         distance = Math.abs(mouseX - (p1.x + p2.x) / 2)
-      } else if (Math.abs(p2.y - p1.y) <= 1) { // horizontal
+      } else if (Math.abs(p2.y - p1.y) <= 1) {
+        // horizontal
         distance = Math.abs(mouseY - (p1.y + p2.y) / 2)
-      } else { // others
+      } else {
+        // others
         const a = 1 / (p2.x - p1.x)
         const b = 1 / (p1.y - p2.y)
         const c = -p1.y * b - p1.x * a
-        distance = Math.abs(
-          (a * mouseX + b * mouseY + c) / Math.sqrt(a * a + b * b))
+        distance = Math.abs((a * mouseX + b * mouseY + c) / Math.sqrt(a * a + b * b))
       }
       // approximate estimation
-      if (distance < this.getProximity() &&
+      if (
+        distance < this.getProximity() &&
         mouseX > Math.min(p1.x, p2.x) - this.getProximity() &&
         mouseX < Math.max(p1.x, p2.x) + this.getProximity() &&
         mouseY > Math.min(p1.y, p2.y) - this.getProximity() &&
@@ -531,7 +556,7 @@ class RegionAnnotation extends Annotation {
    * @param mouseY
    * @returns {boolean}
    */
-  nearBoundary (mouseX, mouseY) {
+  nearBoundary(mouseX, mouseY) {
     return this.getPointIndexListOfBoundary(mouseX, mouseY).length !== 0
   }
 
@@ -540,7 +565,7 @@ class RegionAnnotation extends Annotation {
    * @param deltaX
    * @param deltaY
    */
-  move (deltaX, deltaY) {
+  move(deltaX, deltaY) {
     for (const point of this.pointList) {
       point.x += deltaX
       point.y += deltaY
@@ -558,12 +583,12 @@ class SkeletonAnnotation extends Annotation {
    * @param instance
    * @param score
    */
-  constructor (mouseX, mouseY, typeId, color = null, instance, score) {
+  constructor(mouseX, mouseY, typeId, color = null, instance, score) {
     super(instance, score)
     this.centerX = mouseX
     this.centerY = mouseY
     this.typeId = typeId
-    this.type = useConfigurationStore().skeletonTypeData.find(type => type.id === typeId)
+    this.type = useConfigurationStore().skeletonTypeData.find((type) => type.id === typeId)
     if (!color) {
       this.color = this.type.color
     } else {
@@ -577,7 +602,7 @@ class SkeletonAnnotation extends Annotation {
    * ratio getter
    * @returns {number}
    */
-  get ratio () {
+  get ratio() {
     return this._ratio
   }
 
@@ -585,7 +610,7 @@ class SkeletonAnnotation extends Annotation {
    * ratio setter
    * @param ratio
    */
-  set ratio (ratio) {
+  set ratio(ratio) {
     this._ratio = ratio
     // refresh point list
     this.pointList = this.getPointList()
@@ -595,7 +620,7 @@ class SkeletonAnnotation extends Annotation {
    * Set related parameters and return point list
    * @returns {[{name: string, x: *, y: *, id: number}]}
    */
-  getPointList () {
+  getPointList() {
     const x = this.centerX
     const y = this.centerY
     const ratio = this._ratio
@@ -605,7 +630,8 @@ class SkeletonAnnotation extends Annotation {
         name: 'center',
         x: x,
         y: y
-      }]
+      }
+    ]
     for (const point of this.type.pointList) {
       ret.push({
         id: point.id,
@@ -622,7 +648,7 @@ class SkeletonAnnotation extends Annotation {
    * @param ctx: canvas context
    * @param preview: for preview mode only, ignore video width/height ratio
    */
-  draw (ctx, preview = false) {
+  draw(ctx, preview = false) {
     // draw the line
     const widthFactor = preview ? 1 : ctx.canvas.width / useAnnotationStore().video.width
     const heightFactor = preview ? 1 : ctx.canvas.height / useAnnotationStore().video.height
@@ -632,8 +658,8 @@ class SkeletonAnnotation extends Annotation {
     ctx.strokeStyle = '#000000'
     ctx.beginPath()
     for (const edge of this.type.edgeList) {
-      const fromPoint = this.pointList.find(point => point.id === edge.from)
-      const toPoint = this.pointList.find(point => point.id === edge.to)
+      const fromPoint = this.pointList.find((point) => point.id === edge.from)
+      const toPoint = this.pointList.find((point) => point.id === edge.to)
       ctx.moveTo(fromPoint.x * widthFactor, fromPoint.y * heightFactor)
       ctx.lineTo(toPoint.x * widthFactor, toPoint.y * heightFactor)
     }
@@ -650,9 +676,12 @@ class SkeletonAnnotation extends Annotation {
       if (point.name === 'center') {
         ctx.fillRect(x - size, y - size, size * 2, size * 2)
         ctx.fillStyle = this.color
-        ctx.fillRect(x - size + unitLineWidth, y - size + unitLineWidth,
+        ctx.fillRect(
+          x - size + unitLineWidth,
+          y - size + unitLineWidth,
           size * 2 - 2 * unitLineWidth,
-          size * 2 - 2 * unitLineWidth)
+          size * 2 - 2 * unitLineWidth
+        )
       } else {
         ctx.beginPath()
         ctx.arc(x, y, size + unitLineWidth, 0, Math.PI * 2, false)
@@ -669,7 +698,7 @@ class SkeletonAnnotation extends Annotation {
    * Self-clone
    * @returns {SkeletonAnnotation}
    */
-  clone () {
+  clone() {
     const skeletonAnnotation = new SkeletonAnnotation(
       this.centerX,
       this.centerY,
@@ -690,10 +719,10 @@ class SkeletonAnnotation extends Annotation {
    * @param point
    * @returns {boolean}
    */
-  nearPoint (mouseX, mouseY, point) {
-    return Math.abs(mouseX - point.x) <= this.getProximity() * 3 &&
-      Math.abs(mouseY - point.y) <= this.getProximity() *
-      3
+  nearPoint(mouseX, mouseY, point) {
+    return (
+      Math.abs(mouseX - point.x) <= this.getProximity() * 3 && Math.abs(mouseY - point.y) <= this.getProximity() * 3
+    )
   }
 
   /**
@@ -701,7 +730,7 @@ class SkeletonAnnotation extends Annotation {
    * @param deltaX
    * @param deltaY
    */
-  move (deltaX, deltaY) {
+  move(deltaX, deltaY) {
     this.centerX += deltaX
     this.centerY += deltaY
     for (const point of this.pointList) {
@@ -721,8 +750,7 @@ class ActionAnnotation {
    * @param color
    * @param description
    */
-  constructor (
-    start, end = null, action = null, object = null, color = null, description = null) {
+  constructor(start, end = null, action = null, object = null, color = null, description = null) {
     this.start = start
     this.end = end
     this.action = action
@@ -732,10 +760,4 @@ class ActionAnnotation {
   }
 }
 
-export {
-  Annotation,
-  ObjectAnnotation,
-  RegionAnnotation,
-  SkeletonAnnotation,
-  ActionAnnotation
-}
+export { Annotation, ObjectAnnotation, RegionAnnotation, SkeletonAnnotation, ActionAnnotation }
