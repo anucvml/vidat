@@ -8,7 +8,6 @@
       <img
         class="block shadow-1 rounded-borders"
         :style="{ 'max-width': imgMaxWidth + 'px' }"
-        style="transition: max-width 0.1s"
         :src="thumbnailSrc"
         alt="thumbnail"
         draggable="false"
@@ -78,8 +77,14 @@ const imgMaxWidth = ref(400)
 const imgMinWidth = 400
 const handleResize = (event) => {
   const delta = event.deltaY / -5
-  if (imgMaxWidth.value + delta >= imgMinWidth) {
-    imgMaxWidth.value += delta
+  const newImgMaxWidth = imgMaxWidth.value + delta
+  if (newImgMaxWidth >= imgMinWidth) {
+    const offsetX = offset.value[0] - delta / 2
+    const offsetY = offset.value[1] - delta / 2
+    if (offsetX >= 0 && offsetY >= 0) {
+      offset.value = [offsetX, offsetY]
+      imgMaxWidth.value = newImgMaxWidth
+    }
   }
 }
 // buttons
