@@ -465,3 +465,7 @@ If you use Vidat for your research and wish to reference it, please use the foll
   year =         {2020}
 }
 ```
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=anucvml/vidat&type=Date)](https://star-history.com/#anucvml/vidat&Date)
