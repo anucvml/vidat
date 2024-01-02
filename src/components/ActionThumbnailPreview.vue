@@ -4,14 +4,15 @@
     v-if="annotationStore.currentThumbnailAction !== null"
     :offset="offset"
   >
-    <div class="relative-position">
+    <div class="relative-position rounded-borders overflow-hidden">
       <div
-        class="absolute-top"
-        style="height: 8px;"
+        class="text-center"
         :style="{ 'background-color': annotationStore.currentThumbnailAction.color }"
-      ></div>
+      >
+        {{ thumbnailActionName }}
+      </div>
       <img
-        class="block shadow-1 rounded-borders"
+        class="block shadow-1"
         :style="{ 'max-width': imgMaxWidth + 'px' }"
         :src="thumbnailSrc"
         alt="thumbnail"
@@ -86,6 +87,11 @@ const configurationStore = useConfigurationStore()
 const thumbnailSrc = computed(() => {
   return configurationStore.actionLabelData.find((label) => label.id === annotationStore.currentThumbnailAction.action)
     .thumbnail
+})
+
+const thumbnailActionName = computed(() => {
+  return configurationStore.actionLabelData.find((label) => label.id === annotationStore.currentThumbnailAction.action)
+    .name
 })
 
 // draggable
