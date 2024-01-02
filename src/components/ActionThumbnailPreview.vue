@@ -5,6 +5,11 @@
     :offset="offset"
   >
     <div class="relative-position">
+      <div
+        class="absolute-top"
+        style="height: 8px;"
+        :style="{ 'background-color': annotationStore.currentThumbnailAction.color }"
+      ></div>
       <img
         class="block shadow-1 rounded-borders"
         :style="{ 'max-width': imgMaxWidth + 'px' }"
