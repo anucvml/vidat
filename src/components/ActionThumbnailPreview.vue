@@ -9,7 +9,7 @@
         class="text-center"
         :style="{ 'background-color': annotationStore.currentThumbnailAction.color }"
       >
-        {{ thumbnailActionName }}
+        <span style="color: #ccc; mix-blend-mode: difference">{{ thumbnailActionName }}</span>
       </div>
       <img
         class="block shadow-1"
