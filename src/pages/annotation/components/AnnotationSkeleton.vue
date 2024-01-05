@@ -1,5 +1,8 @@
 <template>
-  <div class="absolute fit column items-center justify-center">
+  <div
+    class="absolute column items-center justify-center"
+    style="inset: 0"
+  >
     <img
       v-if="$q.dark.isActive"
       style="width: 150px; padding-bottom: 50px"
