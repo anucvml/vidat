@@ -32,14 +32,14 @@ export const frameIndicator = () => {
   }
 
   const getStyleList = (frameList, colorList, positionHeightOffset = 0) => {
+    if (!annotationStore.video.frames) return
     const markerWidthUnit = 100 / (annotationStore.video.frames - 1)
     for (let i = 0; i < frameList.length; i++) {
       const [frame, width] = frameList[i]
       const markerWidth = width * markerWidthUnit
       bgImageList.push(colorList[i])
       bgPositionList.push(
-        `${(10000 * frame) / (annotationStore.video.frames - 1) / (100 - markerWidth) - 0.5 * markerWidthUnit}% ${
-          12 + positionHeightOffset
+        `${(10000 * frame) / (annotationStore.video.frames - 1) / (100 - markerWidth) - 0.5 * markerWidthUnit}% ${12 + positionHeightOffset
         }px`
       )
       bgSizeList.push(`${markerWidth}% ${HEIGHT_MARKER}px`)

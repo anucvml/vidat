@@ -9,6 +9,7 @@
           outline
           :icon="isPaused ? 'play_arrow' : 'pause'"
           @click="handlePlayPause"
+          :disable="!annotationStore.video.frames"
         >
           <q-tooltip>{{ isPaused ? 'play (p)' : 'pause (p)' }}</q-tooltip>
         </q-btn>
@@ -24,6 +25,7 @@
           outline
           :icon="showEdit ? 'done' : 'edit'"
           @click="showEdit = !showEdit"
+          :disable="!annotationStore.video.frames"
         >
           <q-tooltip>{{ showEdit ? 'done' : 'edit' }}</q-tooltip>
         </q-btn>
@@ -84,6 +86,7 @@
         "
         :model-value="currentFrameRange"
         @update:model-value="handleInput"
+        :disable="!annotationStore.video.frames"
       />
     </div>
     <q-btn-group flat>
@@ -91,6 +94,7 @@
         outline
         icon="keyboard_arrow_left"
         @click="handlePreviousKeyframe"
+        :disable="!annotationStore.video.frames"
       >
         <q-tooltip>previous keyframe (&lt)</q-tooltip>
       </q-btn>
@@ -98,6 +102,7 @@
         outline
         icon="gps_fixed"
         @click="handleNearestKeyframe"
+        :disable="!annotationStore.video.frames"
       >
         <q-tooltip>locate nearest keyframe</q-tooltip>
       </q-btn>
@@ -105,6 +110,7 @@
         outline
         icon="keyboard_arrow_right"
         @click="handleNextKeyframe"
+        :disable="!annotationStore.video.frames"
       >
         <q-tooltip>next keyframe (&gt)</q-tooltip>
       </q-btn>
@@ -142,12 +148,9 @@ const play = () => {
   videoPlayTimeout = setTimeout(() => {
     handleStop()
   }, duration)
-  videoPlayInterval = setInterval(
-    () => {
-      moveLeftFrame(1)
-    },
-    1000 / annotationStore.video.fps / videoPlayer.playbackRate
-  )
+  videoPlayInterval = setInterval(() => {
+    moveLeftFrame(1)
+  }, 1000 / annotationStore.video.fps / videoPlayer.playbackRate)
 }
 const pause = () => {
   clearTimeout(videoPlayTimeout)
