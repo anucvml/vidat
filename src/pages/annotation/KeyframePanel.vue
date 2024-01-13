@@ -462,6 +462,7 @@ const { rangeStyle } = frameIndicator()
   background-position: var(--marker-bg-position);
   background-size: var(--marker-bg-size);
   background-repeat: no-repeat;
+  background-blend-mode: multiply;
 }
 
 .hide-left-marker .q-slider__thumb:nth-child(3) .q-slider__pin {
