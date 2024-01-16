@@ -110,6 +110,10 @@ content-type: application/json
 
 ## URL Parameters
 
+<details>
+
+<summary>Click to expand</summary>
+
 > All the keys and values are **not** case-sensitive.
 >
 > **Note** if you are using an external URL for `annotation`, `video`, `config` or `submitURL`,
@@ -287,9 +291,13 @@ http://example.com/index.html?submitURL=http%3A%2F%2Fexample.com%3Ftoken%3D12345
 There will be a button shown in the side menu which will `POST` the annotation file to
 `http://example.com?token=123456`.
 
+</details>
+
 ## File Formats
 
-**Config**
+<details>
+
+<summary><strong>Config</strong></summary>
 
 ```json
 {
@@ -340,9 +348,13 @@ There will be a button shown in the side menu which will `POST` the annotation f
 }
 ```
 
-See [`public/config/example.json`](src/public/config/example.json) for am example.
+See [`public/config/example.json`](public/config/example.json) for am example.
 
-**Annotation**
+</details>
+
+<details>
+
+<summary><strong>Annotation</strong></summary>
 
 ```json
 {
@@ -443,7 +455,9 @@ See [`public/config/example.json`](src/public/config/example.json) for am exampl
 }
 ```
 
-See [`public/annotation/example.json`](src/public/annotation/example.json) for am example.
+See [`public/annotation/example.json`](public/annotation/example.json) for am example.
+
+</details>
 
 ## Development
 
