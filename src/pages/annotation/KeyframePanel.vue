@@ -370,6 +370,7 @@ const handleKeydown = (event) => {
     return false
   }
   if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
+    event.preventDefault()
     const delta = -1
     if (currentFocus.value === 'range') {
       moveRange(delta)
@@ -379,6 +380,7 @@ const handleKeydown = (event) => {
       moveRightFrame(delta)
     }
   } else if (event.code === 'ArrowRight' || event.code === 'KeyD') {
+    event.preventDefault()
     const delta = 1
     if (currentFocus.value === 'range') {
       moveRange(delta)
@@ -388,20 +390,21 @@ const handleKeydown = (event) => {
       moveRightFrame(delta)
     }
   } else if (event.code === 'ArrowUp' || event.code === 'KeyW') {
+    event.preventDefault()
     if (currentFocus.value === 'left') return
     currentFocus.value = {
       range: 'left',
       right: 'range'
     }[currentFocus.value]
-    event.preventDefault()
   } else if (event.code === 'ArrowDown' || event.code === 'KeyS') {
+    event.preventDefault()
     if (currentFocus.value === 'right') return
     currentFocus.value = {
       left: 'range',
       range: 'right'
     }[currentFocus.value]
-    event.preventDefault()
   } else if (event.code === 'PageUp') {
+    event.preventDefault()
     const delta = Math.round(-0.1 * annotationStore.video.frames)
     if (currentFocus.value === 'range') {
       moveRange(delta)
@@ -410,8 +413,8 @@ const handleKeydown = (event) => {
     } else if (currentFocus.value === 'right') {
       moveRightFrame(delta)
     }
-    event.preventDefault()
   } else if (event.code === 'PageDown') {
+    event.preventDefault()
     const delta = Math.round(0.1 * annotationStore.video.frames)
     if (currentFocus.value === 'range') {
       moveRange(delta)
@@ -420,20 +423,21 @@ const handleKeydown = (event) => {
     } else if (currentFocus.value === 'right') {
       moveRightFrame(delta)
     }
-    event.preventDefault()
   } else if (event.code === 'Comma') {
+    event.preventDefault()
     handlePreviousKeyframe()
   } else if (event.code === 'Period') {
+    event.preventDefault()
     handleNextKeyframe()
   }
 }
 onMounted(() => {
-  document.addEventListener('keyup', handleKeyup, true)
-  document.addEventListener('keydown', handleKeydown, true)
+  window.addEventListener('keyup', handleKeyup, true)
+  window.addEventListener('keydown', handleKeydown, true)
 })
 onUnmounted(() => {
-  document.removeEventListener('keyup', handleKeyup, true)
-  document.removeEventListener('keydown', handleKeydown, true)
+  window.removeEventListener('keyup', handleKeyup, true)
+  window.removeEventListener('keydown', handleKeydown, true)
 })
 
 // middle range

@@ -435,13 +435,14 @@ const handleKeyup = (event) => {
     return false
   }
   if (event.code === 'Equal') {
+    event.preventDefault()
     handleAdd()
   }
 }
 onMounted(() => {
-  document.addEventListener('keyup', handleKeyup, true)
+  window.addEventListener('keyup', handleKeyup, true)
 })
 onUnmounted(() => {
-  document.removeEventListener('keyup', handleKeyup, true)
+  window.removeEventListener('keyup', handleKeyup, true)
 })
 </script>

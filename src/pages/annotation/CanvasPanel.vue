@@ -317,22 +317,27 @@ const handleKeyup = (event) => {
     // see: https://github.com/anucvml/vidat/issues/91
     return false
   } else if (event.code === 'Delete') {
+    event.preventDefault()
     if (activeContext) {
       annotationList.value.splice(activeContext.index, 1)
     }
   } else if (event.code === 'Escape') {
+    event.preventDefault()
     if (createContext) {
       activeContext = undefined
       createContext = undefined
       annotationList.value.pop()
     }
   } else if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+    event.preventDefault()
     shiftDown.value = false
     if (status.value) status.value.keydown = undefined
   } else if (annotationStore.mode === 'region' && event.code === 'Backspace') {
+    event.preventDefault()
     if (status.value) status.value.keydown = undefined
     backspaceDown.value = false
   } else if (annotationStore.mode === 'region' && (event.code === 'AltLeft' || event.code === 'AltRight')) {
+    event.preventDefault()
     if (status.value) status.value.keydown = undefined
     altDown.value = false
   }
@@ -342,23 +347,26 @@ const handleKeydown = (event) => {
   if (event.target.nodeName.toLowerCase() === 'input') {
     return false
   } else if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+    event.preventDefault()
     shiftDown.value = true
     if (status.value) status.value.keydown = 'copy'
   } else if (annotationStore.mode === 'region' && event.code === 'Backspace') {
+    event.preventDefault()
     backspaceDown.value = true
     if (status.value) status.value.keydown = 'delete'
   } else if (annotationStore.mode === 'region' && (event.code === 'AltLeft' || event.code === 'AltRight')) {
+    event.preventDefault()
     altDown.value = true
     if (status.value) status.value.keydown = 'add'
   }
 }
 onMounted(() => {
-  document.addEventListener('keyup', handleKeyup, true)
-  document.addEventListener('keydown', handleKeydown, true)
+  window.addEventListener('keyup', handleKeyup, true)
+  window.addEventListener('keydown', handleKeydown, true)
 })
 onUnmounted(() => {
-  document.removeEventListener('keyup', handleKeyup, true)
-  document.removeEventListener('keydown', handleKeydown, true)
+  window.removeEventListener('keyup', handleKeyup, true)
+  window.removeEventListener('keydown', handleKeydown, true)
 })
 
 /// get helpers
