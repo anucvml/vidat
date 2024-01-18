@@ -88,6 +88,10 @@
         @update:model-value="handleInput"
         :disable="!annotationStore.video.frames"
       />
+      <ActionIndicator
+        v-if="preferenceStore.actions"
+        style="margin-top: -10px"
+      />
     </div>
     <q-btn-group flat>
       <q-btn
@@ -121,12 +125,16 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+
 import { frameIndicator } from '~/hooks/frameIndicator.js'
 import utils from '~/libs/utils.js'
+import ActionIndicator from '~/pages/annotation/components/ActionIndicator.vue'
 import KeyframeTable from '~/pages/annotation/components/KeyframeTable.vue'
 import { useAnnotationStore } from '~/store/annotation.js'
+import { usePreferenceStore } from '~/store/preference.js'
 
 const annotationStore = useAnnotationStore()
+const preferenceStore = usePreferenceStore()
 
 // left buttons
 const isPaused = ref(true)
@@ -148,9 +156,12 @@ const play = () => {
   videoPlayTimeout = setTimeout(() => {
     handleStop()
   }, duration)
-  videoPlayInterval = setInterval(() => {
-    moveLeftFrame(1)
-  }, 1000 / annotationStore.video.fps / videoPlayer.playbackRate)
+  videoPlayInterval = setInterval(
+    () => {
+      moveLeftFrame(1)
+    },
+    1000 / annotationStore.video.fps / videoPlayer.playbackRate
+  )
 }
 const pause = () => {
   clearTimeout(videoPlayTimeout)

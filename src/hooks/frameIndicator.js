@@ -1,5 +1,6 @@
 import { useQuasar } from 'quasar'
 import { computed } from 'vue'
+
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { usePreferenceStore } from '~/store/preference.js'
@@ -101,23 +102,6 @@ export const frameIndicator = () => {
           frameList.map(() => COLOR_SKELETON),
           positionHeightOffset
         )
-      }
-    }
-
-    if (preferenceStore.actions) {
-      const frameList = []
-      const colorList = []
-      for (let i = 0; i < annotationStore.actionAnnotationList.length; i++) {
-        const action = annotationStore.actionAnnotationList[i]
-        const startFrame = utils.time2index(action.start)
-        const endFrame = utils.time2index(action.end)
-        frameList.push([startFrame, endFrame - startFrame + 1])
-        colorList.push(`linear-gradient(${action.color}, ${action.color})`)
-      }
-      if (ALWAYS_SHOW || frameList.length) {
-        positionHeightOffset += HEIGHT_UNIT
-        getBackgroundStyleList(positionHeightOffset)
-        getStyleList(frameList, colorList, positionHeightOffset)
       }
     }
 
