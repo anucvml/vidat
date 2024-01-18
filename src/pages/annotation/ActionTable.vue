@@ -98,7 +98,8 @@
       <q-tr
         :class="{
           'bg-warning': props.row.end - props.row.start <= 0,
-          'bg-green-2': props.row === annotationStore.currentThumbnailAction
+          'bg-green-2': props.row === annotationStore.currentThumbnailAction && !q.dark.isActive,
+          'bg-green-8': props.row === annotationStore.currentThumbnailAction && q.dark.isActive
         }"
       >
         <q-tooltip
@@ -229,17 +230,20 @@
 </template>
 
 <script setup>
+import { useQuasar } from 'quasar'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+
+import ActionThumbnailPreview from '~/components/ActionThumbnailPreview.vue'
 import { ActionAnnotation } from '~/libs/annotationlib.js'
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'
 import { useMainStore } from '~/store/index.js'
-import ActionThumbnailPreview from '~/components/ActionThumbnailPreview.vue'
 
 const annotationStore = useAnnotationStore()
 const configurationStore = useConfigurationStore()
 const mainStore = useMainStore()
+const q = useQuasar()
 
 const columnList = [
   {
