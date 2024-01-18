@@ -18,7 +18,7 @@
         <q-toolbar-title class="text-center">
           <a
             class="q-mr-sm"
-            href="https://www.anu.edu.au/"
+            href="/"
             target="_blank"
           >
             <q-avatar
@@ -37,12 +37,14 @@
               />
             </q-avatar>
           </a>
-          <router-link
+          <a
             class="vertical-middle"
-            :to="'/'"
+            href="https://www.anu.edu.au/"
+            target="_blank"
           >
-            ANU CVML Video Annotation Tool
-          </router-link>
+            ANU CVML
+          </a>
+          <span class="vertical-middle">VIDeo Annotation Tool</span>
         </q-toolbar-title>
         <q-circular-progress
           v-if="annotationStore.hasVideo && annotationStore.isCaching"
