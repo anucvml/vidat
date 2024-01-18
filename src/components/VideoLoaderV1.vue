@@ -17,6 +17,7 @@
 
 <script setup>
 import { nextTick } from 'vue'
+
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { usePreferenceStore } from '~/store/preference.js'

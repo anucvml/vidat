@@ -2,6 +2,7 @@
  * Utils
  */
 import { Dialog, Notify } from 'quasar'
+
 import { useAnnotationStore } from '~/store/annotation.js'
 
 export default {

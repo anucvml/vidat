@@ -18,6 +18,7 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue'
+
 import { SkeletonAnnotation } from '~/libs/annotationlib.js'
 import { useConfigurationStore } from '~/store/configuration.js'
 

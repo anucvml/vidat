@@ -14,12 +14,14 @@ import { useFavicon, usePreferredDark } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { useQuasar } from 'quasar'
 import { computed } from 'vue'
+
 import Layout from '~/components/Layout.vue'
 import { useAnnotation } from '~/hooks/annotation.js'
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'
 import { usePreferenceStore } from '~/store/preference.js'
+
 import { useMainStore } from './store/index.js'
 
 const mainStore = useMainStore()

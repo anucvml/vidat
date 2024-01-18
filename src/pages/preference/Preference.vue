@@ -296,6 +296,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
+
 import { usePreferenceStore } from '~/store/preference.js'
 
 const preferenceStore = usePreferenceStore()

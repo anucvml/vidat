@@ -1,8 +1,8 @@
 /**
  * Library for annotations
  */
-
 import deepClone from 'lodash.clonedeep'
+
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'
 import { usePreferenceStore } from '~/store/preference.js'

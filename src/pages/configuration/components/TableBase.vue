@@ -137,9 +137,10 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
+
+import TableEditor from '~/pages/configuration/components/TableEditor.vue'
 import { useConfigurationStore } from '~/store/configuration.js'
 import { useMainStore } from '~/store/index.js'
-import TableEditor from '~/pages/configuration/components/TableEditor.vue'
 
 const props = defineProps({
   title: {

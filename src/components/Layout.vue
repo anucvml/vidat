@@ -104,12 +104,14 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
+
 import VideoLoaderV1 from '~/components/VideoLoaderV1.vue'
 import VideoLoaderV2 from '~/components/VideoLoaderV2.vue'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'
 import { useMainStore } from '~/store/index.js'
 import { usePreferenceStore } from '~/store/preference.js'
+
 import Drawer from './Drawer.vue'
 
 const mainStore = useMainStore()

@@ -138,13 +138,14 @@
 
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+
 import { ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '~/libs/annotationlib.js'
 import utils from '~/libs/utils.js'
-import FilmStrip from '~/pages/annotation/components/FilmStrip.vue'
-import VideoPlayer from '~/pages/annotation/components/VideoPlayer.vue'
 import ObjectTable from '~/pages/annotation/ObjectTable.vue'
 import RegionTable from '~/pages/annotation/RegionTable.vue'
 import SkeletonTable from '~/pages/annotation/SkeletonTable.vue'
+import FilmStrip from '~/pages/annotation/components/FilmStrip.vue'
+import VideoPlayer from '~/pages/annotation/components/VideoPlayer.vue'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'
 import { useMainStore } from '~/store/index.js'

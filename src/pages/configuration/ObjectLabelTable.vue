@@ -11,6 +11,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
+
 import utils from '~/libs/utils.js'
 import TableBase from '~/pages/configuration/components/TableBase.vue'
 import { useConfigurationStore } from '~/store/configuration.js'

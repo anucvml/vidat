@@ -40,7 +40,8 @@ export const frameIndicator = () => {
       const markerWidth = width * markerWidthUnit
       bgImageList.push(colorList[i])
       bgPositionList.push(
-        `${(10000 * frame) / (annotationStore.video.frames - 1) / (100 - markerWidth) - 0.5 * markerWidthUnit}% ${12 + positionHeightOffset
+        `${(10000 * frame) / (annotationStore.video.frames - 1) / (100 - markerWidth) - 0.5 * markerWidthUnit}% ${
+          12 + positionHeightOffset
         }px`
       )
       bgSizeList.push(`${markerWidth}% ${HEIGHT_MARKER}px`)

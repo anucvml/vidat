@@ -52,6 +52,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'
 import { useMainStore } from '~/store/index.js'

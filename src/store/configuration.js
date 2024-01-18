@@ -1,6 +1,7 @@
 import deepClone from 'lodash.clonedeep'
 import { defineStore } from 'pinia'
 import { reactive, toRefs, watch } from 'vue'
+
 import { validateActionLabelData, validateObjectLabelData, validateSkeletonTypeData } from './validation.js'
 
 const OBJECT_LABEL_LS_KEY = 'objectLabelData'

@@ -120,6 +120,7 @@
 <script setup>
 import JSZip from 'jszip'
 import { exportFile } from 'quasar'
+
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { usePreferenceStore } from '~/store/preference.js'

@@ -5,10 +5,9 @@
 <script setup>
 import 'monaco-editor/esm/vs/editor/editor.all.js'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
-import 'monaco-editor/esm/vs/editor/standalone/browser/inspectTokens/inspectTokens.js'
 import 'monaco-editor/esm/vs/editor/standalone/browser/iPadShowKeyboard/iPadShowKeyboard.js'
+import 'monaco-editor/esm/vs/editor/standalone/browser/inspectTokens/inspectTokens.js'
 import 'monaco-editor/esm/vs/language/json/monaco.contribution'
-
 import { useQuasar } from 'quasar'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 

@@ -172,6 +172,7 @@
 
 <script setup>
 import { computed, watch } from 'vue'
+
 import { ObjectAnnotation, RegionAnnotation, SkeletonAnnotation } from '~/libs/annotationlib.js'
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'

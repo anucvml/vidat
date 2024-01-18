@@ -40,9 +40,11 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
+
 import VersionBadge from '~/components/VersionBadge.vue'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useMainStore } from '~/store/index.js'
+
 import DrawerAnnotationControl from './DrawerAnnotationControl.vue'
 import DrawerVideoControl from './DrawerVideoControl.vue'
 

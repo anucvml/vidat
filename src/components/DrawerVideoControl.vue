@@ -50,6 +50,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
+
 import { useVideo } from '~/hooks/video.js'
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'

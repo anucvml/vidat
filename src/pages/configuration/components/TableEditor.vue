@@ -31,8 +31,10 @@
 </template>
 
 <script setup>
-import { ref, defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, ref } from 'vue'
+
 import utils from '~/libs/utils.js'
+
 const MonacoCodeEditor = defineAsyncComponent(() => import('~/components/MonacoCodeEditor.vue'))
 
 const props = defineProps({

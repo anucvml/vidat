@@ -30,8 +30,10 @@
 
 <script setup>
 import { exportFile } from 'quasar'
-import { useConfigurationStore } from '~/store/configuration.js'
+
 import utils from '~/libs/utils.js'
+import { useConfigurationStore } from '~/store/configuration.js'
+
 import ActionLabelTable from './ActionLabelTable.vue'
 import ObjectLabelTable from './ObjectLabelTable.vue'
 import SkeletonTypeTable from './SkeletonTypeTable.vue'

@@ -55,10 +55,11 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
+
+import ActionLabelThumbnailPreview from '~/components/ActionLabelThumbnailPreview.vue'
 import utils from '~/libs/utils.js'
 import TableBase from '~/pages/configuration/components/TableBase.vue'
 import { useConfigurationStore } from '~/store/configuration.js'
-import ActionLabelThumbnailPreview from '~/components/ActionLabelThumbnailPreview.vue'
 
 // Action
 const columnList = [

@@ -1,5 +1,6 @@
 import { copyToClipboard, exportFile } from 'quasar'
 import { ref } from 'vue'
+
 import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { useConfigurationStore } from '~/store/configuration.js'

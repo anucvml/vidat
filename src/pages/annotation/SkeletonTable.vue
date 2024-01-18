@@ -55,6 +55,7 @@
 
 <script setup>
 import { ref } from 'vue'
+
 import TableBase from '~/pages/annotation/components/TableBase.vue'
 
 const props = defineProps({
