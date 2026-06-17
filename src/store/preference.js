@@ -15,7 +15,8 @@ const DEFAULT_PREFERENCE = {
   actions: true,
   muted: true,
   grayscale: false,
-  showPopup: true
+  showPopup: true,
+  minObjectSize: 8
 }
 
 export const usePreferenceStore = defineStore('preference', () => {

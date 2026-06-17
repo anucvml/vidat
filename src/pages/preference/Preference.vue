@@ -51,6 +51,33 @@
         <q-item-section>
           <q-item-label>
             <span
+              >Min Object Size (pixels)<q-tooltip
+                anchor="center right"
+                self="center left"
+                >The minimum width and height when drawing an object bounding box.</q-tooltip
+              ></span
+            >
+          </q-item-label>
+        </q-item-section>
+        <q-item-section>
+          <q-input
+            dense
+            outlined
+            v-model.number="minObjectSize"
+            type="number"
+            :rules="[(s) => (s >= 1 && s % 1 === 0) || 'Integer larger than 1.']"
+            @mousewheel.prevent
+            hide-bottom-space
+          />
+        </q-item-section>
+      </q-item>
+      <q-item
+        tag="label"
+        v-ripple
+      >
+        <q-item-section>
+          <q-item-label>
+            <span
               >Default FPS<q-tooltip
                 anchor="center right"
                 self="center left"
@@ -311,6 +338,7 @@ const {
   actions,
   muted,
   grayscale,
-  showPopup
+  showPopup,
+  minObjectSize
 } = storeToRefs(preferenceStore)
 </script>
