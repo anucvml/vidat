@@ -461,6 +461,14 @@ See [`public/annotation/example.json`](public/annotation/example.json) for am ex
 
 ## Development
 
+### Build instructions
+
+```bash
+bun install
+bun run build
+bun run preview
+```
+
 See [Wiki](https://github.com/anucvml/vidat/wiki#further-development) for details.
 
 ## Design
