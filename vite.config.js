@@ -4,7 +4,6 @@ import path from 'path'
 import { QuasarResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
-import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 
 export default defineConfig({
   base: '',
@@ -27,10 +26,6 @@ export default defineConfig({
     }),
     quasar({
       autoImportComponentCase: 'pascal'
-    }),
-    monacoEditorPlugin({
-      languageWorkers: ['editorWorkerService', 'json'],
-      publicPath: 'https://unpkg.com/vite-plugin-monaco-editor@1.0.10/cdn'
     })
   ],
   define: {

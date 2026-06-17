@@ -14,7 +14,7 @@ jobs:
       - name: Setup Node.js Environment
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
       - name: Install Dependencies
         run: npm install

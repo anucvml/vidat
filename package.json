@@ -8,25 +8,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@quasar/extras": "^1.15.10",
-    "@vueuse/core": "^8.9.4",
+    "@quasar/extras": "^2.0.1",
+    "@vueuse/core": "^14.3.0",
     "jszip": "^3.10.1",
     "lodash.clonedeep": "^4.5.0",
-    "monaco-editor": "^0.34.1",
+    "monaco-editor": "^0.55.1",
     "mp4box": "^0.5.2",
-    "pinia": "^2.0.29",
-    "quasar": "^2.11.5",
-    "vue": "^3.2.45",
-    "vue-router": "^4.1.6"
+    "pinia": "^3.0.4",
+    "quasar": "^2.20.1",
+    "vue": "^3.5.38",
+    "vue-router": "^5.1.0"
   },
   "devDependencies": {
-    "@quasar/vite-plugin": "^1.6.0",
-    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "@vitejs/plugin-vue": "^4.6.2",
-    "sass": "^1.33.0",
-    "unplugin-vue-components": "^0.26.0",
-    "vite": "^4.5.2",
-    "vite-plugin-monaco-editor": "^1.1.0"
+    "@quasar/vite-plugin": "^1.12.0",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "sass": "^1.101.0",
+    "unplugin-vue-components": "^32.1.0",
+    "vite": "^8.0.16"
   },
   "prettier": {
     "printWidth": 120,
