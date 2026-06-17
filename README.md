@@ -186,6 +186,14 @@ The default frame per second used when extracting frames from the given video.
 
 The default frame per keyframe used when generating keyframes.
 
+### `minObjectSize`
+
+**Default** `8`
+
+**Example** `Integer >= 1`
+
+The minimum width and height (in pixels) required when drawing an object bounding box. Boxes smaller than this are discarded with a warning.
+
 ### `decoder`
 
 **Default** `auto`

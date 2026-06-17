@@ -60,7 +60,8 @@ const {
   showactions: showActions,
   muted,
   grayscale,
-  showpopup: showPopup
+  showpopup: showPopup,
+  minobjectsize: minObjectSize
 } = URLParameter
 // annotation
 if (annotation) {
@@ -131,6 +132,12 @@ if (defaultFpk) {
   const fpk = parseInt(defaultFpk, 10)
   if (fpk >= 1 && fpk % 1 === 0) {
     preferenceStore.defaultFpk = fpk
+  }
+}
+if (minObjectSize) {
+  const size = parseInt(minObjectSize, 10)
+  if (size >= 1 && size % 1 === 0) {
+    preferenceStore.minObjectSize = size
   }
 }
 if (decoder) {
