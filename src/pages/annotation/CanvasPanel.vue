@@ -897,8 +897,8 @@ const handleMouseupAndMouseout = (event) => {
   if (annotationStore.mode === 'object' && preferenceStore.objects) {
     if (createContext) {
       const activeAnnotation = annotationList.value[createContext.index]
-      if (activeAnnotation.width < 8 || activeAnnotation.height < 8) {
-        utils.notify('The object is too small. At least 8x8.', 'warning')
+      if (activeAnnotation.width < 0 || activeAnnotation.height < 0) {
+        utils.notify('The object is too small. At least 0x0.', 'warning')
         annotationList.value.splice(createContext.index, 1)
       } else {
         createContext = undefined
