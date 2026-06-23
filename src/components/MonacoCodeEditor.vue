@@ -49,7 +49,9 @@ onMounted(() => {
   watch(
     () => props.modelValue,
     (newValue) => {
-      monacoEditor.getModel().setValue(newValue)
+      if (newValue !== monacoEditor.getValue()) {
+        monacoEditor.getModel().setValue(newValue)
+      }
     }
   )
 })
