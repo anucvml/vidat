@@ -191,29 +191,26 @@ const handleGenerate = () => {
       }
     })
 }
+// Convert a decoded frame into a JPEG Blob for export. V1/V2 cache Blob values;
+// V3 caches ImageBitmap values.
+const frameToJpegBlob = async (frame) => {
+  if (frame instanceof Blob) return frame
+  const canvas = new OffscreenCanvas(frame.width, frame.height)
+  canvas.getContext('2d').drawImage(frame, 0, 0)
+  return await canvas.convertToBlob({ type: 'image/jpeg' })
+}
+
 const handleExport = () => {
-  utils.prompt('Save', 'Enter keyframes filename for saving', 'keyframes').onOk((filename) => {
-    // ensure that we have all the keyframes
-    let isOk = true
-    for (let i = 0; i < annotationStore.keyframeList.length; i++) {
-      if (!annotationStore.cachedFrameList[annotationStore.keyframeList[i]]) {
-        isOk = false
-        break
-      }
+  utils.prompt('Save', 'Enter keyframes filename for saving', 'keyframes').onOk(async (filename) => {
+    // decode every keyframe on demand and export them as a zip file
+    const zip = new JSZip()
+    for (const keyframe of annotationStore.keyframeList) {
+      const bitmap = await annotationStore.getFrame(keyframe)
+      if (!bitmap) continue
+      zip.file(keyframe + '.jpg', await frameToJpegBlob(bitmap))
     }
-    // export all keyframes as a zip file
-    if (isOk) {
-      const zip = new JSZip()
-      for (let i = 0; i < annotationStore.keyframeList.length; i++) {
-        const img = annotationStore.cachedFrameList[annotationStore.keyframeList[i]]
-        zip.file(annotationStore.keyframeList[i] + '.jpg', img)
-      }
-      zip.generateAsync({ type: 'blob' }).then((blob) => {
-        exportFile(filename + '-' + annotationStore.video.fps + '-fps.zip', blob)
-      })
-    } else {
-      utils.notify('Please wait for caching!')
-    }
+    const blob = await zip.generateAsync({ type: 'blob' })
+    exportFile(filename + '-' + annotationStore.video.fps + '-fps.zip', blob)
   })
 }
 const handleLocate = (keyframe) => {

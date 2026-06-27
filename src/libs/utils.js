@@ -126,6 +126,7 @@ export default {
         const file = e.target.files[0]
         resolve({
           type: file.type.split('/').at(-1),
+          file,
           videoSrc: URL.createObjectURL(file)
         })
       }

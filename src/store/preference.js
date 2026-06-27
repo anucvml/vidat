@@ -8,7 +8,7 @@ const DEFAULT_PREFERENCE = {
   sensitivity: Platform.has.touch ? 10 : 5,
   defaultFps: 10,
   defaultFpk: 50,
-  decoder: 'auto', // auto, v1, v2
+  decoder: 'auto', // auto, v1, v2, v3
   objects: true,
   regions: true,
   skeletons: true,

@@ -53,7 +53,7 @@ const {
   sensitivity,
   defaultfps: defaultFps,
   defaultfpk: defaultFpk,
-  decoder: decoder,
+  decoder,
   showobjects: showObjects,
   showregions: showRegions,
   showskeletons: showSkeletons,
@@ -141,7 +141,7 @@ if (minObjectSize) {
   }
 }
 if (decoder) {
-  if (['auto', 'v1', 'v2'].includes(decoder)) {
+  if (['auto', 'v1', 'v2', 'v3'].includes(decoder)) {
     preferenceStore.decoder = decoder
   }
 }

@@ -10,15 +10,17 @@ export const useVideo = () => {
       if (annotationStore.hasVideo) {
         utils.confirm('Are you sure to open a new video? You will LOSE all data!').onOk(() => {
           annotationStore.reset()
-          utils.importVideo().then(({ type, videoSrc }) => {
+          utils.importVideo().then(({ type, file, videoSrc }) => {
             mainStore.videoFormat = type
+            annotationStore.videoFile = file
             annotationStore.video.src = videoSrc
             mainStore.drawer = false
           })
         })
       } else {
-        utils.importVideo().then(({ type, videoSrc }) => {
+        utils.importVideo().then(({ type, file, videoSrc }) => {
           mainStore.videoFormat = type
+          annotationStore.videoFile = file
           annotationStore.video.src = videoSrc
           mainStore.drawer = false
         })

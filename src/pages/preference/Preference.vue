@@ -24,6 +24,37 @@
         <q-item-section>
           <q-item-label>
             <span
+              >Video Decoder<q-tooltip
+                anchor="center right"
+                self="center left"
+                >Which video decoder is used to extract frames.</q-tooltip
+              ></span
+            >
+            <q-icon
+              name="help_outline"
+              class="q-ml-xs cursor-pointer"
+              @click.stop.prevent="openVideoLoaderDoc"
+            >
+              <q-tooltip>Learn more about the video decoders (opens the VideoLoader wiki).</q-tooltip>
+            </q-icon>
+          </q-item-label>
+        </q-item-section>
+        <q-item-section>
+          <q-select
+            dense
+            outlined
+            v-model="decoder"
+            :options="['auto', 'v1', 'v2', 'v3']"
+          />
+        </q-item-section>
+      </q-item>
+      <q-item
+        tag="label"
+        v-ripple
+      >
+        <q-item-section>
+          <q-item-label>
+            <span
               >Sensitivity (pixels)<q-tooltip
                 anchor="center right"
                 self="center left"
@@ -122,30 +153,6 @@
             :rules="[(fpk) => (fpk >= 1 && fpk % 1 === 0) || 'Integer greater than 1.']"
             @mousewheel.prevent
             hide-bottom-space
-          />
-        </q-item-section>
-      </q-item>
-      <q-item
-        tag="label"
-        v-ripple
-      >
-        <q-item-section>
-          <q-item-label>
-            <span
-              >Video Decoder<q-tooltip
-                anchor="center right"
-                self="center left"
-                >Which video decoder is used to extract frames. Find more details in the documentation.</q-tooltip
-              ></span
-            >
-          </q-item-label>
-        </q-item-section>
-        <q-item-section>
-          <q-select
-            dense
-            outlined
-            v-model="decoder"
-            :options="['auto', 'v1', 'v2']"
           />
         </q-item-section>
       </q-item>
@@ -341,4 +348,8 @@ const {
   showPopup,
   minObjectSize
 } = storeToRefs(preferenceStore)
+
+const openVideoLoaderDoc = () => {
+  window.open('https://github.com/anucvml/vidat/wiki/VideoLoader', '_blank', 'noopener')
+}
 </script>

@@ -22,6 +22,14 @@ import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
 import { usePreferenceStore } from '~/store/preference.js'
 
+const props = defineProps({
+  fallback: {
+    type: Boolean,
+    default: false
+  }
+})
+const emit = defineEmits(['failed'])
+
 const annotationStore = useAnnotationStore()
 const preferenceStore = usePreferenceStore()
 const handleLoadeddata = (event) => {
@@ -108,8 +116,13 @@ const handleSeeked = (event) => {
   }
 }
 const handleError = (event) => {
+  const message = event.target.error?.message || 'The browser could not load this video.'
   console.error(event)
-  utils.notify(`Could not load video: ${annotationStore.video.src}: ${event.target.error.message}`, 'negative')
+  if (props.fallback) {
+    emit('failed', { loader: 'v1', message })
+    return
+  }
+  utils.notify(`Could not load video: ${annotationStore.video.src}: ${message}`, 'negative')
   annotationStore.reset()
 }
 </script>

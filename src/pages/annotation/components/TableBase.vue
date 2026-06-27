@@ -196,7 +196,7 @@ const props = defineProps({
 const annotationStore = useAnnotationStore()
 const configurationStore = useConfigurationStore()
 const annotationList = computed({
-  get: () => annotationStore[props.storeKey][annotationStore[props.position + 'CurrentFrame']],
+  get: () => annotationStore[props.storeKey][annotationStore[props.position + 'CurrentFrame']] || [],
   set: (newValue) => {
     annotationStore[props.storeKey][annotationStore[props.position + 'CurrentFrame']] = newValue
   }
