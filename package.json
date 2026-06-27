@@ -12,6 +12,7 @@
     "@vueuse/core": "^14.3.0",
     "jszip": "^3.10.1",
     "lodash.clonedeep": "^4.5.0",
+    "mediabunny": "^1.49.0",
     "monaco-editor": "^0.55.1",
     "mp4box": "^0.5.2",
     "pinia": "^3.0.4",

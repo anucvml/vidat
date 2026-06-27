@@ -136,7 +136,7 @@ to [File Formats - Annotation](#file-formats) for format details.
 
 **Example** `/video/exmaple.mp4`, `http://exmaple/static/video/exmaple.json`
 
-Path to the video file. Please refer to [`decoder`](#decoder) for more information.
+Path to the video file. Please refer to [`decoder`](#decoder) for more information about container and codec support.
 
 ### `config`
 
@@ -198,7 +198,7 @@ The minimum width and height (in pixels) required when drawing an object boundin
 
 **Default** `auto`
 
-**Example** `auto` | `v1` | `v2`
+**Example** `auto` | `v1` | `v2` | `v3`
 
 The video decoder used for frame extracting.
 
@@ -208,9 +208,14 @@ the most reliable and compatible methods for most cases. But it is slow and comp
 
 `v2` uses [`WebCodecs.VideoDecoder`](https://developer.mozilla.org/en-US/docs/Web/API/VideoDecoder), it takes the
 advantages of native video decoder built inside the browser. It is way faster than `v1` but lack of support from old
-browsers.
+browsers. It uses `mp4box.js` and is limited to MP4/ISOBMFF containers.
 
-`auto` Vidat will determine which one to use for you.
+`v3` uses [`Mediabunny`](https://github.com/Vanilagy/mediabunny) for demuxing and WebCodecs for decoding. It can read
+more container formats, such as MP4, MOV, MKV, WebM and MPEG-TS, but the actual codec must still be supported by the
+current browser's WebCodecs implementation. Remote videos are read with ranged/on-demand requests when the server
+supports them; otherwise the browser may need to download more of the file.
+
+`auto` Vidat will try `v3`, then `v2`, then `v1`.
 
 See [VideoLoader Wiki](https://github.com/anucvml/vidat/wiki/VideoLoader) for details.
 

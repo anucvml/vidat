@@ -46,25 +46,19 @@
           </a>
           <span class="vertical-middle">VIDeo Annotation Tool</span>
         </q-toolbar-title>
-        <q-circular-progress
+        <q-spinner
           v-if="annotationStore.hasVideo && annotationStore.isCaching"
           class="q-mx-sm"
-          show-value
-          font-size="10px"
-          :value="progress"
-          size="30px"
-          :thickness="0.2"
+          size="24px"
           color="primary"
-          track-color="grey-3"
         >
-          {{ progress }}%
           <q-tooltip
             anchor="center left"
             self="center right"
           >
-            Caching video frames. VideoLoader: {{ useV2 ? 'V2' : 'V1' }}.
+            Loading video&hellip; VideoLoader: {{ activeLoaderLabel }}.
           </q-tooltip>
-        </q-circular-progress>
+        </q-spinner>
         <q-btn
           :icon="$q.dark.isActive ? 'dark_mode' : 'light_mode'"
           flat
@@ -78,8 +72,21 @@
     <q-page-container>
       <q-page padding>
         <template v-if="annotationStore.hasVideo">
-          <VideoLoaderV2 v-if="useV2" />
-          <VideoLoaderV1 v-else />
+          <VideoLoaderV3
+            v-if="activeLoader === 'v3'"
+            :fallback="isAuto"
+            @failed="handleLoaderFailed"
+          />
+          <VideoLoaderV2
+            v-else-if="activeLoader === 'v2'"
+            :fallback="isAuto"
+            @failed="handleLoaderFailed"
+          />
+          <VideoLoaderV1
+            v-else-if="activeLoader === 'v1'"
+            :fallback="isAuto"
+            @failed="handleLoaderFailed"
+          />
         </template>
         <router-view></router-view>
       </q-page>
@@ -105,12 +112,13 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import VideoLoaderV1 from '~/components/VideoLoaderV1.vue'
 import VideoLoaderV2 from '~/components/VideoLoaderV2.vue'
+import VideoLoaderV3 from '~/components/VideoLoaderV3.vue'
+import utils from '~/libs/utils.js'
 import { useAnnotationStore } from '~/store/annotation.js'
-import { useConfigurationStore } from '~/store/configuration.js'
 import { useMainStore } from '~/store/index.js'
 import { usePreferenceStore } from '~/store/preference.js'
 
@@ -119,30 +127,36 @@ import Drawer from './Drawer.vue'
 const mainStore = useMainStore()
 let { drawer } = storeToRefs(mainStore)
 const annotationStore = useAnnotationStore()
-const configurationStore = useConfigurationStore()
 const preferenceStore = usePreferenceStore()
 
-const useV2 = computed(() => {
-  let ret
-  if (preferenceStore.decoder === 'v1') {
-    ret = false
-  } else if (preferenceStore.decoder === 'v2') {
-    ret = true
-  } else {
-    const isSupported = window.VideoDecoder && window.EncodedVideoChunk && window.OffscreenCanvas
-    ret = isSupported && (mainStore.videoFormat === null || mainStore.videoFormat === 'mp4')
-  }
-  console.debug('VideoLoader:', ret ? 'V2' : 'V1')
-  return ret
-})
+const AUTO_LOADERS = ['v3', 'v2', 'v1']
+const activeLoader = ref(null)
+const isAuto = computed(() => preferenceStore.decoder === 'auto')
+const activeLoaderLabel = computed(() => (activeLoader.value ? activeLoader.value.toUpperCase() : 'none'))
 
-const progress = computed(() => {
-  if (!isNaN(annotationStore.video.frames && annotationStore.cachedFrameList.length)) {
-    return Math.round(
-      (annotationStore.cachedFrameList.filter((frame) => frame).length / annotationStore.video.frames) * 100
-    )
-  } else {
-    return 0
+const startSelectedLoader = () => {
+  if (!annotationStore.hasVideo) {
+    activeLoader.value = null
+    return
   }
-})
+  activeLoader.value = isAuto.value ? AUTO_LOADERS[0] : preferenceStore.decoder
+  console.debug('VideoLoader:', activeLoaderLabel.value)
+}
+
+const handleLoaderFailed = ({ loader, message }) => {
+  if (!annotationStore.hasVideo || loader !== activeLoader.value || !isAuto.value) return
+
+  const nextLoader = AUTO_LOADERS[AUTO_LOADERS.indexOf(loader) + 1]
+  if (nextLoader) {
+    console.warn(`VideoLoader ${loader.toUpperCase()} failed, trying ${nextLoader.toUpperCase()}: ${message}`)
+    utils.notify(`VideoLoader ${loader.toUpperCase()} failed. Trying ${nextLoader.toUpperCase()}...`, 'warning')
+    activeLoader.value = nextLoader
+    return
+  }
+
+  utils.notify(`Could not load the video with any decoder: ${message}`, 'negative')
+  annotationStore.reset()
+}
+
+watch(() => [annotationStore.video.src, preferenceStore.decoder], startSelectedLoader, { immediate: true })
 </script>

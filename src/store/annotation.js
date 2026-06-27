@@ -16,6 +16,7 @@ const DEFAULT_ANNOTATION = {
     height: undefined,
     width: undefined
   },
+  videoFile: null,
 
   objectAnnotationListMap: {},
   regionAnnotationListMap: {},
@@ -94,11 +95,23 @@ export const useAnnotationStore = defineStore('annotation', () => {
     },
     { deep: true }
   )
+  // The active video loader (VideoLoaderV3) registers a frame requester here so
+  // other components (e.g. keyframe export) can fetch decoded frames on demand.
+  let frameRequester = null
   return {
     ...toRefs(state),
     hasVideo: computed(() => {
       return !!(state.video && state.video.src)
     }),
+    setFrameRequester: (fn) => {
+      frameRequester = fn
+    },
+    // Returns a Promise<ImageBitmap | null> for the given frame index, decoding
+    // it on demand if necessary.
+    getFrame: (index) => {
+      if (state.cachedFrameList[index]) return Promise.resolve(state.cachedFrameList[index])
+      return frameRequester ? frameRequester(index) : Promise.resolve(null)
+    },
     reset: () => {
       const annotation = deepClone(defaultAnnotation)
       annotation.mode = state.mode
@@ -162,6 +175,7 @@ export const useAnnotationStore = defineStore('annotation', () => {
         throw 'The src of video is blob (local), please load video first!'
       } else if (!state.video.src && !video.src.startsWith('blob')) {
         state.video = video
+        state.videoFile = null
         mainStore.videoFormat = video.src.split('.').at(-1).toLowerCase()
       } else {
         if (state.video.duration && video.duration && state.video.duration !== video.duration) {
