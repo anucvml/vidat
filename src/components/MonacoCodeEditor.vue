@@ -3,14 +3,12 @@
 </template>
 
 <script setup>
-import 'monaco-editor/esm/vs/editor/editor.all.js'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
-import 'monaco-editor/esm/vs/editor/standalone/browser/iPadShowKeyboard/iPadShowKeyboard.js'
-import 'monaco-editor/esm/vs/editor/standalone/browser/inspectTokens/inspectTokens.js'
-import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker.js?worker'
-import 'monaco-editor/esm/vs/language/json/monaco.contribution'
-import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker.js?worker'
+import * as monaco from 'monaco-editor/editor/editor.main.js'
+import EditorWorker from 'monaco-editor/editor/editor.worker.js?worker'
+import JsonWorker from 'monaco-editor/language/json/json.worker.js?worker'
+import 'monaco-editor/language/json/monaco.contribution'
 import { useQuasar } from 'quasar'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
@@ -18,7 +16,6 @@ self.MonacoEnvironment = {
     return new EditorWorker()
   }
 }
-import { onMounted, onUnmounted, ref, watch } from 'vue'
 
 const props = defineProps({
   modelValue: {

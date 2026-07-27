@@ -1,5 +1,5 @@
 // Modified based on https://github.com/w3c/webcodecs/tree/main/samples/mp4-decode
-import MP4Box from 'mp4box'
+import { DataStream, createFile } from 'mp4box'
 
 const getConfig = (info, mp4File) => {
   const track = info.videoTracks[0]
@@ -8,7 +8,7 @@ const getConfig = (info, mp4File) => {
   let description = undefined
   for (const entry of mp4File.moov.traks[0].mdia.minf.stbl.stsd.entries) {
     if (entry.avcC || entry.hvcC) {
-      const stream = new MP4Box.DataStream(undefined, 0, MP4Box.DataStream.BIG_ENDIAN)
+      const stream = new DataStream(undefined, 0, DataStream.BIG_ENDIAN)
       if (entry.avcC) {
         entry.avcC.write(stream)
       } else {
@@ -30,7 +30,7 @@ const probeUnit = 512 * 1024
 onmessage = async (event) => {
   try {
     // demux and decode the video
-    const mp4File = MP4Box.createFile()
+    const mp4File = createFile()
     let decoder
     const offscreen = new OffscreenCanvas(0, 0)
     const ctx = offscreen.getContext('2d')
